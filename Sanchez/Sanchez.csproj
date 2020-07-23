@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <Copyright></Copyright>
+        <Version>0.0.1</Version>
+    </PropertyGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Sanchez.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser" Version="2.8.0" />
+        <PackageReference Include="Extend" Version="1.2.1" />
+        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.9.0.19135" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Resources\GK-2A" />
+        <Folder Include="Resources\Himawari-8" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Resources\Mask.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Resources\Himawari-8\Underlay.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
