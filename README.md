@@ -14,7 +14,7 @@ If you provide a mask image, you can both overlay text or compensate for discrep
 *¡Arriba, Arriba! ¡Ándale, Ándale!*
 
 ## Image resources
-Sample underlays, masks and IR images for Himawari-8 are in the [Resources](Sanchez/Resources) folder. GK-2A images are coming soon.
+Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. 
 
 ## Usage
 
