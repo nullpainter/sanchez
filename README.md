@@ -7,7 +7,7 @@
 
 Utilising a full-colour static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and some zhushing, Sanchez will create beautiful images to be proud of.
 
-This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enogh for you.
+This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enough for you.
 
 If you provide a mask image, you can both overlay text or compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, brightness and contrast adjustment.
 
