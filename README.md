@@ -15,7 +15,7 @@ Utilising a full-colour static ~~ándale~~ underlay image, combining it with a s
 
 This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enough for you.
 
-If you provide a mask image, you can both overlay text or compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, brightness and contrast adjustment.
+If you provide a mask image, you can compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, brightness and contrast adjustment.
 
 *¡Arriba, Arriba! ¡Ándale, Ándale!*
 
