@@ -47,10 +47,6 @@ dotnet run -- -s Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg -m 
 
 It is assumed that all input images are the same size.
 
-## Sample output
-
-TODO
-
 ## Creating underlay images
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
