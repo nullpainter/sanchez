@@ -3,6 +3,7 @@ using Sanchez.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Processing.Processors.Normalization;
 using Color = System.Drawing.Color;
 
 namespace Sanchez.Services
@@ -28,7 +29,7 @@ namespace Sanchez.Services
 
         internal static void TintSatelliteImage(this Image satellite, Color tint)
         {
-            var originalSatellite = satellite.Clone(c => { c.HistogramEqualization(); });
+            var originalSatellite = satellite.Clone(c => { c.HistogramEqualization(new HistogramEqualizationOptions { Method = HistogramEqualizationMethod.Global }); });
 
             satellite.Mutate(satelliteContext =>
             {
