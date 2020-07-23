@@ -14,7 +14,7 @@ If you provide a mask image, you can both overlay text or compensate for discrep
 ¡Arriba, Arriba! ¡Ándale, Ándale!
 
 ## Image resources
-Sample underlays, masks and IR images for Himawari-8 are in the `Resources` folder. GK-2A images are coming soon.
+Sample underlays, masks and IR images for Himawari-8 are in the [Resources](Sanchez/Resources) folder. GK-2A images are coming soon.
 
 ## Usage
 
@@ -52,5 +52,5 @@ NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484
 
 Websites such as [Map To Globe](https://www.maptoglobe.com/) can be used to map the underlay to a globe. Images produced by both GK-2A and Himawari-8 are slightly warped so don't fully map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used.
 
-This is the approach used for the sample underlay images in the `Resources` folder.
+This is the approach used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
 
