@@ -28,7 +28,7 @@ namespace Sanchez.Services
 
         internal static void TintSatelliteImage(this Image satellite, Color tint)
         {
-            var originalSatellite = satellite.Clone(c => { });
+            var originalSatellite = satellite.Clone(c => { c.HistogramEqualization(); });
 
             satellite.Mutate(satelliteContext =>
             {
