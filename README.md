@@ -13,6 +13,9 @@ If you provide a mask image, you can both overlay text or compensate for discrep
 
 *¡Arriba, Arriba! ¡Ándale, Ándale!*
 
+## Download
+Releases are available for Linux, Mac OS X and Windows. [Head on over](https://github.com/nullpainter/sanchez/releases) and pick your poison!
+
 ## Image resources
 Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. 
 
@@ -39,10 +42,10 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
 
 ```
 
-Example, if running from source:
+Sample usage:
 
 ```
-dotnet run -- -s Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg -m Resources\Mask.jpg  -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg
+./Sanchez -s Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg
 ```
 
 It is assumed that all input images are the same size.
