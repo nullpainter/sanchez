@@ -11,7 +11,7 @@ This could be considered cheating, but this is the approach that NASA used to ut
 
 If you provide a mask image, you can both overlay text or compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, brightness and contrast adjustment.
 
-¡Arriba, Arriba! ¡Ándale, Ándale!
+*¡Arriba, Arriba! ¡Ándale, Ándale!*
 
 ## Image resources
 Sample underlays, masks and IR images for Himawari-8 are in the [Resources](Sanchez/Resources) folder. GK-2A images are coming soon.
