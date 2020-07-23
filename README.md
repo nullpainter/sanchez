@@ -1,5 +1,8 @@
 ﻿# Sanchez 
-![.NET Core](https://github.com/nullpainter/sanchez/workflows/.NET%20Core/badge.svg) ![Publish](https://github.com/nullpainter/sanchez/workflows/Publish/badge.svg)
+![.NET Core](https://github.com/nullpainter/sanchez/workflows/.NET%20Core/badge.svg) 
+![Publish](https://github.com/nullpainter/sanchez/workflows/Publish/badge.svg)
+[![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
+
 
 <img src="Documentation/sample-output-h.jpg" width="400" title="Himawari 8" align="left"> 
 <img src="Documentation/sample-output-gk.jpg" width="400" title="GK-2A"> 
