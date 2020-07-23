@@ -2,7 +2,7 @@
 
 <img src="Documentation/sample-output.jpg" width="300" title="Sample output"> 
 
-Sanchez brings your dull IR satellite images to life. 
+**Sanchez brings your dull IR satellite images to life.**
 
 Utilising a full-colour static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and some zhushing, Sanchez will create beautiful images to be proud of.
 
