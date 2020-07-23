@@ -42,10 +42,10 @@ Sample underlays, masks and IR images for Himawari-8 are in the [Resources](Sanc
 
 ```
 
-Example, if running from source:
+Sample usage:
 
 ```
-dotnet run -- -s Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg -m Resources\Mask.jpg  -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg
+./Sanchez -s Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg
 ```
 
 It is assumed that all input images are the same size.
