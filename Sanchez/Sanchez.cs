@@ -67,12 +67,12 @@ namespace Sanchez
                     .AddMask(options);
             });
 
-            // Save output file
+            // Save output file as a JPEG
+            // TODO honour and validate file extension to allow saving as PNG
             var encoder = new JpegEncoder { Quality = 85 };
             underlay.SaveAsJpeg(outputStream, encoder);
             
             return outputStream.Name;
         }
-
     }
 }

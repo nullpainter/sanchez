@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Sanchez.Extensions;
 
-namespace Sanchez.Test
+namespace Sanchez.Test.Extensions
 {
     [TestFixture(TestOf = typeof(ColorExtensions))]
     public class ColorExtensionsTests

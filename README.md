@@ -30,13 +30,13 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
 ```
   -u, --underlay      Required. Path to full-colour underlay image
 
-  -s, --source        Required. Path to satellite image being composed
+  -s, --source        Required. Path to IR satellite image
 
   -m, --mask          Optional path to mask image
 
   -o, --output        Required. Path to output file
 
-  -t, --tint          (Default: 5ebfff) Hex triplet tint to apply to satellite image
+  -t, --tint          (Default: 5ebfff) Tint to apply to satellite image
 
   -b, --brightness    (Default: 1.2) Brightness adjustment
 
