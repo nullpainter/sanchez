@@ -1,4 +1,5 @@
 ﻿# Sanchez 
+![.NET Core](https://github.com/nullpainter/sanchez/workflows/.NET%20Core/badge.svg)
 
 <img src="Documentation/sample-output.jpg" width="500" title="Sample output"> 
 
