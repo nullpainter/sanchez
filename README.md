@@ -1,8 +1,8 @@
 ﻿# Sanchez 
 ![.NET Core](https://github.com/nullpainter/sanchez/workflows/.NET%20Core/badge.svg) ![Publish](https://github.com/nullpainter/sanchez/workflows/Publish/badge.svg)
 
-<img src="Documentation/sample-output-h.jpg" width="450" title="Himawari 8" align="left"> 
-<img src="Documentation/sample-output-gk.jpg" width="450" title="GK-2A"> 
+<img src="Documentation/sample-output-h.jpg" width="400" title="Himawari 8" align="left"> 
+<img src="Documentation/sample-output-gk.jpg" width="400" title="GK-2A"> 
 
 **Sanchez brings your dull IR satellite images to life.**
 
