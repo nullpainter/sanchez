@@ -1,6 +1,6 @@
 ﻿# Sanchez 
 
-<img src="Documentation/sample-output.jpg" width="300" title="Sample output"> 
+<img src="Documentation/sample-output.jpg" width="500" title="Sample output"> 
 
 **Sanchez brings your dull IR satellite images to life.**
 
