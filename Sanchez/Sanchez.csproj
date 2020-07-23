@@ -44,6 +44,10 @@
         <None Update="Resources\GK-2A\Underlay.jpg">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Remove="Resources\GK-2A\IMG_FD_069_IR105_20200723_113006.jpg" />
+        <Content Include="Resources\GK-2A\IMG_FD_069_IR105_20200723_113006.jpg">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
