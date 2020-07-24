@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Ardalis.GuardClauses;
 using Sanchez.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -61,17 +62,34 @@ namespace Sanchez.Builders
         ///     This mask is multiplied with the composite image so isn't entirely suitable for adding textual information
         ///     or other graphics to the image.
         /// </remarks>
-        public CompositorBuilder AddMask(string? filePath)
+        public CompositorBuilder AddMask(string? path)
         {
             if (!_options.RenderMask) return this;
+            Guard.Against.Null(path, nameof(path));
 
+            Compose(path!, PixelColorBlendingMode.Multiply);
+            return this;
+        }
+
+        /// <summary>
+        ///     Adds an overlay image.
+        /// </summary>
+        public CompositorBuilder AddOverlay(string? path)
+        {
+             if (!_options.RenderOverlay) return this;
+            Guard.Against.Null(path, nameof(path));
+
+            Compose(path!);
+            return this;
+        }
+
+        private void Compose(string path, PixelColorBlendingMode blendingMode = PixelColorBlendingMode.Normal)
+        {
             _image.Mutate(context =>
             {
-                using var mask = Image.Load(filePath);
-                context.DrawImage(mask, PixelColorBlendingMode.Multiply, 1.0f);
+                using var target = Image.Load(path);
+                context.DrawImage(target, blendingMode, 1.0f);
             });
-
-            return this;
         }
 
         /// <summary>

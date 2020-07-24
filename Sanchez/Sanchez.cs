@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using CommandLine;
 using Sanchez.Builders;
@@ -60,6 +61,7 @@ namespace Sanchez
                 .AddUnderlay(satelliteImage)
                 .PostProcess()
                 .AddMask(options.MaskPath)
+                .AddOverlay(options.OverlayPath)
                 .Save(options.OutputFile!);
 
             return outputFile;
