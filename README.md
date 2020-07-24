@@ -5,7 +5,9 @@
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
 
-
+<img src="https://github.com/nullpainter/sanchez/blob/master/Sanchez/Resources/Himawari-8/Himawari8_B_FD_IR_20200719T005100Z.jpg" width="400" title="Himawari 8" align="left">
+<img src="https://github.com/nullpainter/sanchez/blob/master/Sanchez/Resources/GK-2A/IMG_FD_069_IR105_20200723_113006.jpg" width="400" title="GK-2A IR">
+<br>
 <img src="Documentation/sample-output-h.jpg" width="400" title="Himawari 8" align="left"> 
 <img src="Documentation/sample-output-gk.jpg" width="400" title="GK-2A"> 
 
