@@ -4,8 +4,6 @@
 [![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
-
-
 <img src="Documentation/sample-output-h.jpg" width="400" title="Himawari 8" align="left"> 
 <img src="Documentation/sample-output-gk.jpg" width="400" title="GK-2A"> 
 
