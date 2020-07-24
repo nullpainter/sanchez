@@ -9,12 +9,12 @@ jobs:
     name: Release
     strategy:
       matrix:
-        kind: ['linux', 'linux-arm', 'windows', 'macOS']
+        kind: ['linux', 'raspberry-pi', 'windows', 'macOS']
         include:
           - kind: linux
             os: ubuntu-latest
             target: linux-x64
-          - kind: linux-arm
+          - kind: raspberry-pi
             os: ubuntu-latest
             target: linux-arm64
           - kind: windows
