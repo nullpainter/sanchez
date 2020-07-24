@@ -34,7 +34,7 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
 
   -m, --mask          Optional path to mask image
 
-  -o, --output        Required. Path to output file
+  -o, --output        Required. Path to output file. JPEG and PNG are supported
 
   -t, --tint          (Default: 5ebfff) Tint to apply to satellite image
 

@@ -23,6 +23,12 @@ namespace Sanchez.Test.Helper
         {
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         public string CreateFile(string filename)
         {
             var tempDirectory = CreateTempDirectory();
@@ -42,20 +48,13 @@ namespace Sanchez.Test.Helper
             return path;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing) return;
 
             foreach (var path in _tempDirectories)
-            {
-                if (Directory.Exists(path)) Directory.Delete(path, true);
-            }
+                if (Directory.Exists(path))
+                    Directory.Delete(path, true);
         }
     }
 }

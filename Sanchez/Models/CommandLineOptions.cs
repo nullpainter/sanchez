@@ -18,6 +18,9 @@ namespace Sanchez.Models
         [Option('m', "mask", HelpText = "Optional path to mask image", Required = false)]
         public string? MaskPath { get; [UsedImplicitly] set; }
 
+        [Option('O', "overlay", HelpText = "Optional path to overlay image", Required = false)]
+        public string? OverlayPath { get; [UsedImplicitly] set; }
+
         [Option('o', "output", HelpText = "Path to output file", Required = true)]
         public string? OutputFile { get; [UsedImplicitly] set; }
 

@@ -14,6 +14,7 @@
         </AssemblyAttribute>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Ardalis.GuardClauses" Version="2.0.0" />
         <PackageReference Include="CommandLineParser" Version="2.8.0" />
         <PackageReference Include="Extend" Version="1.2.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
@@ -28,6 +29,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="..\README.md">
+          <Link>README.md</Link>
+        </Content>
         <Content Include="Resources\Mask.jpg">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

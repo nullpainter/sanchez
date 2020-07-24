@@ -14,9 +14,9 @@ namespace Sanchez.Test.Extensions
             var colour = Color.FromArgb(128, 255, 15);
             var tintMatrix = TintExtensions.CreateTintMatrix(colour);
 
-            tintMatrix.M11.Should().Be(128f/255);
-            tintMatrix.M22.Should().Be(255f/255);
-            tintMatrix.M33.Should().Be(15f/255);
+            tintMatrix.M11.Should().Be(128f / 255);
+            tintMatrix.M22.Should().Be(255f / 255);
+            tintMatrix.M33.Should().Be(15f / 255);
             tintMatrix.M44.Should().Be(1);
 
             // Verify that no other values set

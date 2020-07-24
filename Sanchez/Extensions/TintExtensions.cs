@@ -22,7 +22,7 @@ namespace Sanchez.Extensions
         public static ColorMatrix CreateTintMatrix(Color colour)
         {
             static float ToMatrixValue(byte value) => (float) value / 255;
-            
+
             // Create a identity matrix with R-R', G-G' and B-B' scaled by the tint colour
             var tintMatrix = new ColorMatrix
             {
@@ -31,7 +31,7 @@ namespace Sanchez.Extensions
                 M33 = ToMatrixValue(colour.B),
                 M44 = 1
             };
-            
+
             return tintMatrix;
         }
     }

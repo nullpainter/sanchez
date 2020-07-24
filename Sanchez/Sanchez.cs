@@ -1,16 +1,15 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using CommandLine;
+using Sanchez.Builders;
 using Sanchez.Extensions;
+using Sanchez.Factories;
 using Sanchez.Models;
 using Sanchez.Services;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Processing;
-using Color = System.Drawing.Color;
 
 [assembly: InternalsVisibleTo("Sanchez.Test")]
+
 namespace Sanchez
 {
     internal static class Sanchez
@@ -18,26 +17,25 @@ namespace Sanchez
         /// <summary>
         ///     Main entry point to application, parsing command-line arguments and creating composite image.
         /// </summary>
-        internal static void Main(params string[] args) => Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(Process);
+        internal static void Main(params string[] args) => Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(options =>
+        {
+            var renderOptions = RenderOptionFactory.ToRenderOptions(options);
+            if (CommandLineValidator.Validate(options, renderOptions))
+            {
+                Process(options, renderOptions);
+            }
+        });
 
         /// <summary>
-        ///     Creates a composite image from a coloured underlay image, satellite IR image and optional mask. 
+        ///     Creates a composite image from a coloured underlay image, satellite IR image and optional mask.
         /// </summary>
         /// <remarks>
-        ///    It is assumed that all images are the same dimensions.
+        ///     It is assumed that all images are the same dimensions.
         /// </remarks>
-        private static void Process(CommandLineOptions options)
+        private static void Process(CommandLineOptions options, RenderOptions renderOptions)
         {
-            // Verify arguments
-            if (!CommandLineValidator.VerifyPaths(options, out var invalidPaths))
-            {
-                invalidPaths.ForEach(path => Console.Error.WriteLine($"Path {path} isn't valid."));
-                Environment.Exit(-1);
-            }
-
-            // Parse and verify selected tint
-            var tint = options.Tint.FromHexTriplet();
-            if (tint == null)
+            // Verify selected tint
+            if (renderOptions.Tint == null)
             {
                 Console.Error.WriteLine("Unable to parse tint as a hex tuple. Expected format is 5ebfff");
                 Environment.Exit(-1);
@@ -45,34 +43,26 @@ namespace Sanchez
             }
 
             // Perform compositing
-            var outputPath = CompositeImage(options, tint.Value);
+            var outputPath = CompositeImage(options, renderOptions);
             Console.WriteLine($"Output written to {outputPath}");
         }
 
-        private static string CompositeImage(CommandLineOptions options, Color tint)
+        private static string CompositeImage(CommandLineOptions options, RenderOptions renderOptions)
         {
             using var underlay = Image.Load(options.UnderlayPath);
-            using var outputStream = new FileStream(options.OutputFile!, FileMode.Create);
 
-            underlay.Mutate(context =>
-            {
-                // Load satellite image, removing grey tint
-                using var satelliteImage = Image.Load(options.SourceImagePath);
-                satelliteImage.TintSatelliteImage(tint);
+            // Load satellite image, removing grey tint
+            using var satelliteImage = Image.Load(options.SourceImagePath);
+            satelliteImage.TintAndBlend(renderOptions.Tint!.Value);
 
-                // Combine images
-                context
-                    .BlendUnderlayImage(satelliteImage)
-                    .PostProcess(options)
-                    .AddMask(options);
-            });
+            // Composite images
+            var outputFile = new CompositorBuilder(underlay, renderOptions)
+                .AddUnderlay(satelliteImage)
+                .PostProcess()
+                .AddMask(options.MaskPath)
+                .Save(options.OutputFile!);
 
-            // Save output file as a JPEG
-            // TODO honour and validate file extension to allow saving as PNG
-            var encoder = new JpegEncoder { Quality = 85 };
-            underlay.SaveAsJpeg(outputStream, encoder);
-            
-            return outputStream.Name;
+            return outputFile;
         }
     }
 }
