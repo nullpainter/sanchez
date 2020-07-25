@@ -1,6 +1,6 @@
 ﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using Color = System.Drawing.Color;
 
 namespace Sanchez.Extensions
 {
@@ -21,14 +21,14 @@ namespace Sanchez.Extensions
         /// <param name="colour">colour to tint by</param>
         public static ColorMatrix CreateTintMatrix(Color colour)
         {
-            static float ToMatrixValue(byte value) => (float) value / 255;
+            var colourVector = colour.ToPixel<Rgba32>().ToScaledVector4();
 
             // Create a identity matrix with R-R', G-G' and B-B' scaled by the tint colour
             var tintMatrix = new ColorMatrix
             {
-                M11 = ToMatrixValue(colour.R),
-                M22 = ToMatrixValue(colour.G),
-                M33 = ToMatrixValue(colour.B),
+                M11 = colourVector.X,
+                M22 = colourVector.Y,
+                M33 = colourVector.Z,
                 M44 = 1
             };
 

@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Extensions;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Test.Extensions
 {
@@ -12,12 +14,13 @@ namespace Sanchez.Test.Extensions
         [TestCase("#aabbcc")]
         public void TripletConversion(string triplet)
         {
-            var colour = triplet.FromHexTriplet();
+            Color? colour = triplet.FromHexTriplet();
             Assert.NotNull(colour);
+            Rgb24 rgb = colour.Value.ToPixel<Rgb24>();
 
-            colour.Value.R.Should().Be(170);
-            colour.Value.G.Should().Be(187);
-            colour.Value.B.Should().Be(204);
+            rgb.R.Should().Be(170);
+            rgb.G.Should().Be(187);
+            rgb.B.Should().Be(204);
         }
 
         [Test]
