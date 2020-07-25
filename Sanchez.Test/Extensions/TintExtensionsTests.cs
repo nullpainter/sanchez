@@ -1,7 +1,7 @@
-﻿using System.Drawing;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Extensions;
+using SixLabors.ImageSharp;
 
 namespace Sanchez.Test.Extensions
 {
@@ -11,7 +11,7 @@ namespace Sanchez.Test.Extensions
         [Test]
         public void TintMatrixTest()
         {
-            var colour = Color.FromArgb(128, 255, 15);
+            Color colour = Color.FromRgb(128, 255, 15);
             var tintMatrix = TintExtensions.CreateTintMatrix(colour);
 
             tintMatrix.M11.Should().Be(128f / 255);

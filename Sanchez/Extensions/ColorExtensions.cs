@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using SixLabors.ImageSharp;
 
 namespace Sanchez.Extensions
 {
@@ -13,14 +12,12 @@ namespace Sanchez.Extensions
         /// <returns>colour, or <c>null</c> if unable to parse</returns>
         public static Color? FromHexTriplet(this string triplet)
         {
-            try
+            if (Color.TryParseHex(triplet, out Color result))
             {
-                return ColorTranslator.FromHtml(triplet.PadLeft(7, '#'));
+                return result;
             }
-            catch (Exception)
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

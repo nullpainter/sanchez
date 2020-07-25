@@ -2,7 +2,6 @@
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Normalization;
-using Color = System.Drawing.Color;
 
 namespace Sanchez.Extensions
 {
