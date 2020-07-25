@@ -16,7 +16,7 @@ jobs:
             target: linux-x64
           - kind: linux-arm
             os: ubuntu-latest
-            target: linux-arm64
+            target: linux-arm
           - kind: windows
             os: windows-latest
             target: win-x64
