@@ -18,7 +18,9 @@ If you provide a mask image, you can compensate for discrepancies in scale or di
 *¡Arriba, Arriba! ¡Ándale, Ándale!*
 
 ## Download
-Releases are available for Linux, Mac OS X and Windows. [Head on over](https://github.com/nullpainter/sanchez/releases) and pick your poison!
+Releases are available for Raspberry Pi, Linux, Mac OS X and Windows. [Head on over](https://github.com/nullpainter/sanchez/releases) and pick your poison!
+
+For Raspberry Pi, pick the ARM build.
 
 ## Image resources
 Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. 
