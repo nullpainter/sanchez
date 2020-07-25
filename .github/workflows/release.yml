@@ -9,7 +9,7 @@ jobs:
     name: Release
     strategy:
       matrix:
-        kind: ['linux', 'linux-arm', 'windows', 'macOS']
+        kind: ["linux", "linux-arm", "windows", "macOS"]
         include:
           - kind: linux
             os: ubuntu-latest
@@ -40,7 +40,6 @@ jobs:
           release_name="sanchez-$tag-${{ matrix.target }}"
           # Build everything
           dotnet publish Sanchez/Sanchez.csproj -r "${{ matrix.target }}" -c Release -o "$release_name" -p:PublishSingleFile=true -p:PublishTrimmed=true
-
           # Pack files
           if [ "${{ matrix.target }}" == "win-x64" ]; then
             # Pack to zip for Windows
