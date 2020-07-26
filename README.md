@@ -17,6 +17,9 @@ If you provide a mask image, you can compensate for discrepancies in scale or di
 
 *¡Arriba, Arriba! ¡Ándale, Ándale!*
 
+## Sample images
+Sample images can be [found here](https://github.com/nullpainter/sanchez/wiki/Sample-images). If you have interesting images to contribute, [let me know](https://github.com/nullpainter/sanchez/issues/new?assignees=nullpainter&labels=&template=sample-image.md&title=)!
+
 ## Download
 Releases are available for Raspberry Pi, Linux, Mac OS X and Windows. [Head on over](https://github.com/nullpainter/sanchez/releases) and pick your poison!
 
