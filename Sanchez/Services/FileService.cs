@@ -78,7 +78,6 @@ namespace Sanchez.Services
             // Source is a glob, so enumerate all files in its base directory directory and return
             // glob matches
             var sourceGlob = Glob.Parse(absolutePath);
-            Console.WriteLine(absolutePath + " ** " + GetGlobBase(absolutePath));
 
             return Directory
                 .GetFiles(GetGlobBase(absolutePath), "*.*", SearchOption.AllDirectories)
