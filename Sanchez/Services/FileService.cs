@@ -78,6 +78,7 @@ namespace Sanchez.Services
             // Source is a glob, so enumerate all files in its base directory directory and return
             // glob matches
             var sourceGlob = Glob.Parse(absolutePath);
+            Console.WriteLine(absolutePath + " ** " + GetGlobBase(absolutePath));
 
             return Directory
                 .GetFiles(GetGlobBase(absolutePath), "*.*", SearchOption.AllDirectories)
@@ -87,10 +88,13 @@ namespace Sanchez.Services
 
         private static string GetGlobBase(string path)
         {
+            // Normalise separators
+            path = path.Replace('\\', '/');
+            
             // Extract all directories in the path prior to the glob pattern. Note that the glob library
             // also supports [a-z] style ranges, however we don't.
             var directorySegments = path
-                .Split('\\', '/', StringSplitOptions.None)
+                .Split('/')
                 .TakeWhile(segment => !segment.Contains('?') && !segment.Contains('*'))
                 .ToList();
 
