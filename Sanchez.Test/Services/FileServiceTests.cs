@@ -87,7 +87,7 @@ namespace Sanchez.Test.Services
             var options = new CommandLineOptions
             {
                 SourcePath = "images/**",
-                OutputPath = "test\\output"
+                OutputPath = Path.Combine("test", "output")
             };
 
             var outputFilename = FileService.GetOutputFilename(options, "source.jpg");
@@ -100,7 +100,7 @@ namespace Sanchez.Test.Services
             var options = new CommandLineOptions
             {
                 SourcePath = "source.jpg",
-                OutputPath = "test\\output.jpg"
+                OutputPath = Path.Combine("test", "output.jpg")
             };
 
             var outputFilename = FileService.GetOutputFilename(options, "source.jpg");
@@ -128,9 +128,15 @@ namespace Sanchez.Test.Services
             FileService.GetSourceFiles(options).Should().BeEquivalentTo(sourceFile);
         }
 
+#if OS_WINDOWS
         private const string FirstPath = "source\\first\\2020\\firstImage.jpg";
         private const string SecondPath = "source\\first\\2020\\secondImage.png";
         private const string ThirdPath = "source\\second\\thirdImage.png";
+#else
+        private const string FirstPath = "source/first/2020/firstImage.jpg";
+        private const string SecondPath = "source/first/2020/secondImage.png";
+        private const string ThirdPath = "source/second/thirdImage.png";
+#endif
 
         [TestCase("**/thirdImage.pn?", ExpectedResult = new[] { ThirdPath })]
         [TestCase("source/", ExpectedResult = new[] { FirstPath, SecondPath, ThirdPath })]
