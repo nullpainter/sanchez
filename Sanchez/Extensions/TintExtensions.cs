@@ -29,7 +29,7 @@ namespace Sanchez.Extensions
                 M11 = colourVector.X,
                 M22 = colourVector.Y,
                 M33 = colourVector.Z,
-                M44 = 1
+                M44 = colourVector.W
             };
 
             return tintMatrix;

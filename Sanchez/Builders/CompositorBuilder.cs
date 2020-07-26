@@ -1,11 +1,6 @@
-﻿using System;
-using System.IO;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Sanchez.Models;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
@@ -18,7 +13,7 @@ namespace Sanchez.Builders
     {
         private readonly Image _image;
         private readonly RenderOptions _options;
-
+        
         /// <summary>
         ///     Creates a new builder.
         /// </summary>
@@ -76,7 +71,7 @@ namespace Sanchez.Builders
         /// </summary>
         public CompositorBuilder AddOverlay(string? path)
         {
-             if (!_options.RenderOverlay) return this;
+            if (!_options.RenderOverlay) return this;
             Guard.Against.Null(path, nameof(path));
 
             Compose(path!);
@@ -95,27 +90,6 @@ namespace Sanchez.Builders
         /// <summary>
         ///     Saves the composited image.
         /// </summary>
-        /// <param name="file">path to output file</param>
-        /// <returns>full path to output file</returns>
-        public string Save(string file)
-        {
-            using var outputStream = new FileStream(file, FileMode.Create);
-            _image.Save(outputStream, GetEncoder());
-
-            return outputStream.Name;
-        }
-
-        /// <summary>
-        ///     Returns the image encoder based for the selected image format.
-        /// </summary>
-        private IImageEncoder GetEncoder()
-        {
-            return _options.OutputFormat!switch
-            {
-                ImageFormat.Jpeg => new JpegEncoder { Quality = 85 },
-                ImageFormat.Png => new PngEncoder(),
-                _ => throw new InvalidOperationException($"Unhandled output format: {_options.OutputFormat}")
-            };
-        }
+        public void Save(string outputFilename) => _image.Save(outputFilename);
     }
 }

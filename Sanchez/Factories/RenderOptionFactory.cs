@@ -19,8 +19,7 @@ namespace Sanchez.Factories
                 renderOverlay,
                 options.Brightness,
                 options.Saturation,
-                options.OutputFile.GetImageFormat(),
-                options.Tint.FromHexTriplet());
+                options.Tint.FromHexString());
         }
     }
 }

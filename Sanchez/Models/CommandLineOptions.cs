@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.IO;
+using CommandLine;
 using JetBrains.Annotations;
 
 namespace Sanchez.Models
@@ -12,8 +13,8 @@ namespace Sanchez.Models
         [Option('u', "underlay", HelpText = "Path to full-colour underlay image", Required = true)]
         public string? UnderlayPath { get; [UsedImplicitly] set; }
 
-        [Option('s', "source", HelpText = "Path to IR satellite image", Required = true)]
-        public string? SourceImagePath { get; [UsedImplicitly] set; }
+        [Option('s', "source", HelpText = "Path to IR satellite image(s)", Required = true)]
+        public string? SourcePath { get; [UsedImplicitly] set; }
 
         [Option('m', "mask", HelpText = "Optional path to mask image", Required = false)]
         public string? MaskPath { get; [UsedImplicitly] set; }
@@ -21,8 +22,8 @@ namespace Sanchez.Models
         [Option('O', "overlay", HelpText = "Optional path to overlay image", Required = false)]
         public string? OverlayPath { get; [UsedImplicitly] set; }
 
-        [Option('o', "output", HelpText = "Path to output file", Required = true)]
-        public string? OutputFile { get; [UsedImplicitly] set; }
+        [Option('o', "output", HelpText = "Path to output file or folder", Required = true)]
+        public string? OutputPath { get; [UsedImplicitly] set; }
 
         [Option('t', "tint", HelpText = "Tint to apply to satellite image", Required = false, Default = "5ebfff")]
         public string Tint { get; [UsedImplicitly] set; } = null!;
@@ -32,5 +33,10 @@ namespace Sanchez.Models
 
         [Option('S', "saturation", HelpText = "Saturation adjustment", Required = false, Default = 0.7f)]
         public float Saturation { get; [UsedImplicitly] set; }
+
+        /// <summary>
+        ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
+        /// </summary>
+        public bool IsBatch => SourcePath?.Contains('*') == true || Directory.Exists(SourcePath);
     }
 }

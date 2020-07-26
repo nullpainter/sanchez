@@ -9,11 +9,11 @@
 
 **Sanchez brings your dull IR satellite images to life.**
 
-Utilising a full-colour static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and overlay and some zhushing, Sanchez will create beautiful images to be proud of.
+Utilising a full-colour static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and some zhushing, Sanchez will create beautiful images to be proud of.
 
 This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enough for you.
 
-If you provide a mask image, you can compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, an overlay for text or other imagery, brightness and contrast adjustment.
+If you provide a mask image, you can compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, brightness and contrast adjustment.
 
 *¡Arriba, Arriba! ¡Ándale, Ándale!*
 
@@ -30,13 +30,11 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
 ```
   -u, --underlay      Required. Path to full-colour underlay image
 
-  -s, --source        Required. Path to IR satellite image(s)
+  -s, --source        Required. Path to IR satellite image
 
   -m, --mask          Optional path to mask image
 
-  -O, --overlay       Optional path to overlay image
-
-  -o, --output        Required. Path to output file or folder
+  -o, --output        Required. Path to output file. JPEG and PNG are supported
 
   -t, --tint          (Default: 5ebfff) Tint to apply to satellite image
 
@@ -53,31 +51,10 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
 Sample usage:
 
 ```
-./Sanchez -s c:\images\Himawari8\**\*-IR*.jpg -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg
+./Sanchez -s Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg
 ```
 
 It is assumed that all input images are the same size.
-
-## Tint formats
-Sanchez supports any of the following tint formats, with or without the leading `#`:
-
-* `#xxx`
-* `#xxxxxx`
-* `#xxxxxxxx`
-
-## Batch file conversion
-Sanchez supports converting single or batch satellite files. If converting a batch, the output argument is assumed to be a folder and is created if needed. Original file names are preserved, with a `-fc` suffix.
-
-### Sample batch patterns
-Sanchez supports glob and directory patterns for the `--source` argument. 
-
-Examples are:
-
-* `images/`
-* `images/*.*`
-* `images/*.jpg`
-* `images/**/*.*`
-* `images/2020-*/*IR*.jpg`
 
 ## Creating underlay images
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.

@@ -5,7 +5,7 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <Copyright></Copyright>
+        <Copyright> </Copyright>
         <Version>0.0.1</Version>
     </PropertyGroup>
     <ItemGroup>
@@ -14,18 +14,20 @@
         </AssemblyAttribute>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Ardalis.GuardClauses" Version="2.0.0"/>
-        <PackageReference Include="CommandLineParser" Version="2.8.0"/>
-        <PackageReference Include="Extend" Version="1.2.1"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003"/>
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010"/>
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.9.0.19135"/>
+        <PackageReference Include="DotNet.Glob" Version="3.0.9" />
+        <PackageReference Include="Ardalis.GuardClauses" Version="2.0.0" />
+        <PackageReference Include="CommandLineParser" Version="2.8.0" />
+        <PackageReference Include="Extend" Version="1.2.1" />
+        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+        <PackageReference Include="SimpleInjector" Version="5.0.3" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.9.0.19135" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Resources\GK-2A"/>
-        <Folder Include="Resources\Himawari-8"/>
+        <Folder Include="Resources\GK-2A" />
+        <Folder Include="Resources\Himawari-8" />
     </ItemGroup>
 
     <ItemGroup>
@@ -46,7 +48,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </Content>
-        <None Remove="Resources\Himawari-8\Underlay.jpg"/>
+        <None Remove="Resources\Himawari-8\Underlay.jpg" />
         <Content Include="Resources\Himawari-8\Underlay.jpg">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -59,6 +61,12 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </Content>
+        <None Update="Resources\GK-2A\IMG_FD_020_IR105_20190907_032006_ENHANCED.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Resources\GK-2A\IMG_FD_020_IR105_20190907_032006.jpg">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

@@ -5,18 +5,15 @@ namespace Sanchez.Extensions
     public static class ColorExtensions
     {
         /// <summary>
-        ///     Converts a HTML hex triplet of the form <c>#ffffff</c> or <c>ffffff</c> to a
-        ///     <see cref="Color" />.
+        ///     Converts a HTML hex string to a <see cref="Color" />.
+        ///
+        /// Supported ImageSharp triplet formats are #xxx, #xxxxxx, and #xxxxxxxx hex formats with or without the leading #.
         /// </summary>
-        /// <param name="triplet">triplet to convert</param>
+        /// <param name="hex">triplet to convert</param>
         /// <returns>colour, or <c>null</c> if unable to parse</returns>
-        public static Color? FromHexTriplet(this string triplet)
+        public static Color? FromHexString(this string hex)
         {
-            if (Color.TryParseHex(triplet, out Color result))
-            {
-                return result;
-            }
-
+            if (Color.TryParseHex(hex, out var result)) return result;
             return null;
         }
     }

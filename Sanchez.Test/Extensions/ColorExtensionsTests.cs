@@ -14,7 +14,7 @@ namespace Sanchez.Test.Extensions
         [TestCase("#aabbcc")]
         public void TripletConversion(string triplet)
         {
-            Color? colour = triplet.FromHexTriplet();
+            Color? colour = triplet.FromHexString();
             Assert.NotNull(colour);
             Rgb24 rgb = colour.Value.ToPixel<Rgb24>();
 
@@ -26,7 +26,7 @@ namespace Sanchez.Test.Extensions
         [Test]
         public void InvalidConversion()
         {
-            var colour = "bananas".FromHexTriplet();
+            var colour = "bananas".FromHexString();
             Assert.Null(colour);
         }
     }
