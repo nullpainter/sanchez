@@ -14,11 +14,14 @@
         </AssemblyAttribute>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.2.0" />
+        <PackageReference Include="Serilog.Exceptions" Version="5.5.0" />
         <PackageReference Include="DotNet.Glob" Version="3.0.9" />
         <PackageReference Include="Ardalis.GuardClauses" Version="2.0.0" />
         <PackageReference Include="CommandLineParser" Version="2.8.0" />
         <PackageReference Include="Extend" Version="1.2.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+        <PackageReference Include="ShellProgressBar" Version="5.0.0" />
         <PackageReference Include="SimpleInjector" Version="5.0.3" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />

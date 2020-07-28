@@ -34,6 +34,9 @@ namespace Sanchez.Models
         [Option('S', "saturation", HelpText = "Saturation adjustment", Required = false, Default = 0.7f)]
         public float Saturation { get; [UsedImplicitly] set; }
 
+        [Option('q', "quiet", HelpText = "Don't provide any console output", Required = false, Default = false)]
+        public bool Quiet { get; [UsedImplicitly] set; }
+
         /// <summary>
         ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
         /// </summary>

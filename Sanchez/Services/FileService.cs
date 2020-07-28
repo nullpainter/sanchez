@@ -72,6 +72,7 @@ namespace Sanchez.Services
             {
                 return Directory
                     .GetFiles(absolutePath, "*.*", SearchOption.AllDirectories)
+                    .OrderBy(file => file)
                     .ToList();
             }
 
@@ -82,6 +83,7 @@ namespace Sanchez.Services
             return Directory
                 .GetFiles(GetGlobBase(absolutePath), "*.*", SearchOption.AllDirectories)
                 .Where(file => sourceGlob.IsMatch(file))
+                .OrderBy(file => file)
                 .ToList();
         }
 
@@ -89,7 +91,7 @@ namespace Sanchez.Services
         {
             // Normalise separators
             path = path.Replace('\\', '/');
-            
+
             // Extract all directories in the path prior to the glob pattern. Note that the glob library
             // also supports [a-z] style ranges, however we don't.
             var directorySegments = path

@@ -23,12 +23,6 @@ namespace Sanchez.Test.Helper
         {
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         public string CreateFile(string filename)
         {
             var tempDirectory = CreateTempDirectory();
@@ -46,6 +40,12 @@ namespace Sanchez.Test.Helper
             _tempDirectories.Add(path);
 
             return path;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)

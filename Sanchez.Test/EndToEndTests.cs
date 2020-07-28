@@ -8,7 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace Sanchez.Test
 {
     [TestFixture(TestOf = typeof(Sanchez))]
-    public class EndToEndTests
+    public class EndToEndTests : ServiceTests
     {
         private static void CreateImage(string tempDirectory, string filename)
         {
@@ -132,7 +132,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public void ExistingBatchFileNotOverritten()
+        public void ExistingBatchFileNotOverridden()
         {
             using var fileState = FileHelper.NewState();
             var tempDirectory = fileState.CreateTempDirectory();
@@ -153,6 +153,7 @@ namespace Sanchez.Test
 
             // Run method under test
             Sanchez.Main(
+                "-q",
                 "-s", Path.Combine(tempDirectory, "*.*"),
                 "-u", Path.Combine(tempDirectory, underlayFilename),
                 "-o", outputDirectory

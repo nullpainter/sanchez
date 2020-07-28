@@ -6,10 +6,13 @@ namespace Sanchez.Test
 {
     public abstract class ServiceTests
     {
-        protected Container Container { get; private set;}
+        private Container Container { get; set;}
 
         [OneTimeSetUp]
-        public void CreateContainer() => Container = new Container().AddAllService();
+        public void OneTimeSetUp()
+        {
+            Container = new Container().AddAllService();
+        }
 
         protected T GetService<T>() where T : class => Container.GetInstance<T>();
     }

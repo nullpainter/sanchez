@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,8 @@ using Sanchez.Builders;
 using Sanchez.Extensions;
 using Sanchez.Factories;
 using Sanchez.Models;
+using Serilog;
+using ShellProgressBar;
 using SixLabors.ImageSharp;
 
 namespace Sanchez.Services
@@ -47,40 +50,89 @@ namespace Sanchez.Services
             }
 
             // Get source satellite files
-            var sourceFiles = _fileService.GetSourceFiles(options);
-            if (!sourceFiles.Any())
+            List<string> sourceFiles;
+            try
             {
-                Console.Error.WriteLine("No source files found");
+                sourceFiles = _fileService.GetSourceFiles(options);
+                if (!sourceFiles.Any())
+                {
+                    Console.Error.WriteLine("No source files found");
+                    return;
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.Error.WriteLine($"Unable to find source directory");
                 return;
             }
 
             // Perform compositing
-            var stopwatch = Stopwatch.StartNew();
-            int createdImages = 0;
-            
-            Parallel.ForEach(sourceFiles, new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount
-                },
-                file =>
-                {
-                    var outputPath = CompositeImage(options, renderOptions, file);
-                    if (outputPath != null)
-                    {
-                        Interlocked.Increment(ref createdImages);
-                        Console.WriteLine($"Output written to {outputPath}");
-                    }
-                }
-            );
+            var createdImages = 0;
+            var ignoredFiles = 0;
+            var existingFiles = 0;
 
-            if (createdImages > 0)
+            var progressBarOptions = new ProgressBarOptions
             {
-                Console.WriteLine($"Created {createdImages} images in {stopwatch.Elapsed.TotalSeconds:F3} seconds");
-            }
-            else
+                ProgressCharacter = '─',
+                ProgressBarOnBottom = true
+            };
+
+            using (var progressBar = NewProgressBar(options, sourceFiles, progressBarOptions))
             {
-                Console.WriteLine("Created no images");
+                Parallel.ForEach(sourceFiles, new ParallelOptions
+                    {
+                        MaxDegreeOfParallelism = Environment.ProcessorCount
+                    },
+                    file =>
+                    {
+                        try
+                        {
+                            // ReSharper disable once AccessToDisposedClosure
+                            progressBar.Message = $"Compositing {file}";
+
+                            // Perform compositing
+                            var outputPath = CompositeImage(options, renderOptions, file);
+                            if (outputPath != null)
+                            {
+                                Interlocked.Increment(ref createdImages);
+                                Log.Information("Source file {image} completed processing. Output written to {outputPath}", file, outputPath);
+                            }
+                            else
+                            {
+                                Interlocked.Increment(ref existingFiles);
+                            }
+                        }
+                        catch (UnknownImageFormatException)
+                        {
+                            Interlocked.Increment(ref ignoredFiles);
+                            Log.Error("Unable to compose image {image} due to corrupt or unhandled source", file);
+                        }
+                        catch (Exception e)
+                        {
+                            Interlocked.Increment(ref ignoredFiles);
+                            Log.Error(e, "Unhandled error composing image {image}", file);
+                        }
+                        finally
+                        {
+                            // ReSharper disable once AccessToDisposedClosure
+                            progressBar.Tick();
+                        }
+                    }
+                );
+
+                progressBar.Message = "Done";
             }
+
+            Console.WriteLine();
+            Console.WriteLine(createdImages > 0 ? $"Composited {createdImages} images" : "0 images composited");
+            if (ignoredFiles > 0) Console.WriteLine($"{ignoredFiles} files ignored");
+            if (existingFiles > 0) Console.WriteLine($"{existingFiles} files already composited");
+        }
+
+        private static IProgressBar NewProgressBar(CommandLineOptions options, ICollection sourceFiles, ProgressBarOptions progressBarOptions)
+        {
+            if (options.Quiet || sourceFiles.Count <= 1) return new NullProgressBar();
+            return new ProgressBar(sourceFiles.Count, "Compositing files", progressBarOptions);
         }
 
         /// <summary>
@@ -97,7 +149,7 @@ namespace Sanchez.Services
             // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
             if (options.IsBatch && File.Exists(options.OutputPath) || File.Exists(outputFilename))
             {
-                Console.Error.WriteLine($"Output file {outputFilename} exists; not overwriting");
+                Log.Information("Output file {outputFilename} exists; not overwriting", outputFilename);
                 return null;
             }
 
