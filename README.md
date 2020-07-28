@@ -102,7 +102,7 @@ Examples are:
 
 Note that patterns with wildcards should be quoted with `""` on shells that do wildcard expansion (i.e., everything other than Windows).
 
-### Logging
+## Logging
 
 Detailed logs are written to disk in the `logs` directory relative to the directory where Sanchez is called from.
 
