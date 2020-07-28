@@ -2,6 +2,7 @@
 
 ![.NET Core](https://github.com/nullpainter/sanchez/workflows/.NET%20Core/badge.svg)
 ![Publish](https://github.com/nullpainter/sanchez/workflows/Publish/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/nullpainter/sanchez/badge.svg?branch=master)](https://coveralls.io/github/nullpainter/sanchez?branch=master)
 [![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
