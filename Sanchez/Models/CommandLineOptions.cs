@@ -37,6 +37,9 @@ namespace Sanchez.Models
         [Option('q', "quiet", HelpText = "Don't provide any console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }
 
+        [Option('f', "force", HelpText = "Force overwrite existing output file", Required = false, Default = false)]
+        public bool Force { get; [UsedImplicitly] set; }
+        
         /// <summary>
         ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
         /// </summary>

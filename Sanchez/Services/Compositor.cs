@@ -23,7 +23,7 @@ namespace Sanchez.Services
         /// <remarks>
         ///     It is assumed that all images are the same dimensions.
         /// </remarks>
-        void Create(CommandLineOptions options);
+        void Compose(CommandLineOptions options, CancellationTokenSource cancellationToken);
     }
 
     public class Compositor : ICompositor
@@ -38,7 +38,7 @@ namespace Sanchez.Services
         /// <remarks>
         ///     It is assumed that all images are the same dimensions.
         /// </remarks>
-        public void Create(CommandLineOptions options)
+        public void Compose(CommandLineOptions options, CancellationTokenSource cancellationToken)
         {
             var renderOptions = RenderOptionFactory.ToRenderOptions(options);
 
@@ -62,7 +62,7 @@ namespace Sanchez.Services
             }
             catch (DirectoryNotFoundException)
             {
-                Console.Error.WriteLine($"Unable to find source directory");
+                Console.Error.WriteLine("Unable to find source directory");
                 return;
             }
 
@@ -85,6 +85,12 @@ namespace Sanchez.Services
                     },
                     file =>
                     {
+                        // Handle ctrl+c requests
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
                         try
                         {
                             // ReSharper disable once AccessToDisposedClosure
@@ -120,11 +126,13 @@ namespace Sanchez.Services
                     }
                 );
 
-                progressBar.Message = "Done";
+                // Display completion message
+                progressBar.Message = cancellationToken.IsCancellationRequested ? "Cancelled" : "Done";
             }
 
+            // Display summary
             Console.WriteLine();
-            Console.WriteLine(createdImages > 0 ? $"Composited {createdImages} images" : "0 images composited");
+            Console.WriteLine($"{createdImages} images composited");
             if (ignoredFiles > 0) Console.WriteLine($"{ignoredFiles} files ignored");
             if (existingFiles > 0) Console.WriteLine($"{existingFiles} files already composited");
         }
@@ -147,7 +155,7 @@ namespace Sanchez.Services
             var outputFilename = _fileService.GetOutputFilename(options, sourcePath!);
 
             // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
-            if (options.IsBatch && File.Exists(options.OutputPath) || File.Exists(outputFilename))
+            if (!ShouldWrite(options, outputFilename))
             {
                 Log.Information("Output file {outputFilename} exists; not overwriting", outputFilename);
                 return null;
@@ -169,6 +177,15 @@ namespace Sanchez.Services
                 .Save(outputFilename);
 
             return Path.GetFullPath(outputFilename);
+        }
+
+        /// <summary>
+        ///     Whether the output file should be written, based on options and whether the file already exists.
+        /// </summary>
+        private static bool ShouldWrite(CommandLineOptions options, string outputFilename)
+        {
+            if (options.Force) return true;
+            return !File.Exists(outputFilename);
         }
     }
 }

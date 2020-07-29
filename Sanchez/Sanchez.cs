@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using CommandLine;
 using Sanchez.Builders;
 using Sanchez.Models;
@@ -20,24 +21,39 @@ namespace Sanchez
         /// </summary>
         internal static void Main(params string[] args)
         {
+            var cancellationToken = new CancellationTokenSource();
+            
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                e.Cancel = true;
+                cancellationToken.Cancel();
+            };
+            
             var container = new Container().AddAllService();
             container.Verify();
 
-            Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(options =>
+            try
             {
-                ConfigureLogging();
+                Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(options =>
+                {
+                    ConfigureLogging();
 
-                // Disable stdout if required
-                if (options.Quiet) Console.SetOut(TextWriter.Null);
+                    // Disable stdout if required
+                    if (options.Quiet) Console.SetOut(TextWriter.Null);
 
-                // Perform additional validation on input options
-                var validator = container.GetInstance<IOptionValidator>();
-                if (!validator.Validate(options)) return;
+                    // Perform additional validation on input options
+                    var validator = container.GetInstance<IOptionValidator>();
+                    if (!validator.Validate(options)) return;
 
-                // Composite images
-                var compositor = container.GetInstance<ICompositor>();
-                compositor.Create(options);
-            });
+                    // Composite images
+                    var compositor = container.GetInstance<ICompositor>();
+                    compositor.Compose(options, cancellationToken);
+                });
+            }
+            finally
+            {
+                Console.ResetColor();
+            }
         }
 
         /// <summary>
