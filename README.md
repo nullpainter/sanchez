@@ -53,6 +53,8 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
   -S, --saturation    (Default: 0.7) Saturation adjustment
 
   -q, --quiet         (Default: false) Don't provide any console output
+  
+  -f, --force         (Default: false) Force overwrite existing output file  
 
   --help              Display this help screen.
 
