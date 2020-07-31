@@ -7,17 +7,13 @@ namespace Sanchez.Models
     /// </summary>
     public class RenderOptions
     {
-        internal RenderOptions(bool renderMask, bool renderOverlay, float brightness, float saturation, Color? tint)
+        internal RenderOptions(float brightness, float saturation, Color? tint)
         {
-            RenderMask = renderMask;
-            RenderOverlay = renderOverlay;
             Brightness = brightness;
             Saturation = saturation;
             Tint = tint;
         }
 
-        internal bool RenderMask { get; }
-        internal bool RenderOverlay { get; }
         internal float Brightness { get; }
         internal float Saturation { get; }
         internal Color? Tint { get; }

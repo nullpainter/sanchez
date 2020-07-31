@@ -161,19 +161,25 @@ namespace Sanchez.Services
                 return null;
             }
 
-            // Load underlay image
-            using var underlay = Image.Load(options.UnderlayPath);
+            // Load all images
+            var stack = new ImageStack
+            {
+                Underlay = Image.Load(options.UnderlayPath),
+                Satellite = Image.Load(sourcePath),
+                Overlay = options.OverlayPath == null ? null : Image.Load(options.OverlayPath),
+                Mask = options.MaskPath == null ? null : Image.Load(options.MaskPath)
+            };
 
-            // Load satellite image, removing grey tint
-            using var satelliteImage = Image.Load(sourcePath);
-            satelliteImage.TintAndBlend(renderOptions.Tint!.Value);
+            // Remove grey tint from satellite image
+            stack.Satellite.TintAndBlend(renderOptions.Tint!.Value);
 
             // Composite images
-            new CompositorBuilder(underlay, renderOptions)
-                .AddUnderlay(satelliteImage)
+            new CompositorBuilder(stack, renderOptions)
+                .Scale()
+                .AddUnderlay()
                 .PostProcess()
-                .AddMask(options.MaskPath)
-                .AddOverlay(options.OverlayPath)
+                .AddOverlay()
+                .AddMask()
                 .Save(outputFilename);
 
             return Path.GetFullPath(outputFilename);

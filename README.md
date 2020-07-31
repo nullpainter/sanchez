@@ -31,9 +31,11 @@ For Raspberry Pi, pick the ARM build.
 
 ## Image resources
 
-Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder.
+Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. Each satellite has an underlay which matches the pixel dimensions of the image, and a high-resolution underlay.
 
 ## Usage
+
+All images are expected to be the same aspect ratio. If images are different sizes - for example, when using the high-resolution underlays - source images will be scaled up.
 
 ```
   -u, --underlay      Required. Path to full-colour underlay image
@@ -53,8 +55,8 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
   -S, --saturation    (Default: 0.7) Saturation adjustment
 
   -q, --quiet         (Default: false) Don't provide any console output
-  
-  -f, --force         (Default: false) Force overwrite existing output file  
+
+  -f, --force         (Default: false) Force overwrite existing output file
 
   --help              Display this help screen.
 
@@ -75,8 +77,6 @@ Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resou
 ```
 ./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay.jpg` -o Output.jpg -t #0096FA
 ```
-
-It is assumed that all input images are the same size.
 
 ## Tint formats
 
@@ -112,6 +112,8 @@ Detailed logs are written to disk in the `logs` directory relative to the direct
 
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
-Websites such as [Map To Globe](https://www.maptoglobe.com/) can be used to map the underlay to a globe. Images produced by both GK-2A and Himawari-8 are slightly warped so don't fully map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used.
+NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is recommended to map the underlays to a globe. This application allows for accurate map rotation based on the known longitude of the satellites, and cna export high resolution images.
+
+All of the IR images are distorted and don't fully map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used to minimise visible distortion.
 
 This is the approach used for the sample underlay images in the [Resources](Sanchez/Resources) folder.

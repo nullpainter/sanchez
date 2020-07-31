@@ -10,13 +10,7 @@ namespace Sanchez.Factories
         /// </summary>
         internal static RenderOptions ToRenderOptions(CommandLineOptions options)
         {
-            // Compositing options
-            var renderMask = options.MaskPath != null;
-            var renderOverlay = options.OverlayPath != null;
-
             return new RenderOptions(
-                renderMask,
-                renderOverlay,
                 options.Brightness,
                 options.Saturation,
                 options.Tint.FromHexString());
