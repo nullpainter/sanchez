@@ -11,11 +11,11 @@
 
 **Sanchez brings your dull IR satellite images to life.**
 
-Utilising a full-colour static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and overlay and some zhushing, Sanchez will create beautiful images to be proud of.
+Utilising a full-colour, high resolution, static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and overlay and some zhushing, Sanchez will create beautiful images to be proud of.
 
 This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enough for you.
 
-If you provide a mask image, you can compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for colour tinting, an overlay for text or other imagery, brightness and contrast adjustment.
+If you provide a mask image, you can compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for batch conversion, colour tinting, an overlay for text or other imagery, brightness and contrast adjustment.
 
 _¡Arriba, Arriba! ¡Ándale, Ándale!_
 
@@ -31,7 +31,7 @@ For Raspberry Pi, pick the ARM build.
 
 ## Image resources
 
-Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. Each satellite has an underlay which matches the pixel dimensions of the image, and a high-resolution underlay.
+Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. Each satellite has an underlay which matches the pixel dimensions of the IR image, and an additional high-resolution underlay. It is recommended to use the high-resolution underlay unless you care about pixel-perfect IR.
 
 ## Usage
 
@@ -112,8 +112,8 @@ Detailed logs are written to disk in the `logs` directory relative to the direct
 
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
-NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is recommended to map the underlays to a globe. This application allows for accurate map rotation based on the known longitude of the satellites, and can export high resolution images.
+NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) software is recommended to map the underlays to a globe. This application allows for accurate map rotation based on the known longitude of satellites and can export high resolution images.
 
-All of the IR images are distorted and don't fully map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used to minimise visible distortion.
+All of the IR images are distorted and don't perfectly map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used to minimise visible distortion.
 
-This is the approach used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
+This is the approach, software and source images used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
