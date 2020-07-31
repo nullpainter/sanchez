@@ -112,7 +112,7 @@ Detailed logs are written to disk in the `logs` directory relative to the direct
 
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
-NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is recommended to map the underlays to a globe. This application allows for accurate map rotation based on the known longitude of the satellites, and cna export high resolution images.
+NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is recommended to map the underlays to a globe. This application allows for accurate map rotation based on the known longitude of the satellites, and can export high resolution images.
 
 All of the IR images are distorted and don't fully map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used to minimise visible distortion.
 
