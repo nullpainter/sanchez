@@ -10,11 +10,11 @@ namespace Sanchez.Test
     [TestFixture(TestOf = typeof(Sanchez))]
     public class EndToEndTests : ServiceTests
     {
-        private static void CreateImage(string tempDirectory, string filename)
+        private static void CreateImage(string tempDirectory, string filename, int width = 2000, int height = 2000)
         {
             var path = Path.Combine(tempDirectory, filename);
 
-            using var image = new Image<Rgba32>(2000, 2000);
+            using var image = new Image<Rgba32>(width, height);
             using var stream = new FileStream(path, FileMode.Create);
 
             image.SaveAsJpeg(stream);
@@ -160,6 +160,35 @@ namespace Sanchez.Test
             );
 
             File.ReadAllText(outputImagePath).Should().Be("Don't hurt me!", "existing file shouldn't have been overwritten");
+        }
+        
+        
+        [Test]
+        public void ImagesUpscaled()
+        {
+            using var fileState = FileHelper.NewState();
+            var tempDirectory = fileState.CreateTempDirectory();
+
+            const string underlayFilename = "underlay.jpg";
+            const string satelliteFilename = "satellite.jpg";
+            const string outputFilename = "output.jpg";
+
+            CreateImage(tempDirectory, underlayFilename, 5000, 5000);
+            CreateImage(tempDirectory, satelliteFilename);
+
+            var outputPath = Path.Combine(tempDirectory, outputFilename);
+
+            // Run method under test
+            Sanchez.Main(
+                "-s", Path.Combine(tempDirectory, satelliteFilename),
+                "-u", Path.Combine(tempDirectory, underlayFilename),
+                "-o", outputPath
+            );
+
+            File.Exists(outputPath).Should().BeTrue("output file should have been created");
+            using var outputImage = Image.Load(outputPath);
+            outputImage.Width.Should().Be(5000);
+            outputImage.Height.Should().Be(5000);
         }
 
         [Test]
