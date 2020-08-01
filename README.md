@@ -6,8 +6,10 @@
 [![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
-<img src="Documentation/sample-output-h.jpg" width="400" title="Himawari 8" align="left"> 
-<img src="Documentation/sample-output-gk.jpg" width="400" title="GK-2A">
+<img src="Documentation/himawari-8-thumb.jpg" title="Himawari 8" align="left"> 
+<img src="Documentation/gk-2a-thumb.jpg"  title="GK-2A">
+<img src="Documentation/goes-16-thumb.jpg" title="GOES-16" align="left"> 
+<img src="Documentation/goes-17-thumb.jpg"  title="GOES-17">
 
 **Sanchez brings your dull IR satellite images to life.**
 
