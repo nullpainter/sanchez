@@ -31,7 +31,7 @@ For Raspberry Pi, pick the ARM build.
 
 ## Image resources
 
-Sample underlays, masks and IR images for Himawari-8 and GK-2A are in the [Resources](Sanchez/Resources) folder. Each satellite has an underlay which matches the pixel dimensions of the IR image, and an additional high-resolution underlay. It is recommended to use the high-resolution underlay unless you care about pixel-perfect IR.
+Sample underlays, masks and IR images for Himawari-8, GK-2A, GOES-16 and GOES-17 are in the [Resources](Sanchez/Resources) folder. Each satellite has an underlay which matches the pixel dimensions of the IR image, and an additional high-resolution underlay. It is recommended to use the high-resolution underlay unless you care about pixel-perfect IR.
 
 ## Usage
 
@@ -112,8 +112,6 @@ Detailed logs are written to disk in the `logs` directory relative to the direct
 
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
-NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) software is recommended to map the underlays to a globe. This application allows for accurate map rotation based on the known longitude of satellites and can export high resolution images.
-
-All of the IR images are distorted and don't perfectly map to texture-mapped globes. In order to correct for this, Photoshop's lens correction filter can be used to minimise visible distortion.
+In order to projection map images, the [Cartophy](https://scitools.org.uk/cartopy/docs/latest/) Python library can be used. Sample code will be added to the repository soon.
 
 This is the approach, software and source images used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
