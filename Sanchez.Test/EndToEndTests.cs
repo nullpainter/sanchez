@@ -161,8 +161,7 @@ namespace Sanchez.Test
 
             File.ReadAllText(outputImagePath).Should().Be("Don't hurt me!", "existing file shouldn't have been overwritten");
         }
-        
-        
+
         [Test]
         public void ImagesUpscaled()
         {
@@ -221,7 +220,7 @@ namespace Sanchez.Test
             outputImage.Width.Should().Be(2000);
             outputImage.Height.Should().Be(2000);
         }
-        
+
         [Test]
         public void InvalidTint()
         {
@@ -249,7 +248,7 @@ namespace Sanchez.Test
 
             File.Exists(outputPath).Should().BeFalse("output file should not have been created with an invalid tint");
         }
-        
+
         [Test]
         public void NoSatelliteFiles()
         {
@@ -276,6 +275,48 @@ namespace Sanchez.Test
             );
 
             File.Exists(outputPath).Should().BeFalse("output file should not have been created if there are no source files");
+        }
+
+        [Test]
+        public void BatchFilesConverted()
+        {
+            const int numImages = 5;
+            using var fileState = FileHelper.NewState();
+            var tempDirectory = fileState.CreateTempDirectory();
+
+            const string underlayFilename = "underlay.jpg";
+            CreateImage(tempDirectory, underlayFilename);
+
+            for (var i = 0; i < numImages; i++)
+            {
+                CreateImage(tempDirectory, $"satellite-{i}.jpg");
+            }
+
+            // Create output file
+            var outputDirectory = Path.Combine(tempDirectory, "output");
+            Directory.CreateDirectory(outputDirectory);
+
+            // Run method under test
+            Sanchez.Main(
+                "-q",
+                "-s", Path.Combine(tempDirectory, "satellite*.jpg"),
+                "-u", Path.Combine(tempDirectory, underlayFilename),
+                "-o", outputDirectory
+            );
+
+            // Verify output
+            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
+            Directory.GetFiles(outputDirectory).Length.Should().Be(numImages);
+
+            for (var i = 0; i < numImages; i++)
+            {
+                var outputFile = Path.Combine(outputDirectory, $"satellite-{i}-fc.jpg");
+                File.Exists(outputFile).Should().BeTrue($"output file {outputFile} should exist");
+                
+                using var outputImage = Image.Load(outputFile);
+                outputImage.Width.Should().Be(2000);
+                outputImage.Height.Should().Be(2000);
+            }
         }
     }
 }
