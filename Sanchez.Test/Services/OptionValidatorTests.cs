@@ -132,9 +132,7 @@ namespace Sanchez.Test.Services
             options.Threads = 0;
 
             // Run method under test
-            var valid = OptionValidator.ValidatePaths(options, out var invalidPaths);
-
-            invalidPaths.Should().BeEmpty();
+            var valid = OptionValidator.Validate(options);
             valid.Should().BeFalse("invalid thread count should return an error");
         }
 
