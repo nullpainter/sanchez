@@ -71,13 +71,13 @@ All images are expected to be the same aspect ratio. If images are different siz
 #### Batch
 
 ```
-./Sanchez -s "c:\images\Himawari8\**\*-IR*.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output.jpg
+./Sanchez -s "c:\images\Himawari8\**\*-IR*.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output
 ```
 
 #### Single image
 
 ```
-./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output -t #0096FA
+./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output.jpg -t #0096FA
 ```
 
 ## Tint formats
