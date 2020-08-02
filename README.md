@@ -79,7 +79,7 @@ The brightness, saturation and tint are optimised for Himawari-8 and GOES. For G
 #### Single image
 
 ```
-./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output.jpg -t #0096FA
+./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output.jpg -t "#0096FA"
 ```
 
 ## Tint formats
