@@ -39,6 +39,8 @@ Sample underlays, masks and IR images for Himawari-8, GK-2A, GOES-16 and GOES-17
 
 All images are expected to be the same aspect ratio. If images are different sizes - for example, when using the high-resolution underlays - source images will be scaled up.
 
+The brightness, saturation and tint are optimised for Himawari-8 and GOES. For GK-2A, you may find a tint of `#0070ba` to better suited.
+
 ```
   -u, --underlay      Required. Path to full-colour underlay image
 
