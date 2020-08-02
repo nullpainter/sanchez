@@ -102,6 +102,43 @@ namespace Sanchez.Test
             outputImage.Width.Should().Be(2000);
             outputImage.Height.Should().Be(2000);
         }
+        
+        [Test]
+        public void ForwardSlashesInPaths()
+        {
+            using var fileState = FileHelper.NewState();
+            var tempDirectory = fileState.CreateTempDirectory();
+
+            const string maskFilename = "mask.jpg";
+            const string overlayFilename = "overlay.jpg";
+            const string underlayFilename = "underlay.jpg";
+            const string satelliteFilename = "satellite.jpg";
+            const string outputFilename = "output.jpg";
+
+            CreateImage(tempDirectory, maskFilename);
+            CreateImage(tempDirectory, overlayFilename);
+            CreateImage(tempDirectory, underlayFilename);
+            CreateImage(tempDirectory, satelliteFilename);
+
+            var outputPath = WithForwardSlashes(Path.Combine(tempDirectory, outputFilename));
+
+            // Run method under test
+            Sanchez.Main(
+                "-s", WithForwardSlashes(Path.Combine(tempDirectory, satelliteFilename)),
+                "-m", WithForwardSlashes(Path.Combine(tempDirectory, maskFilename)),
+                "-u", WithForwardSlashes(Path.Combine(tempDirectory, underlayFilename)),
+                "-O", WithForwardSlashes(Path.Combine(tempDirectory, overlayFilename)),
+                "-o", outputPath,
+                "-t", "00BBFF"
+            );
+
+            File.Exists(outputPath).Should().BeTrue("output file should have been created");
+            using var outputImage = Image.Load(outputPath);
+            outputImage.Width.Should().Be(2000);
+            outputImage.Height.Should().Be(2000);
+
+            static string WithForwardSlashes(string path) => path.Replace("\\", "/");
+        }
 
         [Test]
         public void ExistingFileNotOverwritten()
