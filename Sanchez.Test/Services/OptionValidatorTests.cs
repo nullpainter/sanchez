@@ -36,6 +36,19 @@ namespace Sanchez.Test.Services
             return OptionValidator.Validate(options);
         }
 
+        private static CommandLineOptions ValidOptions(FileState fileState)
+        {
+            var options = new CommandLineOptions
+            {
+                OutputPath = fileState.CreateFile("output.jpg"),
+                UnderlayPath = fileState.CreateFile("underlay.jpg"),
+                SourcePath = fileState.CreateFile("source.jpg"),
+                OverlayPath = fileState.CreateFile("overlay.jpg"),
+                Threads = 5
+            };
+            return options;
+        }
+
         [Test]
         public void AllInvalidPaths()
         {
@@ -52,39 +65,18 @@ namespace Sanchez.Test.Services
 
             valid.Should().BeFalse();
             invalidPaths.Should().BeEquivalentTo("Frank", "Jimmy", "Ian");
-            
+
             // Run full validation
             valid = OptionValidator.Validate(options);
             valid.Should().BeFalse();
         }
 
         [Test]
-        public void PartialInvalidPaths()
-        {
-            var options = new CommandLineOptions
-            {
-                MaskPath = "Ian"
-            };
-
-            // Run method under test
-            var valid = OptionValidator.ValidatePaths(options, out var invalidPaths);
-            valid.Should().BeFalse();
-
-            invalidPaths.Should().BeEquivalentTo("Ian");
-        }
-
-        [Test]
-        public void ValidPaths()
+        public void AllValid()
         {
             using var fileState = FileHelper.NewState();
 
-            var options = new CommandLineOptions
-            {
-                OutputPath = fileState.CreateFile("output.jpg"),
-                UnderlayPath = fileState.CreateFile("underlay.jpg"),
-                SourcePath = fileState.CreateFile("source.jpg"),
-                OverlayPath = fileState.CreateFile("overlay.jpg"),
-            };
+            var options = ValidOptions(fileState);
 
             // Run method under test
             var valid = OptionValidator.ValidatePaths(options, out var invalidPaths);
@@ -129,6 +121,36 @@ namespace Sanchez.Test.Services
             // Run method under test
             var valid = OptionValidator.Validate(options);
             valid.Should().BeTrue("batch validation not performed");
+        }
+
+        [Test]
+        public void InvalidThreadCount()
+        {
+            using var fileState = FileHelper.NewState();
+
+            var options = ValidOptions(fileState);
+            options.Threads = 0;
+
+            // Run method under test
+            var valid = OptionValidator.ValidatePaths(options, out var invalidPaths);
+
+            invalidPaths.Should().BeEmpty();
+            valid.Should().BeFalse("invalid thread count should return an error");
+        }
+
+        [Test]
+        public void PartialInvalidPaths()
+        {
+            var options = new CommandLineOptions
+            {
+                MaskPath = "Ian"
+            };
+
+            // Run method under test
+            var valid = OptionValidator.ValidatePaths(options, out var invalidPaths);
+            valid.Should().BeFalse();
+
+            invalidPaths.Should().BeEquivalentTo("Ian");
         }
     }
 }

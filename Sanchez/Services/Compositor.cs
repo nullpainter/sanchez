@@ -81,7 +81,7 @@ namespace Sanchez.Services
             {
                 Parallel.ForEach(sourceFiles, new ParallelOptions
                     {
-                        MaxDegreeOfParallelism = Environment.ProcessorCount
+                        MaxDegreeOfParallelism = options.Threads ?? Environment.ProcessorCount
                     },
                     file =>
                     {

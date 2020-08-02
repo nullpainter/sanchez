@@ -40,6 +40,9 @@ namespace Sanchez.Models
         [Option('f', "force", HelpText = "Force overwrite existing output file", Required = false, Default = false)]
         public bool Force { get; [UsedImplicitly] set; }
         
+        [Option('T', "threads", HelpText = "(Default: CPU core count) Number of threads to use for batch processing", Required = false)]
+        public int? Threads { get; [UsedImplicitly] set; }
+        
         /// <summary>
         ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
         /// </summary>

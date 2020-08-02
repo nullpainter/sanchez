@@ -60,6 +60,8 @@ All images are expected to be the same aspect ratio. If images are different siz
 
   -f, --force         (Default: false) Force overwrite existing output file
 
+  -T, --threads       (Default: CPU core count) Number of threads to use for batch processing
+
   --help              Display this help screen.
 
   --version           Display version information.

@@ -51,8 +51,20 @@ namespace Sanchez.Services
             }
 
             valid &= ValidateSource(options);
+            valid &= ValidateThreads(options);
 
             return valid;
+        }
+
+        private bool ValidateThreads(CommandLineOptions options)
+        {
+            if (options.Threads <= 0)
+            {
+                Console.Error.WriteLine("Thread count needs to be greater than zero");
+                return false;
+            }
+
+            return true;
         }
 
         private static bool ValidateOutputFormat(CommandLineOptions options)
