@@ -116,6 +116,6 @@ Detailed logs are written to disk in the `logs` directory relative to the direct
 
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
-In order to projection map images, the [Cartophy](https://scitools.org.uk/cartopy/docs/latest/) Python library can be used. Sample code will be added to the repository soon.
+In order to correctly projection map photos from geostationary satellites, the [Cartophy](https://scitools.org.uk/cartopy/docs/latest/) Python library can be used. Sample code will be added to the repository soon. If you just want to create a high resolution globe and don't need to worry about precise projection, NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is useful.
 
 This is the approach, software and source images used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
