@@ -79,9 +79,12 @@ namespace Sanchez.Services
 
             using (var progressBar = NewProgressBar(options, sourceFiles, progressBarOptions))
             {
+                var threadCount = options.Threads ?? Environment.ProcessorCount;
+                Log.Information("Compositing batch with {threadCount} threads", threadCount);
+                
                 Parallel.ForEach(sourceFiles, new ParallelOptions
                     {
-                        MaxDegreeOfParallelism = options.Threads ?? Environment.ProcessorCount
+                        MaxDegreeOfParallelism = threadCount
                     },
                     file =>
                     {
