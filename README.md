@@ -39,7 +39,7 @@ Sample underlays, masks and IR images for Himawari-8, GK-2A, GOES-16 and GOES-17
 
 All images are expected to be the same aspect ratio. If images are different sizes - for example, when using the high-resolution underlays - source images will be scaled up.
 
-The brightness, saturation and tint are optimised for Himawari-8 and GOES. For GK-2A, you may find a tint of `#0070ba` to better suited.
+The tint is optimised for Himawari-8 and GOES. For GK-2A, you may find a tint of `#0070ba` to better suited.
 
 ```
   -u, --underlay      Required. Path to full-colour underlay image
@@ -54,7 +54,7 @@ The brightness, saturation and tint are optimised for Himawari-8 and GOES. For G
 
   -t, --tint          (Default: 5ebfff) Tint to apply to satellite image
 
-  -b, --brightness    (Default: 1.2) Brightness adjustment
+  -b, --brightness    (Default: 1.0) Brightness adjustment
 
   -S, --saturation    (Default: 0.7) Saturation adjustment
 
@@ -118,6 +118,6 @@ Detailed logs are written to disk in the `logs` directory relative to the direct
 
 NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
 
-In order to correctly projection map photos from geostationary satellites, the [Cartophy](https://scitools.org.uk/cartopy/docs/latest/) Python library can be used. Sample code will be added to the repository soon. If you just want to create a high resolution globe and don't need to worry about precise projection, NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is useful.
+In order to correctly projection map photos from geostationary satellites, the [Cartophy](https://scitools.org.uk/cartopy/docs/latest/) Python library can be used. Sample code is in the [Tools](Tools) directory. If you just want to create a high resolution globe and don't need to worry about precise projection, NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is useful.
 
 This is the approach, software and source images used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
