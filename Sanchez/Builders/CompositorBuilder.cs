@@ -103,7 +103,7 @@ namespace Sanchez.Builders
         {
             // Create target directory if required
             var targetDirectory = Path.GetDirectoryName(outputFilename);
-            if (targetDirectory != null && !Directory.Exists(targetDirectory))
+            if (!string.IsNullOrEmpty(targetDirectory) && !Directory.Exists(targetDirectory))
             {
                Log.Information("Creating target directory {directory}", Path.GetFullPath(targetDirectory));
                Directory.CreateDirectory(targetDirectory);
