@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using CommandLine;
@@ -61,9 +62,11 @@ namespace Sanchez
         /// </summary>
         private static void ConfigureLogging()
         {
+            var applicationPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+            
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine("logs", "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
+                .WriteTo.RollingFile(Path.Combine(applicationPath, "logs", "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails()
                 .CreateLogger();
