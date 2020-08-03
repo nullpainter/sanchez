@@ -6,7 +6,7 @@ Creates underlay images.
 
 This script projects a plate carrée image image of the Earth - such as those obtained NASA's from [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) collection - into a geostationary projection.
 
-The script is a quick hack as it's not designed for day-to-day use. Uncomment the satellite you want to generate an underlay for, and update the source paths as required.
+The script is a quick hack as it's not designed for day-to-day use. Uncomment the satellite you want to generate an underlay for and update the source paths as required.
 
 (caveat: I am not a Python developer. This script was mostly cobbled from sample Cartophy code.)
 
