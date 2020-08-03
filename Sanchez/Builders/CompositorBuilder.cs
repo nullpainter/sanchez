@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Sanchez.Models;
 using Serilog;
 using SixLabors.ImageSharp;
@@ -98,7 +99,19 @@ namespace Sanchez.Builders
         /// <summary>
         ///     Saves the composited image.
         /// </summary>
-        public void Save(string outputFilename) => _image.Save(outputFilename);
+        public void Save(string outputFilename)
+        {
+            // Create target directory if required
+            var targetDirectory = Path.GetDirectoryName(outputFilename);
+            if (targetDirectory != null && !Directory.Exists(targetDirectory))
+            {
+               Log.Information("Creating target directory {directory}", Path.GetFullPath(targetDirectory));
+               Directory.CreateDirectory(targetDirectory);
+            }
+                
+            // Save image
+            _image.Save(outputFilename);
+        }
 
         /// <summary>
         ///     Resizes each image in a collection to the largest image in the collection.

@@ -113,8 +113,8 @@ namespace Sanchez.Test
             const string overlayFilename = "overlay.jpg";
             const string underlayFilename = "underlay.jpg";
             const string satelliteFilename = "satellite.jpg";
-            const string outputFilename = "output.jpg";
-
+            const string outputFilename = "biscuits/output.jpg";
+            
             CreateImage(tempDirectory, maskFilename);
             CreateImage(tempDirectory, overlayFilename);
             CreateImage(tempDirectory, underlayFilename);
