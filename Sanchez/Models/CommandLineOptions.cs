@@ -28,7 +28,7 @@ namespace Sanchez.Models
         [Option('t', "tint", HelpText = "Tint to apply to satellite image", Required = false, Default = "5ebfff")]
         public string Tint { get; [UsedImplicitly] set; } = null!;
 
-        [Option('b', "brightness", HelpText = "Brightness adjustment", Required = false, Default = 1.2f)]
+        [Option('b', "brightness", HelpText = "Brightness adjustment", Required = false, Default = 1.0f)]
         public float Brightness { get; [UsedImplicitly] set; }
 
         [Option('S', "saturation", HelpText = "Saturation adjustment", Required = false, Default = 0.7f)]
