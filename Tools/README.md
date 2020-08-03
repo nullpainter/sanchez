@@ -8,6 +8,8 @@ This script projects a plate carrée image image of the Earth - such as those ob
 
 The script is a quick hack as it's not designed for day-to-day use. Uncomment the satellite you want to generate an underlay for and update the source paths as required.
 
+Note that the script takes a _long time_ to run. Go make a coffee or two.
+
 (caveat: I am not a Python developer. This script was mostly cobbled from sample Cartophy code.)
 
 ### Dependencies

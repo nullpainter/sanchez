@@ -14,7 +14,7 @@ def get_satellite_details():
 def main():
 
     # Edge length in pixels
-    out_size_px = 750  
+    out_size_px = 7500
     source_path = 'c:/temp/world.200411.3x21600x10800.jpg'
 
     # Get satellite details
