@@ -17,11 +17,12 @@ namespace Sanchez.Extensions
         internal static void TintAndBlend(this Image image, Color tint)
         {
             // IR satellite image with equalised histogram in order to enhance cloud contrast
-            var originalImage = image.Clone(context =>
+            using var originalImage = image.Clone(context =>
             {
                 context.HistogramEqualization(new HistogramEqualizationOptions
                 {
-                    Method = HistogramEqualizationMethod.Global
+                    Method = HistogramEqualizationMethod.Global,
+                    LuminanceLevels = 65536
                 });
             });
 

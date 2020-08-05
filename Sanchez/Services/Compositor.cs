@@ -81,11 +81,11 @@ namespace Sanchez.Services
             {
                 var threadCount = options.Threads ?? Environment.ProcessorCount;
                 Log.Information("Compositing batch with {threadCount} threads", threadCount);
-                
+
                 Parallel.ForEach(sourceFiles, new ParallelOptions
-                    {
-                        MaxDegreeOfParallelism = threadCount
-                    },
+                {
+                    MaxDegreeOfParallelism = threadCount
+                },
                     file =>
                     {
                         // Handle ctrl+c requests
@@ -165,7 +165,7 @@ namespace Sanchez.Services
             }
 
             // Load all images
-            var stack = new ImageStack
+            using var stack = new ImageStack
             {
                 Underlay = Image.Load(options.UnderlayPath),
                 Satellite = Image.Load(sourcePath),
