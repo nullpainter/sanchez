@@ -23,27 +23,27 @@ namespace Sanchez.Models
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!isDisposed)
+            if (isDisposed) return;
+            
+            if (disposing)
             {
-                if (disposing)
-                {
-                    this.Underlay?.Dispose();
-                    this.Satellite?.Dispose();
-                    this.Mask?.Dispose();
-                    this.Overlay?.Dispose();
-                }
-
-                this.Underlay = null;
-                this.Satellite = null;
-                this.Mask = null;
-                this.Overlay = null;
-                isDisposed = true;
+                Underlay?.Dispose();
+                Satellite?.Dispose();
+                Mask?.Dispose();
+                Overlay?.Dispose();
             }
+
+            Underlay = null;
+            Satellite = null;
+            Mask = null;
+            Overlay = null;
+            
+            isDisposed = true;
         }
 
         public void Dispose()
         {
-            Dispose(disposing: true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
     }
