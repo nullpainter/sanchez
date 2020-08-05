@@ -179,7 +179,6 @@ namespace Sanchez.Services
             // Composite images
             new CompositorBuilder(stack, renderOptions)
                 .Scale()
-                .DitherSatellite()
                 .AddUnderlay()
                 .PostProcess()
                 .AddOverlay()
