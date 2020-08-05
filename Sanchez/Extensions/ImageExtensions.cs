@@ -16,21 +16,21 @@ namespace Sanchez.Extensions
         /// </summary>
         internal static void TintAndBlend(this Image image, Color tint)
         {
-            // IR satellite image with equalised histogram in order to enhance cloud contrast
-            using var originalImage = image.Clone(context =>
-            {
-                context.HistogramEqualization(new HistogramEqualizationOptions
-                {
-                    Method = HistogramEqualizationMethod.Global,
-                    LuminanceLevels = 65536
-                });
-            });
-
             // Apply transformations to the satellite image, tinting it and blending with the original
             // satellite image to result in an image which removes the overall grey tint while preserving
             // white clouds.
             image.Mutate(context =>
             {
+                // IR satellite image with equalised histogram in order to enhance cloud contrast
+                using var originalImage = image.Clone(originalContext =>
+                {
+                    originalContext.HistogramEqualization(new HistogramEqualizationOptions
+                    {
+                        Method = HistogramEqualizationMethod.Global,
+                        LuminanceLevels = 65536
+                    });
+                });
+
                 context
                     .Tint(tint)
                     .DrawImage(originalImage, PixelColorBlendingMode.HardLight, 1.0f);
