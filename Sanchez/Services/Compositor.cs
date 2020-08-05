@@ -136,7 +136,7 @@ namespace Sanchez.Services
             // Display summary
             Console.WriteLine();
             Console.WriteLine($"{createdImages} images composited");
-            if (ignoredFiles > 0) Console.WriteLine($"{ignoredFiles} files ignored");
+            if (ignoredFiles > 0) Console.WriteLine($"{ignoredFiles} files ignored; see logs for details");
             if (existingFiles > 0) Console.WriteLine($"{existingFiles} files already composited");
         }
 
@@ -179,6 +179,7 @@ namespace Sanchez.Services
             // Composite images
             new CompositorBuilder(stack, renderOptions)
                 .Scale()
+                .DitherSatellite()
                 .AddUnderlay()
                 .PostProcess()
                 .AddOverlay()
