@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using CommandLine;
@@ -62,7 +62,7 @@ namespace Sanchez
         /// </summary>
         private static void ConfigureLogging()
         {
-            var applicationPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+            var applicationPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)!;
             
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
