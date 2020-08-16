@@ -22,12 +22,9 @@ namespace Funhouse.ImageProcessing.Projection
             var minX = minProjectedLongitude.ToPixelCoordinates(maxWidth, 0);
             var maxX = maxProjectedLongitude.ToPixelCoordinates(maxWidth, 0);
 
-            float targetWidth;
-
             // Get size of projection in pixels, ensuring correct calculations for projections wrapping around our
             // Mercator longitude projection of -180 to 180 degrees.
-            if (minX.X < maxX.X) targetWidth = maxX.X - minX.X;
-            else targetWidth = maxWidth - (minX.X - maxX.X);
+            var targetWidth = minX.X < maxX.X ? maxX.X - minX.X : maxWidth - (minX.X - maxX.X);
 
             // Create target image with the correct dimensions for the projected satellite image
             var target = new Image<Rgba32>((int) Math.Round(targetWidth), source.Height);
