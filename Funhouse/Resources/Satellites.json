@@ -3,10 +3,7 @@
     // GOES-16
     "FilePrefix": "GOES16",
     "DisplayName": "GOES-16",
-
-    // Nominal satellite subpoint longitude is -75.2 degrees east, however it has been resampled to be
-    // centred at -75.0 degrees east longitude.
-    "Longitude": -75.0,
+    "Longitude": -75.2,
     "Height": 35786023.0,
     "VisibleRange": {
         "MinLongitude": -156.2995,
