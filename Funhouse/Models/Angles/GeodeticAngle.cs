@@ -1,7 +1,8 @@
-﻿using MathNet.Spatial.Units;
+﻿using Funhouse.Extensions;
+using MathNet.Spatial.Units;
 
 namespace Funhouse.Models.Angles
-{ 
+{
     /// <summary>
     ///     Convenience wrapper around an angle representing a latitude and longitude.
     /// </summary>
@@ -15,5 +16,7 @@ namespace Funhouse.Models.Angles
             Latitude = latitude;
             Longitude = longitude;
         }
+
+        public override string ToString() => $"{Latitude.Degrees}, {Longitude.Degrees}";
     }
 }

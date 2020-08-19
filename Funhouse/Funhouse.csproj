@@ -17,27 +17,22 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="Resources\krusty.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Resources\GOES17_FD_FC_20200808T033031Z.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Resources\Himawari8_FD_IR_20200808T025100Z.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Resources\GOES17_FD_CH13_20200804T020031Z.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
         <None Update="Resources\Satellites.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
         <None Update="Resources\SampleImages\GOES16_FD_CH13_20200816T025020Z.jpg">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
         <None Update="Resources\SampleImages\GOES17_FD_CH13_20200816T030031Z.jpg">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
+        <None Update="Resources\world.200411.3x21600x10800.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>        
     </ItemGroup>
 
     <ItemGroup>

@@ -39,14 +39,12 @@ namespace Funhouse.Services
             _initialised = true;
         }
 
-        public SatelliteDefinition? Locate(string filePath) => LocateByPrefix(Path.GetFileName(filePath));
-
-        public SatelliteDefinition? LocateByPrefix(string prefix)
+        public SatelliteDefinition? Locate(string pattern)
         {
             if (!_initialised) throw new InvalidOperationException($"Registry not initialised; call {nameof(InitialiseAsync)} before use");
 
             return _definitions!.FirstOrDefault(d =>
-                    prefix.StartsWith(d.FilePrefix, StringComparison.CurrentCultureIgnoreCase)); 
+                Path.GetFileName(pattern).StartsWith(d.FilePrefix, StringComparison.CurrentCultureIgnoreCase)); 
         }
     }
 }

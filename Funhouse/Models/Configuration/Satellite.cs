@@ -9,7 +9,7 @@ namespace Funhouse.Models.Configuration
         public string FilePrefix { get; }
         public string DisplayName { get; }
         public Angle Longitude { get; }
-        public Range VisibleRange { get; }
+        public Range VisibleRange { get;  }
         public double Height { get; }
         public ImageOffset ImageOffset { get; }
 
@@ -28,7 +28,7 @@ namespace Funhouse.Models.Configuration
             Height = height;
 
             // Convert satellite longitude to Mercator scale of -180 to 180 degrees
-            Longitude = Angle.FromDegrees(longitude.Degrees.Limit(-180, 180));
+            Longitude = longitude.NormaliseLongitude();
         }
     }
 }

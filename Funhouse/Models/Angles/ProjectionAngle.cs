@@ -35,5 +35,7 @@ namespace Funhouse.Models.Angles
                 (float) (height * (Y.Radians + PI / 2) / PI)
             );
         }
+        
+        public override string ToString() => $"{X.Degrees}, {Y.Degrees}";
     }
 }

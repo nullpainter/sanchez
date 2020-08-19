@@ -5,7 +5,11 @@ namespace Funhouse
     public static class Constants
     {
         public const string DefinitionsPath = @"Resources\Satellites.json";
-
+        
+        /// <summary>
+        ///     Width and height of target images, representing 2km spatial resolution.
+        /// </summary>
+        internal const int ImageSize = 5424;
         
         public static class Earth
         {
@@ -26,7 +30,7 @@ namespace Funhouse
         {
             public static readonly Rgba32 OutsideDisc = Rgba32.ParseHex("556270");
             public static readonly Rgba32 OutsideSatellite = Rgba32.ParseHex("4ECDC4");
-            public static readonly Rgba32 Spare1 = Rgba32.ParseHex("C7F464");
+            public static readonly Rgba32 OverlapCrop = Rgba32.ParseHex("C7F464");
             public static readonly Rgba32 Spare2 = Rgba32.ParseHex("FF6B6B");
             public static readonly Rgba32 Spare3 = Rgba32.ParseHex("C44D58");
         }

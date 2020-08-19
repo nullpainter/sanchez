@@ -5,11 +5,9 @@ using SixLabors.ImageSharp;
 
 namespace Funhouse.Test
 {
-    [TestFixture]
-    public class ProjectionAngleTests
+    [TestFixture(TestOf = typeof(ProjectionAngle))]
+    public class ProjectionAngleTests : AbstractTests
     {
-        private const float Precision = 0.000001f;
-
         [TestCase(100, 100, 200, 200, 0, 0)]
         [TestCase(0, 100, 200, 200, -180, 0)]
         [TestCase(200, 100, 200, 200, 180, 0)]
