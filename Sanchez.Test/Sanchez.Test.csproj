@@ -13,7 +13,7 @@
         <PackageReference Include="nunit" Version="3.12.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.9.0.19135" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.11.0.20529" />
     </ItemGroup>
 
     <ItemGroup>
