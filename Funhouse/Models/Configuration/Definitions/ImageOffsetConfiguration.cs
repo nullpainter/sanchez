@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Funhouse.Models.Configuration
+namespace Funhouse.Models.Configuration.Definitions
 {
     /// <summary>
     ///     Image offsets, normalised to 2km spatial resolution (5424px edge)

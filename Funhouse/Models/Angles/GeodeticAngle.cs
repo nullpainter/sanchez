@@ -1,5 +1,4 @@
-﻿using Funhouse.Extensions;
-using MathNet.Spatial.Units;
+﻿using MathNet.Spatial.Units;
 
 namespace Funhouse.Models.Angles
 {
@@ -17,6 +16,9 @@ namespace Funhouse.Models.Angles
             Longitude = longitude;
         }
 
-        public override string ToString() => $"{Latitude.Degrees}, {Longitude.Degrees}";
+        public override string ToString()
+        {
+            return $"{Latitude.Degrees}, {Longitude.Degrees}";
+        }
     }
 }

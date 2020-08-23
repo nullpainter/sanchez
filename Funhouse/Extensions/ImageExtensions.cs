@@ -1,11 +1,26 @@
 ﻿using System;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Funhouse.Extensions
 {
     internal static class ImageExtensions
     {
+        internal static Image<Rgba32> AddBackgroundColour(this Image<Rgba32> source, Color backgroundColour)
+        {
+            var original = source.Clone();
+            
+            source.Mutate(context =>
+            {
+                context.Fill(backgroundColour);
+                context.DrawImage(original, PixelColorBlendingMode.Normal, 1.0f);
+            });
+
+            return source;
+        }
+        
         internal static Rgba32 NearestNeighbour(this Image<Rgba32> source, PointF target)
         {
             var targetX = (int) Math.Round(target.X);
@@ -35,8 +50,7 @@ namespace Funhouse.Extensions
             var blue = Interpolation.Blerp(c00.B, c10.B, c01.B, c11.B, amount);
             var alpha = Interpolation.Blerp(c00.A, c10.A, c01.A, c11.A, amount);
 
-            return new Rgba32(red / 255, green / 255, blue / 255, alpha / 255);
+            return new Rgba32((byte) red, (byte) green, (byte) blue, (byte) alpha);
         }
-
     }
 }

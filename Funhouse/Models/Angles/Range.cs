@@ -23,16 +23,29 @@ namespace Funhouse.Models.Angles
             Start = start;
             End = end;
         }
-       
-        /// <summary>
-        ///     Normalises a longitude range so the end angle is always greater than the start angle.
-        ///     This is to simplify maths for projections which wrap around the standard -180 to 180 degrees.
-        ///     
-        /// </summary>
-        public Range UnwrapLongitude() => End < Start ? new Range(Start, Angle.FromRadians(End.Radians + Math.PI * 2)) : this;
 
-        public Range NormaliseLongitude() => new Range(Start.NormaliseLongitude(), End.NormaliseLongitude());
-        
-        public static Range operator +(Range range, Angle amount) => new Range(range.Start + amount, range.End + amount);
+        /// <summary>
+        ///     Unwraps a longitude range so the end angle is always greater than the start angle.
+        ///     This is to simplify maths for projections which wrap around the standard -180 to 180 degrees.
+        /// </summary>
+        public Range UnwrapLongitude()
+        {
+            return End < Start ? new Range(Start, Angle.FromRadians(End.Radians + Math.PI * 2)) : this;
+        }
+
+        public Range NormaliseLongitude()
+        {
+            return new Range(Start.NormaliseLongitude(), End.NormaliseLongitude());
+        }
+
+        public static Range operator +(Range range, Angle amount)
+        {
+            return new Range(range.Start + amount, range.End + amount);
+        }
+
+        public override string ToString()
+        {
+            return $"{Start} to {End}";
+        }
     }
 }

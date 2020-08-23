@@ -15,7 +15,10 @@ namespace Funhouse.Models.Angles
             X = x;
             Y = y;
         }
-        
-        public override string ToString() => $"{X.Degrees}, {Y.Degrees}";
+
+        public override string ToString()
+        {
+            return $"{X.Degrees}, {Y.Degrees}";
+        }
     }
 }

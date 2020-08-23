@@ -15,7 +15,7 @@ namespace Funhouse.Models.Configuration.Definitions
 
         [JsonProperty("VisibleRange", Required = Required.Always)]
         public VisibleRange VisibleRange { get; set; } = new VisibleRange();
-        
+
         [JsonProperty("ImageOffset", Required = Required.Always)]
         public ImageOffsetConfiguration ImageOffset { get; } = new ImageOffsetConfiguration();
 

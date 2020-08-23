@@ -1,13 +1,20 @@
-﻿using static System.Math;
+﻿using Funhouse.Models;
+using Funhouse.Models.Angles;
+using MathNet.Spatial.Units;
+using static System.Math;
 
 namespace Funhouse.Projections
 {
-    public static class PseudoMercatorProjection
+    public class PseudoMercatorProjection : IProjection
     {
-        // y in degrees
-        public static double YToLatitude(double y) => Atan(Exp(y / 180 * PI)) / PI * 360 - 90;
+        public GeodeticAngle ToGeodetic(ProjectionAngle angle) => new GeodeticAngle(ToLatitude(angle.Y), ToLongitude(angle.X));
 
-        // 
-        public static double LatitudeToY(double latitude) => Log(Tan((latitude + 90) / 360 * PI)) / PI * 180;
+        public Angle ToLatitude(Angle y)
+        {
+            var phi = Constants.HalfPi - 2 * Atan(Exp(-y.Radians / Constants.Earth.RadiusEquator));
+            return Angle.FromRadians(phi * Constants.Earth.RadiusEquator);
+        }
+
+        public Angle ToLongitude(Angle x) => x;
     }
 }

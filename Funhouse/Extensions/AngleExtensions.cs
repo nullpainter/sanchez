@@ -5,12 +5,12 @@ namespace Funhouse.Extensions
 {
     public static class AngleExtensions
     {
-        public static Angle NormaliseLatitude(this Angle angle)
-            => Angle.FromRadians(angle.Radians.Limit(-Math.PI / 2, Math.PI / 2));
-
-        // TODO RENAME ME
+        /// <summary>
+        ///     Returns an angle which is within -180 and 180 degrees longitude, wrapping as required.
+        /// </summary>
         public static Angle NormaliseLongitude(this Angle angle)
-            => Angle.FromRadians(angle.Radians.Limit(-Math.PI, Math.PI));
-
+        {
+            return Angle.FromRadians(angle.Radians.Limit(-Math.PI, Math.PI));
+        }
     }
 }

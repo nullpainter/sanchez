@@ -10,12 +10,24 @@ namespace Funhouse.Models.Angles
     {
         public Angle Angle { get; }
 
-        public ScalarProjectionAngle(Angle angle) => Angle = angle;
+        public ScalarProjectionAngle(Angle angle)
+        {
+            Angle = angle;
+        }
 
-        public float ScaleToWidth(int width) => (float) (width * (Angle.Radians + Math.PI) / (Math.PI * 2));
+        public float ScaleToWidth(int width)
+        {
+            return (float) (width * (Angle.Radians + Math.PI) / (Math.PI * 2));
+        }
 
-        public float ScaleToHeight(int height) => (float) (height * (Angle.Radians + Math.PI / 2) / Math.PI);
+        public float ScaleToHeight(int height)
+        {
+            return (float) (height * (Angle.Radians + Constants.HalfPi) / Math.PI);
+        }
 
-        public override string ToString() => $"{Angle.Degrees}";
+        public override string ToString()
+        {
+            return $"{Angle.Degrees}";
+        }
     }
 }

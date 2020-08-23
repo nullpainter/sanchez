@@ -11,30 +11,31 @@ using Range = Funhouse.Models.Angles.Range;
 
 namespace Funhouse.Services
 {
-    // Interim code-based registry
-    public class SatelliteRegistry
+    public interface ISatelliteRegistry
     {
-        private readonly string _definitionsPath;
+        Task InitialiseAsync(string definitionsPath);
+        SatelliteDefinition? Locate(string pattern);
+    }
+
+    public class SatelliteRegistry : ISatelliteRegistry
+    {
         private List<SatelliteDefinition>? _definitions;
         private bool _initialised;
 
-        public SatelliteRegistry(string definitionsPath) => _definitionsPath = definitionsPath;
-
-        public async Task InitialiseAsync()
+        public async Task InitialiseAsync(string definitionsPath)
         {
-            var json = await File.ReadAllTextAsync(_definitionsPath);
+            var json = await File.ReadAllTextAsync(definitionsPath);
             var definitions = JsonConvert.DeserializeObject<List<SatelliteConfiguration>>(json);
 
             _definitions = definitions.Select(d => new SatelliteDefinition(
-                    d.FilePrefix!,
-                    d.DisplayName!,
-                    Angle.FromDegrees(d.Longitude),
-                    new Range(
-                        Angle.FromDegrees(d.VisibleRange.MinLongitude),
-                        Angle.FromDegrees(d.VisibleRange.MaxLongitude)),
-                    new ImageOffset(Angle.FromRadians(d.ImageOffset.X), Angle.FromRadians(d.ImageOffset.Y), d.ImageOffset.ScaleFactor),
-                    d.Height)).ToList()
-                ;
+                d.FilePrefix!,
+                d.DisplayName!,
+                Angle.FromDegrees(d.Longitude),
+                new Range(
+                    Angle.FromDegrees(d.VisibleRange.MinLongitude),
+                    Angle.FromDegrees(d.VisibleRange.MaxLongitude)),
+                new ImageOffset(Angle.FromRadians(d.ImageOffset.X), Angle.FromRadians(d.ImageOffset.Y), d.ImageOffset.ScaleFactor),
+                d.Height)).ToList();
 
             _initialised = true;
         }
@@ -44,7 +45,7 @@ namespace Funhouse.Services
             if (!_initialised) throw new InvalidOperationException($"Registry not initialised; call {nameof(InitialiseAsync)} before use");
 
             return _definitions!.FirstOrDefault(d =>
-                Path.GetFileName(pattern).StartsWith(d.FilePrefix, StringComparison.CurrentCultureIgnoreCase)); 
+                Path.GetFileName(pattern).StartsWith(d.FilePrefix, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

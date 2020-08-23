@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
+using Funhouse.Services;
 using MathNet.Spatial.Units;
 using NUnit.Framework;
 
@@ -21,7 +23,8 @@ namespace Funhouse.Test
             var goes16 = ToDefinition(-156.2995, 6.2995);
             var nonOverlapping = ToDefinition(60, 120);
 
-            var calculator = new ProjectionOverlapCalculator(goes16, nonOverlapping);
+            var calculator = new ProjectionOverlapCalculator();
+            calculator.Initialise(new List<SatelliteDefinition> { goes16, nonOverlapping });
 
             VerifyRangeEquivalency(calculator.GetNonOverlappingRange(goes16), goes16.VisibleRange);
             VerifyRangeEquivalency(calculator.GetNonOverlappingRange(nonOverlapping), nonOverlapping.VisibleRange);
@@ -33,7 +36,8 @@ namespace Funhouse.Test
             var first = ToDefinition(-150, 10);
             var second = ToDefinition(140, -50);
 
-            var calculator = new ProjectionOverlapCalculator(first, second);
+            var calculator = new ProjectionOverlapCalculator();
+            calculator.Initialise(new List<SatelliteDefinition> { first, second });
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(first),
@@ -50,7 +54,8 @@ namespace Funhouse.Test
             var first = ToDefinition(-100, 0);
             var second = ToDefinition(-50, 150);
 
-            var calculator = new ProjectionOverlapCalculator(first, second);
+            var calculator = new ProjectionOverlapCalculator();
+            calculator.Initialise(new List<SatelliteDefinition> { first, second });
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(first),
@@ -69,7 +74,8 @@ namespace Funhouse.Test
             var second = ToDefinition(140, -50);
             var third = ToDefinition(0, 60);
 
-            var calculator = new ProjectionOverlapCalculator(first, second, third);
+            var calculator = new ProjectionOverlapCalculator();
+            calculator.Initialise(new List<SatelliteDefinition> { first, second, third });
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(first),

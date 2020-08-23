@@ -1,6 +1,10 @@
 ﻿using System;
+using Ardalis.GuardClauses;
+using Funhouse.Models;
 using Funhouse.Models.Angles;
-using Funhouse.Models.Configuration;
+using Funhouse.Models.Projections;
+using Funhouse.Projections;
+using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
@@ -10,8 +14,14 @@ namespace Funhouse.ImageProcessing.Projection
 {
     public static class ReprojectExtensions
     {
-        public static Image<Rgba32> Reproject(this Image<Rgba32> source, SatelliteDefinition definition, RenderOptions options, Range longitudeCrop)
+        public static Image<Rgba32> Reproject(
+            this ProjectionActivity activity,
+            CommandLineOptions options,
+            IProjection projection)
         {
+            Guard.Against.Null(activity.Definition, nameof(activity.Definition));
+            var definition = activity.Definition;
+            
             // Determine pixel ranges of projected image so we can limit our processing to longitudes visible to satellite
             var minProjectedLongitude = new ScalarProjectionAngle(definition.VisibleRange.Start);
             var maxProjectedLongitude = new ScalarProjectionAngle(definition.VisibleRange.End);
@@ -23,25 +33,28 @@ namespace Funhouse.ImageProcessing.Projection
             var longitudeRange = new Range(
                 minProjectedLongitude.Angle,
                 maxProjectedLongitude.Angle).UnwrapLongitude();
-            
-            Console.WriteLine($"{definition.DisplayName} unwrapped range {longitudeRange.Start.Degrees:F2} to {longitudeRange.End.Degrees:F2} degrees");
+
+            Log.Information("{definition:l0} unwrapped range {startRange:F2} to {endRange:F2} degrees", 
+                definition.DisplayName, 
+                longitudeRange.Start.Degrees, 
+                longitudeRange.End.Degrees);
 
             // Get size of projection in pixels
-            var minX = new ScalarProjectionAngle(longitudeRange.Start).ScaleToWidth(maxWidth);
-            var maxX = new ScalarProjectionAngle(longitudeRange.End).ScaleToWidth(maxWidth);
+            var minX = new ScalarProjectionAngle(longitudeRange.Start).ScaleToWidth(maxWidth) - 10;
+            var maxX = new ScalarProjectionAngle(longitudeRange.End).ScaleToWidth(maxWidth) + 10;
 
-            Console.WriteLine($"{definition.DisplayName} pixel range: {minX:F0} - {maxX:F0}");
+            Log.Information("{definition:l0} pixel range: {minX:F0} - {maxX:F0}px", definition.DisplayName, minX, maxX);
 
             var targetWidth = maxX - minX;
-            Console.WriteLine($"{definition.DisplayName} width: {targetWidth:F0}px");
+            Log.Information("{definition:l0} width: {targetWidth:F0}px", definition.DisplayName, targetWidth);
 
             // Create target image with the correct dimensions for the projected satellite image
-            var target = new Image<Rgba32>((int) Math.Round(targetWidth), Constants.ImageSize);
+            var target = new Image<Rgba32>((int) Math.Ceiling(targetWidth), Constants.ImageSize);
 
-            Console.WriteLine($"{definition.DisplayName} Reprojecting...");
+            Log.Information("{definition:l0} Reprojecting", definition.DisplayName);
 
             // Perform reprojection
-            var operation = new ReprojectRowOperation(source, target, definition, minX, options, longitudeCrop.UnwrapLongitude());
+            var operation = new ReprojectRowOperation(activity, target, minX, options, projection);
             ParallelRowIterator.IterateRows(Configuration.Default, target.Bounds(), in operation);
 
             return target;

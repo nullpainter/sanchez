@@ -17,25 +17,32 @@ namespace Funhouse.Models.Angles
             X = x;
             Y = y;
         }
-
+        
         public static ProjectionAngle FromPixelCoordinates(Point pixel, int width, int height)
         {
             var (x, y) = pixel;
-
+        
             return new ProjectionAngle(
-                Angle.FromRadians(x / (double) width * PI * 2 - PI),
-                Angle.FromRadians(y / (double) height * PI - PI / 2)
+                FromX(x, width),
+                FromY(y, height)
             );
         }
+
+        public static Angle FromY(int y, int height) => Angle.FromRadians(y / (double) height * PI - Constants.HalfPi);
+
+        public static Angle FromX(int x, int width) => Angle.FromRadians(x / (double) width * PI * 2 - PI);
 
         public PointF ToPixelCoordinates(int width, int height)
         {
             return new PointF(
                 (float) (width * (X.Radians + PI) / (PI * 2)),
-                (float) (height * (Y.Radians + PI / 2) / PI)
+                (float) (height * (Y.Radians + Constants.HalfPi) / PI)
             );
         }
-        
-        public override string ToString() => $"{X.Degrees}, {Y.Degrees}";
+
+        public override string ToString()
+        {
+            return $"{X.Degrees}, {Y.Degrees}";
+        }
     }
 }
