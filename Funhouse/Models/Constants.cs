@@ -5,6 +5,7 @@ namespace Funhouse.Models
     public static class Constants
     {
         public const string DefinitionsPath = @"Resources\Satellites.json";
+        public const string DefaultUnderlayPath = @"Resources\world.200411.3x21600x10800.jpg";
 
         /// <summary>
         ///     Width and height of target images, representing 2km spatial resolution. Note that this cannot be changed

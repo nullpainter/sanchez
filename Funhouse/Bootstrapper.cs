@@ -29,9 +29,10 @@ namespace Funhouse
                 {
                     // Disable stdout if required
                     if (options.Quiet) Console.SetOut(TextWriter.Null);
+                    options.UnderlayPath ??= Constants.DefaultUnderlayPath;
 
                     var renderOptions = RenderOptionFactory.ToRenderOptions(options);
-                    await ValidateOptionsAsync(renderOptions);
+                    await ValidateOptionsAsync(options, renderOptions);
 
                     // Build DI container
                     var container = new Container().AddAllService(options, renderOptions);
@@ -43,7 +44,7 @@ namespace Funhouse
 
                     LogOptions(options);
 
-                    // Peform image processing
+                    // Perform image processing
                     await container
                         .GetInstance<Funhouse>()
                         .ProcessAsync();
@@ -55,13 +56,20 @@ namespace Funhouse
             }
         }
 
-        private static async Task ValidateOptionsAsync(RenderOptions renderOptions)
+        private static async Task ValidateOptionsAsync(CommandLineOptions options, RenderOptions renderOptions)
         {
             // Verify selected tint
             if (renderOptions.Tint == null)
             {
                 await Console.Error.WriteLineAsync("Unable to parse tint as a hex tuple. Expected format is 5ebfff");
                 Environment.Exit(-1);
+            }
+            
+            // Verify underlay image exists
+            if (!File.Exists(options.UnderlayPath))
+            {
+                await Console.Error.WriteLineAsync($"Underlay path {options.UnderlayPath} isn't valid");
+                Environment.Exit(-1); 
             }
         }
 

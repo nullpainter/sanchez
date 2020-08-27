@@ -42,6 +42,9 @@ namespace Funhouse.Models
 
         [Option('T', "stitch", HelpText = "Combine multiple satellite images", Required = false, Default = false)]
         public bool Stitch { get; [UsedImplicitly] set; }
+        
+        [Option('u', "underlay", HelpText = "Path to custom full-colour underlay image", Required = false)]
+        public string? UnderlayPath { get; [UsedImplicitly] set; }
 
         [Option('v', "verbose", HelpText = "Verbose console output", Required = false, Default = false)]
         public bool Verbose { get; [UsedImplicitly] set; }

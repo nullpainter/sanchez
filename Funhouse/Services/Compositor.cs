@@ -63,11 +63,16 @@ namespace Funhouse.Services
                 @"Resources\SampleImages\GOES16_FD_CH13_20200816T025020Z.jpg"
             };
 
-            // Load source images
-            var loadTasks = paths.Select(path => _imageLoader.LoadAsync(path)).ToList();
-            await Task.WhenAll(loadTasks);
 
-            var activities = loadTasks.Select(task => task.Result).ToList();
+            // Load source images
+            Log.Information("Loading source images");
+            var satelliteImageLoadTasks = paths.Select(path => _imageLoader.LoadAsync(path)).ToList();
+            var underlayLoadTask = Image.LoadAsync<Rgba32>(_options.UnderlayPath!);
+
+            await Task.WhenAll(new List<Task> { underlayLoadTask }.Concat(satelliteImageLoadTasks));
+
+            var activities = satelliteImageLoadTasks.Select(task => task.Result).ToList();
+            var underlay = underlayLoadTask.Result;
 
             _activityOperations.Initialise(activities);
 
@@ -83,7 +88,7 @@ namespace Funhouse.Services
 
             // Calculate crop for each image based on visible range and image overlaps
             _activityOperations.CalculateCrop();
-            
+
             // Reproject all images to equirectangular
             _activityOperations.Reproject();
 
@@ -91,14 +96,18 @@ namespace Funhouse.Services
             if (_options.Stitch)
             {
                 // Combine reprojected images
-                var target = await StitchImages(activities);
+                var target = StitchImages(activities, underlay);
 
                 // Save output
-                if (target != null)
-                {
-                    Log.Information("Saving stitched output");
-                    await target.SaveAsync(_options.OutputPath);
+                Log.Information("Saving stitched output");
+                await target.SaveAsync(_options.OutputPath);
 
+                if (_options.Verbose)
+                {
+                    Log.Information("Output written to {path}", Path.GetFullPath(_options.OutputPath));    
+                }
+                else
+                {
                     Console.WriteLine($"Output written to {Path.GetFullPath(_options.OutputPath)}");
                 }
             }
@@ -106,13 +115,11 @@ namespace Funhouse.Services
             Log.Information("Elapsed time: {elapsed}", stopwatch.Elapsed);
         }
 
-        private async Task<Image<Rgba32>?> StitchImages(List<ProjectionActivity> activities)
+        private Image<Rgba32> StitchImages(List<ProjectionActivity> activities, Image<Rgba32> underlay)
         {
             var target = _imageStitcher.Stitch(activities);
 
-            var underlay = await Image.LoadAsync<Rgba32>(@"Resources\world.200411.3x21600x10800.jpg");
             underlay = OffsetAndWrap(underlay, activities);
-
             underlay.Mutate(c => c.Resize(target.Width, target.Height));
 
             // Calculate crop region if required
@@ -123,13 +130,14 @@ namespace Funhouse.Services
                 if (cropRectange == null) Log.Error("Unable to autocrop bounds");
                 else Log.Information("Cropped image size: {width} x {height} px", cropRectange.Value.Width, cropRectange.Value.Height);
             }
+
             // Remove grey tint from satellite image
             target.TintAndBlend(_renderOptions);
 
             // Render underlay and optionally  crop to size
             target.Mutate(ctx => ctx.DrawImage(underlay, PixelColorBlendingMode.Screen, 1.0f));
             if (cropRectange != null) target.Mutate(ctx => ctx.Crop(cropRectange.Value));
-      
+
             // Perform global colour correction
             target.ColourCorrect(_renderOptions);
 
