@@ -6,7 +6,7 @@ using NUnit.Framework;
 using SixLabors.ImageSharp;
 using static MathNet.Spatial.Units.Angle;
 
-namespace Funhouse.Test
+namespace Funhouse.Test.Projections
 {
     [TestFixture(TestOf = typeof(GeostationaryProjection))]
     public class GeostationaryProjectionTests : AbstractTests
@@ -68,7 +68,6 @@ namespace Funhouse.Test
             Assert.NotNull(scanningAngle);
 
             var (targetX, targetY) = GeostationaryProjection.ToImageCoordinates(scanningAngle.Value, definition);
-            Console.WriteLine(targetX + "," + targetY);
 
             Math.Round(targetX).Should().BeApproximately(x, PixelPrecision);
             Math.Round(targetY).Should().BeApproximately(y, PixelPrecision);
