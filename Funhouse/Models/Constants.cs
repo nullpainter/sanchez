@@ -1,5 +1,4 @@
-﻿using System;
-using SixLabors.ImageSharp.PixelFormats;
+﻿using SixLabors.ImageSharp.PixelFormats;
 
 namespace Funhouse.Models
 {

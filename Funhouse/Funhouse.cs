@@ -1,75 +1,34 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using CommandLine;
-using Funhouse.Builders;
 using Funhouse.Models;
-using Funhouse.Models.Projections;
-using Funhouse.Projections;
 using Funhouse.Services;
 using Newtonsoft.Json;
-using Serilog;
-using Serilog.Events;
-using Serilog.Exceptions;
-using SimpleInjector;
-
-[assembly: InternalsVisibleTo("Funhouse.Test")]
 
 namespace Funhouse
 {
-    internal static class Funhouse
+    internal class Funhouse
     {
-        internal static async Task Main(params string[] args)
+        private readonly ISatelliteRegistry _satelliteRegistry;
+        private readonly ICompositor _compositor;
+
+        public Funhouse(ISatelliteRegistry satelliteRegistry, ICompositor compositor)
         {
-            var cancellationToken = new CancellationTokenSource();
-
-            try
-            {
-                await Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsedAsync(async options =>
-                {
-                    var container = new Container().AddAllService(options);
-                    container.Verify();
-
-                    ConfigureLogging(options.Verbose);
-                    Log.Information("Sanchez starting");
-
-                    LogOptions(options);
-
-                    // Initialise the satellite registry
-                    var satelliteRegistry = container.GetInstance<ISatelliteRegistry>();
-                    await InitialiseSatelliteRegistryAsync(satelliteRegistry);
-
-                    // Disable stdout if required
-                    if (options.Quiet) Console.SetOut(TextWriter.Null);
-
-                    // Composite images
-                    var compositor = container.GetInstance<ICompositor>();
-                    await compositor.ComposeAsync(cancellationToken);
-                });
-            }
-            finally
-            {
-                Console.ResetColor();
-            }
+            _satelliteRegistry = satelliteRegistry;
+            _compositor = compositor;
         }
-
-        private static void LogOptions(CommandLineOptions options)
+        
+        public async Task ProcessAsync()
         {
-            if (options.AutoCrop) Log.Information("Autocrop enabled");
-            if (options.Stitch) Log.Information("Stitching enabled");
-            if (options.BlurEdges) Log.Information("Edge blurring enabled");
-            
-            Log.Information("Interpolation type {type}", options.InterpolationType);
+            await InitialiseSatelliteRegistryAsync();
+            await _compositor.ComposeAsync(); 
         }
-
+        
         /// <summary>
         ///     Registers all known satellites.
         /// </summary>
-        private static async Task InitialiseSatelliteRegistryAsync(ISatelliteRegistry registry)
+        private async Task InitialiseSatelliteRegistryAsync()
         {
             const string definitionsPath = Constants.DefinitionsPath;
 
@@ -83,40 +42,14 @@ namespace Funhouse
 
             try
             {
-                await registry.InitialiseAsync(Constants.DefinitionsPath);
+                // Initialise satellite registry
+                await _satelliteRegistry.InitialiseAsync(Constants.DefinitionsPath);
             }
             catch (JsonSerializationException e)
             {
                 await Console.Error.WriteLineAsync($"Unable to parse satellite definition file: {e.Message}");
                 Environment.Exit(-1);
             }
-        }
-
-        /// <summary>
-        ///     Configures logging output.
-        /// </summary>
-        private static void ConfigureLogging(bool consoleLogging)
-        {
-            var processFilename = Process.GetCurrentProcess().MainModule.FileName;
-
-            // Determine correct location of logs relative to application, depending on whether we are running from a published
-            // executable or via dotnet.
-            var applicationPath = (Path.GetFileNameWithoutExtension(processFilename) == "dotnet"
-                ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                : Path.GetDirectoryName(processFilename))!;
-
-            var builder = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(applicationPath, "logs", "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails();
-
-            if (consoleLogging)
-            {
-                builder.WriteTo.Console();
-            }
-
-            Log.Logger = builder.CreateLogger();
         }
     }
 }

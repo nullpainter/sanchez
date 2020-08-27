@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Funhouse.ImageProcessing.Mask;
 using Funhouse.ImageProcessing.Projection;
 using Funhouse.Models;
@@ -14,12 +12,12 @@ namespace Funhouse.Services
 {
     public interface IImageProjector
     {
-        Task<Image<Rgba32>> ReprojectAsync(ProjectionActivity activity, CommandLineOptions options);
+        Image<Rgba32> Reproject(ProjectionActivity activity, CommandLineOptions options);
     }
 
     public class ImageProjector : IImageProjector
     {
-        public async Task<Image<Rgba32>> ReprojectAsync(ProjectionActivity activity, CommandLineOptions options)
+        public Image<Rgba32> Reproject(ProjectionActivity activity, CommandLineOptions options)
         {
             LogStatistics(activity);
 
@@ -30,13 +28,6 @@ namespace Funhouse.Services
 
             // Mask all pixels outside the Earth to assist image stitching of projected images
             if (options.BlurEdges) source.BlurEdges();
-
-            // Save output image for debugging purposes
-            if (options.Debug)
-            {
-                var targetFilename = Path.GetFileNameWithoutExtension(activity.Path) + "-masked.jpg";
-                await source.SaveAsync(targetFilename);
-            }
 
             // Perform target projection
             return activity.Reproject(options);

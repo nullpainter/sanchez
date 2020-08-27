@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Funhouse.Extensions;
 using Funhouse.Models;
-using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Funhouse.Models.Projections;
 using MathNet.Spatial.Units;
@@ -17,9 +13,9 @@ namespace Funhouse.Services
 {
     public interface IProjectionActivityOperations
     {
-        void Initialise(List<ProjectionActivity> activities, CancellationTokenSource cancellationTokenSource);
+        void Initialise(List<ProjectionActivity> activities);
         void CalculateCrop();
-        Task ReprojectAsync();
+        void Reproject();
         List<ProjectionActivity> GetUnmapped();
     }
 
@@ -30,7 +26,6 @@ namespace Funhouse.Services
         private List<ProjectionActivity> _activities = null!;
         private bool _initialised;
         private readonly CommandLineOptions _options;
-        private CancellationTokenSource? _cancellationTokenSource;
 
         public ProjectionActivityOperations(
             CommandLineOptions options,
@@ -42,10 +37,9 @@ namespace Funhouse.Services
             _projectionOverlapCalculator = projectionOverlapCalculator;
         }
 
-        public void Initialise(List<ProjectionActivity> activities, CancellationTokenSource cancellationTokenSource)
+        public void Initialise(List<ProjectionActivity> activities)
         {
             _activities = activities;
-            _cancellationTokenSource = cancellationTokenSource;
             _initialised = true;
         }
 
@@ -77,44 +71,30 @@ namespace Funhouse.Services
             if (!_initialised) throw new InvalidOperationException($"Not initialised; please call {nameof(Initialise)} first");
         }
 
-        public async Task ReprojectAsync()
+        public void Reproject()
         {
             EnsureInitialised();
 
-            // Satellite's visible range
+            // Determine satellite's visible range
             var globalOffset = -_activities.Select(p => p.LongitudeRange.UnwrapLongitude().Start).Min();
 
             foreach (var projection in _activities)
             {
-                if (_cancellationTokenSource?.IsCancellationRequested == true) return;
-
-                projection.Output = await _imageProjector.ReprojectAsync(projection, _options);
+                // Reproject geostationary image into equirectangular
+                projection.Output = _imageProjector.Reproject(projection, _options);
 
                 // Overlap range relative the satellite's visible range
                 projection.Offset = GetOffset(projection.Definition!, globalOffset);
-
-                // FIXME this is kinda batch so we need to honour outputPath directory
-                if (!_options.Stitch || _options.Debug)
-                {
-                    var targetFilename = Path.GetFileNameWithoutExtension(projection.Path) + "-proj.jpg";
-
-                    // Draw image onto a black background as we have applied transparency
-                    var target = projection.Output.Clone();
-                    target.AddBackgroundColour(Color.Black);
-
-                    await target.SaveAsync(targetFilename);
-                    Console.WriteLine($"Output written to {Path.GetFullPath(targetFilename)}");
-                }
             }
         }
 
-        private static PointF GetOffset(SatelliteDefinition definition, Angle globalOffset)
+        private static Point GetOffset(SatelliteDefinition definition, Angle globalOffset)
         {
             var longitude = (definition.LongitudeRange.Start + globalOffset).NormaliseLongitude();
             
-            // Convert to a Mercator map offset, with a pixel range of -180 to 180 degrees
-            var offset = Constants.ImageSize * 2 * ((longitude.Radians + Math.PI) / MathNet.Numerics.Constants.Pi2);
-            return new PointF((float)offset, 0);
+            // Convert to a equirectangular map offset, with a pixel range of -180 to 180 degrees
+            var offset = longitude.ScaleToWidth(Constants.ImageSize * 2);
+            return new Point(offset, 0);
         }
     }
 }

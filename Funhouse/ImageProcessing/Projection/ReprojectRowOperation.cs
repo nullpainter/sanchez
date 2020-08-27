@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using Ardalis.GuardClauses;
-using Funhouse.Extensions;
+using Funhouse.Extensions.Images;
 using Funhouse.Models;
 using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
@@ -68,15 +68,15 @@ namespace Funhouse.ImageProcessing.Projection
             var span = _target.GetPixelRowSpan(y);
 
             // Calculate or retrieve the latitude calculation component of geostationary projection
-            var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset); //(int)Math.Round(y + _yOffset));
+            var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset); 
 
             // Convert image x,y to Mercator projection angle
             var targetWidth = _activity.Source!.Width * 2;
 
             for (var x = 0; x < span.Length; x++)
             {
-                // TODO create a Point extension which does this rounding for us plz
                 var projectionAngle = ProjectionAngle.FromPixelCoordinates(new Point(x + _xOffset, y + _yOffset), targetWidth, _activity.Source!.Height);
+                
                 var longitude = projectionAngle.X;
                 var latitude = projectionAngle.Y;
 
@@ -132,6 +132,7 @@ namespace Funhouse.ImageProcessing.Projection
             // Blending, so identify target alpha
             var alpha = 1 - (longitude.Radians - _longitudeRange.End.Radians) / (_blendEndLongitude.Radians - _longitudeRange.End.Radians);
 
+            // Calculate target pixel and blend
             var pixel = InterpolatePixel(activity, scanningAngle.Value);
             pixel.A = (byte) Math.Round(alpha * pixel.A);
 

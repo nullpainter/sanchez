@@ -1,5 +1,4 @@
-﻿using System;
-using MathNet.Spatial.Units;
+﻿using MathNet.Spatial.Units;
 using SixLabors.ImageSharp;
 using static System.Math;
 

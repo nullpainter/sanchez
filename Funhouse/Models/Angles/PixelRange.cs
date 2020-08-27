@@ -1,4 +1,6 @@
-﻿using Funhouse.Extensions;
+﻿using System;
+using Funhouse.Extensions;
+using MathNet.Spatial.Units;
 
 namespace Funhouse.Models.Angles
 {
@@ -11,6 +13,12 @@ namespace Funhouse.Models.Angles
         {
             Start = start;
             End = end;
+        }
+        
+        public PixelRange(Range range, Func<Angle, int> transform)
+        {
+            Start = transform(range.Start);
+            End = transform(range.End);
         }
 
         public static PixelRange ToPixelRangeX(Range range, int width) => new PixelRange(range.Start.ToX(width), range.End.ToX(width));

@@ -59,8 +59,13 @@ namespace Funhouse.Services
                 }
 
                 if (range.Start < otherRange.Start && range.End > otherRange.Start)
+                {
                     maxLongitude = (range.End - otherRange.Start) / 2 + otherRange.Start;
-                else if (range.End > otherRange.End && range.Start < otherRange.End) minLongitude = (otherRange.End - range.Start) / 2 + range.Start;
+                }
+                else if (range.End > otherRange.End && range.Start < otherRange.End)
+                {
+                    minLongitude = (otherRange.End - range.Start) / 2 + range.Start;
+                }
 
                 maxLongitude -= offset;
                 minLongitude -= offset;

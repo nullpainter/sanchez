@@ -46,6 +46,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ImageProcessing\Crop" />
       <Folder Include="Resources\SampleImages" />
     </ItemGroup>
 

@@ -5,14 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Funhouse.Extensions;
-using Funhouse.ImageProcessing.Crop;
+using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.Offset;
 using Funhouse.Models;
 using Funhouse.Models.Angles;
 using Funhouse.Models.Projections;
-using Funhouse.Projections;
-using MathNet.Spatial.Units;
 using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -23,29 +20,32 @@ namespace Funhouse.Services
 {
     public interface ICompositor
     {
-        Task ComposeAsync(CancellationTokenSource cancellationToken);
+        Task ComposeAsync();
     }
 
     public class Compositor : ICompositor
     {
         private readonly CommandLineOptions _options;
+        private readonly RenderOptions _renderOptions;
         private readonly IImageStitcher _imageStitcher;
         private readonly IImageLoader _imageLoader;
         private readonly IProjectionActivityOperations _activityOperations;
 
         public Compositor(
             CommandLineOptions options,
+            RenderOptions renderOptions,
             IImageStitcher imageStitcher,
             IImageLoader imageLoader,
             IProjectionActivityOperations activityOperations)
         {
             _options = options;
+            _renderOptions = renderOptions;
             _imageStitcher = imageStitcher;
             _imageLoader = imageLoader;
             _activityOperations = activityOperations;
         }
 
-        public async Task ComposeAsync(CancellationTokenSource cancellationToken)
+        public async Task ComposeAsync()
         {
             if (_options.AutoCrop)
             {
@@ -69,8 +69,7 @@ namespace Funhouse.Services
 
             var activities = loadTasks.Select(task => task.Result).ToList();
 
-            _activityOperations.Initialise(activities, cancellationToken);
-
+            _activityOperations.Initialise(activities);
 
             // Verify that all images have an associated projection definition
             var unmappedProjections = _activityOperations.GetUnmapped();
@@ -82,16 +81,19 @@ namespace Funhouse.Services
 
             var stopwatch = Stopwatch.StartNew();
 
+            // Calculate crop for each image based on visible range and image overlaps
             _activityOperations.CalculateCrop();
-            await _activityOperations.ReprojectAsync();
+            
+            // Reproject all images to equirectangular
+            _activityOperations.Reproject();
 
-            if (cancellationToken.IsCancellationRequested) return;
-
-            // Stitch
+            // Stitch images if required
             if (_options.Stitch)
             {
+                // Combine reprojected images
                 var target = await StitchImages(activities);
 
+                // Save output
                 if (target != null)
                 {
                     Log.Information("Saving stitched output");
@@ -106,28 +108,14 @@ namespace Funhouse.Services
 
         private async Task<Image<Rgba32>?> StitchImages(List<ProjectionActivity> activities)
         {
-            if (activities.Count == 1)
-            {
-                Log.Warning("Stitching requested but only a single image has been found. Not performing stitching");
-                return null;
-            }
-
             var target = _imageStitcher.Stitch(activities);
-
-            // Save uncropped stitched image for debugging purposes
-            if (_options.Debug)
-            {
-                var targetFilename = Path.GetFileNameWithoutExtension(_options.OutputPath) + "-stitched.jpg";
-                await target.SaveAsync(targetFilename);
-            }
 
             var underlay = await Image.LoadAsync<Rgba32>(@"Resources\world.200411.3x21600x10800.jpg");
             underlay = OffsetAndWrap(underlay, activities);
 
             underlay.Mutate(c => c.Resize(target.Width, target.Height));
 
-
-            // Crop if required
+            // Calculate crop region if required
             Rectangle? cropRectange = null;
             if (_options.AutoCrop)
             {
@@ -135,14 +123,16 @@ namespace Funhouse.Services
                 if (cropRectange == null) Log.Error("Unable to autocrop bounds");
                 else Log.Information("Cropped image size: {width} x {height} px", cropRectange.Value.Width, cropRectange.Value.Height);
             }
+            // Remove grey tint from satellite image
+            target.TintAndBlend(_renderOptions);
 
-            target.TintAndBlend("5ebfff".FromHexString().Value);
-
+            // Render underlay and optionally  crop to size
             target.Mutate(ctx => ctx.DrawImage(underlay, PixelColorBlendingMode.Screen, 1.0f));
             if (cropRectange != null) target.Mutate(ctx => ctx.Crop(cropRectange.Value));
+      
+            // Perform global colour correction
+            target.ColourCorrect(_renderOptions);
 
-            // TODO only do if no underlay
-            target.AddBackgroundColour(Color.Black);
             return target;
         }
 
