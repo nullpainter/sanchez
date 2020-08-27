@@ -26,8 +26,7 @@ namespace Sanchez.Extensions
                 {
                     originalContext.HistogramEqualization(new HistogramEqualizationOptions
                     {
-                        Method = HistogramEqualizationMethod.Global,
-                        LuminanceLevels = 65536
+                        Method = HistogramEqualizationMethod.Global
                     });
                 });
 
