@@ -11,14 +11,14 @@ namespace Funhouse.ImageProcessing.Crop
 {
     public static class AutoCropExtensions
     {
-        public static void AutoCrop(this Image<Rgba32> source)
+        public static Rectangle? AutoCrop(this Image<Rgba32> source)
         {
             Log.Information("Cropping");
 
             var thresholds = new List<CropDetails>();
 
             // Additional vertical offset to deal with vertical asymmetry
-            var topOffset = 80; // FIXME bodge
+            var verticalOffset = 80; // FIXME bodge
 
             for (var x = source.Width / 2; x < source.Width; x++)
             {
@@ -35,8 +35,7 @@ namespace Funhouse.ImageProcessing.Crop
 
             if (!thresholds.Any())
             {
-                Log.Error("Unable to determine crop ratio; not performing auto crop");
-                return;
+                return null;
             }
 
             var middleThreshold = thresholds.Select(v => v.Ratio).ToList().ClosestTo(1.0f);
@@ -45,12 +44,10 @@ namespace Funhouse.ImageProcessing.Crop
             var croppedHeight = (cropThreshold.CropHeight - source.Height / 2) * 2;
             var croppedWidth = (cropThreshold.CropWidth - source.Width / 2) * 2;
 
-            source.Mutate(c => c.Crop(new Rectangle(
+            return new Rectangle(
                 source.Width / 2 - croppedWidth / 2,
-                source.Height / 2 - croppedHeight / 2 + topOffset,
-                croppedWidth, croppedHeight - topOffset)));
-
-            Log.Information("Cropped image size: {width} x {height}px", source.Width, source.Height);
+                source.Height / 2 - croppedHeight / 2 + verticalOffset,
+                croppedWidth, croppedHeight - verticalOffset * 2);
         }
 
         private static Point GetCrop(Image<Rgba32> target, int x)

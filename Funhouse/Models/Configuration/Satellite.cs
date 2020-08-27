@@ -9,14 +9,18 @@ namespace Funhouse.Models.Configuration
         /// <param name="filePrefix"></param>
         /// <param name="displayName"></param>
         /// <param name="longitude"></param>
-        /// <param name="visibleRange"></param>
+        /// <param name="latitudeRange"></param>
+        /// <param name="longitudeRange"></param>
         /// <param name="imageOffset"></param>
         /// <param name="height">Satellite height above ellipsoid (metres)</param>
-        public SatelliteDefinition(string filePrefix, string displayName, Angle longitude, Range visibleRange, ImageOffset imageOffset, double height = 35786023)
+        public SatelliteDefinition(string filePrefix, string displayName, Angle longitude, 
+            Range latitudeRange,
+            Range longitudeRange, ImageOffset imageOffset, double height = 35786023)
         {
             FilePrefix = filePrefix;
             DisplayName = displayName;
-            VisibleRange = visibleRange;
+            LatitudeRange = latitudeRange;
+            LongitudeRange = longitudeRange;
             ImageOffset = imageOffset;
             Height = height;
 
@@ -26,8 +30,9 @@ namespace Funhouse.Models.Configuration
 
         public string FilePrefix { get; }
         public string DisplayName { get; }
+        public Range LatitudeRange { get; }
+        public Range LongitudeRange { get; }
         public Angle Longitude { get; }
-        public Range VisibleRange { get; }
         public double Height { get; }
         public ImageOffset ImageOffset { get; }
     }

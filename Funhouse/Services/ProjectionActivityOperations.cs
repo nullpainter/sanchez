@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Funhouse.Extensions;
 using Funhouse.Models;
 using Funhouse.Models.Angles;
@@ -29,7 +30,7 @@ namespace Funhouse.Services
         private List<ProjectionActivity> _activities = null!;
         private bool _initialised;
         private readonly CommandLineOptions _options;
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
 
         public ProjectionActivityOperations(
             CommandLineOptions options,
@@ -60,7 +61,15 @@ namespace Funhouse.Services
             if (GetUnmapped().Any()) throw new InvalidOperationException("Not all images have valid satellite definitions");
 
             _projectionOverlapCalculator.Initialise(_activities.Select(p => p.Definition!));
-            _activities.ForEach(a => a.LongitudeRange = _options.Stitch ? _projectionOverlapCalculator.GetNonOverlappingRange(a.Definition!) : a.Definition!.VisibleRange);
+            
+            // Set latitude and longitude ranges based on overlapping satellite ranges
+            _activities.ForEach(a =>
+            {
+                Guard.Against.Null(a.Definition, nameof(a.Definition));
+                
+                a.LongitudeRange = _options.Stitch ? _projectionOverlapCalculator.GetNonOverlappingRange(a.Definition!) : a.Definition.LongitudeRange;
+                a.LatitudeRange = a.Definition.LatitudeRange;
+            });
         }
 
         private void EnsureInitialised()
@@ -71,13 +80,17 @@ namespace Funhouse.Services
         public async Task ReprojectAsync()
         {
             EnsureInitialised();
+
+            // Satellite's visible range
             var globalOffset = -_activities.Select(p => p.LongitudeRange.UnwrapLongitude().Start).Min();
 
             foreach (var projection in _activities)
             {
-                if (_cancellationTokenSource.IsCancellationRequested) return;
+                if (_cancellationTokenSource?.IsCancellationRequested == true) return;
 
                 projection.Output = await _imageProjector.ReprojectAsync(projection, _options);
+
+                // Overlap range relative the satellite's visible range
                 projection.Offset = GetOffset(projection.Definition!, globalOffset);
 
                 // FIXME this is kinda batch so we need to honour outputPath directory
@@ -97,8 +110,11 @@ namespace Funhouse.Services
 
         private static PointF GetOffset(SatelliteDefinition definition, Angle globalOffset)
         {
-            var longitude = (definition.VisibleRange.Start + globalOffset).NormaliseLongitude();
-            return new ProjectionAngle(longitude, new Angle()).ToPixelCoordinates(Constants.ImageSize * 2, 0);
+            var longitude = (definition.LongitudeRange.Start + globalOffset).NormaliseLongitude();
+            
+            // Convert to a Mercator map offset, with a pixel range of -180 to 180 degrees
+            var offset = Constants.ImageSize * 2 * ((longitude.Radians + Math.PI) / MathNet.Numerics.Constants.Pi2);
+            return new PointF((float)offset, 0);
         }
     }
 }

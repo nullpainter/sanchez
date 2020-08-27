@@ -17,7 +17,6 @@ namespace Funhouse.Builders
             container.RegisterSingleton<IProjectionActivityOperations, ProjectionActivityOperations>();
             container.RegisterSingleton<IProjectionOverlapCalculator, ProjectionOverlapCalculator>();
             container.RegisterSingleton<ISatelliteRegistry, SatelliteRegistry>();
-            container.RegisterSingleton<IProjectionRegistry, ProjectionRegistry>();
 
             return container;
         }

@@ -24,7 +24,7 @@ namespace Funhouse.Services
                 .Select(entry => new
                 {
                     Definition = entry,
-                    Range = entry.VisibleRange
+                    Range = entry.LongitudeRange
                 })
                 .ToDictionary(entry => entry.Definition, key => key.Range);
 
@@ -37,21 +37,21 @@ namespace Funhouse.Services
         {
             if (!_initialised) throw new InvalidOperationException($"Please call {nameof(Initialise)} before performing range calculations");
 
-            var minLongitude = definition.VisibleRange.Start;
-            var maxLongitude = definition.VisibleRange.End;
+            var minLongitude = definition.LongitudeRange.Start;
+            var maxLongitude = definition.LongitudeRange.End;
 
             // Iterate over other satellites
             foreach (var other in _definitions!.Where(entry => entry.Key != definition).Select(entry => entry.Value))
             {
-                var range = definition.VisibleRange;
+                var range = definition.LongitudeRange;
                 var otherRange = other;
                 var offset = Angle.FromRadians(0);
 
                 // Apply an offset to both satellites being compared if either wraps around -180 to 180 longitude
-                if (definition.VisibleRange.End < definition.VisibleRange.Start || other.End < other.Start)
+                if (definition.LongitudeRange.End < definition.LongitudeRange.Start || other.End < other.Start)
                 {
-                    offset = Angle.FromRadians(-Math.PI - Math.Max(definition.VisibleRange.Start.Radians, other.Start.Radians));
-                    range = (definition.VisibleRange + offset).UnwrapLongitude().NormaliseLongitude();
+                    offset = Angle.FromRadians(-Math.PI - Math.Max(definition.LongitudeRange.Start.Radians, other.Start.Radians));
+                    range = (definition.LongitudeRange + offset).UnwrapLongitude().NormaliseLongitude();
                     otherRange = (other + offset).UnwrapLongitude().NormaliseLongitude();
 
                     minLongitude += offset;

@@ -3,35 +3,35 @@
     // GOES-16
     "FilePrefix": "GOES16",
     "DisplayName": "GOES-16",
-
     // Nominal satellite subpoint longitude is -75.2 degrees east, however it has been resampled to be
     // centred at -75.0 degrees east longitude.
     "Longitude": -75.0,
     "Height": 35786023.0,
     "VisibleRange": {
-        "MinLongitude": -156.2995,
-        "MaxLongitude": 6.2995
+      "MinLongitude": -156.2995,
+      "MaxLongitude": 6.2995,
+      "MinLatitude": -81.3282,
+      "MaxLatitude": 81.3282
     },
-    "ImageOffset" : {
+    "ImageOffset": {
       "X": -0.151844,
       "Y": 0.151844,
-     "ScaleFactor": 0.000056
+      "ScaleFactor": 0.000056
     }
   },
   {
     // GOES-17
     "FilePrefix": "GOES17",
     "DisplayName": "GOES-17",
-
-    // Nominal satellite subpoint longitude is 137.0 degrees west, however it has presumably resampled to be
-    // centred at its original position of -137.0 degrees west longitude.
     "Longitude": -137.2,
     "Height": 35786023.0,
     "VisibleRange": {
-        "MinLongitude": 141.7005,
-        "MaxLongitude": -55.7005
+      "MinLongitude": 141.7005,
+      "MaxLongitude": -55.7005,
+      "MinLatitude": -81.3282,
+      "MaxLatitude": 81.3282
     },
-    "ImageOffset" : {
+    "ImageOffset": {
       "X": -0.151844,
       "Y": 0.151844,
       "ScaleFactor": 0.000056

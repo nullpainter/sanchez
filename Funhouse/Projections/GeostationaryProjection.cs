@@ -27,7 +27,7 @@ namespace Funhouse.Projections
 
         public static LatitudeCalculations LatitudeCalculations(Angle latitude)
         {
-            var geocentricLatitude = Atan(RadiusPolarSquared / RadiusEquatorSquared * Tan(latitude.Radians));
+            var geocentricLatitude = Atan(RadiusPolarSquared / RadiusEquatorSquared * Tan(-latitude.Radians));
             var cosLatitude = Cos(geocentricLatitude);
             var sinLatitude = Sin(geocentricLatitude);
 
@@ -46,16 +46,15 @@ namespace Funhouse.Projections
         }
 
         public static ScanningAngle? FromGeodetic(GeodeticAngle angle, SatelliteDefinition definition) 
-            => FromLongitude(LatitudeCalculations(angle.Latitude), angle.Longitude, definition);
+            => ToScanningAngle(LatitudeCalculations(angle.Latitude), angle.Longitude, definition);
 
         /// <summary>
         ///     Converts a latitude and longitude to a geostationary image scanning angle.
         /// </summary>
-        public static ScanningAngle? FromLongitude(LatitudeCalculations latitudeCalculations, Angle longitude, SatelliteDefinition definition)
+        public static ScanningAngle? ToScanningAngle(LatitudeCalculations latitudeCalculations, Angle longitude, SatelliteDefinition definition)
         {
             var satelliteLongitude = definition.Longitude;
             var satelliteHeight = definition.Height + RadiusEquator;
-
 
             var sx = satelliteHeight - latitudeCalculations.Rc * latitudeCalculations.CosLatitude * Cos(longitude.Radians - satelliteLongitude.Radians);
             var sy = -latitudeCalculations.Rc * latitudeCalculations.CosLatitude * Sin(longitude.Radians - satelliteLongitude.Radians);

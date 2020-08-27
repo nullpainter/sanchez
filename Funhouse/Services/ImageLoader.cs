@@ -20,7 +20,7 @@ namespace Funhouse.Services
         {
             var projectedImage = new ProjectionActivity(path)
             {
-                Source = (await Image.LoadAsync(path)).CloneAs<Rgba32>(), 
+                Source = await Image.LoadAsync<Rgba32>(path),
                 Definition = _satelliteRegistry.Locate(path)
             };
 

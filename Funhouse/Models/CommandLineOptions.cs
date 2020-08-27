@@ -11,11 +11,6 @@ namespace Funhouse.Models
     [UsedImplicitly]
     public class CommandLineOptions
     {
-     
-        
-        [Option('p', "projection", HelpText = "Output projection type. Valid values are Mercator, PseudoMercator", Required = false, Default = ProjectionType.PseudoMercator)]
-        public ProjectionType ProjectionType { get; [UsedImplicitly] set; }
-        
         [Option('q', "quiet", HelpText = "Don't provide any console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }
         
@@ -40,7 +35,7 @@ namespace Funhouse.Models
         [Option('v', "verbose", HelpText = "Verbose console output", Required = false, Default = false)]
         public bool Verbose { get; [UsedImplicitly] set; }
         
-        [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are NearestNeighbour, Bilinear", Required = false, Default = InterpolationType.NearestNeighbour)]
+        [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are NearestNeighbour, Bilinear", Required = false, Default = InterpolationType.Bilinear)]
         public InterpolationType InterpolationType { get; [UsedImplicitly] set; }
 
         // FIXME doesn't belong here

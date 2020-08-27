@@ -37,12 +37,11 @@ namespace Funhouse
                     ConfigureLogging(options.Verbose);
                     Log.Information("Sanchez starting");
 
+                    LogOptions(options);
+
                     // Initialise the satellite registry
                     var satelliteRegistry = container.GetInstance<ISatelliteRegistry>();
                     await InitialiseSatelliteRegistryAsync(satelliteRegistry);
-
-                    var projectionRegistry = container.GetInstance<IProjectionRegistry>();
-                    InitialiseProjectionRegistry(projectionRegistry);
 
                     // Disable stdout if required
                     if (options.Quiet) Console.SetOut(TextWriter.Null);
@@ -58,12 +57,18 @@ namespace Funhouse
             }
         }
 
-        private static void InitialiseProjectionRegistry(IProjectionRegistry registry)
+        private static void LogOptions(CommandLineOptions options)
         {
-            registry.Register(ProjectionType.Mercator, new MercatorProjection());
-            registry.Register(ProjectionType.PseudoMercator, new PseudoMercatorProjection());
+            if (options.AutoCrop) Log.Information("Autocrop enabled");
+            if (options.Stitch) Log.Information("Stitching enabled");
+            if (options.BlurEdges) Log.Information("Edge blurring enabled");
+            
+            Log.Information("Interpolation type {type}", options.InterpolationType);
         }
 
+        /// <summary>
+        ///     Registers all known satellites.
+        /// </summary>
         private static async Task InitialiseSatelliteRegistryAsync(ISatelliteRegistry registry)
         {
             const string definitionsPath = Constants.DefinitionsPath;
@@ -106,7 +111,10 @@ namespace Funhouse
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails();
 
-            if (consoleLogging) builder.WriteTo.Console();
+            if (consoleLogging)
+            {
+                builder.WriteTo.Console();
+            }
 
             Log.Logger = builder.CreateLogger();
         }

@@ -31,6 +31,11 @@ namespace Funhouse.Services
                 d.FilePrefix!,
                 d.DisplayName!,
                 Angle.FromDegrees(d.Longitude),
+                
+                new Range(
+                    Angle.FromDegrees(d.VisibleRange.MinLatitude),
+                    Angle.FromDegrees(d.VisibleRange.MaxLatitude)),
+                
                 new Range(
                     Angle.FromDegrees(d.VisibleRange.MinLongitude),
                     Angle.FromDegrees(d.VisibleRange.MaxLongitude)),

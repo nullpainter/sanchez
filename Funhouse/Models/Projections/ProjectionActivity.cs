@@ -13,11 +13,20 @@ namespace Funhouse.Models.Projections
         }
 
         public SatelliteDefinition? Definition { get; set; }
-                public Image<Rgba32>? Source { get; set; }
+        public Image<Rgba32>? Source { get; set; }
         public Image<Rgba32>? Output { get; set; }
 
         public string Path { get; }
         public PointF Offset { get; set; }
+
+        /// <summary>
+        ///     Visible longitude range of satellite, minus overlapping ranges if required.
+        /// </summary>
         public Range LongitudeRange { get; set; }
+
+        /// <summary>
+        ///     Visible latitude range of satellite.
+        /// </summary>
+        public Range LatitudeRange { get; set; }
     }
 }

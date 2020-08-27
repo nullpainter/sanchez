@@ -12,18 +12,18 @@ namespace Funhouse.Services
 {
     public interface IImageStitcher
     {
-        Image<Rgba32> Stitch(List<ProjectionActivity> projections);
+        Image<Rgba32> Stitch(List<ProjectionActivity> activities);
     }
 
     public class ImageStitcher : IImageStitcher
     {
-        public Image<Rgba32> Stitch(List<ProjectionActivity> projections)
+        public Image<Rgba32> Stitch(List<ProjectionActivity> activities)
         {
             // Identify minimum horizontal offset im source images
-            var minOffset = projections.Select(p => p.Offset.X).Min();
-            var target = InitialiseTarget(projections, minOffset);
+            var minOffset = activities.Select(p => p.Offset.X).Min();
+            var target = InitialiseTarget(activities, minOffset);
 
-            Log.Information("Output image size: {width} x {height}px", target.Width, target.Height);
+            Log.Information("Output image size: {width} x {height} px", target.Width, target.Height);
             Log.Information("Compositing");
 
             // Composite all images. Images will have their horizontal offsets pre-calculated and overlaps
@@ -31,7 +31,7 @@ namespace Funhouse.Services
             target.Mutate(context =>
             {
                 // Render all images in correct stacking order
-                foreach (var projection in projections.OrderByDescending(p => p.Offset.X))
+                foreach (var projection in activities.OrderByDescending(p => p.Offset.X))
                 {
                     var location = new Point((int) Math.Round(projection.Offset.X - minOffset), 0);
                     context.DrawImage(projection.Output, location, PixelColorBlendingMode.Normal, 1.0f);
@@ -48,7 +48,7 @@ namespace Funhouse.Services
         private static Image<Rgba32> InitialiseTarget(List<ProjectionActivity> projections, float minOffset)
         {
             var outputWidth = projections.Select(p => p.Offset.X).Max() + projections[0].Output.Width - minOffset;
-            return new Image<Rgba32>((int) Math.Round(outputWidth), Constants.ImageSize);
+            return new Image<Rgba32>((int) Math.Round(outputWidth), projections[0].Output.Height);
         }
     }
 }

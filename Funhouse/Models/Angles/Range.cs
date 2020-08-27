@@ -1,5 +1,4 @@
-﻿using System;
-using Funhouse.Extensions;
+﻿using Funhouse.Extensions;
 using MathNet.Spatial.Units;
 
 namespace Funhouse.Models.Angles
@@ -11,12 +10,6 @@ namespace Funhouse.Models.Angles
     {
         public Angle Start { get; }
         public Angle End { get; }
-
-        public Range(Range other)
-        {
-            Start = Angle.FromRadians(other.Start.Radians);
-            End = Angle.FromRadians(other.End.Radians);
-        }
 
         public Range(Angle start, Angle end)
         {
@@ -30,7 +23,7 @@ namespace Funhouse.Models.Angles
         /// </summary>
         public Range UnwrapLongitude()
         {
-            return End < Start ? new Range(Start, Angle.FromRadians(End.Radians + Math.PI * 2)) : this;
+            return End < Start ? new Range(Start, Angle.FromRadians(End.Radians + MathNet.Numerics.Constants.Pi2)) : this;
         }
 
         public Range NormaliseLongitude()

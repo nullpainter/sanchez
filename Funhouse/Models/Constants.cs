@@ -13,8 +13,6 @@ namespace Funhouse.Models
         /// </summary>
         internal const int ImageSize = 5424;
 
-        internal const double HalfPi = Math.PI / 2.0;
-
         public static class Earth
         {
             /// <summary>

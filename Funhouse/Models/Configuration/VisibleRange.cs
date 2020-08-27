@@ -9,5 +9,11 @@ namespace Funhouse.Models.Configuration
 
         [JsonProperty("MaxLongitude", Required = Required.Always)]
         public double MaxLongitude { get; set; }
+        
+        [JsonProperty("MinLatitude", Required = Required.Always)]
+        public double MinLatitude { get; set; }
+
+        [JsonProperty("MaxLatitude", Required = Required.Always)]
+        public double MaxLatitude { get; set; }
     }
 }
