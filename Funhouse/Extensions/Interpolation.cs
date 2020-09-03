@@ -1,5 +1,4 @@
-﻿using SixLabors.ImageSharp;
-
+﻿
 namespace Funhouse.Extensions
 {
     public static class Interpolation
@@ -11,7 +10,7 @@ namespace Funhouse.Extensions
         /// <param name="end">second value</param>
         /// <param name="amount">amount between 0.0 - 1.0</param>
         /// <returns>interpolated value</returns>
-        public static float Lerp(float start, float end, float amount)
+        public static double Lerp(double start, double end, double amount)
         {
             return start + (end - start) * amount;
         }
@@ -19,9 +18,9 @@ namespace Funhouse.Extensions
         /// <summary>
         ///     Bilinear interpolation.
         /// </summary>
-        public static float Blerp(float c00, float c10, float c01, float c11, PointF position)
+        public static double Blerp(double c00, double c10, double c01, double c11, double positionX, double positionY)
         {
-            return Lerp(Lerp(c00, c10, position.X), Lerp(c01, c11, position.X), position.Y);
+            return Lerp(Lerp(c00, c10, positionX), Lerp(c01, c11, positionX), positionY);
         }
     }
 }

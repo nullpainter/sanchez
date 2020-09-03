@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Funhouse.Models.Configuration;
-using MathNet.Spatial.Units;
 using Range = Funhouse.Models.Angles.Range;
 
 namespace Funhouse.Services
@@ -43,16 +42,24 @@ namespace Funhouse.Services
             // Iterate over other satellites
             foreach (var other in _definitions!.Where(entry => entry.Key != definition).Select(entry => entry.Value))
             {
-                var range = definition.LongitudeRange;
-                var otherRange = other;
-                var offset = Angle.FromRadians(0);
+                var range = definition.LongitudeRange.UnwrapLongitude();
+                var otherRange = other.UnwrapLongitude();
+                var offset = 0.0;
 
                 // Apply an offset to both satellites being compared if either wraps around -180 to 180 longitude
                 if (definition.LongitudeRange.End < definition.LongitudeRange.Start || other.End < other.Start)
                 {
-                    offset = Angle.FromRadians(-Math.PI - Math.Max(definition.LongitudeRange.Start.Radians, other.Start.Radians));
-                    range = (definition.LongitudeRange + offset).UnwrapLongitude().NormaliseLongitude();
-                    otherRange = (other + offset).UnwrapLongitude().NormaliseLongitude();
+                    if (other.End < other.Start)
+                    {
+                        offset = -Math.PI - Math.Min(definition.LongitudeRange.Start, other.Start);
+                    }
+                    else
+                    {
+                        offset = -Math.PI - Math.Max(definition.LongitudeRange.Start, other.Start);
+                    }
+
+                    range = (range + offset).NormaliseLongitude();
+                    otherRange = (other + offset).NormaliseLongitude();
 
                     minLongitude += offset;
                     maxLongitude += offset;
@@ -71,7 +78,7 @@ namespace Funhouse.Services
                 minLongitude -= offset;
             }
 
-            return new Range(minLongitude, maxLongitude).NormaliseLongitude();
+            return new Range(minLongitude, maxLongitude);
         }
     }
 }

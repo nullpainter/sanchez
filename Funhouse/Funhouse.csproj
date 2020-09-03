@@ -8,46 +8,70 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.0.35" />
+        <PackageReference Include="dbup-sqlite" Version="4.4.0" />
         <PackageReference Include="Extend" Version="1.2.1" />
         <PackageReference Include="MathNet.Numerics" Version="4.12.0" />
         <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.11.0.20529" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.12.0.21095">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
         <PackageReference Include="Serilog.Exceptions" Version="5.6.0" />
         <PackageReference Include="Ardalis.GuardClauses" Version="3.0.0" />
         <PackageReference Include="CommandLineParser" Version="2.8.0" />
         <PackageReference Include="ShellProgressBar" Version="5.0.0" />
         <PackageReference Include="SimpleInjector" Version="5.0.3" />
-        
     </ItemGroup>
 
     <ItemGroup>
         <None Update="Resources\Satellites.json">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\SampleImages\GOES16_FD_CH13_20200816T025020Z.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\SampleImages\GOES17_FD_CH13_20200816T030031Z.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\world.200411.3x21600x10800.jpg">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
-        <None Remove="foo-stitched.png" />        
+        <None Update="Resources\world.200411.3x10848x5424.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\SampleImages\GOES16_FD_CH13_20200830T035020Z.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\SampleImages\GOES17_FD_CH13_20200830T033031Z.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\SampleImages\Himawari8_FD_IR_20200830T035100Z.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Remove="foo.jpg" />
+        <None Remove="Himawari-8.jpg" />
+        <None Remove="GOES-17.jpg" />
+        <None Remove="GOES-16.jpg" />
+        <None Remove="release\testHarness.bat" />
+        <None Remove="release\reprojected.jpg" />
+        <None Remove="release\foo.jpg" />
+        <None Remove="release\Resources\world.200411.3x10848x5424.jpg" />
+        <None Remove="release\Resources\SampleImages\Himawari8_FD_IR_20200830T035100Z.jpg" />
+        <None Remove="release\Resources\SampleImages\GOES17_FD_CH13_20200830T033031Z.jpg" />
+        <None Remove="release\Resources\SampleImages\GOES16_FD_CH13_20200830T035020Z.jpg" />
+        <None Remove="release\Funhouse.pdb" />
+        <None Remove="release\Funhouse.exe" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ImageProcessing\Crop" />
-      <Folder Include="Resources\SampleImages" />
+        <Folder Include="Resources\SampleImages" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\Migration\001. Create cache table.sql" />
     </ItemGroup>
 
 </Project>

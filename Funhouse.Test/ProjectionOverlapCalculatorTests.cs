@@ -16,6 +16,21 @@ namespace Funhouse.Test
             first.Start.Degrees.Should().BeApproximately(second.Start.Degrees, Precision);
             first.End.Degrees.Should().BeApproximately(second.End.Degrees, Precision);
         }
+        
+        [Test]
+        public void Goes17Himawari8()
+        {
+            // Simplified for ease of validation
+            var goes17 = ToDefinition(140, -50, "GOES-17");
+            var himawari8 = ToDefinition(60, -140, "Himawari-8");
+            
+            var calculator = new ProjectionOverlapCalculator();
+            calculator.Initialise(new List<SatelliteDefinition> { goes17, himawari8 });
+            
+            VerifyRangeEquivalency(
+                calculator.GetNonOverlappingRange(goes17),
+                new Range(Angle.FromDegrees(180), Angle.FromDegrees(-50)));
+        }
 
         [Test]
         public void NonOverlapping()
@@ -26,8 +41,8 @@ namespace Funhouse.Test
             var calculator = new ProjectionOverlapCalculator();
             calculator.Initialise(new List<SatelliteDefinition> { goes16, nonOverlapping });
 
-            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(goes16), goes16.VisibleRange);
-            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(nonOverlapping), nonOverlapping.VisibleRange);
+            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(goes16), goes16.LongitudeRange);
+            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(nonOverlapping), nonOverlapping.LongitudeRange);
         }
 
         [Test]
@@ -91,13 +106,15 @@ namespace Funhouse.Test
         }
 
 
-        private static SatelliteDefinition ToDefinition(double startDegrees, double endDegrees)
+        private static SatelliteDefinition ToDefinition(double startDegrees, double endDegrees, string name = "")
         {
-            var nonOverlapping = new SatelliteDefinition("", "", new Angle(),
+            var nonOverlapping = new SatelliteDefinition("", name, new Angle(),
+                new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)),
                 new Range(
                     Angle.FromDegrees(startDegrees),
                     Angle.FromDegrees(endDegrees)),
                 new ImageOffset(new Angle(), new Angle(), 0));
+            
             return nonOverlapping;
         }
     }

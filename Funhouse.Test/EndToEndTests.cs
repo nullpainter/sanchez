@@ -9,7 +9,7 @@ namespace Funhouse.Test
         // TODO make this a proper test plz
         public void Stitched()
         {
-            Funhouse.Main( 
+            Bootstrapper.Main( 
                 "-o", "out.jpg", 
                 "-s", "foo",
                 "--stitch",

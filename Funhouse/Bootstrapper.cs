@@ -1,38 +1,46 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CommandLine;
+using Extend;
 using Funhouse.Builders;
+using Funhouse.Extensions;
 using Funhouse.Factories;
+using Funhouse.Helpers;
 using Funhouse.Models;
-using Funhouse.Services;
+using Funhouse.Models.CommandLine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 using SimpleInjector;
+using static Funhouse.Models.Constants.Satellite;
+using ProjectionOptions = Funhouse.Models.CommandLine.ProjectionOptions;
 
 [assembly: InternalsVisibleTo("Funhouse.Test")]
-
 namespace Funhouse
 {
     internal static class Bootstrapper
     {
         internal static async Task Main(params string[] args)
         {
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Converters = new Collection<JsonConverter> { new StringEnumConverter() }
+            };
+
             try
             {
                 await Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsedAsync(async options =>
                 {
                     // Disable stdout if required
                     if (options.Quiet) Console.SetOut(TextWriter.Null);
-                    options.UnderlayPath ??= Constants.DefaultUnderlayPath;
 
+                    await ValidateOptionsAsync(options);
                     var renderOptions = RenderOptionFactory.ToRenderOptions(options);
-                    await ValidateOptionsAsync(options, renderOptions);
 
                     // Build DI container
                     var container = new Container().AddAllService(options, renderOptions);
@@ -42,7 +50,7 @@ namespace Funhouse
 
                     Log.Information("Sanchez starting");
 
-                    LogOptions(options);
+                    LogOptions(options, renderOptions);
 
                     // Perform image processing
                     await container
@@ -56,30 +64,45 @@ namespace Funhouse
             }
         }
 
-        private static async Task ValidateOptionsAsync(CommandLineOptions options, RenderOptions renderOptions)
+        private static async Task ValidateOptionsAsync(CommandLineOptions options)
         {
             // Verify selected tint
-            if (renderOptions.Tint == null)
+            if (options.Tint.FromHexString() == null)
             {
                 await Console.Error.WriteLineAsync("Unable to parse tint as a hex tuple. Expected format is 5ebfff");
                 Environment.Exit(-1);
             }
-            
+
             // Verify underlay image exists
-            if (!File.Exists(options.UnderlayPath))
+            if (!File.Exists(options.UnderlayPath ?? Constants.DefaultUnderlayPath))
             {
                 await Console.Error.WriteLineAsync($"Underlay path {options.UnderlayPath} isn't valid");
+                Environment.Exit(-1);
+            }
+
+            // Verify argument compatibility
+            if (options.AutoCrop && options.ProjectionType == ProjectionOptions.G)
+            {
+                await Console.Error.WriteLineAsync($"Autocrop only available with projection type {ProjectionType.Geostationary}");
+                Environment.Exit(-1);
+            }
+            
+            // Verify spatial resolution
+            if (!options.SpatialResolution.IsIn(SpatialResolution.TwoKm, SpatialResolution.FourKm))
+            {
+                await Console.Error.WriteLineAsync( $"Unsupported output spatial resolution. Valid values are: {SpatialResolution.TwoKm}, {SpatialResolution.FourKm}");
                 Environment.Exit(-1); 
             }
         }
 
-        private static void LogOptions(CommandLineOptions options)
+        private static void LogOptions(CommandLineOptions commandLineOptions, RenderOptions renderOptions)
         {
-            if (options.AutoCrop) Log.Information("Autocrop enabled");
-            if (options.Stitch) Log.Information("Stitching enabled");
-            if (options.BlurEdges) Log.Information("Edge blurring enabled");
+            if (commandLineOptions.AutoCrop) Log.Information("Autocrop enabled");
+            if (commandLineOptions.Stitch) Log.Information("Stitching enabled");
             
-            Log.Information("Interpolation type {type}", options.InterpolationType);
+            Log.Information("Render mode {renderMode}", renderOptions.ProjectionType);
+            Log.Information("Interpolation type {type}", renderOptions.InterpolationType);
+            Log.Information("{km}km spatial resolution", commandLineOptions.SpatialResolution);
         }
 
         /// <summary>
@@ -87,17 +110,9 @@ namespace Funhouse
         /// </summary>
         private static void ConfigureLogging(bool consoleLogging)
         {
-            var processFilename = Process.GetCurrentProcess().MainModule.FileName;
-
-            // Determine correct location of logs relative to application, depending on whether we are running from a published
-            // executable or via dotnet.
-            var applicationPath = (Path.GetFileNameWithoutExtension(processFilename) == "dotnet"
-                ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                : Path.GetDirectoryName(processFilename))!;
-
             var builder = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(applicationPath, "logs", "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
+                .WriteTo.RollingFile(Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails();
 

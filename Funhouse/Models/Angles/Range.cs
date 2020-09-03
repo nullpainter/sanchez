@@ -1,5 +1,4 @@
 ﻿using Funhouse.Extensions;
-using MathNet.Spatial.Units;
 
 namespace Funhouse.Models.Angles
 {
@@ -8,10 +7,15 @@ namespace Funhouse.Models.Angles
     /// </summary>
     public readonly struct Range
     {
-        public Angle Start { get; }
-        public Angle End { get; }
+        public double Start { get; }
+        public double End { get; }
 
-        public Range(Angle start, Angle end)
+        /// <summary>
+        ///     Constructs a angle range.
+        /// </summary>
+        /// <param name="start">start angle, in radians</param>
+        /// <param name="end">end angle, in radians</param>
+        public Range(double start, double end)
         {
             Start = start;
             End = end;
@@ -21,20 +25,11 @@ namespace Funhouse.Models.Angles
         ///     Unwraps a longitude range so the end angle is always greater than the start angle.
         ///     This is to simplify maths for projections which wrap around the standard -180 to 180 degrees.
         /// </summary>
-        public Range UnwrapLongitude()
-        {
-            return End < Start ? new Range(Start, Angle.FromRadians(End.Radians + MathNet.Numerics.Constants.Pi2)) : this;
-        }
+        public Range UnwrapLongitude() => End < Start ? new Range(Start, End+ MathNet.Numerics.Constants.Pi2) : this;
 
-        public Range NormaliseLongitude()
-        {
-            return new Range(Start.NormaliseLongitude(), End.NormaliseLongitude());
-        }
+        public Range NormaliseLongitude() => new Range(Start.NormaliseLongitude(), End.NormaliseLongitude());
 
-        public static Range operator +(Range range, Angle amount)
-        {
-            return new Range(range.Start + amount, range.End + amount);
-        }
+        public static Range operator +(Range range, double amount) => new Range(range.Start + amount, range.End + amount);
 
         public override string ToString()
         {

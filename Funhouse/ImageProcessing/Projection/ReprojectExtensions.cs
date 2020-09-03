@@ -7,38 +7,37 @@ using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
-using Range = Funhouse.Models.Angles.Range;
 
 namespace Funhouse.ImageProcessing.Projection
 {
     public static class ReprojectExtensions
     {
-        public static Image<Rgba32> Reproject(this ProjectionActivity activity, CommandLineOptions options)
+        public static Image<Rgba32> Reproject(this ProjectionActivity activity, RenderOptions options)
         {
             Guard.Against.Null(activity.Definition, nameof(activity.Definition));
             var definition = activity.Definition;
 
             // Preserve 2:1 equirectangular aspect ratio
-            const int maxWidth = Constants.ImageSize * 2;
-            const int maxHeight = Constants.ImageSize;
+            var maxWidth = options.ImageSize * 2;
+            var maxHeight = options.ImageSize;
 
             // Determine pixel ranges of projected image so we can limit our processing to longitudes visible to satellite
             // Unwrap the longitude range to simplify maths
             var longitudeRange = new Range(
                 definition.LongitudeRange.Start,
                 definition.LongitudeRange.End).UnwrapLongitude();
-            
+
             var latitudeRange = new Range(definition.LatitudeRange.Start, definition.LatitudeRange.End);
 
             Log.Information("{definition:l0} latitude range {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                latitudeRange.Start.Degrees,
-                latitudeRange.End.Degrees);
+                latitudeRange.Start,
+                latitudeRange.End);
 
             Log.Information("{definition:l0} unwrapped longitude range {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                longitudeRange.Start.Degrees,
-                longitudeRange.End.Degrees);
+                longitudeRange.Start,
+                longitudeRange.End);
 
             // Get size of projection in pixels
             var xRange = new PixelRange(longitudeRange, a => a.ScaleToWidth(maxWidth));

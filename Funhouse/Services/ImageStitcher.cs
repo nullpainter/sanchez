@@ -30,11 +30,12 @@ namespace Funhouse.Services
                 // Render all images in correct stacking order
                 foreach (var projection in activities.OrderByDescending(p => p.Offset.X))
                 {
+                    // Identify horizontal offset of each image
                     var location = new Point(projection.Offset.X - minOffset, 0);
-                    context.DrawImage(projection.Output, location, PixelColorBlendingMode.Normal, 1.0f);
+                    context.DrawImage(projection.Target, location, PixelColorBlendingMode.Normal, 1.0f);
                 }
             });
-
+            
             return target;
         }
 
@@ -42,14 +43,14 @@ namespace Funhouse.Services
         ///     Initialises the target image, calculating image size based on size of source images and
         ///     adjusting for image offsets.
         /// </summary>
-        private static Image<Rgba32> NewTargetImage(List<ProjectionActivity> projections, int minOffset)
+        private static Image<Rgba32> NewTargetImage(IEnumerable<ProjectionActivity> projections, int minOffset)
         {
             // As we know the horizontal offsets of all images being composed, the output width is the 
             // maximum offset plus the width of the final image, minus the minimum offset.
             var finalProjection = projections.OrderBy(p => p.Offset.X).Last();
             
-            var outputWidth = finalProjection.Offset.X + finalProjection.Output!.Width - minOffset;
-            return new Image<Rgba32>(outputWidth, finalProjection.Output!.Height);
+            var outputWidth = finalProjection.Offset.X + finalProjection.Target!.Width - minOffset;
+            return new Image<Rgba32>(outputWidth, finalProjection.Target!.Height);
         }
     }
 }

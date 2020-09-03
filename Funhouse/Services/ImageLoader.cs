@@ -16,15 +16,16 @@ namespace Funhouse.Services
 
         public ImageLoader(ISatelliteRegistry satelliteRegistry) => _satelliteRegistry = satelliteRegistry;
 
+        // TODO rename this class/method  - suggests we are just loading any old image
         public async Task<ProjectionActivity> LoadAsync(string path)
         {
-            var projectedImage = new ProjectionActivity(path)
+            var activity = new ProjectionActivity(path)
             {
-                Source = await Image.LoadAsync<Rgba32>(path),
-                Definition = _satelliteRegistry.Locate(path)
+                Definition = _satelliteRegistry.Locate(path),
+                Source = await Image.LoadAsync<Rgba32>(path)
             };
 
-            return projectedImage;
+            return activity;
         }
     }
 }

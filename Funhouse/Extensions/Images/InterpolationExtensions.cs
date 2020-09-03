@@ -1,40 +1,61 @@
 ﻿using System;
-using SixLabors.ImageSharp;
+using Funhouse.Models;
+using Funhouse.Models.Configuration;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Funhouse.Extensions.Images
 {
     public static class InterpolationExtensions
     {
-        internal static Rgba32 NearestNeighbour(this Image<Rgba32> source, PointF target)
+        internal static Rgba32 GetInterpolatedPixel(this ImageBuffer image, double targetX, double targetY, InterpolationType interpolationType)
         {
-            var targetX = (int) Math.Round(target.X);
-            var targetY = (int) Math.Round(target.Y);
+            // Interpolate fractional source pixel to target image
+            var targetPixel = interpolationType switch
+            {
+                InterpolationType.NearestNeighbour => image.NearestNeighbour(targetX, targetY),
+                InterpolationType.Bilinear => image.Bilinear(targetX, targetY),
+                _ => throw new ArgumentOutOfRangeException($"Unhandled interpolation type: {interpolationType}")
+            };
 
-            return source[targetX, targetY];
+            return targetPixel;
         }
 
-        internal static Rgba32 Bilinear(this Image<Rgba32> source, PointF target)
+        private static Rgba32 NearestNeighbour(this ImageBuffer image, double targetX, double targetY)
         {
-            var xInt = (int) target.X;
-            var yInt = (int) target.Y;
+            var roundedX = (int) Math.Round(targetX);
+            var roundedY = (int) Math.Round(targetY);
 
+            var index = roundedY * image.Size.Width + roundedX;
+            if (index < 0 || index >= image.Buffer.Length) return Constants.Transparent;
+            
+            return image.Buffer[index];
+        }
+
+        private static Rgba32 Bilinear(this ImageBuffer image, double targetX, double targetY)
+        {
+            var xInt = (int) targetX;
+            var yInt = (int) targetY;
+             
             // Lazy approach for image edge
-            if (xInt + 1 == source.Width || yInt + 1 == source.Height) return source[xInt, yInt];
+            if (xInt + 1 == image.Size.Width || yInt + 1 == image.Size.Height) return NearestNeighbour(image, xInt, yInt);
 
-            var c00 = source[xInt, yInt];
-            var c01 = source[xInt, yInt + 1];
-            var c10 = source[xInt + 1, yInt];
-            var c11 = source[xInt + 1, yInt + 1];
-
-            var amount = new PointF(target.X - xInt, target.Y - yInt);
-
+            var width = image.Size.Width;
+            var baseIndex = yInt * width + xInt;
+            
+            var c00 = image.Buffer[baseIndex];
+            var c01 = image.Buffer[baseIndex + width];
+            var c10 = image.Buffer[baseIndex + 1];
+            var c11 = image.Buffer[baseIndex + 1 + width];
+            
+            var amountX = targetX - xInt;
+            var amountY = targetY - yInt;
+            
             // Even though the IR images are greyscale, calculate RGB separately in case a colour image is passed
-            var red = Interpolation.Blerp(c00.R, c10.R, c01.R, c11.R, amount);
-            var green = Interpolation.Blerp(c00.G, c10.G, c01.G, c11.G, amount);
-            var blue = Interpolation.Blerp(c00.B, c10.B, c01.B, c11.B, amount);
-            var alpha = Interpolation.Blerp(c00.A, c10.A, c01.A, c11.A, amount);
-
+            var red = Interpolation.Blerp(c00.R, c10.R, c01.R, c11.R, amountX, amountY);
+            var green = Interpolation.Blerp(c00.G, c10.G, c01.G, c11.G, amountX, amountY);
+            var blue = Interpolation.Blerp(c00.B, c10.B, c01.B, c11.B, amountX, amountY);
+            var alpha = Interpolation.Blerp(c00.A, c10.A, c01.A, c11.A, amountX, amountY);
+            
             return new Rgba32((byte) red, (byte) green, (byte) blue, (byte) alpha);
         }
     }

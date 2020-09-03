@@ -1,40 +1,83 @@
-﻿using SixLabors.ImageSharp.PixelFormats;
+﻿using Funhouse.Models.Configuration;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Funhouse.Models
 {
     public static class Constants
     {
-        public const string DefinitionsPath = @"Resources\Satellites.json";
-        public const string DefaultUnderlayPath = @"Resources\world.200411.3x21600x10800.jpg";
+        internal const string DefinitionsPath = @"Resources\Satellites.json";
+        internal const string DefaultUnderlayPath = @"Resources\world.200411.3x10848x5424.jpg";
 
-        /// <summary>
-        ///     Width and height of target images, representing 2km spatial resolution. Note that this cannot be changed
-        ///     without also updating image offsets in <c>Satellites.json</c>.
-        /// </summary>
-        internal const int ImageSize = 5424;
+        internal static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
 
-        public static class Earth
+        internal static class Satellite
+        {
+            internal const double DefaultHeight = 35786023.0;
+
+            /// <summary>
+            ///     Supported spatial resolutions of output images.
+            /// </summary>
+            internal static class SpatialResolution
+            {
+                internal const int TwoKm = 2;
+                internal const int FourKm = 4; 
+            }
+
+            internal static class ImageSize
+            {
+                /// <summary>
+                ///     Width and height of target images, representing 2km spatial resolution.
+                /// </summary>
+                internal const int TwoKm = 5424;
+
+                /// <summary>
+                ///     Width and height of target images, representing 4km spatial resolution.
+                /// </summary>
+                internal const int FourKm = 2712;
+            }
+
+            internal static class VisibleRange
+            {
+                internal const double DefaultMinLatitude = -81.3282;
+                internal const double DefaultMaxLatitude = 81.3282;
+            }
+
+            internal static class Offset
+            {
+                /// <summary>
+                ///     2km spatial resolution.
+                /// </summary>
+                internal static readonly ImageOffset TwoKm = new ImageOffset(-0.151844, 0.151844, 0.000056);
+
+                /// <summary>
+                ///     4km spatial resolution.
+                /// </summary>
+                internal static readonly ImageOffset FourKm = new ImageOffset(-0.151816, 0.151816, 0.000112);
+            }
+        }
+
+        internal static class Earth
         {
             /// <summary>
             ///     GRS80 semi-major axis of earth (metres)
             /// </summary>
-            public const double RadiusEquator = 6378137;
+            internal const double RadiusEquator = 6378137;
 
             /// <summary>
             ///     GRS80 semi-minor axis of earth (metres)
             /// </summary>
-            public const double RadiusPolar = 6356752.31414;
+            internal const double RadiusPolar = 6356752.31414;
 
-            public const double Eccentricity = 0.0818191910435;
+            internal const double Eccentricity = 0.0818191910435;
         }
 
-        public static class DebugColours
+        internal static class DebugColours
         {
-            public static readonly Rgba32 OutsideDisc = Rgba32.ParseHex("556270");
-            public static readonly Rgba32 OutsideSatellite = Rgba32.ParseHex("4ECDC4");
-            public static readonly Rgba32 OverlapCrop = Rgba32.ParseHex("C7F464");
-            public static readonly Rgba32 Spare2 = Rgba32.ParseHex("FF6B6B");
-            public static readonly Rgba32 Spare3 = Rgba32.ParseHex("C44D58");
+            internal static readonly Rgba32 OutsideDisc = Rgba32.ParseHex("556270");
+            internal static readonly Rgba32 OutsideSatellite = Rgba32.ParseHex("4ECDC4");
+            internal static readonly Rgba32 OverlapCrop = Rgba32.ParseHex("C7F464");
+            internal static readonly Rgba32 Spare2 = Rgba32.ParseHex("FF6B6B");
+            internal static readonly Rgba32 Spare3 = Rgba32.ParseHex("C44D58");
         }
     }
 }

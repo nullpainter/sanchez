@@ -3,31 +3,28 @@ using Funhouse.ImageProcessing.Mask;
 using Funhouse.ImageProcessing.Projection;
 using Funhouse.Models;
 using Funhouse.Models.Projections;
+using MathNet.Spatial.Units;
 using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace Funhouse.Services
 {
     public interface IImageProjector
     {
-        Image<Rgba32> Reproject(ProjectionActivity activity, CommandLineOptions options);
+        Image<Rgba32> Reproject(ProjectionActivity activity, RenderOptions options);
     }
 
     public class ImageProjector : IImageProjector
     {
-        public Image<Rgba32> Reproject(ProjectionActivity activity, CommandLineOptions options)
+        public Image<Rgba32> Reproject(ProjectionActivity activity, RenderOptions options)
         {
             LogStatistics(activity);
 
             using var source = activity.Source!;
 
-            // Normalise to 2km spatial resolution to simplify maths
-            source.Mutate(c => c.Resize(Constants.ImageSize, Constants.ImageSize));
-
             // Mask all pixels outside the Earth to assist image stitching of projected images
-            if (options.BlurEdges) source.BlurEdges();
+            source.RemoveBackground();
 
             // Perform target projection
             return activity.Reproject(options);
@@ -42,13 +39,13 @@ namespace Funhouse.Services
 
             Log.Information("{definition:l0} range {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                definition.LongitudeRange.Start.Degrees,
-                definition.LongitudeRange.End.Degrees);
+                Angle.FromRadians(definition.LongitudeRange.Start).Degrees,
+                Angle.FromRadians(definition.LongitudeRange.End).Degrees);
 
             Log.Information("{definition:l0} crop {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                longitudeCrop.Start.Degrees,
-                longitudeCrop.End.Degrees);
+                Angle.FromRadians(longitudeCrop.Start).Degrees,
+                Angle.FromRadians(longitudeCrop.End).Degrees);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Funhouse.Extensions;
 using Funhouse.Models.Angles;
-using MathNet.Spatial.Units;
 
 namespace Funhouse.Models.Configuration
 {
@@ -11,20 +10,23 @@ namespace Funhouse.Models.Configuration
         /// <param name="longitude"></param>
         /// <param name="latitudeRange"></param>
         /// <param name="longitudeRange"></param>
-        /// <param name="imageOffset"></param>
         /// <param name="height">Satellite height above ellipsoid (metres)</param>
-        public SatelliteDefinition(string filePrefix, string displayName, Angle longitude, 
+        /// <param name="brightness"></param>
+        public SatelliteDefinition(
+            string filePrefix, string displayName, double longitude,
             Range latitudeRange,
-            Range longitudeRange, ImageOffset imageOffset, double height = 35786023)
+            Range longitudeRange,
+            double height = Constants.Satellite.DefaultHeight,
+            float brightness = 1.0f)
         {
             FilePrefix = filePrefix;
             DisplayName = displayName;
             LatitudeRange = latitudeRange;
             LongitudeRange = longitudeRange;
-            ImageOffset = imageOffset;
             Height = height;
+            Brightness = brightness;
 
-            // Convert satellite longitude to Mercator scale of -180 to 180 degrees
+            // Convert satellite longitude to lat/long scale of -180 to 180 degrees
             Longitude = longitude.NormaliseLongitude();
         }
 
@@ -32,8 +34,8 @@ namespace Funhouse.Models.Configuration
         public string DisplayName { get; }
         public Range LatitudeRange { get; }
         public Range LongitudeRange { get; }
-        public Angle Longitude { get; }
+        public double Longitude { get; }
         public double Height { get; }
-        public ImageOffset ImageOffset { get; }
+        public float Brightness { get; }
     }
 }

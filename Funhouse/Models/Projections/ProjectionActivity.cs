@@ -14,7 +14,7 @@ namespace Funhouse.Models.Projections
 
         public SatelliteDefinition? Definition { get; set; }
         public Image<Rgba32>? Source { get; set; }
-        public Image<Rgba32>? Output { get; set; }
+        public Image<Rgba32>? Target { get; set; }
 
         public string Path { get; }
         public Point Offset { get; set; }

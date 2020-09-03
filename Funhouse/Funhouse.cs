@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Funhouse.Models;
 using Funhouse.Services;
+using Funhouse.Services.Underlay;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace Funhouse
 {
@@ -12,19 +14,26 @@ namespace Funhouse
     {
         private readonly ISatelliteRegistry _satelliteRegistry;
         private readonly ICompositor _compositor;
+        private readonly IUnderlayCacheRepository _underlayCacheRepository;
 
-        public Funhouse(ISatelliteRegistry satelliteRegistry, ICompositor compositor)
+        public Funhouse(ISatelliteRegistry satelliteRegistry, ICompositor compositor, IUnderlayCacheRepository underlayCacheRepository)
         {
             _satelliteRegistry = satelliteRegistry;
             _compositor = compositor;
+            _underlayCacheRepository = underlayCacheRepository;
         }
-        
+
         public async Task ProcessAsync()
         {
+            var stopwatch = Stopwatch.StartNew();
+
+            _underlayCacheRepository.Initialise();
             await InitialiseSatelliteRegistryAsync();
-            await _compositor.ComposeAsync(); 
+            await _compositor.ComposeAsync();
+
+            Log.Information("Elapsed time: {elapsed}", stopwatch.Elapsed);
         }
-        
+
         /// <summary>
         ///     Registers all known satellites.
         /// </summary>

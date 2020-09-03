@@ -7,7 +7,6 @@ using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Funhouse.Models.Projections;
 using Funhouse.Projections;
-using MathNet.Spatial.Units;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
@@ -19,19 +18,16 @@ namespace Funhouse.ImageProcessing.Projection
     {
         private readonly ProjectionActivity _activity;
         private readonly Image<Rgba32> _target;
-        private readonly CommandLineOptions _options;
         private readonly int _xOffset, _yOffset;
         private readonly Range _latitudeRange, _longitudeRange;
-
-        private static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
 
         /// <summary>
         ///     Longitude outside of the longitude range where the image is blended.
         /// </summary>
-        private readonly Angle _blendEndLongitude;
+        private readonly double _blendEndLongitude;
 
         /// <summary>
-        ///    Ratio of source image which has an alpha mask applied to blend it with overlapping images. 
+        ///     Ratio of source image which has an alpha mask applied to blend it with overlapping images.
         /// </summary>
         private const float BlendRatio = 0.05f;
 
@@ -39,9 +35,10 @@ namespace Funhouse.ImageProcessing.Projection
             Image<Rgba32> target,
             int xOffset,
             int yOffset,
-            CommandLineOptions options)
+            RenderOptions options) 
         {
             Guard.Against.Null(activity.Definition, nameof(activity.Definition));
+            Guard.Against.Null(activity.Source, nameof(activity.Source));
 
             _activity = activity;
             _target = target;
@@ -49,12 +46,15 @@ namespace Funhouse.ImageProcessing.Projection
             _yOffset = yOffset;
             _options = options;
 
+            _sourceBuffer = ImageBuffer.ToBuffer(activity.Source);
+            _imageOffset = options.ImageOffset;
+
             // Normalise longitude range so it doesn't wrap around the map
             _longitudeRange = activity.LongitudeRange.UnwrapLongitude();
             _latitudeRange = activity.Definition.LatitudeRange;
 
             // Calculate end longitude for blend
-            var overlap = Angle.FromRadians(BlendRatio * (_longitudeRange.End - _longitudeRange.Start).Radians);
+            var overlap = BlendRatio * (_longitudeRange.End - _longitudeRange.Start);
             _blendEndLongitude = _longitudeRange.End + overlap;
 
             Guard.Against.Null(activity.Source, nameof(activity.Source));
@@ -62,29 +62,29 @@ namespace Funhouse.ImageProcessing.Projection
         }
 
         private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new ConcurrentDictionary<int, LatitudeCalculations>();
+        private readonly ImageBuffer _sourceBuffer;
+        private readonly ImageOffset _imageOffset;
+        private readonly RenderOptions _options;
 
         public void Invoke(int y)
         {
             var span = _target.GetPixelRowSpan(y);
 
             // Calculate or retrieve the latitude calculation component of geostationary projection
-            var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset); 
+            var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset);
 
             // Convert image x,y to Mercator projection angle
             var targetWidth = _activity.Source!.Width * 2;
 
             for (var x = 0; x < span.Length; x++)
             {
-                var projectionAngle = ProjectionAngle.FromPixelCoordinates(new Point(x + _xOffset, y + _yOffset), targetWidth, _activity.Source!.Height);
-                
-                var longitude = projectionAngle.X;
-                var latitude = projectionAngle.Y;
+                ProjectionAngle.FromPixelCoordinates(x + _xOffset, y + _yOffset, targetWidth, _activity.Source!.Height, out var longitude, out var latitude);
 
                 // Convert latitude/longitude to geostationary scanning angle
-                var scanningAngle = GeostationaryProjection.ToScanningAngle(latitudeCalculations, longitude, _activity.Definition!);
+                GeostationaryProjection.ToScanningAngle(latitudeCalculations, longitude, _activity.Definition!, out var scanningX, out var scanningY);
 
                 // Map pixel from satellite image back to target image
-                span[x] = GetTargetColour(_activity, scanningAngle, latitude, longitude);
+                span[x] = GetTargetColour(scanningX, scanningY, latitude, longitude);
             }
         }
 
@@ -100,11 +100,10 @@ namespace Funhouse.ImageProcessing.Projection
             return LatitudeCalculationCache.GetOrAdd(y, angle =>
             {
                 // Convert pixel row to latitude
-                var projectionAngle = ProjectionAngle.FromPixelCoordinates(new Point(0, y), target.Width, target.Height + yOffset * 2);
-                var latitude = projectionAngle.Y;
+                ProjectionAngle.FromPixelCoordinates(0, y, target.Width, target.Height + yOffset * 2, out _, out var latitude);
 
                 // Perform and cache intermediary geostationary latitude calculations
-                return GeostationaryProjection.LatitudeCalculations(latitude);
+                return GeostationaryProjection.LatitudeCalculations(-latitude);
             });
         }
 
@@ -112,50 +111,41 @@ namespace Funhouse.ImageProcessing.Projection
         ///     Gets the target pixel colour for a given scanning angle and longitude. Images are blended on their right-hand
         ///     side with an alpha gradient in order to smooth the transition between overlapping images.
         /// </summary>
-        /// <param name="activity">source image and satellite definition</param>
-        /// <param name="scanningAngle">geostationary scanning angle</param>
+        /// <param name="scanningX">geostationary scanning angle</param>
+        /// <param name="scanningY">geostationary scanning angle</param>
         /// <param name="latitude"></param>
         /// <param name="longitude"></param>
         /// <returns>interpolated pixel value from source image at the given scanning angle</returns>
-        private Rgba32 GetTargetColour(ProjectionActivity activity, ScanningAngle? scanningAngle, Angle latitude, Angle longitude)
+        private Rgba32 GetTargetColour(double scanningX, double scanningY, double latitude, double longitude)
         {
             // Ignore pixels outside of disc and outside of crop region
-            if (scanningAngle == null
-                || longitude < _longitudeRange.Start
-                || longitude > _blendEndLongitude
-                || latitude < _latitudeRange.Start
-                || latitude > _latitudeRange.End) return Transparent;
+            if (double.IsNaN(scanningX) || double.IsNaN(scanningY)
+                                        || longitude < _longitudeRange.Start
+                                        || longitude > _blendEndLongitude
+                                        || latitude < _latitudeRange.Start
+                                        || latitude > _latitudeRange.End) return Constants.Transparent;
 
             // Map pixel from source image if not blending
-            if (longitude <= _longitudeRange.End) return InterpolatePixel(activity, scanningAngle.Value);
+            if (longitude <= _longitudeRange.End) return InterpolatePixel(scanningX, scanningY);
 
             // Blending, so identify target alpha
-            var alpha = 1 - (longitude.Radians - _longitudeRange.End.Radians) / (_blendEndLongitude.Radians - _longitudeRange.End.Radians);
+            var alpha = 1 - (longitude - _longitudeRange.End) / (_blendEndLongitude - _longitudeRange.End);
 
             // Calculate target pixel and blend
-            var pixel = InterpolatePixel(activity, scanningAngle.Value);
-            pixel.A = (byte) Math.Round(alpha * pixel.A);
+            var pixel = InterpolatePixel(scanningX, scanningY);
 
+            pixel.A = (byte) Math.Round(alpha * pixel.A);
             return pixel;
         }
 
         /// <summary>
         ///     Returns the interpolated pixel at a specified scanning angle.
         /// </summary>
-        private Rgba32 InterpolatePixel(ProjectionActivity activity, ScanningAngle scanningAngle)
+        private Rgba32 InterpolatePixel(double scanningX, double scanningY)
         {
             // Convert geostationary scanning angle to image coordinates
-            var targetPosition = GeostationaryProjection.ToImageCoordinates(scanningAngle, activity.Definition!);
-
-            // Interpolate fractional source pixel to target image
-            var targetPixel = _options.InterpolationType switch
-            {
-                InterpolationType.NearestNeighbour => activity.Source!.NearestNeighbour(targetPosition),
-                InterpolationType.Bilinear => activity.Source!.Bilinear(targetPosition),
-                _ => throw new ArgumentOutOfRangeException($"Unhandled interpolation type: {_options.InterpolationType}")
-            };
-
-            return targetPixel;
+            _imageOffset.ToImageCoordinates(scanningX, scanningY, out var targetX, out var targetY);
+            return _sourceBuffer.GetInterpolatedPixel(targetX, targetY, _options.InterpolationType);
         }
     }
 }

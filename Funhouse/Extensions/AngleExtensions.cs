@@ -1,5 +1,5 @@
 ﻿using System;
-using MathNet.Spatial.Units;
+using MathNet.Numerics;
 
 namespace Funhouse.Extensions
 {
@@ -8,14 +8,13 @@ namespace Funhouse.Extensions
         /// <summary>
         ///     Returns an angle which is within -180 and 180 degrees longitude, wrapping as required.
         /// </summary>
-        public static Angle NormaliseLongitude(this Angle angle)
-        {
-            return Angle.FromRadians(angle.Radians.Limit(-Math.PI, Math.PI));
-        }
-        
-        
-        public static int ScaleToWidth(this Angle angle, int width) => (int) Math.Round(width * (angle.Radians + Math.PI) / MathNet.Numerics.Constants.Pi2);
-        public static int ScaleToHeight(this Angle angle, int height) => (int) Math.Round(height * (angle.Radians + MathNet.Numerics.Constants.PiOver2) / Math.PI);
+        /// <param name="angle">angle in radians</param>
+        public static double NormaliseLongitude(this double angle) => angle.Limit(-Math.PI, Math.PI);
 
+        // TODO note that these are all in radians
+        public static float ScaleToWidthF(this double angle, int width) => (float) (width * (angle + Math.PI) / Constants.Pi2);
+        public static float ScaleToHeightF(this double angle, int height) => (float) (height * (angle + Constants.PiOver2) / Math.PI);
+        public static int ScaleToWidth(this double angle, int width) => (int) Math.Round(ScaleToWidthF(angle, width));
+        public static int ScaleToHeight(this double angle, int height) => (int) Math.Round(ScaleToHeightF(angle, height));
     }
 }

@@ -1,40 +1,40 @@
 ﻿[
   {
     // GOES-16
-    "FilePrefix": "GOES16",
+    "FilePrefix": "GOES16_FD_CH13",
     "DisplayName": "GOES-16",
+    
     // Nominal satellite subpoint longitude is -75.2 degrees east, however it has been resampled to be
     // centred at -75.0 degrees east longitude.
     "Longitude": -75.0,
-    "Height": 35786023.0,
     "VisibleRange": {
       "MinLongitude": -156.2995,
-      "MaxLongitude": 6.2995,
-      "MinLatitude": -81.3282,
-      "MaxLatitude": 81.3282
+      "MaxLongitude": 6.2995
     },
-    "ImageOffset": {
-      "X": -0.151844,
-      "Y": 0.151844,
-      "ScaleFactor": 0.000056
-    }
+    "Brightness": 0.75
   },
   {
     // GOES-17
-    "FilePrefix": "GOES17",
+    "FilePrefix": "GOES17_FD_CH13_",
     "DisplayName": "GOES-17",
     "Longitude": -137.2,
-    "Height": 35786023.0,
     "VisibleRange": {
       "MinLongitude": 141.7005,
-      "MaxLongitude": -55.7005,
-      "MinLatitude": -81.3282,
-      "MaxLatitude": 81.3282
+      "MaxLongitude": -55.7005
     },
-    "ImageOffset": {
-      "X": -0.151844,
-      "Y": 0.151844,
-      "ScaleFactor": 0.000056
-    }
+    "Brightness": 0.75
+  },
+  {
+    // Himawari-8
+    "FilePrefix": "Himawari8_FD_IR_",
+    "DisplayName": "Himawari-8",
+    "Longitude": 139.9, // FIXME - hacked because image tweaked
+    
+    // Note - manually calculated based on visible 
+    "VisibleRange": {
+      "MinLongitude": 60,
+      "MaxLongitude": -140
+    },
+    "Brightness": 1.0
   }
 ]

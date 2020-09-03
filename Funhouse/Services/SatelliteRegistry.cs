@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Funhouse.Models.Configuration;
-using Funhouse.Models.Configuration.Definitions;
 using MathNet.Spatial.Units;
 using Newtonsoft.Json;
 using Range = Funhouse.Models.Angles.Range;
@@ -30,17 +29,17 @@ namespace Funhouse.Services
             _definitions = definitions.Select(d => new SatelliteDefinition(
                 d.FilePrefix!,
                 d.DisplayName!,
-                Angle.FromDegrees(d.Longitude),
+                Angle.FromDegrees(d.Longitude).Radians,
                 
                 new Range(
-                    Angle.FromDegrees(d.VisibleRange.MinLatitude),
-                    Angle.FromDegrees(d.VisibleRange.MaxLatitude)),
+                    Angle.FromDegrees(d.VisibleRange.MinLatitude).Radians,
+                    Angle.FromDegrees(d.VisibleRange.MaxLatitude).Radians),
                 
                 new Range(
-                    Angle.FromDegrees(d.VisibleRange.MinLongitude),
-                    Angle.FromDegrees(d.VisibleRange.MaxLongitude)),
-                new ImageOffset(Angle.FromRadians(d.ImageOffset.X), Angle.FromRadians(d.ImageOffset.Y), d.ImageOffset.ScaleFactor),
-                d.Height)).ToList();
+                    Angle.FromDegrees(d.VisibleRange.MinLongitude).Radians,
+                    Angle.FromDegrees(d.VisibleRange.MaxLongitude).Radians),
+                d.Height,
+                d.Brightness)).ToList();
 
             _initialised = true;
         }
