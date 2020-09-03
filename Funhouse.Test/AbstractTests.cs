@@ -5,6 +5,7 @@ using Funhouse.Models;
 using Funhouse.Services;
 using NUnit.Framework;
 using SimpleInjector;
+using SixLabors.ImageSharp;
 
 namespace Funhouse.Test
 {
@@ -24,7 +25,7 @@ namespace Funhouse.Test
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            Container = new Container().AddAllService(new CommandLineOptions());
+            Container = new Container().AddAllService(new CommandLineOptions(), new RenderOptions(1f, 1f, Color.Aqua));
         }
 
         protected T GetService<T>() where T : class => Container.GetInstance<T>();
