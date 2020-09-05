@@ -20,6 +20,10 @@ namespace Funhouse.Models.CommandLine
 
         [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are N (nearest neighbour), B (bilinear)", Required = false, Default = InterpolationOptions.B)]
         public InterpolationOptions InterpolationType { get; [UsedImplicitly] set; }
+        
+        // TODO validate this is being used when stitching/equirectangular
+        [Option('l', "longitude", HelpText = "Target longitude for geostationary satellite projection", Required = false)]
+        public double? Longitude { get; [UsedImplicitly] set; } = null!;
 
         [Option('m', "mode", HelpText = "Render mode. Valid values are G (geostationary), E (equirectangular)", Required = false, Default = ProjectionOptions.G)]
         public ProjectionOptions ProjectionType { get; [UsedImplicitly] set; }

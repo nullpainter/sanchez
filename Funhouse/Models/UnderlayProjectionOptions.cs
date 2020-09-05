@@ -1,13 +1,12 @@
 ﻿using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
-using SixLabors.ImageSharp;
 
 namespace Funhouse.Models
 {
     public class UnderlayProjectionOptions : ProjectionOptions
     {
         public string? UnderlayPath { get; }
-        public Size? TargetSize { get; }
+        public int? TargetHeight { get; }
         public Range? LatitudeCrop { get; }
         public Range? LongitudeCrop { get; }
 
@@ -16,12 +15,12 @@ namespace Funhouse.Models
             InterpolationType interpolation,
             int imageSize,
             string? underlayPath = null,
-            Size? targetSize = null,
+            int? targetHeight = null,
             Range? latitudeCrop = null, 
             Range? longitudeCrop = null) : base(projection, interpolation, imageSize)
         {
             UnderlayPath = underlayPath ?? Constants.DefaultUnderlayPath;
-            TargetSize = targetSize;
+            TargetHeight = targetHeight;
             LatitudeCrop = latitudeCrop;
             LongitudeCrop = longitudeCrop;
         }

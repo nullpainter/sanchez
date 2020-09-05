@@ -33,6 +33,7 @@ namespace Funhouse.Services
         List<ProjectionActivity> GetUnmapped();
         Task RenderGeostationaryUnderlayAsync();
         void GetVisibleRange(out Range latitudeRange, out Range longitudeRange);
+        Range GetVisibleLongitudeRange();
     }
 
     public class ProjectionActivityOperations : IProjectionActivityOperations
@@ -67,13 +68,18 @@ namespace Funhouse.Services
         
         public void GetVisibleRange(out Range latitudeRange, out Range longitudeRange)
         {
-            var sortedActivities = _activities.OrderBy(p => p.Offset.X).ToList();
-
             latitudeRange = new Range(
                 _activities.Min(a => a.LatitudeRange.Start),
                 _activities.Max(a => a.LatitudeRange.End));
 
-            longitudeRange = new Range(
+            longitudeRange = GetVisibleLongitudeRange();
+        } 
+        
+        public Range GetVisibleLongitudeRange()
+        {
+            var sortedActivities = _activities.OrderBy(p => p.Offset.X).ToList();
+
+            return new Range(
                 sortedActivities.First().LongitudeRange.Start,
                 sortedActivities.Last().LongitudeRange.End
             ).UnwrapLongitude();

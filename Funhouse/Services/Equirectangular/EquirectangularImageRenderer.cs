@@ -65,7 +65,7 @@ namespace Funhouse.Services.Equirectangular
                 _renderOptions.InterpolationType,
                 _renderOptions.ImageSize,
                 _commandLineOptions.UnderlayPath,
-                stitched.Size(),
+                stitched.Height,
                 latitudeRange, longitudeRange);
 
             Log.Information("Retrieving underlay");
@@ -81,14 +81,7 @@ namespace Funhouse.Services.Equirectangular
 
             // Render underlay and optionally crop to size
             Log.Information("Blending with underlay");
-            
-            var xPixelRange = PixelRange.ToPixelRangeX(longitudeRange, underlay.Width);
-            var yPixelRange = PixelRange.ToPixelRangeY(latitudeRange, underlay.Height);
-            
-            Console.WriteLine("Underlay dimensions: " + underlay.Width + " x " + underlay.Height);
-            Console.WriteLine("IR dimensions: " + stitched.Width + " x " + stitched.Height);
-            
-            underlay.Mutate(ctx => ctx.DrawImage(stitched, ), PixelColorBlendingMode.Screen, 1.0f));
+            underlay.Mutate(ctx => ctx.DrawImage(stitched, PixelColorBlendingMode.Screen, 1.0f));
 
             // Crop composited image
             if (cropRectangle != null)
