@@ -45,7 +45,7 @@ namespace Funhouse.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            GeostationaryProjection.ToGeodetic(scanningX, scanningY, definition, out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition, out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(-0.4489090116682934, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(-91.39243691622593, Precision);
@@ -66,7 +66,7 @@ namespace Funhouse.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            GeostationaryProjection.ToGeodetic(scanningX, scanningY, definition, out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition, out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(-38.70625734950147, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(175.9626023681634, Precision);
@@ -97,7 +97,7 @@ namespace Funhouse.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            GeostationaryProjection.ToGeodetic(scanningX, scanningY, definition, out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition, out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(21.869911403254573, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(-159.66206692006023, Precision);
@@ -128,7 +128,7 @@ namespace Funhouse.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            GeostationaryProjection.ToGeodetic(scanningX, scanningY, definition, out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition, out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(28.007393788242464, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(-115.44783176403854, Precision);
