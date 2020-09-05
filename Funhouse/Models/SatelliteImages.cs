@@ -5,24 +5,24 @@ using Funhouse.Models.Projections;
 
 namespace Funhouse.Models
 {
-    public class ProjectionActivities
+    public class SatelliteImages
     {
-        public List<ProjectionActivity> Activities { get; }
+        public List<SatelliteImage> Images { get; }
 
-        public ProjectionActivities(List<ProjectionActivity> activities) => Activities = activities;
+        public SatelliteImages(List<SatelliteImage> activities) => Images = activities;
             
         public void GetVisibleRange(out Range latitudeRange, out Range longitudeRange)
         {
             latitudeRange = new Range(
-                Activities.Min(a => a.LatitudeRange.Start),
-                Activities.Max(a => a.LatitudeRange.End));
+                Images.Min(a => a.LatitudeRange.Start),
+                Images.Max(a => a.LatitudeRange.End));
 
             longitudeRange = GetVisibleLongitudeRange();
         } 
         
         public Range GetVisibleLongitudeRange()
         {
-            var sortedActivities = Activities.OrderBy(p => p.OffsetX).ToList();
+            var sortedActivities = Images.OrderBy(p => p.OffsetX).ToList();
 
             return new Range(
                 sortedActivities.First().LongitudeRange.Start,
@@ -35,6 +35,6 @@ namespace Funhouse.Models
         ///     Gets projection activities which don't have an associated satellite definition.
         /// </summary>
         /// <returns></returns>
-        public List<ProjectionActivity> GetUnmapped() => Activities!.Where(p => p.Definition == null).ToList();
+        public List<SatelliteImage> GetUnmapped() => Images!.Where(p => p.Definition == null).ToList();
     }
 }

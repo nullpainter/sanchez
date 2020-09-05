@@ -36,12 +36,12 @@ namespace Funhouse.ImageProcessing.Underlay
             var span = _target.GetPixelRowSpan(y);
             var scanningY = _options.ImageOffset.ToVerticalScanningAngle(y);
 
-            var verticalScanningCalculations = GeostationaryProjection.VerticalScanningCalculations(scanningY, _definition);
+            var verticalScanningCalculations = ReverseGeostationaryProjection.VerticalScanningCalculations(scanningY, _definition);
 
             for (var x = 0; x < span.Length; x++)
             {
                 var scanningX = _options.ImageOffset.ToHorizontalScanningAngle(x);
-                GeostationaryProjection.ToGeodetic(scanningX, verticalScanningCalculations, _definition, out var latitude, out var longitude);
+                ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, verticalScanningCalculations, _definition, out var latitude, out var longitude);
 
                 if (double.IsNaN(longitude) || double.IsNaN(latitude))
                 {

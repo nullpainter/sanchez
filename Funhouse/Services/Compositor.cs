@@ -61,7 +61,7 @@ namespace Funhouse.Services
 
             Log.Information("Images loaded");
 
-            var activities = new ProjectionActivities(satelliteImageLoadTasks.Select(task => task.Result).ToList());
+            var activities = new SatelliteImages(satelliteImageLoadTasks.Select(task => task.Result).ToList());
             _activityOperations.Initialise(activities);
 
             // Verify that all images have an associated projection definition
@@ -77,7 +77,7 @@ namespace Funhouse.Services
 
             _activityOperations.CalculateOverlap();
 
-            foreach (var activity in activities.Activities)
+            foreach (var activity in activities.Images)
             {
                 activity
                     .CropBorders()
@@ -91,7 +91,7 @@ namespace Funhouse.Services
             {
                 case ProjectionType.Geostationary:
 
-                    foreach (var activity in activities.Activities)
+                    foreach (var activity in activities.Images)
                     {
                         await _activityOperations.RenderGeostationaryUnderlayAsync(activity);
                     }

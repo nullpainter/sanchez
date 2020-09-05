@@ -7,7 +7,7 @@ namespace Funhouse.Services
 {
     public interface IImageLoader
     {
-        Task<ProjectionActivity> LoadAsync(string path);
+        Task<SatelliteImage> LoadAsync(string path);
     }
 
     public class ImageLoader : IImageLoader
@@ -17,12 +17,12 @@ namespace Funhouse.Services
         public ImageLoader(ISatelliteRegistry satelliteRegistry) => _satelliteRegistry = satelliteRegistry;
 
         // TODO rename this class/method  - suggests we are just loading any old image
-        public async Task<ProjectionActivity> LoadAsync(string path)
+        public async Task<SatelliteImage> LoadAsync(string path)
         {
-            var activity = new ProjectionActivity(path)
+            var activity = new SatelliteImage(path)
             {
                 Definition = _satelliteRegistry.Locate(path),
-                Source = await Image.LoadAsync<Rgba32>(path)
+                Image = await Image.LoadAsync<Rgba32>(path)
             };
 
             return activity;

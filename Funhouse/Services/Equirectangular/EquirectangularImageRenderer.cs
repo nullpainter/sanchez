@@ -15,7 +15,7 @@ namespace Funhouse.Services.Equirectangular
 {
     public interface IEquirectangularImageRenderer
     {
-        Task<Image<Rgba32>> StitchImagesAsync(ProjectionActivities activities);
+        Task<Image<Rgba32>> StitchImagesAsync(SatelliteImages activities);
     }
 
     public class EquirectangularImageRenderer : IEquirectangularImageRenderer
@@ -40,9 +40,9 @@ namespace Funhouse.Services.Equirectangular
             _underlayService = underlayService;
         } 
         
-        public async Task<Image<Rgba32>> StitchImagesAsync(ProjectionActivities activities)
+        public async Task<Image<Rgba32>> StitchImagesAsync(SatelliteImages activities)
         {
-            var stitched = _imageStitcher.Stitch(activities.Activities);
+            var stitched = _imageStitcher.Stitch(activities.Images);
 
             // Calculate crop region if required
             Rectangle? cropRectangle = null;

@@ -12,10 +12,10 @@ namespace Funhouse.ImageProcessing.Projection
 {
     public static class ReprojectExtensions
     {
-        public static Image<Rgba32> Reproject(this ProjectionActivity activity, RenderOptions options)
+        public static Image<Rgba32> Reproject(this SatelliteImage image, RenderOptions options)
         {
-            Guard.Against.Null(activity.Definition, nameof(activity.Definition));
-            var definition = activity.Definition;
+            Guard.Against.Null(image.Definition, nameof(image.Definition));
+            var definition = image.Definition;
 
             // Preserve 2:1 equirectangular aspect ratio
             var maxWidth = options.ImageSize * 2;
@@ -54,7 +54,7 @@ namespace Funhouse.ImageProcessing.Projection
             Log.Information("{definition:l0} Reprojecting", definition.DisplayName);
 
             // Perform reprojection
-            var operation = new ReprojectRowOperation(activity, target, xRange.Start, yRange.Start, options);
+            var operation = new ReprojectRowOperation(image, target, xRange.Start, yRange.Start, options);
             ParallelRowIterator.IterateRows(Configuration.Default, target.Bounds(), in operation);
 
             return target;

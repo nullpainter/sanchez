@@ -16,7 +16,7 @@ namespace Funhouse.ImageProcessing.Projection
 {
     public readonly struct ReprojectRowOperation : IRowOperation
     {
-        private readonly ProjectionActivity _activity;
+        private readonly SatelliteImage _image;
         private readonly Image<Rgba32> _target;
         private readonly int _xOffset, _yOffset;
         private readonly Range _latitudeRange, _longitudeRange;
@@ -31,34 +31,35 @@ namespace Funhouse.ImageProcessing.Projection
         /// </summary>
         private const float BlendRatio = 0.05f;
 
-        public ReprojectRowOperation(ProjectionActivity activity,
+        public ReprojectRowOperation(
+            SatelliteImage image,
             Image<Rgba32> target,
             int xOffset,
             int yOffset,
             RenderOptions options) 
         {
-            Guard.Against.Null(activity.Definition, nameof(activity.Definition));
-            Guard.Against.Null(activity.Source, nameof(activity.Source));
+            Guard.Against.Null(image.Definition, nameof(image.Definition));
+            Guard.Against.Null(image.Image, nameof(image.Image));
 
-            _activity = activity;
+            _image = image;
             _target = target;
             _xOffset = xOffset;
             _yOffset = yOffset;
             _options = options;
 
-            _sourceBuffer = ImageBuffer.ToBuffer(activity.Source);
+            _sourceBuffer = ImageBuffer.ToBuffer(image.Image);
             _imageOffset = options.ImageOffset;
 
             // Normalise longitude range so it doesn't wrap around the map
-            _longitudeRange = activity.LongitudeRange.UnwrapLongitude();
-            _latitudeRange = activity.Definition.LatitudeRange;
+            _longitudeRange = image.LongitudeRange.UnwrapLongitude();
+            _latitudeRange = image.Definition.LatitudeRange;
 
             // Calculate end longitude for blend
             var overlap = BlendRatio * (_longitudeRange.End - _longitudeRange.Start);
             _blendEndLongitude = _longitudeRange.End + overlap;
 
-            Guard.Against.Null(activity.Source, nameof(activity.Source));
-            Guard.Against.Null(activity.Definition, nameof(activity.Definition));
+            Guard.Against.Null(image.Image, nameof(image.Image));
+            Guard.Against.Null(image.Definition, nameof(image.Definition));
         }
 
         private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new ConcurrentDictionary<int, LatitudeCalculations>();
@@ -74,15 +75,15 @@ namespace Funhouse.ImageProcessing.Projection
             var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset);
 
             // Convert image x,y to Mercator projection angle
-            var targetWidth = _activity.Source!.Width * 2;
-            var projectionY = ProjectionAngle.FromY(y + _yOffset, _activity.Source!.Height);
+            var targetWidth = _image.Image!.Width * 2;
+            var projectionY = ProjectionAngle.FromY(y + _yOffset, _image.Image!.Height);
 
             for (var x = 0; x < span.Length; x++)
             {
                 var projectionX = ProjectionAngle.FromX(x + _xOffset, targetWidth);
 
                 // Convert latitude/longitude to geostationary scanning angle
-                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _activity.Definition!, out var scanningX, out var scanningY);
+                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _image.Definition!, out var scanningX, out var scanningY);
 
                 // Map pixel from satellite image back to target image
                 span[x] = GetTargetColour(scanningX, scanningY, projectionY, projectionX);

@@ -14,7 +14,6 @@ namespace Funhouse.Builders
         {
             container.RegisterSingleton<ICompositor, Compositor>();
             container.RegisterSingleton<IImageStitcher, ImageStitcher>();
-            container.RegisterSingleton<IImageProjector, ImageProjector>();
             container.RegisterSingleton<IImageLoader, ImageLoader>();
             container.RegisterSingleton<IUnderlayCache, UnderlayCache>();
             container.RegisterSingleton<IUnderlayService, UnderlayService>();

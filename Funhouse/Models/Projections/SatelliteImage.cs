@@ -5,16 +5,12 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Funhouse.Models.Projections
 {
-    public class ProjectionActivity
+    public class SatelliteImage
     {
-        public ProjectionActivity(string path)
-        {
-            Path = path;
-        }
+        public SatelliteImage(string path) => Path = path;
 
         public SatelliteDefinition? Definition { get; set; }
-        public Image<Rgba32>? Source { get; set; }
-        public Image<Rgba32>? Target { get; set; }
+        public Image<Rgba32>? Image { get; set; }
 
         public string Path { get; }
         public int OffsetX { get; set; }
