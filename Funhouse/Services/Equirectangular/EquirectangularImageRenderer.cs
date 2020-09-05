@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Funhouse.Extensions.Images;
@@ -44,13 +45,13 @@ namespace Funhouse.Services.Equirectangular
         
         public async Task<Image<Rgba32>> StitchImagesAsync(List<ProjectionActivity> activities)
         {
-            var target = _imageStitcher.Stitch(activities);
+            var stitched = _imageStitcher.Stitch(activities);
 
             // Calculate crop region if required
             Rectangle? cropRectangle = null;
             if (_commandLineOptions.AutoCrop)
             {
-                cropRectangle = target.AutoCrop();
+                cropRectangle = stitched.AutoCrop();
                 if (cropRectangle == null) Log.Error("Unable to autocrop bounds");
                 else Log.Information("Cropped image size: {width} x {height} px", cropRectangle.Value.Width, cropRectangle.Value.Height);
             }
@@ -64,7 +65,7 @@ namespace Funhouse.Services.Equirectangular
                 _renderOptions.InterpolationType,
                 _renderOptions.ImageSize,
                 _commandLineOptions.UnderlayPath,
-                target.Size(),
+                stitched.Size(),
                 latitudeRange, longitudeRange);
 
             Log.Information("Retrieving underlay");
@@ -72,28 +73,34 @@ namespace Funhouse.Services.Equirectangular
 
             Log.Information("Tinting and normalising IR imagery");
 
-            var clone = target.Clone();
+            var clone = stitched.Clone();
             clone.Mutate(c => c.HistogramEqualization());
-            target.Tint(_renderOptions.Tint);
+            stitched.Tint(_renderOptions.Tint);
 
-            target.Mutate(c => c.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f));
+            stitched.Mutate(c => c.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f));
 
             // Render underlay and optionally crop to size
             Log.Information("Blending with underlay");
-            target.Mutate(ctx => ctx.DrawImage(underlay, PixelColorBlendingMode.Screen, 1.0f));
+            
+            var xPixelRange = PixelRange.ToPixelRangeX(longitudeRange, underlay.Width);
+            var yPixelRange = PixelRange.ToPixelRangeY(latitudeRange, underlay.Height);
+            
+            Console.WriteLine("Underlay dimensions: " + underlay.Width + " x " + underlay.Height);
+            Console.WriteLine("IR dimensions: " + stitched.Width + " x " + stitched.Height);
+            
+            underlay.Mutate(ctx => ctx.DrawImage(stitched, ), PixelColorBlendingMode.Screen, 1.0f));
 
             // Crop composited image
             if (cropRectangle != null)
             {
                 Log.Information("Cropping");
-                target.Mutate(ctx => ctx.Crop(cropRectangle.Value));
+                underlay.Mutate(ctx => ctx.Crop(cropRectangle.Value));
             }
 
             // Perform global colour correction
-            target.ColourCorrect(_renderOptions);
+            underlay.ColourCorrect(_renderOptions);
 
-            return target;
+            return underlay;
         }
-
     }
 }

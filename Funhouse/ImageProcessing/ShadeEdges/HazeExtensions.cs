@@ -13,7 +13,7 @@ namespace Funhouse.ImageProcessing.ShadeEdges
             var operation = new HazeRowOperation(mask, tint, hazeAmount);
             ParallelRowIterator.IterateRows(Configuration.Default, mask.Bounds(), in operation);
             
-            image.Mutate(context => context.DrawImage(mask, PixelColorBlendingMode.Screen, 1.0f));
+            image.Mutate(context => context.DrawImage(mask, PixelColorBlendingMode.Screen, 0.6f));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Funhouse.Extensions;
 using Funhouse.ImageProcessing.ShadeEdges;
 using Funhouse.ImageProcessing.Underlay;
 using Funhouse.Models;
@@ -105,21 +106,18 @@ namespace Funhouse.Services
 
                         // TODO we should prevent this mode if autocrop is enabled
                         // (or have autocrop ONLY for equirectangular output)
-                        
+
                         // Determine visible range of all satellite imagery
-                        _activityOperations.GetVisibleRange(out var latitudeRange, out var longitudeRange);
-                        var xPixelRange = PixelRange.ToPixelRangeX(longitudeRange, target.Width);
-                        var reverseOffset = -xPixelRange.Start;
+                        _activityOperations.GetVisibleRange(out _, out var longitudeRange);
+                        var targetLongitude = Angle.FromDegrees(174.2).Radians;
 
-                        var longitudeOffset =  ProjectionAngle.FromX(reverseOffset, target.Width);
+                        var adjustedLongitude = -Math.PI - longitudeRange.Start + targetLongitude;
 
-                        var lon = longitudeOffset + 174.9;
-                        Console.WriteLine("Offset: " + longitudeOffset);
-
-                        var definition = new SatelliteDefinition("", "", Angle.FromDegrees(lon).Radians,
-                            new Range(Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMinLatitude),
+                        var definition = new SatelliteDefinition("", "", adjustedLongitude,
+                            new Range(
+                                Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMinLatitude),
                                 Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMaxLatitude)),
-                            new Range(Angle.FromDegrees(lon - 80).Radians, Angle.FromDegrees(lon + 80).Radians)); // HACK
+                            new Range());
 
 
                         // TEMP
@@ -148,6 +146,5 @@ namespace Funhouse.Services
                     throw new ArgumentOutOfRangeException($"Unhandled projection type: {_renderOptions.ProjectionType}");
             }
         }
-
     }
 }

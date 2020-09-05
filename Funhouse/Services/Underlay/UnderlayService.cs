@@ -51,7 +51,7 @@ namespace Funhouse.Services.Underlay
 
             // Load master equirectangular underlay image from disk
             var underlay = await Image.LoadAsync<Rgba32>(options.UnderlayPath);
-            
+
             // Project to match satellite imagery
             var target = GetProjected(underlay, definition, options);
             Resize(options, target);
@@ -66,13 +66,17 @@ namespace Funhouse.Services.Underlay
         /// </summary>
         private static void Resize(UnderlayProjectionOptions options, Image<Rgba32> underlay)
         {
+            // FIXME change to target height
             var targetSize = options.TargetSize;
             if (targetSize == null) return;
-            
+
             // Resize underlay to target image size
             Log.Information("Resizing underlay to {width} x {height} px", targetSize.Value.Width, targetSize.Value.Height);
 
-            underlay.Mutate(c => c.Resize(targetSize.Value.Width, targetSize.Value.Height));
+            // underlay.Mutate(c => c.Resize(targetSize.Value.Width, targetSize.Value.Height));
+            // Ensure correct aspect ratio
+            var targetWidth = (int)Math.Round(underlay.Width / (float) underlay.Height * targetSize.Value.Height);
+            underlay.Mutate(c => c.Resize(targetWidth, targetSize.Value.Height));
         }
 
         /// <summary>
@@ -88,7 +92,7 @@ namespace Funhouse.Services.Underlay
                     // Project underlay to geostationary, based on the target satellite
                     Log.Information("{definition:l0} Rendering geostationary underlay", definition.DisplayName);
                     return underlay.ToGeostationaryProjection(definition, _options);
-                
+
                 case ProjectionType.Equirectangular:
 
                     // Optionally crop to specified lat/long range
@@ -111,6 +115,11 @@ namespace Funhouse.Services.Underlay
             Log.Information("Cropping underlay to {min} - {max} px width", xPixelRange.Start, xPixelRange.End);
             Log.Information("Cropping underlay to {min} - {max} px height", yPixelRange.Start, yPixelRange.End);
 
+            Console.WriteLine("Min longitude: " + Angle.FromRadians(longitudeRange.Start).Degrees);
+            Console.WriteLine("Min longitude px: " + xPixelRange.Start);
+            Console.WriteLine();
+            
+
             // Offset and wrap underlay horizontally if required to match projection
             if (xPixelRange.End > underlay.Width)
             {
@@ -122,7 +131,10 @@ namespace Funhouse.Services.Underlay
             }
 
             // Crop underlay
-            underlay.Mutate(c => c.Crop(new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range)));
+            // TEMP FIXME
+            // underlay.Mutate(c => c.Crop(new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range)));
+            
+            underlay.Mutate(c => c.Crop(new Rectangle(0, yPixelRange.Start, underlay.Width, yPixelRange.Range)));
         }
     }
 }
