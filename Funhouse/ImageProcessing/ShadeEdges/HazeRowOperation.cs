@@ -25,6 +25,12 @@ namespace Funhouse.ImageProcessing.ShadeEdges
         ///     Amount of haze to apply, from 0.0 - 1.0.
         /// </summary>
         private readonly float _hazeAmount;
+        
+        /// <summary>
+        ///     Adjustment factor for whether a point is inside the Earth, necessary to avoid single-pixel rounding errors
+        ///     with Himawari-8's white background.
+        /// </summary>
+        private const double BorderRatio = 0.001d;
 
         public HazeRowOperation(Image<Rgba32> source, Color tint, float hazeAmount)
         {
@@ -64,7 +70,7 @@ namespace Funhouse.ImageProcessing.ShadeEdges
             var xDistance = x - _source.Width / 2d;
             var yDistance = y - _source.Height / 2d;
 
-            return xDistance * xDistance / _semiMajor2 + yDistance * yDistance / _semiMinor2;
+            return xDistance * xDistance / _semiMajor2 + yDistance * yDistance / _semiMinor2 - BorderRatio;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Funhouse.Models.CommandLine
         [Option('b', "brightness", HelpText = "Brightness adjustment", Required = false, Default = 1.0f)]
         public float Brightness { get; [UsedImplicitly] set; }
         
-        [Option('h', "haze", HelpText = "Amount of haze to apply to image; valid values are between 0 (no haze) and 1 (full haze)", Required = false, Default = 0.2f)]
+        [Option('h', "haze", HelpText = "Amount of haze to apply to image; valid values are between 0 (no haze) and 1 (full haze)", Required = false, Default = 0.3f)]
         public float HazeAmount { get; [UsedImplicitly] set; }
 
         [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are N (nearest neighbour), B (bilinear)", Required = false, Default = InterpolationOptions.B)]
@@ -51,6 +51,9 @@ namespace Funhouse.Models.CommandLine
 
         [Option('u', "underlay", HelpText = "Path to custom full-colour underlay image", Required = false)]
         public string? UnderlayPath { get; [UsedImplicitly] set; }
+        
+        [Option('U', "nounderlay", HelpText = "If no underlay should be rendered", Required = false)]
+        public bool NoUnderlay { get; [UsedImplicitly] set; }
 
         [Option('v', "verbose", HelpText = "Verbose console output", Required = false, Default = false)]
         public bool Verbose { get; [UsedImplicitly] set; }

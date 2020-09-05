@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Funhouse.Extensions.Images;
 using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Models.Configuration;

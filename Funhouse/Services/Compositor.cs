@@ -1,16 +1,23 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using ExifLibrary;
 using Funhouse.Extensions;
+using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.ShadeEdges;
 using Funhouse.ImageProcessing.Underlay;
 using Funhouse.Models;
+using Funhouse.Models.Angles;
 using Funhouse.Models.CommandLine;
 using Funhouse.Models.Configuration;
 using Funhouse.Services.Equirectangular;
 using Serilog;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using Angle = Funhouse.Models.Angle;
 using Range = Funhouse.Models.Angles.Range;
 
@@ -27,6 +34,7 @@ namespace Funhouse.Services
         private readonly RenderOptions _renderOptions;
         private readonly IImageLoader _imageLoader;
         private readonly IEquirectangularImageRenderer _equirectangularImageRenderer;
+        private readonly IImageStitcher _imageStitcher;
         private readonly IProjectionActivityOperations _activityOperations;
 
         public Compositor(
@@ -34,12 +42,14 @@ namespace Funhouse.Services
             RenderOptions renderOptions,
             IImageLoader imageLoader,
             IEquirectangularImageRenderer equirectangularImageRenderer,
+            IImageStitcher imageStitcher,
             IProjectionActivityOperations activityOperations)
         {
             _commandLineOptions = commandLineOptions;
             _renderOptions = renderOptions;
             _imageLoader = imageLoader;
             _equirectangularImageRenderer = equirectangularImageRenderer;
+            _imageStitcher = imageStitcher;
             _activityOperations = activityOperations;
         }
 
@@ -61,11 +71,11 @@ namespace Funhouse.Services
 
             Log.Information("Images loaded");
 
-            var activities = new SatelliteImages(satelliteImageLoadTasks.Select(task => task.Result).ToList());
-            _activityOperations.Initialise(activities);
+            var images = new SatelliteImages(satelliteImageLoadTasks.Select(task => task.Result).ToList());
+            _activityOperations.Initialise(images);
 
             // Verify that all images have an associated projection definition
-            var unmappedProjections = activities.GetUnmapped();
+            var unmappedProjections = images.GetUnmapped();
             if (unmappedProjections.Any())
             {
                 unmappedProjections.ForEach(p => Console.Error.WriteLineAsync($"Unable to determine satellite based on file prefix: {p.Path}"));
@@ -77,24 +87,24 @@ namespace Funhouse.Services
 
             _activityOperations.CalculateOverlap();
 
-            foreach (var activity in activities.Images)
+            foreach (var activity in images.Images)
             {
                 activity
                     .CropBorders()
                     .RemoveBackground()
                     .NormaliseSize(_renderOptions.ImageSize)
                     .NormaliseHistogram();
+
+                if (_renderOptions.ProjectionType == ProjectionType.Geostationary)
+                {
+                    await _activityOperations.RenderGeostationaryUnderlayAsync(activity);
+                }
             }
 
             // TODO this needs beefing up. Should be able to stitch and then reproject,e tc.
             switch (_renderOptions.ProjectionType)
             {
                 case ProjectionType.Geostationary:
-
-                    foreach (var activity in activities.Images)
-                    {
-                        await _activityOperations.RenderGeostationaryUnderlayAsync(activity);
-                    }
 
                     break;
                 case ProjectionType.Equirectangular:
@@ -105,40 +115,49 @@ namespace Funhouse.Services
                     // Stitch images if required
                     if (_commandLineOptions.Stitch)
                     {
+                        var longitudeRange = images.GetVisibleLongitudeRange();
+                        
                         // Combine reprojected images
-                        var target = await _equirectangularImageRenderer.StitchImagesAsync(activities);
+                        var stitched = _imageStitcher.Stitch(images.Images);
+                        
+                        // Calculate crop region if required
+                        Rectangle? cropRectangle = null;
+                        if (_commandLineOptions.AutoCrop)
+                        {
+                            cropRectangle = stitched.GetAutoCropBounds();
+                            if (cropRectangle == null) Log.Error("Unable to determine autocrop bounds");
+                            else Log.Information("Cropped image size: {width} x {height} px", cropRectangle.Value.Width, cropRectangle.Value.Height);
+                        }
+                        
+                        // Perform stitching
+                        var target = await _equirectangularImageRenderer.StitchImagesAsync(stitched, images);
 
+                        // Reproject to geostationary
                         if (_commandLineOptions.Longitude != null)
                         {
-                            Log.Information("Reprojecting to geostationary");
+                            var geostationary = ToGeostationary(longitudeRange, _commandLineOptions.Longitude.Value, target);
+                            
+                            // TODO fix filename
+                            await geostationary.SaveWithExifAsync("reprojected.jpg");
+                        }
 
-                            // TODO we should prevent this mode if autocrop is enabled
-                            // (or have autocrop ONLY for equirectangular output)
+                        // Crop composited image
+                        if (cropRectangle != null)
+                        {
+                            Log.Information("Cropping");
+                            target.Mutate(ctx => ctx.Crop(cropRectangle.Value));
+                        }
 
-                            // Determine visible range of all satellite imagery
-                            var longitudeRange = activities.GetVisibleLongitudeRange();
-                            var targetLongitude = Angle.FromDegrees(_commandLineOptions.Longitude.Value).Radians;
-
-                            // Adjust longitude based on the underlay wrapping for visible satellites
-                            var adjustedLongitude = -Math.PI - longitudeRange.Start + targetLongitude;
-
-                            var definition = new SatelliteDefinition("", "", adjustedLongitude,
-                                new Range(
-                                    Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMinLatitude),
-                                    Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMaxLatitude)),
-                                new Range());
-
-
-                            // TEMP
-                            var arse = target.ToGeostationaryProjection(definition, _renderOptions);
-                            if (_renderOptions.HazeAmount > 0) arse.ApplyHaze(_renderOptions.Tint, _renderOptions.HazeAmount);
-
-                            await arse.SaveAsync("reprojected.jpg");
+                        // Crop underlay to fit satellite imagery
+                        if (!_commandLineOptions.NoUnderlay)
+                        {
+                            var xPixelRange = PixelRange.ToPixelRangeX(longitudeRange, target.Width);
+                            target.Mutate(c => c.Crop(new Rectangle(0, 0, xPixelRange.Range, target.Height)));
                         }
 
                         // Save output
                         Log.Information("Saving stitched output");
-                        await target.SaveAsync(_commandLineOptions.OutputPath);
+                        await target.SaveWithExifAsync(_commandLineOptions.OutputPath);
 
                         if (_commandLineOptions.Verbose)
                         {
@@ -155,6 +174,34 @@ namespace Funhouse.Services
                 default:
                     throw new ArgumentOutOfRangeException($"Unhandled projection type: {_renderOptions.ProjectionType}");
             }
+        }
+
+        private Image<Rgba32> ToGeostationary(Range longitudeRange, double longitude, Image<Rgba32> target)
+        {
+            Log.Information("Reprojecting to geostationary with longitude {longitude} degrees", longitude);
+
+            // Determine visible range of all satellite imagery
+            var targetLongitude = Angle.FromDegrees(longitude).Radians;
+
+            // Adjust longitude based on the underlay wrapping for visible satellites
+            var adjustedLongitude = -Math.PI - longitudeRange.Start + targetLongitude;
+
+            var definition = new SatelliteDefinition("", "", adjustedLongitude,
+                new Range(
+                    Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMinLatitude),
+                    Angle.FromDegrees(Constants.Satellite.VisibleRange.DefaultMaxLatitude)),
+                new Range());
+
+            // Render geostationary image
+            var geostationary = target.ToGeostationaryProjection(definition, _renderOptions);
+            
+            // Apply haze
+            if (_renderOptions.HazeAmount > 0 && !_commandLineOptions.NoUnderlay)
+            {
+                geostationary.ApplyHaze(_renderOptions.Tint, _renderOptions.HazeAmount);
+            }
+
+            return geostationary;
         }
     }
 }

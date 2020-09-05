@@ -27,9 +27,9 @@ namespace Funhouse.Services
             var definitions = JsonConvert.DeserializeObject<List<SatelliteConfiguration>>(json);
 
             _definitions = definitions.Select(d => new SatelliteDefinition(
-                d.FilePrefix!,
+                d.FilenamePattern!,
                 d.DisplayName!,
-                Angle.FromDegrees(d.Longitude).Radians,
+                Angle.FromDegrees(d.Longitude + d.LongitudeAdjustment.GetValueOrDefault()).Radians,
                 
                 new Range(
                     Angle.FromDegrees(d.VisibleRange.MinLatitude),
@@ -50,7 +50,7 @@ namespace Funhouse.Services
             if (!_initialised) throw new InvalidOperationException($"Registry not initialised; call {nameof(InitialiseAsync)} before use");
 
             return _definitions!.FirstOrDefault(d =>
-                Path.GetFileName(pattern).StartsWith(d.FilePrefix, StringComparison.CurrentCultureIgnoreCase));
+                Path.GetFileName(pattern).StartsWith(d.FilenamePattern, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Funhouse.Services
 
         public void Initialise(SatelliteImages images)
         {
-            this._images = images;
+            _images = images;
             _initialised = true;
         }
    
@@ -85,7 +85,7 @@ namespace Funhouse.Services
             image.Image.ColourCorrect(_renderOptions);
             image.Image.Mutate();
 
-            await image.SaveAsync("-FC", _commandLineOptions);
+            await image.SaveWithExifAsync("-FC", _commandLineOptions);
         }
 
         /// <summary>

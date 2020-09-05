@@ -4,8 +4,9 @@ namespace Funhouse.Models.Configuration
 {
     public class SatelliteConfiguration
     {
-        [JsonProperty("FilePrefix", Required = Required.Always)]
-        public string FilePrefix { get; set; } = null!;
+        // TODO validate regex
+        [JsonProperty("FilenamePattern", Required = Required.Always)]
+        public string FilenamePattern { get; set; } = null!;
 
         [JsonProperty("DisplayName", Required = Required.Always)]
         public string DisplayName { get; set; } = null!;
@@ -13,6 +14,13 @@ namespace Funhouse.Models.Configuration
         [JsonProperty("Longitude", Required = Required.Always)]
         public double Longitude { get; set; }
 
+        /// <summary>
+        ///     Offset added to the stated longitude, for visual correction to satellite imagery which hasn't originated
+        ///     from GOES-R.
+        /// </summary>
+        [JsonProperty("LongitudeAdjustment")]
+        public double? LongitudeAdjustment { get; set; }
+        
         [JsonProperty("VisibleRange", Required = Required.Always)]
         public VisibleRange VisibleRange { get; set; } = new VisibleRange();
 

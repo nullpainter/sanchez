@@ -65,11 +65,11 @@ namespace Funhouse.Extensions
             return image;
         }
 
-        public static async Task SaveAsync(this SatelliteImage image, string suffix, CommandLineOptions options)
+        public static async Task SaveWithExifAsync(this SatelliteImage image, string suffix, CommandLineOptions options)
         {
             var filename = $"{Path.GetFileNameWithoutExtension(image.Path)}{suffix}.jpg";
             var outputPath = Path.Combine(Path.GetDirectoryName(image.Path)!, filename);
-            await image.Image.SaveAsync(outputPath);
+            await image.Image.SaveWithExifAsync(outputPath);
 
             if (options.Verbose)
             {

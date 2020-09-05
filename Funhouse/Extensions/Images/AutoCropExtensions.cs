@@ -8,7 +8,7 @@ namespace Funhouse.Extensions.Images
 {
     public static class AutoCropExtensions
     {
-        public static Rectangle? AutoCrop(this Image<Rgba32> source)
+        public static Rectangle? GetAutoCropBounds(this Image<Rgba32> source)
         {
             var thresholds = new List<CropDetails>();
 
