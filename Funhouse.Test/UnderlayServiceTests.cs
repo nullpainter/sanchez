@@ -5,7 +5,6 @@ using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Funhouse.Services.Underlay;
 using NUnit.Framework;
-using SixLabors.ImageSharp;
 
 namespace Funhouse.Test
 {
@@ -42,7 +41,7 @@ namespace Funhouse.Test
             
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
-            underlay.Width.Should().Be(6026);
+            underlay.Width.Should().Be(18848);
             underlay.Height.Should().Be(2712);
         }
         
@@ -52,7 +51,7 @@ namespace Funhouse.Test
             var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
-            var options = new UnderlayProjectionOptions(ProjectionType.Geostationary, InterpolationType.NearestNeighbour, 5424, targetSize: new Size(1000, 1000));
+            var options = new UnderlayProjectionOptions(ProjectionType.Geostationary, InterpolationType.NearestNeighbour, 5424, targetHeight: 1000);
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(1000);
@@ -65,7 +64,7 @@ namespace Funhouse.Test
             underlay.Height.Should().Be(1000);
             
             // Verify changing options doesn't retrieve cached underlay
-            options = new UnderlayProjectionOptions(ProjectionType.Geostationary, InterpolationType.NearestNeighbour, 5424, targetSize: new Size(1500, 1500));
+            options = new UnderlayProjectionOptions(ProjectionType.Geostationary, InterpolationType.NearestNeighbour, 5424, targetHeight: 1500);
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(1500);

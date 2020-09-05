@@ -10,6 +10,11 @@ namespace Funhouse.Services.Equirectangular
 {
     public interface IImageStitcher
     {
+        /// <summary>
+        ///     Stitches equirectangular satellite IR images into a single image
+        /// </summary>
+        /// <param name="activities"></param>
+        /// <returns></returns>
         Image<Rgba32> Stitch(List<ProjectionActivity> activities);
     }
 
@@ -18,7 +23,7 @@ namespace Funhouse.Services.Equirectangular
         public Image<Rgba32> Stitch(List<ProjectionActivity> activities)
         {
             // Identify minimum horizontal offset im source images
-            var minOffset = activities.Select(p => p.Offset.X).Min();
+            var minOffset = activities.Select(p => p.OffsetX).Min();
             var target = NewTargetImage(activities, minOffset);
 
             Log.Information("Output image size: {width} x {height} px", target.Width, target.Height);
@@ -28,10 +33,10 @@ namespace Funhouse.Services.Equirectangular
             target.Mutate(context =>
             {
                 // Render all images in correct stacking order
-                foreach (var projection in activities.OrderByDescending(p => p.Offset.X))
+                foreach (var projection in activities.OrderByDescending(p => p.OffsetX))
                 {
                     // Identify horizontal offset of each image
-                    var location = new Point(projection.Offset.X - minOffset, 0);
+                    var location = new Point(projection.OffsetX - minOffset, 0);
                     context.DrawImage(projection.Target, location, PixelColorBlendingMode.Normal, 1.0f);
                 }
             });
@@ -47,9 +52,9 @@ namespace Funhouse.Services.Equirectangular
         {
             // As we know the horizontal offsets of all images being composed, the output width is the 
             // maximum offset plus the width of the final image, minus the minimum offset.
-            var finalProjection = projections.OrderBy(p => p.Offset.X).Last();
+            var finalProjection = projections.OrderBy(p => p.OffsetX).Last();
             
-            var outputWidth = finalProjection.Offset.X + finalProjection.Target!.Width - minOffset;
+            var outputWidth = finalProjection.OffsetX + finalProjection.Target!.Width - minOffset;
             return new Image<Rgba32>(outputWidth, finalProjection.Target!.Height);
         }
     }

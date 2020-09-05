@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.Tint;
 using Funhouse.Models;
-using Funhouse.Models.Angles;
 using Funhouse.Models.CommandLine;
 using Funhouse.Models.Projections;
 using Funhouse.Services.Underlay;
@@ -18,7 +15,7 @@ namespace Funhouse.Services.Equirectangular
 {
     public interface IEquirectangularImageRenderer
     {
-        Task<Image<Rgba32>> StitchImagesAsync(List<ProjectionActivity> activities);
+        Task<Image<Rgba32>> StitchImagesAsync(ProjectionActivities activities);
     }
 
     public class EquirectangularImageRenderer : IEquirectangularImageRenderer
@@ -43,9 +40,9 @@ namespace Funhouse.Services.Equirectangular
             _underlayService = underlayService;
         } 
         
-        public async Task<Image<Rgba32>> StitchImagesAsync(List<ProjectionActivity> activities)
+        public async Task<Image<Rgba32>> StitchImagesAsync(ProjectionActivities activities)
         {
-            var stitched = _imageStitcher.Stitch(activities);
+            var stitched = _imageStitcher.Stitch(activities.Activities);
 
             // Calculate crop region if required
             Rectangle? cropRectangle = null;
@@ -57,7 +54,7 @@ namespace Funhouse.Services.Equirectangular
             }
 
             // Determine visible range of all satellite imagery
-            _projectionActivityOperations.GetVisibleRange(out var latitudeRange, out var longitudeRange);
+            activities.GetVisibleRange(out var latitudeRange, out var longitudeRange);
 
             // Load underlay
             var underlayOptions = new UnderlayProjectionOptions(

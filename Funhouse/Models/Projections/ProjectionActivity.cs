@@ -17,7 +17,7 @@ namespace Funhouse.Models.Projections
         public Image<Rgba32>? Target { get; set; }
 
         public string Path { get; }
-        public Point Offset { get; set; }
+        public int OffsetX { get; set; }
 
         /// <summary>
         ///     Visible longitude range of satellite, minus overlapping ranges if required.

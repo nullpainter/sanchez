@@ -1,5 +1,4 @@
-﻿using System;
-using Funhouse.Models;
+﻿using Funhouse.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;

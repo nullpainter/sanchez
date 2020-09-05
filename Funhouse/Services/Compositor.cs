@@ -6,11 +6,9 @@ using Funhouse.Extensions;
 using Funhouse.ImageProcessing.ShadeEdges;
 using Funhouse.ImageProcessing.Underlay;
 using Funhouse.Models;
-using Funhouse.Models.Angles;
 using Funhouse.Models.CommandLine;
 using Funhouse.Models.Configuration;
 using Funhouse.Services.Equirectangular;
-using Funhouse.Services.Underlay;
 using Serilog;
 using SixLabors.ImageSharp;
 using Angle = Funhouse.Models.Angle;
@@ -63,11 +61,11 @@ namespace Funhouse.Services
 
             Log.Information("Images loaded");
 
-            var activities = satelliteImageLoadTasks.Select(task => task.Result).ToList();
+            var activities = new ProjectionActivities(satelliteImageLoadTasks.Select(task => task.Result).ToList());
             _activityOperations.Initialise(activities);
 
             // Verify that all images have an associated projection definition
-            var unmappedProjections = _activityOperations.GetUnmapped();
+            var unmappedProjections = activities.GetUnmapped();
             if (unmappedProjections.Any())
             {
                 unmappedProjections.ForEach(p => Console.Error.WriteLineAsync($"Unable to determine satellite based on file prefix: {p.Path}"));
@@ -77,23 +75,32 @@ namespace Funhouse.Services
             // Calculate crop for each image based on visible range and image overlaps
             Log.Information("Processing IR image");
 
-            _activityOperations
-                .CalculateOverlap()
-                .CropBorders()
-                .RemoveBackground()
-                .NormaliseSize()
-                .NormaliseHistogram();
+            _activityOperations.CalculateOverlap();
+
+            foreach (var activity in activities.Activities)
+            {
+                activity
+                    .CropBorders()
+                    .RemoveBackground()
+                    .NormaliseSize(_renderOptions.ImageSize)
+                    .NormaliseHistogram();
+            }
 
             // TODO this needs beefing up. Should be able to stitch and then reproject,e tc.
             switch (_renderOptions.ProjectionType)
             {
                 case ProjectionType.Geostationary:
-                    await _activityOperations.RenderGeostationaryUnderlayAsync();
+
+                    foreach (var activity in activities.Activities)
+                    {
+                        await _activityOperations.RenderGeostationaryUnderlayAsync(activity);
+                    }
+
                     break;
                 case ProjectionType.Equirectangular:
                 {
                     // Reproject all images to equirectangular
-                    _activityOperations.ReprojectToEquirectangular();
+                    _activityOperations.ToEquirectangular();
 
                     // Stitch images if required
                     if (_commandLineOptions.Stitch)
@@ -109,7 +116,7 @@ namespace Funhouse.Services
                             // (or have autocrop ONLY for equirectangular output)
 
                             // Determine visible range of all satellite imagery
-                            var longitudeRange = _activityOperations.GetVisibleLongitudeRange();
+                            var longitudeRange = activities.GetVisibleLongitudeRange();
                             var targetLongitude = Angle.FromDegrees(_commandLineOptions.Longitude.Value).Radians;
 
                             // Adjust longitude based on the underlay wrapping for visible satellites
