@@ -16,16 +16,23 @@ namespace Funhouse.Models.Configuration
         [JsonProperty("VisibleRange", Required = Required.Always)]
         public VisibleRange VisibleRange { get; set; } = new VisibleRange();
 
-        [JsonProperty("Height")] 
+        [JsonProperty("Height")]
         public double Height { get; set; } = Constants.Satellite.DefaultHeight;
 
-        [JsonProperty("Brightness")] 
+        /// <summary>
+        ///     Optional border crop ratios. Values are expected to be top, right, bottom, left.
+        /// </summary>
+        [JsonProperty("Crop")]
+        public double[]? Crop { get; set; }
+
+        [JsonProperty("Brightness")]
         public float Brightness { get; set; } = 1.0f;
-        
-        [JsonProperty("Contrast")] 
+
+        [JsonProperty("Contrast")]
         public float Contrast { get; set; } = 1.0f;
-        
-        [JsonProperty("Saturation")] 
+
+
+        [JsonProperty("Saturation")]
         public float Saturation { get; set; } = 1.0f;
     }
 }

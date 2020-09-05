@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using Funhouse.Models;
+using Funhouse.Extensions;
 using Funhouse.Models.Configuration;
 using static System.Math;
 using static Funhouse.Models.Constants.Earth;
@@ -38,7 +38,7 @@ namespace Funhouse.Projections
 
         public static LatitudeCalculations LatitudeCalculations(double latitude)
         {
-            var geocentricLatitude = Atan(RadiusPolarSquared / RadiusEquatorSquared * Tan(-latitude));
+            var geocentricLatitude = Atan(RadiusPolarSquared / RadiusEquatorSquared * Tan(latitude));
             var cosLatitude = Cos(geocentricLatitude);
             var sinLatitude = Sin(geocentricLatitude);
 
@@ -61,8 +61,12 @@ namespace Funhouse.Projections
             return calculations;
         }
 
-        public void FromGeodetic(double lat, double lon, SatelliteDefinition definition, out double scanningX, out double scanningY)
-            => ToScanningAngle(LatitudeCalculations(lat), lon, definition, out scanningX, out scanningY);
+        // note that thsi version sin't recommended
+        public static void ToScanningAngle(double latitude, double longitude, SatelliteDefinition definition, out double scanningX, out double scanningY)
+        {
+            var latitudeCalculations = LatitudeCalculations(latitude);
+            ToScanningAngle(latitudeCalculations, longitude, definition, out scanningX, out scanningY);
+        }
 
         /// <summary>
         ///     Converts a latitude and longitude to a geostationary image scanning angle.
@@ -105,18 +109,42 @@ namespace Funhouse.Projections
             return calculations;
         }
 
+        /// <summary>
+        ///     Converts a scanning angle to latitude and longitude.
+        /// </summary>
+        /// <remarks>
+        ///    The <see cref="o:ToGeodetic(double,VerticalScanningCalculations,Funhouse.Models.Configuration.SatelliteDefinition,out double,out double)"/> method with
+        ///     vertical scanning calculations de should be used in preference if performing these calculations in bulk, as it avoids duplicate vertical
+        ///     scanning calculations.
+        /// </remarks>
+        /// <param name="scanningX">horizontal scanning angle in radians</param>
+        /// <param name="scanningY">vertical scanning angle in radians</param>
+        /// <param name="definition">satellite definition</param>
+        /// <param name="latitude">calculated latitude in radians</param>
+        /// <param name="longitude">calculated longitude in radians</param>
+        public static void ToGeodetic(double scanningX, double scanningY, SatelliteDefinition definition, out double latitude, out double longitude)
+        {
+            var verticalCalculations = VerticalScanningCalculations(scanningY, definition);
+            ToGeodetic(scanningX, verticalCalculations, definition, out latitude, out longitude);
+        }
 
-//  TODO add note to everywhere that scanning angle is in radians
+        /// <summary>
+        ///     Converts a scanning angle to latitude and longitude.
+        /// </summary>
+        /// <param name="scanningX">horizontal scanning angle in radians</param>
+        /// <param name="verticalScanningCalculations">vertical scanning calculations</param>
+        /// <param name="definition">satellite definition</param>
+        /// <param name="latitude">calculated latitude in radians</param>
+        /// <param name="longitude">calculated longitude in radians</param>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static void ToGeodetic(VerticalScanningCalculations verticalScanningCalculations, double scanningX, SatelliteDefinition definition, RenderOptions renderOptions, out double lat,
-            out double lon)
+        public static void ToGeodetic(
+            double scanningX, VerticalScanningCalculations verticalScanningCalculations, SatelliteDefinition definition, out double latitude, out double longitude)
         {
             var satelliteLongitude = definition.Longitude;
             var satelliteHeight = definition.Height + RadiusEquator;
 
             var l0 = satelliteLongitude;
 
-            // TODO extract out the y coalculations are we're doing this all the time
             var cosX = Cos(scanningX);
             var sinX = Sin(scanningX);
 
@@ -134,9 +162,8 @@ namespace Funhouse.Projections
             var sy = -rs * sinX;
             var sz = rs * cosX * sinY;
 
-            // TODO bodge. Not sure why we need to negate these. Is something inadvertently negated earlier?
-            lat = -Atan(RadiusEquatorSquared / RadiusPolarSquared * (sz / Sqrt((satelliteHeight - sx) * (satelliteHeight - sx) + sy * sy)));
-            lon = l0 - Atan(sy / (satelliteHeight - sx));
+            latitude = Atan(RadiusEquatorSquared / RadiusPolarSquared * (sz / Sqrt((satelliteHeight - sx) * (satelliteHeight - sx) + sy * sy)));
+            longitude = (l0 - Atan(sy / (satelliteHeight - sx))).NormaliseLongitude();
         }
     }
 }

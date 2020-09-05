@@ -75,16 +75,17 @@ namespace Funhouse.ImageProcessing.Projection
 
             // Convert image x,y to Mercator projection angle
             var targetWidth = _activity.Source!.Width * 2;
+            var projectionY = ProjectionAngle.FromY(y + _yOffset, _activity.Source!.Height);
 
             for (var x = 0; x < span.Length; x++)
             {
-                ProjectionAngle.FromPixelCoordinates(x + _xOffset, y + _yOffset, targetWidth, _activity.Source!.Height, out var longitude, out var latitude);
+                var projectionX = ProjectionAngle.FromX(x + _xOffset, targetWidth);
 
                 // Convert latitude/longitude to geostationary scanning angle
-                GeostationaryProjection.ToScanningAngle(latitudeCalculations, longitude, _activity.Definition!, out var scanningX, out var scanningY);
+                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _activity.Definition!, out var scanningX, out var scanningY);
 
                 // Map pixel from satellite image back to target image
-                span[x] = GetTargetColour(scanningX, scanningY, latitude, longitude);
+                span[x] = GetTargetColour(scanningX, scanningY, projectionY, projectionX);
             }
         }
 
@@ -100,10 +101,10 @@ namespace Funhouse.ImageProcessing.Projection
             return LatitudeCalculationCache.GetOrAdd(y, angle =>
             {
                 // Convert pixel row to latitude
-                ProjectionAngle.FromPixelCoordinates(0, y, target.Width, target.Height + yOffset * 2, out _, out var latitude);
+                var projectionY = ProjectionAngle.FromY(y, target.Height + yOffset * 2);
 
                 // Perform and cache intermediary geostationary latitude calculations
-                return GeostationaryProjection.LatitudeCalculations(-latitude);
+                return GeostationaryProjection.LatitudeCalculations(-projectionY);
             });
         }
 

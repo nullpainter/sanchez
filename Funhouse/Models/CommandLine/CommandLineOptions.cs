@@ -14,6 +14,9 @@ namespace Funhouse.Models.CommandLine
 
         [Option('b', "brightness", HelpText = "Brightness adjustment", Required = false, Default = 1.0f)]
         public float Brightness { get; [UsedImplicitly] set; }
+        
+        [Option('h', "haze", HelpText = "Amount of haze to apply to image; valid values are between 0 (no haze) and 1 (full haze)", Required = false, Default = 0.2f)]
+        public float HazeAmount { get; [UsedImplicitly] set; }
 
         [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are N (nearest neighbour), B (bilinear)", Required = false, Default = InterpolationOptions.B)]
         public InterpolationOptions InterpolationType { get; [UsedImplicitly] set; }
@@ -27,7 +30,7 @@ namespace Funhouse.Models.CommandLine
         [Option('o', "output", HelpText = "Path to output file or folder", Required = true)]
         public string OutputPath { get; [UsedImplicitly] set; } = null!;
 
-        [Option('r', "resolution", HelpText = "Output spatial resolution in km; valid values are 2 or 4", Default = 2)]
+        [Option('r', "resolution", HelpText = "Output spatial resolution in km; valid values are 2 or 4", Default = Constants.Satellite.SpatialResolution.FourKm)]
         public int SpatialResolution { get; [UsedImplicitly] set; }
 
         [Option('s', "source", HelpText = "Path to IR satellite image(s)", Required = true)]

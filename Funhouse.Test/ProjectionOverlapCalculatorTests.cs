@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using Funhouse.Models;
 using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Funhouse.Services;
-using MathNet.Spatial.Units;
 using NUnit.Framework;
 
 namespace Funhouse.Test
@@ -13,8 +13,8 @@ namespace Funhouse.Test
     {
         private void VerifyRangeEquivalency(Range first, Range second)
         {
-            first.Start.Degrees.Should().BeApproximately(second.Start.Degrees, Precision);
-            first.End.Degrees.Should().BeApproximately(second.End.Degrees, Precision);
+            Angle.FromRadians(first.Start).Degrees.Should().BeApproximately(Angle.FromRadians(second.Start).Degrees, Precision);
+            Angle.FromRadians(first.End).Degrees.Should().BeApproximately(Angle.FromRadians(second.End).Degrees, Precision);
         }
         
         [Test]
@@ -29,7 +29,7 @@ namespace Funhouse.Test
             
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(goes17),
-                new Range(Angle.FromDegrees(180), Angle.FromDegrees(-50)));
+                new Range(Angle.FromDegrees(180).Radians, Angle.FromDegrees(-50).Radians));
         }
 
         [Test]
@@ -108,12 +108,11 @@ namespace Funhouse.Test
 
         private static SatelliteDefinition ToDefinition(double startDegrees, double endDegrees, string name = "")
         {
-            var nonOverlapping = new SatelliteDefinition("", name, new Angle(),
+            var nonOverlapping = new SatelliteDefinition("", name, 0,
                 new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)),
                 new Range(
                     Angle.FromDegrees(startDegrees),
-                    Angle.FromDegrees(endDegrees)),
-                new ImageOffset(new Angle(), new Angle(), 0));
+                    Angle.FromDegrees(endDegrees)));
             
             return nonOverlapping;
         }

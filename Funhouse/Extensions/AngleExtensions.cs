@@ -1,5 +1,5 @@
 ﻿using System;
-using MathNet.Numerics;
+using Funhouse.Models;
 
 namespace Funhouse.Extensions
 {
@@ -11,10 +11,36 @@ namespace Funhouse.Extensions
         /// <param name="angle">angle in radians</param>
         public static double NormaliseLongitude(this double angle) => angle.Limit(-Math.PI, Math.PI);
 
-        // TODO note that these are all in radians
-        public static float ScaleToWidthF(this double angle, int width) => (float) (width * (angle + Math.PI) / Constants.Pi2);
-        public static float ScaleToHeightF(this double angle, int height) => (float) (height * (angle + Constants.PiOver2) / Math.PI);
-        public static int ScaleToWidth(this double angle, int width) => (int) Math.Round(ScaleToWidthF(angle, width));
-        public static int ScaleToHeight(this double angle, int height) => (int) Math.Round(ScaleToHeightF(angle, height));
+        /// <summary>
+        ///     Scales an angle to a fractional pixel width, based on an equirectangular projection.
+        /// </summary>
+        /// <param name="angle">angle in radians</param>
+        /// <param name="width">width</param>
+        /// <returns>scaled angle</returns>
+        public static double ScaleToWidthD(this double angle, int width) => width * (angle + Math.PI) / Constants.Pi2;
+        
+        /// <summary>
+        ///     Scales an angle to an integer pixel width, based on an equirectangular projection.
+        /// </summary>
+        /// <param name="angle">angle in radians</param>
+        /// <param name="width">width</param>
+        /// <returns>scaled angle</returns>
+        public static int ScaleToWidth(this double angle, int width) => (int) Math.Round(ScaleToWidthD(angle, width));
+        
+        /// <summary>
+        ///     Scales an angle to a fractional pixel height, based on an equirectangular projection.
+        /// </summary>
+        /// <param name="angle">angle in radians</param>
+        /// <param name="height">height</param>
+        /// <returns>scaled angle</returns>
+        public static double ScaleToHeightD(this double angle, int height) => height * (angle + Constants.PiOver2) / Math.PI;
+        
+        /// <summary>
+        ///     Scales an angle to an integer pixel height, based on an equirectangular projection.
+        /// </summary>
+        /// <param name="angle">angle in radians</param>
+        /// <param name="height">height</param>
+        /// <returns>scaled angle</returns> 
+        public static int ScaleToHeight(this double angle, int height) => (int) Math.Round(ScaleToHeightD(angle, height));
     }
 }

@@ -2,6 +2,7 @@
 using Funhouse.Models.CommandLine;
 using Funhouse.Seeder;
 using Funhouse.Services;
+using Funhouse.Services.Equirectangular;
 using Funhouse.Services.Underlay;
 using SimpleInjector;
 
@@ -19,6 +20,7 @@ namespace Funhouse.Builders
             container.RegisterSingleton<IUnderlayService, UnderlayService>();
             container.RegisterSingleton<IUnderlayCacheRepository, UnderlayCacheRepository>();
             container.RegisterSingleton<IDatabaseMigrator, DatabaseMigrator>();
+            container.RegisterSingleton<IEquirectangularImageRenderer, EquirectangularImageRenderer>();
             
             container.RegisterInstance(options);
             container.RegisterInstance(renderOptions);

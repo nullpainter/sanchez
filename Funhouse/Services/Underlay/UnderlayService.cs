@@ -15,7 +15,14 @@ namespace Funhouse.Services.Underlay
 {
     public interface IUnderlayService
     {
-        Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionOptions options, SatelliteDefinition? definition = null, string? underlayPath = null);
+        /// <summary>
+        ///     Retrieves a full-colour underlay image with the target projection. Underlays are cached to disk to speed up
+        ///     computation.
+        /// </summary>
+        /// <param name="options">Underlay generation options</param>
+        /// <param name="definition">Optional satellite definition, if projecting underlay to match a satellite IR image</param>
+        /// <returns>projected underlay</returns>
+        Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionOptions options, SatelliteDefinition? definition = null);
     }
 
     public class UnderlayService : IUnderlayService
@@ -29,22 +36,34 @@ namespace Funhouse.Services.Underlay
             _options = options;
         }
 
-        public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionOptions options, SatelliteDefinition? definition = null, string? underlayPath = null)
+        /// <summary>
+        ///     Retrieves a full-colour underlay image with the target projection. Underlays are cached to disk to speed up
+        ///     computation.
+        /// </summary>
+        /// <param name="options">Underlay generation options</param>
+        /// <param name="definition">Optional satellite definition, if projecting underlay to match a satellite IR image</param>
+        /// <returns>projected underlay</returns>
+        public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionOptions options, SatelliteDefinition? definition = null)
         {
-            // TODO this should also cover pixel ranges so we do the cropping, longitude range etc. in one go
-
-            var cached = await _cache.GetUnderlayAsync(definition, options, underlayPath);
+            // Attempt to retrieve underlay from cache
+            var cached = await _cache.GetUnderlayAsync(definition, options);
             if (cached != null) return cached;
 
-            // Load master equirectangular underlay from disk
-            var underlay = await Image.LoadAsync<Rgba32>(underlayPath ?? Constants.DefaultUnderlayPath);
+            // Load master equirectangular underlay image from disk
+            var underlay = await Image.LoadAsync<Rgba32>(options.UnderlayPath);
+            
+            // Project to match satellite imagery
             var target = GetProjected(underlay, definition, options);
             Resize(options, target);
 
-            await _cache.SetUnderlayAsync(target, definition, options, underlayPath);
+            // Register underlay in cache
+            await _cache.SetUnderlayAsync(target, definition, options);
             return target;
         }
 
+        /// <summary>
+        ///     Optionally resizes the underlay based on the target size.
+        /// </summary>
         private static void Resize(UnderlayProjectionOptions options, Image<Rgba32> underlay)
         {
             var targetSize = options.TargetSize;
@@ -56,6 +75,9 @@ namespace Funhouse.Services.Underlay
             underlay.Mutate(c => c.Resize(targetSize.Value.Width, targetSize.Value.Height));
         }
 
+        /// <summary>
+        ///     Returns an underlay projected and optionally cropped.
+        /// </summary>
         private Image<Rgba32> GetProjected(Image<Rgba32> underlay, SatelliteDefinition? definition, UnderlayProjectionOptions options)
         {
             switch (options.Projection)
@@ -66,13 +88,11 @@ namespace Funhouse.Services.Underlay
                     // Project underlay to geostationary, based on the target satellite
                     Log.Information("{definition:l0} Rendering geostationary underlay", definition.DisplayName);
                     return underlay.ToGeostationaryProjection(definition, _options);
+                
                 case ProjectionType.Equirectangular:
 
                     // Optionally crop to specified lat/long range
-                    if (options.CropSpecified)
-                    {
-                        Crop(underlay, options.LatitudeCrop!.Value, options.LongitudeCrop!.Value);
-                    }
+                    if (options.CropSpecified) Crop(underlay, options.LatitudeCrop!.Value, options.LongitudeCrop!.Value);
 
                     return underlay;
                 default:

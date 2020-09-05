@@ -9,6 +9,10 @@ namespace Funhouse.Models
         internal const string DefaultUnderlayPath = @"Resources\world.200411.3x10848x5424.jpg";
 
         internal static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
+        public const double Pi2 = 6.28318530717959;
+        /// <summary>The number pi/2</summary>
+        public const double PiOver2 = 1.5707963267949;
+        
 
         internal static class Satellite
         {
@@ -69,15 +73,6 @@ namespace Funhouse.Models
             internal const double RadiusPolar = 6356752.31414;
 
             internal const double Eccentricity = 0.0818191910435;
-        }
-
-        internal static class DebugColours
-        {
-            internal static readonly Rgba32 OutsideDisc = Rgba32.ParseHex("556270");
-            internal static readonly Rgba32 OutsideSatellite = Rgba32.ParseHex("4ECDC4");
-            internal static readonly Rgba32 OverlapCrop = Rgba32.ParseHex("C7F464");
-            internal static readonly Rgba32 Spare2 = Rgba32.ParseHex("FF6B6B");
-            internal static readonly Rgba32 Spare3 = Rgba32.ParseHex("C44D58");
         }
     }
 }

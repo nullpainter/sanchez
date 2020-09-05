@@ -11,12 +11,14 @@ namespace Funhouse.Models.Configuration
         /// <param name="latitudeRange"></param>
         /// <param name="longitudeRange"></param>
         /// <param name="height">Satellite height above ellipsoid (metres)</param>
+        /// <param name="crop"></param>
         /// <param name="brightness"></param>
         public SatelliteDefinition(
             string filePrefix, string displayName, double longitude,
             Range latitudeRange,
             Range longitudeRange,
             double height = Constants.Satellite.DefaultHeight,
+            double[]? crop = null,
             float brightness = 1.0f)
         {
             FilePrefix = filePrefix;
@@ -24,6 +26,7 @@ namespace Funhouse.Models.Configuration
             LatitudeRange = latitudeRange;
             LongitudeRange = longitudeRange;
             Height = height;
+            Crop = crop;
             Brightness = brightness;
 
             // Convert satellite longitude to lat/long scale of -180 to 180 degrees
@@ -36,6 +39,7 @@ namespace Funhouse.Models.Configuration
         public Range LongitudeRange { get; }
         public double Longitude { get; }
         public double Height { get; }
+        public double[]? Crop { get; }
         public float Brightness { get; }
     }
 }

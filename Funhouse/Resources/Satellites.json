@@ -1,9 +1,8 @@
 ﻿[
   {
     // GOES-16
-    "FilePrefix": "GOES16_FD_CH13",
+    "FilePrefix": "GOES16_FD_CH13_",
     "DisplayName": "GOES-16",
-    
     // Nominal satellite subpoint longitude is -75.2 degrees east, however it has been resampled to be
     // centred at -75.0 degrees east longitude.
     "Longitude": -75.0,
@@ -28,13 +27,21 @@
     // Himawari-8
     "FilePrefix": "Himawari8_FD_IR_",
     "DisplayName": "Himawari-8",
-    "Longitude": 139.9, // FIXME - hacked because image tweaked
     
+    // Note - not true longitude but visually adjusted to fit 
+    "Longitude": 139.90,
+
     // Note - manually calculated based on visible 
     "VisibleRange": {
       "MinLongitude": 60,
       "MaxLongitude": -140
     },
-    "Brightness": 1.0
+    "Brightness": 0.8,
+    "Crop": [
+      0.006818,
+      0.007273,
+      0.007273,
+      0.006818
+    ]
   }
 ]

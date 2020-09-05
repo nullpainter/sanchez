@@ -19,6 +19,7 @@ namespace Funhouse.Factories
                 options.Brightness,
                 options.Saturation,
                 options.Tint!.FromHexString()!.Value,
+                options.HazeAmount,
                 ToInterpolationType(options.InterpolationType),
                 ToProjectionType(options.ProjectionType),
                 ToImageOffset(options),

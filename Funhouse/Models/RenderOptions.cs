@@ -12,6 +12,7 @@ namespace Funhouse.Models
             float brightness, 
             float saturation, 
             Color tint, 
+            float hazeAmount,
             InterpolationType interpolationType, 
             ProjectionType projectionType,
             ImageOffset imageOffset, 
@@ -20,6 +21,7 @@ namespace Funhouse.Models
             Brightness = brightness;
             Saturation = saturation;
             Tint = tint;
+            HazeAmount = hazeAmount;
             InterpolationType = interpolationType;
             ProjectionType = projectionType;
             ImageOffset = imageOffset;
@@ -33,5 +35,6 @@ namespace Funhouse.Models
         public ProjectionType ProjectionType { get; }
         public ImageOffset ImageOffset { get; }
         public int ImageSize { get; }
+        public float HazeAmount { get; }
     }
 }

@@ -7,6 +7,9 @@ namespace Funhouse.Seeder
 {
     public interface IDatabaseMigrator
     {
+        /// <summary>
+        ///     Executes SQL scripts to create or migrate database schema.
+        /// </summary>
         void Migrate(string connectionString);
     }
     
@@ -18,7 +21,7 @@ namespace Funhouse.Seeder
                 DeployChanges.To
                     .SQLiteDatabase(connectionString)
                     .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                    .LogToConsole()
+                    .LogToAutodetectedLog()
                     .Build();
 
             var result = upgrader.PerformUpgrade();

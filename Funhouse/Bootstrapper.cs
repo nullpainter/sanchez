@@ -73,6 +73,12 @@ namespace Funhouse
                 Environment.Exit(-1);
             }
 
+            if (options.HazeAmount < 0 || options.HazeAmount > 1)
+            {
+                await Console.Error.WriteLineAsync("Invalid haze amount; valid values are between 0.0 and 1.0");
+                Environment.Exit(-1);
+            }
+
             // Verify underlay image exists
             if (!File.Exists(options.UnderlayPath ?? Constants.DefaultUnderlayPath))
             {
@@ -81,12 +87,16 @@ namespace Funhouse
             }
 
             // Verify argument compatibility
-            if (options.AutoCrop && options.ProjectionType == ProjectionOptions.G)
+
+            if (options.ProjectionType == ProjectionOptions.G)
             {
-                await Console.Error.WriteLineAsync($"Autocrop only available with projection type {ProjectionType.Geostationary}");
-                Environment.Exit(-1);
+                if (options.AutoCrop)
+                {
+                    await Console.Error.WriteLineAsync($"Autocrop only available with projection type {ProjectionType.Geostationary}");
+                    Environment.Exit(-1);
+                }
             }
-            
+
             // Verify spatial resolution
             if (!options.SpatialResolution.IsIn(SpatialResolution.TwoKm, SpatialResolution.FourKm))
             {

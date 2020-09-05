@@ -4,7 +4,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Funhouse.Models
 {
-    public class ImageBuffer
+    public readonly struct ImageBuffer
     {
         public Rgba32[] Buffer { get; }
         public Size Size { get; }

@@ -6,33 +6,33 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Funhouse.Extensions;
 using Funhouse.Extensions.Images;
+using Funhouse.ImageProcessing.Mask;
+using Funhouse.ImageProcessing.ShadeEdges;
 using Funhouse.ImageProcessing.Tint;
 using Funhouse.Models;
 using Funhouse.Models.CommandLine;
 using Funhouse.Models.Configuration;
 using Funhouse.Models.Projections;
+using Funhouse.Services.Equirectangular;
 using Funhouse.Services.Underlay;
 using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using Range = Funhouse.Models.Angles.Range;
 
 namespace Funhouse.Services
 {
+    // TODO this class is a mess. Unsure what it's doing. maybe split into separate classes. we have stuff doing bunches of things
+    // for multiple images in other places and it's not obvious where code should go.
     public interface IProjectionActivityOperations
     {
         void Initialise(List<ProjectionActivity> activities);
-        void NormaliseSize();
-        
-        /// <summary>
-        ///     Calculates overlapping regions between satellites.
-        /// </summary>
-        void CalculateOverlap();
-        void Reproject();
+        ProjectionActivityOperations CalculateOverlap();
+        void ReprojectToEquirectangular();
         List<ProjectionActivity> GetUnmapped();
         Task RenderGeostationaryUnderlayAsync();
-        Task SaveAsync(string suffix, CommandLineOptions options);
-        void NormaliseHistogram();
+        void GetVisibleRange(out Range latitudeRange, out Range longitudeRange);
     }
 
     public class ProjectionActivityOperations : IProjectionActivityOperations
@@ -64,6 +64,20 @@ namespace Funhouse.Services
             _activities = activities;
             _initialised = true;
         }
+        
+        public void GetVisibleRange(out Range latitudeRange, out Range longitudeRange)
+        {
+            var sortedActivities = _activities.OrderBy(p => p.Offset.X).ToList();
+
+            latitudeRange = new Range(
+                _activities.Min(a => a.LatitudeRange.Start),
+                _activities.Max(a => a.LatitudeRange.End));
+
+            longitudeRange = new Range(
+                sortedActivities.First().LongitudeRange.Start,
+                sortedActivities.Last().LongitudeRange.End
+            ).UnwrapLongitude();
+        } 
 
         public List<ProjectionActivity> GetUnmapped()
         {
@@ -71,84 +85,106 @@ namespace Funhouse.Services
             return _activities!.Where(p => p.Definition == null).ToList();
         }
 
+        /// <summary>
+        ///     Mask all pixels outside the Earth to assist image stitching of projected images.
+        /// </summary>
+        public ProjectionActivityOperations RemoveBackground()
+        {
+            _activities.ForEach(activity => 
+            {
+                Guard.Against.Null(activity.Source, nameof(activity.Source));
+                activity.Source.RemoveBackground();
+            });
+
+            return this;
+        }
+
         public async Task RenderGeostationaryUnderlayAsync()
         {
             foreach (var activity in _activities)
             {
                 Guard.Against.Null(activity.Definition, nameof(activity.Definition));
-                
-                // Get projected underlay
-                var underlayOptions = new UnderlayProjectionOptions(_renderOptions.ProjectionType, _renderOptions.InterpolationType);
-                var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, activity.Definition, _commandLineOptions.UnderlayPath);
+                Guard.Against.Null(activity.Source, nameof(activity.Source));
 
-                activity.Target = activity.Source!.Clone();
+                // Get or generate projected underlay
+                var underlayOptions = new UnderlayProjectionOptions(
+                    _renderOptions.ProjectionType,
+                    _renderOptions.InterpolationType,
+                    _renderOptions.ImageSize,
+                    _commandLineOptions.UnderlayPath);
+
+                Log.Information("Retrieving underlay");
+                var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, activity.Definition);
+
+                activity.Target = activity.Source.Clone();
 
                 Log.Information("Tinting and normalising IR imagery");
-                // Remove grey tint from satellite image
-                // TODO coopied in Compositor
-
-                activity.Source.Mutate(c => c.HistogramEqualization());
-                activity.Source.Mutate(c => c.Brightness(activity.Definition.Brightness));
-                activity.Source.Mutate(c => c.Brightness(1.1f));
-  
-                var clone = activity.Target.Clone();
-                clone.Mutate(c => c.HistogramEqualization());
+                activity.Target.Mutate(c => c.HistogramEqualization());
                 activity.Target.Tint(_renderOptions.Tint);
 
-                activity.Target.Mutate(c => c.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f));
-
-                // Render underlay and optionally crop to size
+                Log.Information("Blending with underlay");
                 activity.Target.Mutate(ctx => ctx.Resize(_renderOptions.ImageSize, _renderOptions.ImageSize));
                 activity.Target.Mutate(ctx => ctx.DrawImage(underlay, PixelColorBlendingMode.Screen, 1.0f));
 
-                // TODO copied in compositor
+                if (_renderOptions.HazeAmount > 0) activity.Target.ApplyHaze(_renderOptions.Tint, _renderOptions.HazeAmount);
+
                 // Perform global colour correction
                 activity.Target.ColourCorrect(_renderOptions);
+                activity.Target.Mutate();
+
+                await SaveAsync(activity, "-FC", _commandLineOptions);
             }
         }
 
-        public async Task SaveAsync(string suffix, CommandLineOptions options)
+        public ProjectionActivityOperations CropBorders()
         {
-            var saveTasks = new List<Task>();
-            _activities.ForEach(a =>
+            _activities.ForEach(activity =>
             {
-                var filename = $"{Path.GetFileNameWithoutExtension(a.Path)}{suffix}.jpg";
-                var outputPath = Path.Combine(Path.GetDirectoryName(a.Path)!, filename);
-                saveTasks.Add(a.Target.SaveAsync(outputPath));
+                Guard.Against.Null(activity.Source, nameof(activity.Source));
+                Guard.Against.Null(activity.Definition, nameof(activity.Definition));
 
-
-                if (options.Verbose)
-                {
-                    Log.Information("Output written to {path}", Path.GetFullPath(outputPath));
-                }
-                else
-                {
-                    Console.WriteLine($"Output written to {Path.GetFullPath(outputPath)}");
-                }
+                if (activity.Definition.Crop != null) activity.Source.AutoCropBorder(activity.Definition.Crop);
             });
 
-            await Task.WhenAll(saveTasks);
+            return this;
         }
 
-        public void NormaliseHistogram()
+        private static async Task SaveAsync(ProjectionActivity activity, string suffix, CommandLineOptions options)
         {
-            _activities.ForEach(a =>
+            var filename = $"{Path.GetFileNameWithoutExtension(activity.Path)}{suffix}.jpg";
+            var outputPath = Path.Combine(Path.GetDirectoryName(activity.Path)!, filename);
+            await activity.Target.SaveAsync(outputPath);
+
+            if (options.Verbose)
             {
-                Guard.Against.Null(a.Source, nameof(a.Source));
-                Guard.Against.Null(a.Definition, nameof(a.Definition));
+                Log.Information("Output written to {path}", Path.GetFullPath(outputPath));
+            }
+            else
+            {
+                Console.WriteLine($"Output written to {Path.GetFullPath(outputPath)}");
+            }
+        }
+
+        public ProjectionActivityOperations NormaliseHistogram()
+        {
+            _activities.ForEach(activity =>
+            {
+                Guard.Against.Null(activity.Source, nameof(activity.Source));
+                Guard.Against.Null(activity.Definition, nameof(activity.Definition));
 
                 // Normalise brightness and contrast
-                // TODO copied in compositor
-                a.Source.Mutate(c => c.HistogramEqualization());
-                a.Source.Mutate(c => c.Brightness(a.Definition.Brightness));
-                a.Source.Mutate(c => c.Brightness(1.1f));
+                activity.Source.Mutate(c => c.HistogramEqualization());
+                activity.Source.Mutate(c => c.Brightness(activity.Definition.Brightness));
+                activity.Source.Mutate(c => c.Brightness(1.1f));
             });
+
+            return this;
         }
 
         /// <summary>
         ///     Calculates overlapping regions between satellites.
         /// </summary>
-        public void CalculateOverlap()
+        public ProjectionActivityOperations CalculateOverlap()
         {
             EnsureInitialised();
             if (GetUnmapped().Any()) throw new InvalidOperationException("Not all images have valid satellite definitions");
@@ -156,13 +192,15 @@ namespace Funhouse.Services
             _projectionOverlapCalculator.Initialise(_activities.Select(p => p.Definition!));
 
             // Set latitude and longitude ranges based on overlapping satellite ranges
-            _activities.ForEach(a =>
+            _activities.ForEach(activity =>
             {
-                Guard.Against.Null(a.Definition, nameof(a.Definition));
+                Guard.Against.Null(activity.Definition, nameof(activity.Definition));
 
-                a.LongitudeRange = _commandLineOptions.Stitch ? _projectionOverlapCalculator.GetNonOverlappingRange(a.Definition!) : a.Definition.LongitudeRange;
-                a.LatitudeRange = a.Definition.LatitudeRange;
+                activity.LongitudeRange = _commandLineOptions.Stitch ? _projectionOverlapCalculator.GetNonOverlappingRange(activity.Definition!) : activity.Definition.LongitudeRange;
+                activity.LatitudeRange = activity.Definition.LatitudeRange;
             });
+
+            return this;
         }
 
         private void EnsureInitialised()
@@ -170,28 +208,33 @@ namespace Funhouse.Services
             if (!_initialised) throw new InvalidOperationException($"Not initialised; please call {nameof(Initialise)} first");
         }
 
-        public void NormaliseSize()
+        /// <summary>
+        ///     Normalises the source image size to match the specified output spatial resolution. Doing
+        ///     so simplifies maths when blending multiple pages.
+        /// </summary>
+        public ProjectionActivityOperations NormaliseSize()
         {
             var imageSize = _renderOptions.ImageSize;
-            
+
             _activities.ForEach(activity =>
             {
                 Guard.Against.Null(activity.Source, nameof(activity.Source));
-                
-                // TODO test results of different interpolation types
+
                 if (activity.Source.Width != imageSize || activity.Source.Height != imageSize)
                 {
-                    // Normalise to 2km spatial resolution to simplify maths
+                    // TODO test results of different interpolation types
                     activity.Source.Mutate(c => c.Resize(imageSize, imageSize, KnownResamplers.Welch));
                 }
             });
+
+            return this;
         }
 
-        public void Reproject()
+        public void ReprojectToEquirectangular()
         {
             EnsureInitialised();
 
-            // Determine satellite's visible range
+            // Offset all images by the minimum longitude
             var globalOffset = -_activities.Select(p => p.LongitudeRange.UnwrapLongitude().NormaliseLongitude().Start).Min();
 
             _activities.ForEach(activity =>
@@ -204,6 +247,10 @@ namespace Funhouse.Services
             });
         }
 
+        /// <summary>
+        ///     Returns the horizontal offset of an image in equirectangular projection, based on the longitude of the
+        ///     associated satellite and a global offset.
+        /// </summary>
         private Point GetOffset(SatelliteDefinition definition, double globalOffset)
         {
             var longitude = (definition.LongitudeRange.Start + globalOffset).NormaliseLongitude();

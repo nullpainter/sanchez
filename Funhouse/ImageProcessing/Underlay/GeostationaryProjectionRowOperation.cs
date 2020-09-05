@@ -35,25 +35,24 @@ namespace Funhouse.ImageProcessing.Underlay
         {
             var span = _target.GetPixelRowSpan(y);
             var scanningY = _options.ImageOffset.ToVerticalScanningAngle(y);
-            
+
             var verticalScanningCalculations = GeostationaryProjection.VerticalScanningCalculations(scanningY, _definition);
 
             for (var x = 0; x < span.Length; x++)
             {
                 var scanningX = _options.ImageOffset.ToHorizontalScanningAngle(x);
-                GeostationaryProjection.ToGeodetic(verticalScanningCalculations, scanningX, _definition, _options, out var lat, out var lon);
+                GeostationaryProjection.ToGeodetic(scanningX, verticalScanningCalculations, _definition, out var latitude, out var longitude);
 
-                if (double.IsNaN(lon) || double.IsNaN(lat))
+                if (double.IsNaN(longitude) || double.IsNaN(latitude))
                 {
                     span[x] = Color.Transparent;
                     continue;
                 }
 
-                // TODO why do we need to negate the y coordinate?
-                var x1 = lon.ScaleToWidthF(_sourceWidth).Limit(0, _sourceWidth);
-                var y1 = _sourceHeight - lat.ScaleToHeight(_sourceHeight);
+                var x1 = longitude.ScaleToWidthD(_sourceWidth).Limit(0, _sourceWidth);
+                var y1 = _sourceHeight - latitude.ScaleToHeightD(_sourceHeight);
 
-                span[x] =  _sourceBuffer.GetInterpolatedPixel(x1, y1, _options.InterpolationType);
+                span[x] = _sourceBuffer.GetInterpolatedPixel(x1, y1, _options.InterpolationType);
             }
         }
     }

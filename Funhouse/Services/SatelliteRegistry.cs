@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Funhouse.Models.Configuration;
-using MathNet.Spatial.Units;
 using Newtonsoft.Json;
+using Angle = Funhouse.Models.Angle;
 using Range = Funhouse.Models.Angles.Range;
 
 namespace Funhouse.Services
@@ -32,13 +32,14 @@ namespace Funhouse.Services
                 Angle.FromDegrees(d.Longitude).Radians,
                 
                 new Range(
-                    Angle.FromDegrees(d.VisibleRange.MinLatitude).Radians,
-                    Angle.FromDegrees(d.VisibleRange.MaxLatitude).Radians),
+                    Angle.FromDegrees(d.VisibleRange.MinLatitude),
+                    Angle.FromDegrees(d.VisibleRange.MaxLatitude)),
                 
                 new Range(
-                    Angle.FromDegrees(d.VisibleRange.MinLongitude).Radians,
-                    Angle.FromDegrees(d.VisibleRange.MaxLongitude).Radians),
+                    Angle.FromDegrees(d.VisibleRange.MinLongitude),
+                    Angle.FromDegrees(d.VisibleRange.MaxLongitude)),
                 d.Height,
+                d.Crop,
                 d.Brightness)).ToList();
 
             _initialised = true;

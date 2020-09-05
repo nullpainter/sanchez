@@ -3,6 +3,7 @@ using Funhouse.Extensions;
 
 namespace Funhouse.Models.Angles
 {
+    // TODO document
     public readonly struct PixelRange
     {
         public int Start { get; }
