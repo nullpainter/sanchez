@@ -23,6 +23,14 @@ namespace Funhouse.Test.Helper
         {
         }
 
+        public string CreateFile(string directory, string filename)
+        {
+            var filePath = Path.Combine(directory, filename);
+
+            using var stream = File.Create(filePath);
+            return stream.Name;
+        }
+        
         public string CreateFile(string filename)
         {
             var tempDirectory = CreateTempDirectory();
