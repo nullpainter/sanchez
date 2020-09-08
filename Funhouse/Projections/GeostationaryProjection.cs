@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Funhouse.Extensions;
 using Funhouse.Models.Configuration;
 using static System.Math;
 using static Funhouse.Models.Constants.Earth;

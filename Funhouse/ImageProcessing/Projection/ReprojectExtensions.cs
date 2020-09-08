@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Funhouse.Extensions;
+﻿using Funhouse.Extensions;
 using Funhouse.Models;
 using Funhouse.Models.Angles;
 using Funhouse.Models.Projections;
@@ -14,7 +13,6 @@ namespace Funhouse.ImageProcessing.Projection
     {
         public static Image<Rgba32> Reproject(this SatelliteImage image, RenderOptions options)
         {
-            Guard.Against.Null(image.Definition, nameof(image.Definition));
             var definition = image.Definition;
 
             // Preserve 2:1 equirectangular aspect ratio

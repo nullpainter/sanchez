@@ -7,11 +7,15 @@ namespace Funhouse.Models.Projections
 {
     public class SatelliteImage
     {
-        public SatelliteImage(string path) => Path = path;
+        public SatelliteImage(string path, Image<Rgba32> image, SatelliteDefinition definition)
+        {
+            Path = path;
+            Definition = definition;
+            Image = image;
+        }
 
-        public SatelliteDefinition? Definition { get; set; }
-        public Image<Rgba32>? Image { get; set; }
-
+        public SatelliteDefinition Definition { get; }
+        public Image<Rgba32> Image { get; set; }
         public string Path { get; }
         public int OffsetX { get; set; }
 

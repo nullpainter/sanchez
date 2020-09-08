@@ -27,8 +27,9 @@ namespace Funhouse.Services
             var definitions = JsonConvert.DeserializeObject<List<SatelliteConfiguration>>(json);
 
             _definitions = definitions.Select(d => new SatelliteDefinition(
-                d.FilenamePattern!,
                 d.DisplayName!,
+                d.FilenamePattern!,
+                d.FilenameParserType,
                 Angle.FromDegrees(d.Longitude + d.LongitudeAdjustment.GetValueOrDefault()).Radians,
                 
                 new Range(

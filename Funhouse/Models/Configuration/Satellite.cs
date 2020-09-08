@@ -1,5 +1,6 @@
 ﻿using Funhouse.Extensions;
 using Funhouse.Models.Angles;
+using Funhouse.Services.Filesystem;
 
 namespace Funhouse.Models.Configuration
 {
@@ -7,6 +8,7 @@ namespace Funhouse.Models.Configuration
     {
         /// <param name="filenamePattern"></param>
         /// <param name="displayName"></param>
+        /// <param name="filenameParserType"></param>
         /// <param name="longitude"></param>
         /// <param name="latitudeRange"></param>
         /// <param name="longitudeRange"></param>
@@ -14,7 +16,10 @@ namespace Funhouse.Models.Configuration
         /// <param name="crop"></param>
         /// <param name="brightness"></param>
         public SatelliteDefinition(
-            string filenamePattern, string displayName, double longitude,
+            string displayName, 
+            string filenamePattern, 
+            FilenameParserType filenameParserType,
+            double longitude,
             Range latitudeRange,
             Range longitudeRange,
             double height = Constants.Satellite.DefaultHeight,
@@ -22,6 +27,7 @@ namespace Funhouse.Models.Configuration
             float brightness = 1.0f)
         {
             FilenamePattern = filenamePattern;
+            FilenameParserType = filenameParserType;
             DisplayName = displayName;
             LatitudeRange = latitudeRange;
             LongitudeRange = longitudeRange;
@@ -34,6 +40,7 @@ namespace Funhouse.Models.Configuration
         }
 
         public string FilenamePattern { get; }
+        public FilenameParserType FilenameParserType { get; }
         public string DisplayName { get; }
         public Range LatitudeRange { get; }
         public Range LongitudeRange { get; }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Ardalis.GuardClauses;
 using Funhouse.Extensions.Images;
 using Funhouse.Models;
 using Funhouse.Models.Angles;
@@ -38,9 +37,6 @@ namespace Funhouse.ImageProcessing.Projection
             int yOffset,
             RenderOptions options) 
         {
-            Guard.Against.Null(image.Definition, nameof(image.Definition));
-            Guard.Against.Null(image.Image, nameof(image.Image));
-
             _image = image;
             _target = target;
             _xOffset = xOffset;
@@ -57,9 +53,6 @@ namespace Funhouse.ImageProcessing.Projection
             // Calculate end longitude for blend
             var overlap = BlendRatio * (_longitudeRange.End - _longitudeRange.Start);
             _blendEndLongitude = _longitudeRange.End + overlap;
-
-            Guard.Against.Null(image.Image, nameof(image.Image));
-            Guard.Against.Null(image.Definition, nameof(image.Definition));
         }
 
         private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new ConcurrentDictionary<int, LatitudeCalculations>();
@@ -83,7 +76,7 @@ namespace Funhouse.ImageProcessing.Projection
                 var projectionX = ProjectionAngle.FromX(x + _xOffset, targetWidth);
 
                 // Convert latitude/longitude to geostationary scanning angle
-                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _image.Definition!, out var scanningX, out var scanningY);
+                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _image.Definition, out var scanningX, out var scanningY);
 
                 // Map pixel from satellite image back to target image
                 span[x] = GetTargetColour(scanningX, scanningY, projectionY, projectionX);

@@ -9,7 +9,7 @@ namespace Funhouse.Models
     {
         public List<SatelliteImage> Images { get; }
 
-        public SatelliteImages(List<SatelliteImage> activities) => Images = activities;
+        public SatelliteImages(IEnumerable<SatelliteImage> images) => Images = images.ToList();
             
         public void GetVisibleRange(out Range latitudeRange, out Range longitudeRange)
         {
@@ -29,12 +29,5 @@ namespace Funhouse.Models
                 sortedActivities.Last().LongitudeRange.End
             ).UnwrapLongitude();
         } 
-        
-        
-        /// <summary>
-        ///     Gets projection activities which don't have an associated satellite definition.
-        /// </summary>
-        /// <returns></returns>
-        public List<SatelliteImage> GetUnmapped() => Images!.Where(p => p.Definition == null).ToList();
     }
 }

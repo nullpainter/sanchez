@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -9,9 +8,7 @@ using Funhouse.ImageProcessing.Projection;
 using Funhouse.ImageProcessing.ShadeEdges;
 using Funhouse.ImageProcessing.Tint;
 using Funhouse.Models;
-using Funhouse.Models.CommandLine;
 using Funhouse.Models.Projections;
-using Funhouse.Services.Equirectangular;
 using Funhouse.Services.Underlay;
 using Serilog;
 using SixLabors.ImageSharp.PixelFormats;
@@ -35,17 +32,14 @@ namespace Funhouse.Services
         private readonly IUnderlayService _underlayService;
         private SatelliteImages _images = null!;
         private bool _initialised;
-        private readonly RenderOptions _renderOptions;
-        private readonly CommandLineOptions _commandLineOptions;
+        private readonly RenderOptions _options;
 
         public ProjectionActivityOperations(
-            RenderOptions renderOptions,
-            CommandLineOptions commandLineOptions,
+            RenderOptions options,
             IProjectionOverlapCalculator projectionOverlapCalculator,
             IUnderlayService underlayService)
         {
-            _renderOptions = renderOptions;
-            _commandLineOptions = commandLineOptions;
+            _options = options;
             _projectionOverlapCalculator = projectionOverlapCalculator;
             _underlayService = underlayService;
         }
@@ -58,34 +52,32 @@ namespace Funhouse.Services
    
         public async Task RenderGeostationaryUnderlayAsync(SatelliteImage image)
         {
-            Guard.Against.Null(image.Definition, nameof(image.Definition));
-            Guard.Against.Null(image.Image, nameof(image.Image));
+            Guard.Against.Null(_options.GeostationaryRender, nameof(_options.GeostationaryRender));
 
             // Get or generate projected underlay
             var underlayOptions = new UnderlayProjectionOptions(
-                _renderOptions.ProjectionType,
-                _renderOptions.InterpolationType,
-                _renderOptions.ImageSize,
-                _commandLineOptions.UnderlayPath);
+                ProjectionType.Geostationary,
+                _options.InterpolationType,
+                _options.ImageSize,
+                _options.UnderlayPath);
 
             Log.Information("Retrieving underlay");
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, image.Definition);
 
             Log.Information("Tinting and normalising IR imagery");
             image.Image.Mutate(c => c.HistogramEqualization());
-            image.Image.Tint(_renderOptions.Tint);
+            image.Image.Tint(_options.Tint);
 
             Log.Information("Blending with underlay");
-            image.Image.Mutate(ctx => ctx.Resize(_renderOptions.ImageSize, _renderOptions.ImageSize));
+            image.Image.Mutate(ctx => ctx.Resize(_options.ImageSize, _options.ImageSize));
             image.Image.Mutate(ctx => ctx.DrawImage(underlay, PixelColorBlendingMode.Screen, 1.0f));
 
-            if (_renderOptions.HazeAmount > 0) image.Image.ApplyHaze(_renderOptions.Tint, _renderOptions.HazeAmount);
+            var hazeAmount = _options.GeostationaryRender.HazeAmount;
+            if (hazeAmount > 0) image.Image.ApplyHaze(_options.Tint, hazeAmount);
 
             // Perform global colour correction
-            image.Image.ColourCorrect(_renderOptions);
+            image.Image.ColourCorrect(_options);
             image.Image.Mutate();
-
-            await image.SaveWithExifAsync("-FC", _commandLineOptions);
         }
 
         /// <summary>
@@ -94,17 +86,14 @@ namespace Funhouse.Services
         public ProjectionActivityOperations CalculateOverlap()
         {
             EnsureInitialised();
-            if (_images.GetUnmapped().Any()) throw new InvalidOperationException("Not all images have valid satellite definitions");
 
-            _projectionOverlapCalculator.Initialise(_images.Images.Select(p => p.Definition!));
+            _projectionOverlapCalculator.Initialise(_images.Images.Select(p => p.Definition));
 
             // Set latitude and longitude ranges based on overlapping satellite ranges
-            _images.Images.ForEach(activity =>
+            _images.Images.ForEach(image =>
             {
-                Guard.Against.Null(activity.Definition, nameof(activity.Definition));
-
-                activity.LongitudeRange = _commandLineOptions.Stitch ? _projectionOverlapCalculator.GetNonOverlappingRange(activity.Definition!) : activity.Definition.LongitudeRange;
-                activity.LatitudeRange = activity.Definition.LatitudeRange;
+                image.LongitudeRange = _projectionOverlapCalculator.GetNonOverlappingRange(image.Definition);
+                image.LatitudeRange = image.Definition.LatitudeRange;
             });
 
             return this;
@@ -128,12 +117,12 @@ namespace Funhouse.Services
 
                 // Reproject geostationary image into equirectangular
                 LogStatistics(image);
-                image.Image = image.Reproject(_renderOptions);
+                image.Image = image.Reproject(_options);
 
                 // Overlap range relative the satellite's visible range and convert to a equirectangular map
                 // offset with a pixel range of -180 to 180 degrees
                 var longitude = (image.Definition.LongitudeRange.Start + globalOffset).NormaliseLongitude();
-                image.OffsetX = longitude.ScaleToWidth(_renderOptions.ImageSize * 2);
+                image.OffsetX = longitude.ScaleToWidth(_options.ImageSize * 2);
             });
         }
         

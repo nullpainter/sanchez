@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.Tint;
 using Funhouse.Models;
-using Funhouse.Models.CommandLine;
-using Funhouse.Models.Projections;
 using Funhouse.Services.Underlay;
 using Serilog;
 using SixLabors.ImageSharp;
@@ -20,23 +17,14 @@ namespace Funhouse.Services.Equirectangular
 
     public class EquirectangularImageRenderer : IEquirectangularImageRenderer
     {
-        private readonly IProjectionActivityOperations _projectionActivityOperations;
-        private readonly CommandLineOptions _commandLineOptions;
-        private readonly RenderOptions _renderOptions;
-        private readonly IImageStitcher _imageStitcher;
+        private readonly RenderOptions _options;
         private readonly IUnderlayService _underlayService;
 
         public EquirectangularImageRenderer(
-            IProjectionActivityOperations projectionActivityOperations,
-            CommandLineOptions commandLineOptions,
-            RenderOptions renderOptions,
-            IImageStitcher imageStitcher,
+            RenderOptions options,
             IUnderlayService underlayService)
         {
-            _projectionActivityOperations = projectionActivityOperations;
-            _commandLineOptions = commandLineOptions;
-            _renderOptions = renderOptions;
-            _imageStitcher = imageStitcher;
+            _options = options;
             _underlayService = underlayService;
         }
 
@@ -48,25 +36,22 @@ namespace Funhouse.Services.Equirectangular
 
             // Load underlay
             Image<Rgba32> target;
-            if (_commandLineOptions.NoUnderlay)
-            {
-                target = stitched;
-            }
+            if (_options.NoUnderlay) target = stitched;
             else
             {
                 Log.Information("Tinting and normalising IR imagery");
 
                 var clone = stitched.Clone();
                 clone.Mutate(c => c.HistogramEqualization());
-                stitched.Tint(_renderOptions.Tint);
+                stitched.Tint(_options.Tint);
 
                 stitched.Mutate(c => c.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f));
 
                 var underlayOptions = new UnderlayProjectionOptions(
-                    _renderOptions.ProjectionType,
-                    _renderOptions.InterpolationType,
-                    _renderOptions.ImageSize,
-                    _commandLineOptions.UnderlayPath,
+                    ProjectionType.Equirectangular,
+                    _options.InterpolationType,
+                    _options.ImageSize,
+                    _options.UnderlayPath,
                     stitched.Height,
                     latitudeRange, longitudeRange);
 
@@ -78,7 +63,7 @@ namespace Funhouse.Services.Equirectangular
                 target.Mutate(ctx => ctx.DrawImage(stitched, PixelColorBlendingMode.Screen, 1.0f));
                 
                 // Perform global colour correction
-                target.ColourCorrect(_renderOptions);
+                target.ColourCorrect(_options);
             }
 
             return target;

@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Funhouse.Extensions;
-using Funhouse.Models.Configuration;
 using static System.Math;
 using static Funhouse.Models.Constants.Earth;
 
@@ -15,13 +14,13 @@ namespace Funhouse.Projections
         private const double RadiusEquatorSquared = RadiusEquator * RadiusEquator;
 
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static VerticalScanningCalculations VerticalScanningCalculations(double scanningY, SatelliteDefinition definition)
+        public static VerticalScanningCalculations VerticalScanningCalculations(double scanningY, double satelliteHeight)
         {
             var calculations = new VerticalScanningCalculations
             {
                 CosY = Cos(scanningY),
                 SinY = Sin(scanningY),
-                SatelliteHeight = definition.Height + RadiusEquator
+                SatelliteHeight = satelliteHeight + RadiusEquator
             };
 
             calculations.C = calculations.SatelliteHeight * calculations.SatelliteHeight - RadiusEquatorSquared;
@@ -42,10 +41,10 @@ namespace Funhouse.Projections
         /// <param name="definition">satellite definition</param>
         /// <param name="latitude">calculated latitude in radians</param>
         /// <param name="longitude">calculated longitude in radians</param>
-        public static void ToLatitudeLongitude(double scanningX, double scanningY, SatelliteDefinition definition, out double latitude, out double longitude)
+        public static void ToLatitudeLongitude(double scanningX, double scanningY, double satelliteLongitude, double satelliteHeight,  out double latitude, out double longitude)
         {
-            var verticalCalculations = VerticalScanningCalculations(scanningY, definition);
-            ToLatitudeLongitude(scanningX, verticalCalculations, definition, out latitude, out longitude);
+            var verticalCalculations = VerticalScanningCalculations(scanningY, satelliteHeight);
+            ToLatitudeLongitude(scanningX, verticalCalculations, satelliteLongitude, out latitude, out longitude);
         }
 
         /// <summary>
@@ -58,12 +57,10 @@ namespace Funhouse.Projections
         /// <param name="longitude">calculated longitude in radians</param>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static void ToLatitudeLongitude(
-            double scanningX, VerticalScanningCalculations verticalScanningCalculations, SatelliteDefinition definition, out double latitude, out double longitude)
+            double scanningX, VerticalScanningCalculations verticalScanningCalculations, double satelliteLongitude,  out double latitude, out double longitude)
         {
-            var satelliteLongitude = definition.Longitude;
-            var satelliteHeight = definition.Height + RadiusEquator;
-
             var l0 = satelliteLongitude;
+            var satelliteHeight = verticalScanningCalculations.SatelliteHeight;
 
             var cosX = Cos(scanningX);
             var sinX = Sin(scanningX);

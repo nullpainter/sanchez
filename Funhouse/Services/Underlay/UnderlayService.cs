@@ -90,7 +90,7 @@ namespace Funhouse.Services.Underlay
 
                     // Project underlay to geostationary, based on the target satellite
                     Log.Information("{definition:l0} Rendering geostationary underlay", definition.DisplayName);
-                    return underlay.ToGeostationaryProjection(definition, _options);
+                    return underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, _options);
 
                 case ProjectionType.Equirectangular:
 

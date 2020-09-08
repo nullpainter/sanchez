@@ -1,16 +1,20 @@
-﻿using Newtonsoft.Json;
+﻿using Funhouse.Services.Filesystem;
+using Newtonsoft.Json;
 
 namespace Funhouse.Models.Configuration
 {
     public class SatelliteConfiguration
     {
+        [JsonProperty("DisplayName", Required = Required.Always)]
+        public string DisplayName { get; set; } = null!;
+        
         // TODO validate regex
         [JsonProperty("FilenamePattern", Required = Required.Always)]
         public string FilenamePattern { get; set; } = null!;
-
-        [JsonProperty("DisplayName", Required = Required.Always)]
-        public string DisplayName { get; set; } = null!;
-
+        
+        [JsonProperty("FilenameParser", Required = Required.Always)]
+        public FilenameParserType FilenameParserType { get; set; }
+        
         [JsonProperty("Longitude", Required = Required.Always)]
         public double Longitude { get; set; }
 

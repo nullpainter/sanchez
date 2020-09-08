@@ -1,11 +1,10 @@
 ﻿[
   {
-    // GOES-16
-    "FilenamePattern": "GOES16_FD_CH13_",
     "DisplayName": "GOES-16",
-    // Nominal satellite subpoint longitude is -75.2 degrees east, however it has been resampled to be
-    // centred at -75.0 degrees east longitude.
-    "Longitude": -75.0,
+    "FilenamePattern": "GOES16_FD_CH13_",
+    "FilenameParser": "Goesproc",
+    "Longitude": -75.2,
+    "LongitudeAdjustment": 0.2,
     "VisibleRange": {
       "MinLongitude": -156.2995,
       "MaxLongitude": 6.2995
@@ -13,9 +12,9 @@
     "Brightness": 0.75
   },
   {
-    // GOES-17
-    "FilenamePattern": "GOES17_FD_CH13_",
     "DisplayName": "GOES-17",
+    "FilenamePattern": "GOES17_FD_CH13_",
+    "FilenameParser": "Goesproc",
     "Longitude": -137.2,
     "VisibleRange": {
       "MinLongitude": 141.7005,
@@ -24,9 +23,9 @@
     "Brightness": 0.75
   },
   {
-    // Himawari-8
-    "FilenamePattern": "Himawari8_FD_IR_",
     "DisplayName": "Himawari-8",
+    "FilenamePattern": "Himawari8_FD_IR_",
+    "FilenameParser": "Goesproc",
     "Longitude": 140.7,
     "LongitudeAdjustment": -0.8,
     // Note - manually calculated based on visible 

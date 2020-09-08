@@ -3,24 +3,24 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using CommandLine;
 using Extend;
+using FluentValidation.Results;
 using Funhouse.Builders;
-using Funhouse.Extensions;
-using Funhouse.Factories;
 using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Models.CommandLine;
+using Funhouse.Validators;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 using SimpleInjector;
-using static Funhouse.Models.Constants.Satellite;
-using ProjectionOptions = Funhouse.Models.CommandLine.ProjectionOptions;
 
 [assembly: InternalsVisibleTo("Funhouse.Test")]
+
 namespace Funhouse
 {
     internal static class Bootstrapper
@@ -34,29 +34,33 @@ namespace Funhouse
 
             try
             {
-                await Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsedAsync(async options =>
-                {
-                    // Disable stdout if required
-                    if (options.Quiet) Console.SetOut(TextWriter.Null);
+                RenderOptions renderOptions = null!;
 
-                    await ValidateOptionsAsync(options);
-                    var renderOptions = RenderOptionFactory.ToRenderOptions(options);
+                var parser = Parser.Default
+                    .ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
+                    .WithParsed<EquirectangularOptions>(options => renderOptions = ParseReprojectOptions(options))
+                    .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
 
-                    // Build DI container
-                    var container = new Container().AddAllService(options, renderOptions);
-                    container.Verify();
+                // Exit if required options not present
+                if (parser.Tag == ParserResultType.NotParsed) Environment.Exit(-1);
+                Guard.Against.Null(renderOptions, nameof(renderOptions));
 
-                    ConfigureLogging(options.Verbose);
+                // Disable stdout if required
+                if (renderOptions.Quiet) Console.SetOut(TextWriter.Null);
 
-                    Log.Information("Sanchez starting");
+                // Build DI container
+                var container = new Container().AddAllService(renderOptions);
+                container.Verify();
 
-                    LogOptions(options, renderOptions);
+                ConfigureLogging(renderOptions.Verbose);
 
-                    // Perform image processing
-                    await container
-                        .GetInstance<Funhouse>()
-                        .ProcessAsync();
-                });
+                Log.Information("Sanchez starting");
+                LogOptions(renderOptions);
+
+                // Perform image processing
+                await container
+                    .GetInstance<Funhouse>()
+                    .ProcessAsync();
             }
             finally
             {
@@ -64,56 +68,33 @@ namespace Funhouse
             }
         }
 
-        private static async Task ValidateOptionsAsync(CommandLineOptions options)
+        private static RenderOptions ParseGeostationaryOptions(GeostationaryOptions options)
         {
-            // Verify selected tint
-            if (options.Tint.FromHexString() == null)
+            var validation = new GeostationaryOptionsValidator().Validate(options);
+            if (validation.IsValid)
             {
-                await Console.Error.WriteLineAsync("Unable to parse tint as a hex tuple. Expected format is 5ebfff");
-                Environment.Exit(-1);
+                return OptionsParser.Populate(options);
             }
 
-            if (options.HazeAmount < 0 || options.HazeAmount > 1)
-            {
-                await Console.Error.WriteLineAsync("Invalid haze amount; valid values are between 0.0 and 1.0");
-                Environment.Exit(-1);
-            }
-
-            // Verify underlay image exists
-            if (!File.Exists(options.UnderlayPath ?? Constants.DefaultUnderlayPath))
-            {
-                await Console.Error.WriteLineAsync($"Underlay path {options.UnderlayPath} isn't valid");
-                Environment.Exit(-1);
-            }
-
-            // Verify argument compatibility
-
-            if (options.ProjectionType == ProjectionOptions.G)
-            {
-                if (options.AutoCrop)
-                {
-                    await Console.Error.WriteLineAsync($"Autocrop only available with projection type {ProjectionType.Geostationary}");
-                    Environment.Exit(-1);
-                }
-            }
-
-            // Verify spatial resolution
-            if (!options.SpatialResolution.IsIn(SpatialResolution.TwoKm, SpatialResolution.FourKm))
-            {
-                await Console.Error.WriteLineAsync( $"Unsupported output spatial resolution. Valid values are: {SpatialResolution.TwoKm}, {SpatialResolution.FourKm}");
-                Environment.Exit(-1); 
-            }
+            ReportErrors(validation);
+            Environment.Exit(-1);
+            return null;
         }
 
-        private static void LogOptions(CommandLineOptions commandLineOptions, RenderOptions renderOptions)
+        private static RenderOptions ParseReprojectOptions(EquirectangularOptions options)
         {
-            if (commandLineOptions.AutoCrop) Log.Information("Autocrop enabled");
-            if (commandLineOptions.Stitch) Log.Information("Stitching enabled");
-            
-            Log.Information("Render mode {renderMode}", renderOptions.ProjectionType);
-            Log.Information("Interpolation type {type}", renderOptions.InterpolationType);
-            Log.Information("{km}km spatial resolution", commandLineOptions.SpatialResolution);
+            var validation = new EquirectangularOptionsValidator().Validate(options);
+            if (validation.IsValid)
+            {
+                return OptionsParser.Populate(options);
+            }
+
+            ReportErrors(validation);
+            Environment.Exit(-1);
+            return null;
         }
+
+        private static void ReportErrors(ValidationResult result) => result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
 
         /// <summary>
         ///     Configures logging output.
@@ -125,10 +106,15 @@ namespace Funhouse
                 .WriteTo.RollingFile(Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails();
-
             if (consoleLogging) builder.WriteTo.Console();
-
             Log.Logger = builder.CreateLogger();
+        }
+
+        private static void LogOptions(RenderOptions options)
+        {
+            if (options.EquirectangularRender?.AutoCrop == true) Log.Information("Autocrop enabled");
+            Log.Information("Interpolation type {type}", options.InterpolationType);
+            Log.Information("Normalising to {km}km spatial resolution", options.SpatialResolution);
         }
     }
 }

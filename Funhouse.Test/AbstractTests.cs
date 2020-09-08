@@ -1,14 +1,12 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Funhouse.Builders;
-using Funhouse.Factories;
 using Funhouse.Models;
 using Funhouse.Models.CommandLine;
 using Funhouse.Services;
 using Funhouse.Services.Underlay;
 using NUnit.Framework;
 using SimpleInjector;
-using ProjectionOptions = Funhouse.Models.CommandLine.ProjectionOptions;
 
 namespace Funhouse.Test
 {
@@ -21,7 +19,7 @@ namespace Funhouse.Test
 
         protected const string Goes16DefinitionPrefix = "GOES16_FD_CH13_";
         protected const string Goes17DefinitionPrefix = "GOES17_FD_CH13_";
-        
+
 
         private Container Container { get; set; }
 
@@ -33,17 +31,17 @@ namespace Funhouse.Test
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var options = new CommandLineOptions
+            var options = new RenderOptions();
+            OptionsParser.Populate(new GeostationaryOptions
             {
                 Tint = "ff0000",
                 InterpolationType = InterpolationOptions.B,
-                ProjectionType = ProjectionOptions.E,
-                SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm
-            };
-            
-            var renderOptions = RenderOptionFactory.ToRenderOptions(options);
-            
-            Container = new Container().AddAllService(options, renderOptions);
+                SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
+                HazeAmount = 1.0f
+            });
+
+
+            Container = new Container().AddAllService(options);
 
             UnderlayCacheRepository.DeleteCache();
             UnderlayCacheRepository.Initialise();

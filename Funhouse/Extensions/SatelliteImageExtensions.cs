@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+using Extend;
 using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.Mask;
-using Funhouse.Models.CommandLine;
+using Funhouse.Models;
 using Funhouse.Models.Projections;
-using Serilog;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace Funhouse.Extensions
@@ -17,35 +15,27 @@ namespace Funhouse.Extensions
         /// <summary>
         ///     Mask all pixels outside the Earth to assist image stitching of projected images.
         /// </summary>
-        public static SatelliteImage RemoveBackground(this SatelliteImage activity)
+        public static SatelliteImage RemoveBackground(this SatelliteImage image)
         {
-            Guard.Against.Null(activity.Image, nameof(activity.Image));
-            activity.Image.RemoveBackground();
-
-            return activity;
+            image.Image.RemoveBackground();
+            return image;
         }
-        
-        public static SatelliteImage CropBorders(this SatelliteImage activity)
+
+        public static SatelliteImage CropBorders(this SatelliteImage image)
         {
-            Guard.Against.Null(activity.Image, nameof(activity.Image));
-            Guard.Against.Null(activity.Definition, nameof(activity.Definition));
-            
             // Perform crop
-            if (activity.Definition.Crop != null) activity.Image.AutoCropBorder(activity.Definition.Crop);
-            return activity;
+            if (image.Definition.Crop != null) image.Image.AutoCropBorder(image.Definition.Crop);
+            return image;
         }
-        
-        public static SatelliteImage NormaliseHistogram(this SatelliteImage activity)
+
+        public static SatelliteImage NormaliseHistogram(this SatelliteImage image)
         {
-            Guard.Against.Null(activity.Image, nameof(activity.Image));
-            Guard.Against.Null(activity.Definition, nameof(activity.Definition));
-
             // Normalise brightness and contrast
-            activity.Image.Mutate(c => c.HistogramEqualization());
-            activity.Image.Mutate(c => c.Brightness(activity.Definition.Brightness));
-            activity.Image.Mutate(c => c.Brightness(1.1f));
+            image.Image.Mutate(c => c.HistogramEqualization());
+            image.Image.Mutate(c => c.Brightness(image.Definition.Brightness));
+            image.Image.Mutate(c => c.Brightness(1.1f));
 
-            return activity;
+            return image;
         }
 
         /// <summary>
@@ -54,8 +44,6 @@ namespace Funhouse.Extensions
         /// </summary>
         public static SatelliteImage NormaliseSize(this SatelliteImage image, int imageSize)
         {
-            Guard.Against.Null(image.Image, nameof(image.Image));
-
             if (image.Image.Width != imageSize || image.Image.Height != imageSize)
             {
                 // TODO test results of different interpolation types
@@ -65,20 +53,23 @@ namespace Funhouse.Extensions
             return image;
         }
 
-        public static async Task SaveWithExifAsync(this SatelliteImage image, string suffix, CommandLineOptions options)
+        public static async Task SaveWithExifAsync(this SatelliteImage image, RenderOptions options, string suffix)
         {
-            var filename = $"{Path.GetFileNameWithoutExtension(image.Path)}{suffix}.jpg";
-            var outputPath = Path.Combine(Path.GetDirectoryName(image.Path)!, filename);
-            await image.Image.SaveWithExifAsync(outputPath);
+            string outputPath;
 
-            if (options.Verbose)
+            // Determine output file location
+            if (options.MultipleTargets)
             {
-                Log.Information("Output written to {path}", Path.GetFullPath(outputPath));
+                Directory.CreateDirectory(options.OutputPath);
+                outputPath = Path.Combine(options.OutputPath, $"{Path.GetFileNameWithoutExtension(image.Path)}{suffix}.jpg");
             }
             else
             {
-                Console.WriteLine($"Output written to {Path.GetFullPath(outputPath)}");
-            } 
+                outputPath = options.OutputPath;
+            }
+            
+           // Save image
+            await image.Image.SaveWithExifAsync(outputPath, options);
         }
     }
 }

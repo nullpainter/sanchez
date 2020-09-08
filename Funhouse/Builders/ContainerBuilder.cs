@@ -1,8 +1,8 @@
 ﻿using Funhouse.Models;
-using Funhouse.Models.CommandLine;
 using Funhouse.Seeder;
 using Funhouse.Services;
 using Funhouse.Services.Equirectangular;
+using Funhouse.Services.Filesystem;
 using Funhouse.Services.Underlay;
 using SimpleInjector;
 
@@ -10,7 +10,7 @@ namespace Funhouse.Builders
 {
     public static class ContainerBuilder
     {
-        public static Container AddAllService(this Container container, CommandLineOptions options, RenderOptions renderOptions)
+        public static Container AddAllService(this Container container, RenderOptions options)
         {
             container.RegisterSingleton<ICompositor, Compositor>();
             container.RegisterSingleton<IImageStitcher, ImageStitcher>();
@@ -20,9 +20,10 @@ namespace Funhouse.Builders
             container.RegisterSingleton<IUnderlayCacheRepository, UnderlayCacheRepository>();
             container.RegisterSingleton<IDatabaseMigrator, DatabaseMigrator>();
             container.RegisterSingleton<IEquirectangularImageRenderer, EquirectangularImageRenderer>();
+            container.RegisterSingleton<IImageLocator, ImageLocator>();
+            container.RegisterSingleton<FilenameParserProvider>();
             
             container.RegisterInstance(options);
-            container.RegisterInstance(renderOptions);
             
             container.RegisterSingleton<IProjectionActivityOperations, ProjectionActivityOperations>();
             container.RegisterSingleton<IProjectionOverlapCalculator, ProjectionOverlapCalculator>();

@@ -4,6 +4,7 @@ using Funhouse.Models;
 using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Funhouse.Services;
+using Funhouse.Services.Filesystem;
 using NUnit.Framework;
 
 namespace Funhouse.Test
@@ -30,6 +31,17 @@ namespace Funhouse.Test
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(goes17),
                 new Range(Angle.FromDegrees(180).Radians, Angle.FromDegrees(-50).Radians));
+        }
+        
+        [Test]
+        public void SingleSatellite()
+        {
+            var goes16 = ToDefinition(-156.2995, 6.2995);
+
+            var calculator = new ProjectionOverlapCalculator();
+            calculator.Initialise(new List<SatelliteDefinition> { goes16});
+
+            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(goes16), goes16.LongitudeRange);
         }
 
         [Test]
@@ -108,7 +120,7 @@ namespace Funhouse.Test
 
         private static SatelliteDefinition ToDefinition(double startDegrees, double endDegrees, string name = "")
         {
-            var nonOverlapping = new SatelliteDefinition("", name, 0,
+            var nonOverlapping = new SatelliteDefinition(name, "", FilenameParserType.Goesproc, 0,
                 new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)),
                 new Range(
                     Angle.FromDegrees(startDegrees),

@@ -14,12 +14,12 @@ namespace Funhouse.Models
             ProjectionType projection, 
             InterpolationType interpolation,
             int imageSize,
-            string? underlayPath = null,
+            string underlayPath,
             int? targetHeight = null,
             Range? latitudeCrop = null, 
             Range? longitudeCrop = null) : base(projection, interpolation, imageSize)
         {
-            UnderlayPath = underlayPath ?? Constants.DefaultUnderlayPath;
+            UnderlayPath = underlayPath;
             TargetHeight = targetHeight;
             LatitudeCrop = latitudeCrop;
             LongitudeCrop = longitudeCrop;
