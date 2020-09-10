@@ -20,11 +20,11 @@ namespace Funhouse.Test
             Assert.NotNull(definition, "Unable to find satellite definition");
 
             var options = new UnderlayProjectionOptions(
-                ProjectionType.Equirectangular, 
-                InterpolationType.NearestNeighbour, 
-                5424, 
+                ProjectionType.Equirectangular,
+                InterpolationType.NearestNeighbour,
+                5424,
                 Constants.DefaultUnderlayPath);
-            
+
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(10848);
@@ -44,13 +44,13 @@ namespace Funhouse.Test
                 Constants.DefaultUnderlayPath,
                 latitudeCrop: new Range(Angle.FromDegrees(-45), Angle.FromDegrees(45)),
                 longitudeCrop: new Range(Angle.FromDegrees(-100), Angle.FromDegrees(100)));
-            
+
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
-            underlay.Width.Should().Be(18848);
+            underlay.Width.Should().Be(10848);
             underlay.Height.Should().Be(2712);
         }
-        
+
         [Test]
         public async Task GeostationaryUnderlay()
         {
@@ -59,27 +59,26 @@ namespace Funhouse.Test
 
             var options = new UnderlayProjectionOptions(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, 5424, 
-                Constants.DefaultUnderlayPath
-                ,1000);
-            
+                InterpolationType.NearestNeighbour, 5424,
+                Constants.DefaultUnderlayPath, 1000);
+
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(1000);
             underlay.Height.Should().Be(1000);
-            
+
             // Retrieve cached
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(1000);
             underlay.Height.Should().Be(1000);
-            
+
             // Verify changing options doesn't retrieve cached underlay
             options = new UnderlayProjectionOptions(
-                ProjectionType.Geostationary, 
-                InterpolationType.NearestNeighbour, 5424,  
+                ProjectionType.Geostationary,
+                InterpolationType.NearestNeighbour, 5424,
                 Constants.DefaultUnderlayPath, 1500);
-            
+
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(1500);

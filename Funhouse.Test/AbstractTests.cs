@@ -25,21 +25,20 @@ namespace Funhouse.Test
 
         private static string DefinitionsPath => Path.Combine(TestContext.CurrentContext.TestDirectory, Constants.DefinitionsPath);
 
+        protected RenderOptions RenderOptions => GetService<RenderOptions>();
         protected ISatelliteRegistry SatelliteRegistry => GetService<ISatelliteRegistry>();
-        protected IUnderlayCacheRepository UnderlayCacheRepository => GetService<IUnderlayCacheRepository>();
+        private IUnderlayCacheRepository UnderlayCacheRepository => GetService<IUnderlayCacheRepository>();
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var options = new RenderOptions();
-            OptionsParser.Populate(new GeostationaryOptions
+            var options = OptionsParser.Populate(new GeostationaryOptions
             {
                 Tint = "ff0000",
                 InterpolationType = InterpolationOptions.B,
                 SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
                 HazeAmount = 1.0f
             });
-
 
             Container = new Container().AddAllService(options);
 

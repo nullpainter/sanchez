@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using Funhouse.Extensions;
+using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Models.Angles;
 using NUnit.Framework;
@@ -10,33 +12,35 @@ namespace Funhouse.Test
         [Test]
         public void ToX()
         {
-            ProjectionAngle.ToX(Angle.FromDegrees(-180).Radians, 200).Should().Be(0);
-            ProjectionAngle.ToX(Angle.FromDegrees(180).Radians, 200).Should().Be(200);
-            ProjectionAngle.ToX(Angle.FromDegrees(0).Radians, 200).Should().Be(100);
+            var pixelRange = new Range(Angle.FromDegrees(-180), Angle.FromDegrees(180)).ToPixelRangeX(200);
+            
+            pixelRange.Start.Should().Be(0);
+            pixelRange.End.Should().Be(200);
         }
 
         [Test]
         public void FromX()
         {
-            Angle.FromRadians(ProjectionAngle.FromX(0, 200)).Degrees.Should().BeApproximately(-180, Precision);
-            Angle.FromRadians(ProjectionAngle.FromX(200, 200)).Degrees.Should().BeApproximately(180, Precision);
-            Angle.FromRadians(ProjectionAngle.FromX(100, 200)).Degrees.Should().BeApproximately(0, Precision);
+            Angle.FromRadians(ProjectionAngleConverter.FromX(0, 200)).Degrees.Should().BeApproximately(-180, Precision);
+            Angle.FromRadians(ProjectionAngleConverter.FromX(200, 200)).Degrees.Should().BeApproximately(180, Precision);
+            Angle.FromRadians(ProjectionAngleConverter.FromX(100, 200)).Degrees.Should().BeApproximately(0, Precision);
         }
 
         [Test]
         public void FromY()
         {
-            Angle.FromRadians(ProjectionAngle.FromY(0, 200)).Degrees.Should().BeApproximately(-90, Precision);
-            Angle.FromRadians(ProjectionAngle.FromY(200, 200)).Degrees.Should().BeApproximately(90, Precision);
-            Angle.FromRadians(ProjectionAngle.FromY(100, 200)).Degrees.Should().BeApproximately(0, Precision);
+            Angle.FromRadians(ProjectionAngleConverter.FromY(0, 200)).Degrees.Should().BeApproximately(-90, Precision);
+            Angle.FromRadians(ProjectionAngleConverter.FromY(200, 200)).Degrees.Should().BeApproximately(90, Precision);
+            Angle.FromRadians(ProjectionAngleConverter.FromY(100, 200)).Degrees.Should().BeApproximately(0, Precision);
         }
 
         [Test]
         public void ToY()
         {
-            ProjectionAngle.ToY(Angle.FromDegrees(-90).Radians, 200).Should().Be(0);
-            ProjectionAngle.ToY(Angle.FromDegrees(90).Radians, 200).Should().Be(200);
-            ProjectionAngle.ToY(Angle.FromDegrees(0).Radians, 200).Should().Be(100);
+            var pixelRange = new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)).ToPixelRangeY(200);
+            
+            pixelRange.Start.Should().Be(0);
+            pixelRange.End.Should().Be(200);
         }
     }
 }
