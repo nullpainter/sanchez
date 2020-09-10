@@ -1,11 +1,11 @@
 ﻿[
   {
     "DisplayName": "GOES-16",
-    "FilenamePattern": "GOES16_FD_CH13_",
+    "FilenamePrefix": "GOES16_FD_CH13_",
     "FilenameParser": "Goesproc",
     "Longitude": -75.2,
     "LongitudeAdjustment": 0.2,
-    "VisibleRange": {
+    "CropRange": {
       "MinLongitude": -156.2995,
       "MaxLongitude": 6.2995
     },
@@ -13,10 +13,10 @@
   },
   {
     "DisplayName": "GOES-17",
-    "FilenamePattern": "GOES17_FD_CH13_",
+    "FilenamePrefix": "GOES17_FD_CH13_",
     "FilenameParser": "Goesproc",
     "Longitude": -137.2,
-    "VisibleRange": {
+    "CropRange": {
       "MinLongitude": 141.7005,
       "MaxLongitude": -55.7005
     },
@@ -24,14 +24,31 @@
   },
   {
     "DisplayName": "Himawari-8",
-    "FilenamePattern": "Himawari8_FD_IR_",
+    "FilenamePrefix": "Himawari8_FD_IR_",
     "FilenameParser": "Goesproc",
     "Longitude": 140.7,
     "LongitudeAdjustment": -0.8,
-    // Note - manually calculated based on visible 
-    "VisibleRange": {
+    "CropRange": {
       "MinLongitude": 60,
       "MaxLongitude": -140
+    },
+    "Brightness": 0.8,
+    "Crop": [
+      0.006818,
+      0.007273,
+      0.007273,
+      0.006818
+    ]
+  },
+  {
+    "DisplayName": "GEO-KOMPSAT-2A",
+    "FilenamePrefix": "IMG_FD_",
+    "FilenameParser": "Xrit",
+    "Longitude": 128.2,
+    "LongitudeAdjustment": -0.8,
+    "CropRange": {
+      "MinLongitude": 40,
+      "MaxLongitude": -140 
     },
     "Brightness": 0.8,
     "Crop": [

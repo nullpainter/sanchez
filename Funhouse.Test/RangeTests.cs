@@ -21,11 +21,11 @@ namespace Funhouse.Test
         [Test]
         public void NormaliseLongitude()
         {
-            var range = new Range(Angle.FromDegrees(141), Angle.FromDegrees(-55));
-            range.NormaliseLongitude();
+            var range = new Range(Angle.FromDegrees(190), Angle.FromDegrees(-190));
+            range = range.NormaliseLongitude();
 
-            Angle.FromRadians(range.Start).Degrees.Should().BeApproximately(141, Precision);
-            Angle.FromRadians(range.End).Degrees.Should().BeApproximately(305, Precision);
+            Angle.FromRadians(range.Start).Degrees.Should().BeApproximately(-170, Precision);
+            Angle.FromRadians(range.End).Degrees.Should().BeApproximately(170, Precision);
         }
     }
 }

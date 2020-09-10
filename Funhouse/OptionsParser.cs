@@ -24,9 +24,11 @@ namespace Funhouse
                 InterpolationType = ToInterpolationType(options.InterpolationType),
                 ImageSize = ToImageSize(options),
                 ImageOffset = ToImageOffset(options),
-                Force = options.Force
+                Force = options.Force,
+                Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
+                TargetTimestamp = options.TargetTimestamp
             };
-            
+
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
 
             return renderOptions;
@@ -73,9 +75,9 @@ namespace Funhouse
 
         public static RenderOptions Populate(EquirectangularOptions options)
         {
-            var renderOptions =  ProcessBaseOptions(options);
+            var renderOptions = ProcessBaseOptions(options);
+
             renderOptions.EquirectangularRender = new EquirectangularRenderOptions(options.AutoCrop);
-            
             return renderOptions;
         }
     }

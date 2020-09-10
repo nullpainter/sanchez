@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using CommandLine;
 using JetBrains.Annotations;
 
@@ -9,6 +10,9 @@ namespace Funhouse.Models.CommandLine
         [Option('b', "brightness", HelpText = "Brightness adjustment", Required = false, Default = 1.0f)]
         public float Brightness { get; [UsedImplicitly] set; }
 
+        [Option('d', "tolerance", HelpText = "Time tolerance in minutes in identifying suitable satellite images when combining", Required = false, Default = 30)]
+        public int ToleranceMinutes { get; set; }
+        
         [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are N (nearest neighbour), B (bilinear)", Required = false, Default = InterpolationOptions.B)]
         public InterpolationOptions InterpolationType { get; [UsedImplicitly] set; }
 
@@ -32,7 +36,10 @@ namespace Funhouse.Models.CommandLine
 
         [Option('t', "tint", HelpText = "Tint to apply to satellite image", Required = false, Default = "1b3f66")]
         public string Tint { get; [UsedImplicitly] set; } = null!;
-
+        
+        [Option('T', "timestamp", HelpText = "Target timestamp in UTC if combining multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
+        public DateTime? TargetTimestamp { get; set; }
+        
         [Option('u', "underlay", HelpText = "Path to custom full-colour underlay image", Required = false)]
         public string? UnderlayPath { get; [UsedImplicitly] set; }
 

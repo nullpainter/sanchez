@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Funhouse.Extensions;
@@ -22,7 +23,7 @@ namespace Funhouse.Services
     {
         void Initialise(SatelliteImages images);
         ProjectionActivityOperations CalculateOverlap();
-        void ToEquirectangular();
+        void ToEquirectangular(CancellationToken cancellationToken);
         Task RenderGeostationaryUnderlayAsync(SatelliteImage image);
     }
 
@@ -48,6 +49,11 @@ namespace Funhouse.Services
         {
             _images = images;
             _initialised = true;
+            
+            foreach (var image in images.Images)
+            {
+                Log.Information("{definition:l0} loaded {path}", image.Definition.DisplayName, image.Path);
+            }
         }
    
         public async Task RenderGeostationaryUnderlayAsync(SatelliteImage image)
@@ -104,7 +110,7 @@ namespace Funhouse.Services
             if (!_initialised) throw new InvalidOperationException($"Not initialised; please call {nameof(Initialise)} first");
         }
 
-        public void ToEquirectangular()
+        public void ToEquirectangular(CancellationToken cancellationToken)
         {
             EnsureInitialised();
 
@@ -113,6 +119,8 @@ namespace Funhouse.Services
 
             _images.Images.ForEach(image =>
             {
+                if (cancellationToken.IsCancellationRequested) return;
+                
                 Guard.Against.Null(image.Definition, nameof(image.Definition));
 
                 // Reproject geostationary image into equirectangular

@@ -12,7 +12,7 @@ namespace Funhouse.Services.Equirectangular
 {
     public interface IEquirectangularImageRenderer
     {
-        Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, SatelliteImages activities);
+        Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, SatelliteImages images);
     }
 
     public class EquirectangularImageRenderer : IEquirectangularImageRenderer
@@ -28,11 +28,10 @@ namespace Funhouse.Services.Equirectangular
             _underlayService = underlayService;
         }
 
-        public async Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, SatelliteImages activities)
+        public async Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, SatelliteImages images)
         {
-
             // Determine visible range of all satellite imagery
-            activities.GetVisibleRange(out var latitudeRange, out var longitudeRange);
+            images.GetCropRange(out var latitudeRange, out var longitudeRange);
 
             // Load underlay
             Image<Rgba32> target;

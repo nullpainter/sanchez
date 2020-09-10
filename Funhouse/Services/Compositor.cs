@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Funhouse.Extensions;
 using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.ShadeEdges;
+using Funhouse.ImageProcessing.Tint;
 using Funhouse.ImageProcessing.Underlay;
 using Funhouse.Models;
-using Funhouse.Models.Angles;
 using Funhouse.Services.Equirectangular;
 using Serilog;
 using SixLabors.ImageSharp;
@@ -19,7 +20,7 @@ namespace Funhouse.Services
 {
     public interface ICompositor
     {
-        Task ComposeAsync();
+        Task ComposeAsync(CancellationToken cancellationToken);
     }
 
     public class Compositor : ICompositor
@@ -27,6 +28,7 @@ namespace Funhouse.Services
         private readonly RenderOptions _options;
         private readonly IImageLoader _imageLoader;
         private readonly IEquirectangularImageRenderer _equirectangularImageRenderer;
+        private readonly IFileService _fileService;
         private readonly IImageStitcher _imageStitcher;
         private readonly IProjectionActivityOperations _activityOperations;
 
@@ -34,18 +36,22 @@ namespace Funhouse.Services
             RenderOptions options,
             IImageLoader imageLoader,
             IEquirectangularImageRenderer equirectangularImageRenderer,
+            IFileService fileService,
             IImageStitcher imageStitcher,
             IProjectionActivityOperations activityOperations)
         {
             _options = options;
             _imageLoader = imageLoader;
             _equirectangularImageRenderer = equirectangularImageRenderer;
+            _fileService = fileService;
             _imageStitcher = imageStitcher;
             _activityOperations = activityOperations;
         }
 
-        public async Task ComposeAsync()
+        public async Task ComposeAsync(CancellationToken cancellationToken)
         {
+            _fileService.PrepareOutput();
+
             // Load source images
             Log.Information("Loading source images");
             var images = await _imageLoader.LoadImagesAsync();
@@ -54,19 +60,18 @@ namespace Funhouse.Services
 
             _activityOperations.Initialise(images);
 
-            foreach (var image in images.Images)
-            {
-                Log.Information("{definition:l0} loaded {path}", image.Definition.DisplayName, image.Path);
-            }
-
             // Calculate crop for each image based on visible range and image overlaps
             Log.Information("Processing IR image");
-
-            _activityOperations.CalculateOverlap();
+            
             var targetLongitude = _options.GeostationaryRender?.Longitude;
-
+            
+            // If combining satellite images, calculate the overlap between images so they can be appropriately cropped
+            if (_options.StitchImages) _activityOperations.CalculateOverlap();
+            
             foreach (var image in images.Images)
             {
+                if (cancellationToken.IsCancellationRequested) return;
+                
                 image
                     .CropBorders()
                     .RemoveBackground()
@@ -78,16 +83,21 @@ namespace Funhouse.Services
                     await _activityOperations.RenderGeostationaryUnderlayAsync(image);
                     
                     // If no target longitude is specified, save each image
-                    if (targetLongitude == null) await image.SaveWithExifAsync(_options, "-FC");
+                    if (targetLongitude == null)
+                    {
+                        var outputFilename = _fileService.GetOutputFilename(image.Path);
+                        await image.Image.SaveWithExifAsync(outputFilename, _options);
+                    }
                 }
             }
 
             // Render equirectangular projection if the target longitude is specified for geostationary projection,
             // as we need to stitch images together and reproject in order to support an arbitrary target longitude.
-            if (_options.Projection == ProjectionType.Equirectangular || targetLongitude != null)
+            if (_options.StitchImages)
             {
                 // Reproject all images to equirectangular
-                _activityOperations.ToEquirectangular();
+                _activityOperations.ToEquirectangular(cancellationToken);
+                if (cancellationToken.IsCancellationRequested) return;
 
                 // Stitch images if required
                 var longitudeRange = images.GetVisibleLongitudeRange();
@@ -107,7 +117,7 @@ namespace Funhouse.Services
                 // Perform stitching
                 var target = await _equirectangularImageRenderer.StitchImagesAsync(stitched, images);
 
-                // Reproject to geostationary
+                // Reproject to geostationary if required
                 if (targetLongitude != null)
                 {
                     target = ToGeostationary(longitudeRange, targetLongitude.Value, target);
@@ -117,8 +127,11 @@ namespace Funhouse.Services
                     // Crop underlay to fit satellite imagery
                     if (!_options.NoUnderlay)
                     {
-                        var xPixelRange = PixelRange.ToPixelRangeX(longitudeRange, target.Width);
-                        target.Mutate(c => c.Crop(new Rectangle(0, 0, xPixelRange.Range, target.Height)));
+                        var xPixelRange = longitudeRange.ToPixelRangeX(target.Width);
+                        if (xPixelRange.Range > 0)
+                        {
+                            target.Mutate(c => c.Crop(new Rectangle(0, 0, xPixelRange.Range, target.Height)));
+                        }
                     }
 
                     // Crop composited image

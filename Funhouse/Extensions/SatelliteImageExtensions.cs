@@ -1,10 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Extend;
-using Funhouse.Extensions.Images;
+﻿using Funhouse.Extensions.Images;
 using Funhouse.ImageProcessing.Mask;
-using Funhouse.Models;
 using Funhouse.Models.Projections;
 using SixLabors.ImageSharp.Processing;
 
@@ -46,30 +41,10 @@ namespace Funhouse.Extensions
         {
             if (image.Image.Width != imageSize || image.Image.Height != imageSize)
             {
-                // TODO test results of different interpolation types
                 image.Image.Mutate(c => c.Resize(imageSize, imageSize, KnownResamplers.Welch));
             }
 
             return image;
-        }
-
-        public static async Task SaveWithExifAsync(this SatelliteImage image, RenderOptions options, string suffix)
-        {
-            string outputPath;
-
-            // Determine output file location
-            if (options.MultipleTargets)
-            {
-                Directory.CreateDirectory(options.OutputPath);
-                outputPath = Path.Combine(options.OutputPath, $"{Path.GetFileNameWithoutExtension(image.Path)}{suffix}.jpg");
-            }
-            else
-            {
-                outputPath = options.OutputPath;
-            }
-            
-           // Save image
-            await image.Image.SaveWithExifAsync(outputPath, options);
         }
     }
 }

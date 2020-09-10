@@ -6,7 +6,7 @@ namespace Funhouse.Models.Configuration
 {
     public class SatelliteDefinition
     {
-        /// <param name="filenamePattern"></param>
+        /// <param name="filenamePrefix"></param>
         /// <param name="displayName"></param>
         /// <param name="filenameParserType"></param>
         /// <param name="longitude"></param>
@@ -17,7 +17,7 @@ namespace Funhouse.Models.Configuration
         /// <param name="brightness"></param>
         public SatelliteDefinition(
             string displayName, 
-            string filenamePattern, 
+            string filenamePrefix, 
             FilenameParserType filenameParserType,
             double longitude,
             Range latitudeRange,
@@ -26,7 +26,7 @@ namespace Funhouse.Models.Configuration
             double[]? crop = null,
             float brightness = 1.0f)
         {
-            FilenamePattern = filenamePattern;
+            FilenamePrefix = filenamePrefix;
             FilenameParserType = filenameParserType;
             DisplayName = displayName;
             LatitudeRange = latitudeRange;
@@ -39,7 +39,7 @@ namespace Funhouse.Models.Configuration
             Longitude = longitude.NormaliseLongitude();
         }
 
-        public string FilenamePattern { get; }
+        public string FilenamePrefix { get; }
         public FilenameParserType FilenameParserType { get; }
         public string DisplayName { get; }
         public Range LatitudeRange { get; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Funhouse.Exceptions;
 using Funhouse.Models;
 using Funhouse.Models.Configuration;
 using Funhouse.Models.Projections;
@@ -19,34 +20,50 @@ namespace Funhouse.Services
 
     public class ImageLoader : IImageLoader
     {
+        private readonly IFileService _fileService;
         private readonly ISatelliteRegistry _satelliteRegistry;
-        private readonly IImageLocator _imageLocator;
+        private readonly IImageMatcher _imageMatcher;
         private readonly RenderOptions _options;
 
         public ImageLoader(
-            ISatelliteRegistry satelliteRegistry, 
-            IImageLocator imageLocator, 
+            IFileService fileService,
+            ISatelliteRegistry satelliteRegistry,
+            IImageMatcher imageMatcher,
             RenderOptions options)
         {
+            _fileService = fileService;
             _satelliteRegistry = satelliteRegistry;
-            _imageLocator = imageLocator;
+            _imageMatcher = imageMatcher;
             _options = options;
         }
 
         public async Task<SatelliteImages> LoadImagesAsync()
         {
-            var paths = _imageLocator.LocateImages(_options.SourcePath);
+            // Retrieve all file details matching source pattern
+            var sourceFiles = _fileService.GetSourceFiles();
+            List<string> matchedFiles;
 
-            var unmappedProjections = false;
+            // If we are combining files by timestamp, locate all matching files based on the timestamp and tolerance
+            matchedFiles = _options.TargetTimestamp == null ? sourceFiles : _imageMatcher.LocateMatchingImages(sourceFiles);
+
+            // Verify images were found
+            if (!matchedFiles.Any())
+            {
+                const string message = "No matching source images found";
+                Log.Warning(message);
+                await Console.Error.WriteLineAsync(message);
+                
+                throw new ValidationException();
+            }
+
             var satelliteImageLoadTasks = new List<Task<SatelliteImage>>();
-            foreach (var path in paths)
+            foreach (var path in matchedFiles)
             {
                 var definition = _satelliteRegistry.Locate(path);
 
                 if (definition == null)
                 {
-                    unmappedProjections = true;
-                    await Console.Error.WriteLineAsync($"Unable to determine satellite based on file prefix: {path}");
+                    await Console.Error.WriteLineAsync($"Unable to determine satellite for file: {path}; ignoring");
                     continue;
                 }
 
@@ -54,16 +71,16 @@ namespace Funhouse.Services
             }
 
             // Verify that all images have an associated projection definition
-            if (unmappedProjections)
+            if (!satelliteImageLoadTasks.Any())
             {
-                Log.Error("Exiting because of unmapped satellite definitions");
-                Environment.Exit(-1);
+                Log.Error("No images found");
+                throw new ValidationException();
             }
 
             await Task.WhenAll(satelliteImageLoadTasks);
             return new SatelliteImages(satelliteImageLoadTasks.Select(t => t.Result));
-        } 
-        
+        }
+
         // TODO rename this class/method  - suggests we are just loading any old image
         private async Task<SatelliteImage> LoadAsync(string path, SatelliteDefinition definition)
         {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using Funhouse.Extensions.Images;
+using Funhouse.Helpers;
 using Funhouse.Models;
-using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Funhouse.Models.Projections;
 using Funhouse.Projections;
@@ -69,11 +69,11 @@ namespace Funhouse.ImageProcessing.Projection
 
             // Convert image x,y to Mercator projection angle
             var targetWidth = _image.Image!.Width * 2;
-            var projectionY = ProjectionAngle.FromY(y + _yOffset, _image.Image!.Height);
+            var projectionY = ProjectionAngleConverter.FromY(y + _yOffset, _image.Image!.Height);
 
             for (var x = 0; x < span.Length; x++)
             {
-                var projectionX = ProjectionAngle.FromX(x + _xOffset, targetWidth);
+                var projectionX = ProjectionAngleConverter.FromX(x + _xOffset, targetWidth);
 
                 // Convert latitude/longitude to geostationary scanning angle
                 GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _image.Definition, out var scanningX, out var scanningY);
@@ -95,7 +95,7 @@ namespace Funhouse.ImageProcessing.Projection
             return LatitudeCalculationCache.GetOrAdd(y, angle =>
             {
                 // Convert pixel row to latitude
-                var projectionY = ProjectionAngle.FromY(y, target.Height + yOffset * 2);
+                var projectionY = ProjectionAngleConverter.FromY(y, target.Height + yOffset * 2);
 
                 // Perform and cache intermediary geostationary latitude calculations
                 return GeostationaryProjection.LatitudeCalculations(-projectionY);

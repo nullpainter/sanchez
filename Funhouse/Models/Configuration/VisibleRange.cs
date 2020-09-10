@@ -2,7 +2,7 @@
 
 namespace Funhouse.Models.Configuration
 {
-    public class VisibleRange
+    public class CropRange
     {
         [JsonProperty("MinLongitude", Required = Required.Always)]
         public double MinLongitude { get; set; }
@@ -10,9 +10,9 @@ namespace Funhouse.Models.Configuration
         [JsonProperty("MaxLongitude", Required = Required.Always)]
         public double MaxLongitude { get; set; }
 
-        [JsonProperty("MinLatitude")] public double MinLatitude { get; set; } = Constants.Satellite.VisibleRange.DefaultMinLatitude;
+        [JsonProperty("MinLatitude")] public double MinLatitude { get; set; } = Constants.Satellite.CropRange.DefaultMinLatitude;
 
         [JsonProperty("MaxLatitude")]
-        public double MaxLatitude { get; set; } = Constants.Satellite.VisibleRange.DefaultMaxLatitude;
+        public double MaxLatitude { get; set; } = Constants.Satellite.CropRange.DefaultMaxLatitude;
     }
 }

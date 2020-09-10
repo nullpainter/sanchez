@@ -8,9 +8,8 @@ namespace Funhouse.Models.Configuration
         [JsonProperty("DisplayName", Required = Required.Always)]
         public string DisplayName { get; set; } = null!;
         
-        // TODO validate regex
-        [JsonProperty("FilenamePattern", Required = Required.Always)]
-        public string FilenamePattern { get; set; } = null!;
+        [JsonProperty("FilenamePrefix", Required = Required.Always)]
+        public string FilenamePrefix { get; set; } = null!;
         
         [JsonProperty("FilenameParser", Required = Required.Always)]
         public FilenameParserType FilenameParserType { get; set; }
@@ -25,8 +24,8 @@ namespace Funhouse.Models.Configuration
         [JsonProperty("LongitudeAdjustment")]
         public double? LongitudeAdjustment { get; set; }
         
-        [JsonProperty("VisibleRange", Required = Required.Always)]
-        public VisibleRange VisibleRange { get; set; } = new VisibleRange();
+        [JsonProperty("CropRange", Required = Required.Always)]
+        public CropRange CropRange { get; set; } = new CropRange();
 
         [JsonProperty("Height")]
         public double Height { get; set; } = Constants.Satellite.DefaultHeight;
@@ -42,7 +41,6 @@ namespace Funhouse.Models.Configuration
 
         [JsonProperty("Contrast")]
         public float Contrast { get; set; } = 1.0f;
-
 
         [JsonProperty("Saturation")]
         public float Saturation { get; set; } = 1.0f;

@@ -20,6 +20,7 @@ namespace Funhouse.Extensions.Images
             // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
             if (!ShouldWrite(path, options))
             {
+                // TODO should write console too
                 Log.Information("Output file {outputFilename} exists; not overwriting", path);
                 return;
             }

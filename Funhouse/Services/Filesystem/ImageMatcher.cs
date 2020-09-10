@@ -1,39 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Ardalis.GuardClauses;
+using Funhouse.Models;
 using Funhouse.Models.Configuration;
 using Serilog;
 
 namespace Funhouse.Services.Filesystem
 {
-    public interface IImageLocator
+    public interface IImageMatcher
     {
-        List<string> LocateImages(string path);
+        List<string> LocateMatchingImages(List<string> candidateFiles);
     }
 
-    public class ImageLocator : IImageLocator
+    public class ImageMatcher : IImageMatcher
     {
+        private readonly RenderOptions _options;
+        private readonly IFileService _fileService;
         private readonly FilenameParserProvider _filenameParserProvider;
         private readonly ISatelliteRegistry _registry;
 
-        public ImageLocator(
+        public ImageMatcher(
+            RenderOptions options,
+            IFileService fileService,
             FilenameParserProvider filenameParserProvider,
             ISatelliteRegistry registry)
         {
+            _options = options;
+            _fileService = fileService;
             _filenameParserProvider = filenameParserProvider;
             _registry = registry;
         }
 
-        public List<string> LocateImages(string path)
+        public List<string> LocateMatchingImages(List<string> candidateFiles)
         {
-            // TEMP HACK
-            var targetTimestamp = new DateTime(2020, 08, 30, 03, 30, 00, DateTimeKind.Utc);
-            var tolerance = TimeSpan.FromMinutes(30);
+            Log.Information("Searching for images in {path} with a timestamp of {minutes} minutes tolerance to {target}", 
+                _options.SourcePath, _options.Tolerance.TotalMinutes, _options.TargetTimestamp);
 
+            // Return the closest match per satellite
+            var matched = GetMatchedFiles(candidateFiles);
+            return matched.GroupBy(m => m.Definition).Select(entry => entry.OrderBy(e => e.Deviation).First().Path).ToList();
+        }
+
+        private IEnumerable<SatelliteMatch> GetMatchedFiles(IEnumerable<string> candidateFiles)
+        {
             var matched = new List<SatelliteMatch>();
 
-            foreach (var file in GetFilenames(path))
+            Guard.Against.Null(_options.TargetTimestamp, nameof(_options.TargetTimestamp));
+            Guard.Against.Null(_options.Tolerance, nameof(_options.Tolerance));
+
+            var targetTimestamp = _options.TargetTimestamp.Value;
+            var tolerance = _options.Tolerance;
+
+            foreach (var file in candidateFiles)
             {
                 var definition = _registry.Locate(file);
                 if (definition == null) continue;
@@ -53,22 +72,7 @@ namespace Funhouse.Services.Filesystem
                 if (deviation < tolerance.TotalMilliseconds) matched.Add(new SatelliteMatch(definition, file, deviation));
             }
 
-            // Return the closest match per satellite
-            return matched.GroupBy(m => m.Definition).Select(entry => entry.OrderBy(e => e.Deviation).First().Path).ToList();
-        }
-
-        private static IEnumerable<string> GetFilenames(string path)
-        {
-            if (File.Exists(path)) return new List<string> { path };
-            if (Directory.Exists(path))
-            {
-                return Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
-            }
-
-            Console.Error.WriteLine($"{path} is neither a file nor a directory");
-            Environment.Exit(-1);
-
-            return new[] { "" };
+            return matched;
         }
 
         private class SatelliteMatch

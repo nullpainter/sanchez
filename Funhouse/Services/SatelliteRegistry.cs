@@ -28,17 +28,17 @@ namespace Funhouse.Services
 
             _definitions = definitions.Select(d => new SatelliteDefinition(
                 d.DisplayName!,
-                d.FilenamePattern!,
+                d.FilenamePrefix!,
                 d.FilenameParserType,
                 Angle.FromDegrees(d.Longitude + d.LongitudeAdjustment.GetValueOrDefault()).Radians,
                 
                 new Range(
-                    Angle.FromDegrees(d.VisibleRange.MinLatitude),
-                    Angle.FromDegrees(d.VisibleRange.MaxLatitude)),
+                    Angle.FromDegrees(d.CropRange.MinLatitude),
+                    Angle.FromDegrees(d.CropRange.MaxLatitude)),
                 
                 new Range(
-                    Angle.FromDegrees(d.VisibleRange.MinLongitude),
-                    Angle.FromDegrees(d.VisibleRange.MaxLongitude)),
+                    Angle.FromDegrees(d.CropRange.MinLongitude),
+                    Angle.FromDegrees(d.CropRange.MaxLongitude)),
                 d.Height,
                 d.Crop,
                 d.Brightness)).ToList();
@@ -51,7 +51,7 @@ namespace Funhouse.Services
             if (!_initialised) throw new InvalidOperationException($"Registry not initialised; call {nameof(InitialiseAsync)} before use");
 
             return _definitions!.FirstOrDefault(d =>
-                Path.GetFileName(pattern).StartsWith(d.FilenamePattern, StringComparison.CurrentCultureIgnoreCase));
+                Path.GetFileName(pattern).StartsWith(d.FilenamePrefix, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

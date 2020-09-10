@@ -2,22 +2,22 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Funhouse.Services.Filesystem
+namespace Funhouse.Services.Filesystem.Parsers
 {
     /// <summary>
-    ///     Parses filenames of satellite imagery received from GOES-R satellites and processed by <c>goesproc</c>.
+    ///     Parses filenames of satellite imagery received from GK-2A satellite and processed by <c>xrit-rc</c>.
     /// </summary>
-    public class GoesFilenameParser : IFilenameParser
+    public class Gk2AFilenameParser : IFilenameParser
     {
-        private static Regex _regex = new Regex(".*_([0-9]{8}T[0-9]{6}Z).jpg", RegexOptions.Compiled);
-        private const string TimestampFormat = "yyyyMMddTHHmmssZ";
+        private static readonly Regex Regex = new Regex("IMG_FD_.*_([0-9]{8}_[0-9]{6})\\.jpg", RegexOptions.Compiled);
+        private const string TimestampFormat = "yyyyMMdd_HHmmss";
 
         public DateTime? GetTimestamp(string filename)
         {
-            if (!_regex.IsMatch(filename)) return null;
+            if (!Regex.IsMatch(filename)) return null;
 
             // Extract timestamp from filename
-            var match = _regex.Match(filename);
+            var match = Regex.Match(filename);
             var filenameTimestamp = match.Groups[1].Value;
 
             // parse timestamp

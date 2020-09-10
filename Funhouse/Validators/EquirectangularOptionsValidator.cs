@@ -8,7 +8,15 @@ namespace Funhouse.Validators
     {
         public EquirectangularOptionsValidator()
         {
-            
+            RuleFor(o => o.TargetTimestamp)
+                .NotNull()
+                .When(o => o.MultipleSources)
+                .WithMessage("Target timestamp must be provided when processing multiple source images.");
+
+            RuleFor(o => o.ToleranceMinutes)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Tolerance must be a positive value.");
+
             // Verify that a file can be created if multiple source files are provided with a target latitude
             RuleFor(o => o.OutputPath)
                 .Must((options, outputPath) => !Directory.Exists(outputPath))

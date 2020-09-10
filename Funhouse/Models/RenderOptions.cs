@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Funhouse.Models.Configuration;
 using SixLabors.ImageSharp;
 
@@ -13,6 +14,7 @@ namespace Funhouse.Models
         public GeostationaryRenderOptions? GeostationaryRender { get; set; }
 
         public ProjectionType Projection => GeostationaryRender != null ? ProjectionType.Geostationary : ProjectionType.Equirectangular;
+        public bool StitchImages => Projection == ProjectionType.Equirectangular || GeostationaryRender?.Longitude != null;
 
         /// <summary>
         ///     Global brightness adjustment.
@@ -42,7 +44,7 @@ namespace Funhouse.Models
         /// <summary>
         ///     Path to IR satellite image(s).
         /// </summary>
-        public string? SourcePath { get; set; } = null!;
+        public string SourcePath { get; set; } = null!;
 
         /// <summary>
         ///     Saturation adjustment.
@@ -87,11 +89,26 @@ namespace Funhouse.Models
         /// <summary>
         ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
         /// </summary>
-        private bool MultipleSources => SourcePath?.Contains('*') == true || Directory.Exists(SourcePath);
+        public bool MultipleSources => SourcePath?.Contains('*') == true || Directory.Exists(SourcePath);
 
         /// <summary>
         ///     Indicates whether the output should be a single file or a directory.
         /// </summary>
-        public virtual bool MultipleTargets => MultipleSources && (GeostationaryRender == null || GeostationaryRender?.Longitude == null);
+        public virtual bool MultipleTargets
+        {
+            get
+            {
+                if (!MultipleSources) return false;
+                
+                // Equirectangular projection always composites to a single image
+                if (Projection == ProjectionType.Equirectangular) return false;
+                
+                // Multiple output files are written for geostationary render if images aren't being composited
+                return GeostationaryRender?.Longitude == null;
+            }
+        }
+
+        public DateTime? TargetTimestamp { get; set; }
+        public TimeSpan Tolerance { get; set; }
     }
 }

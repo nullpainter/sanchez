@@ -40,7 +40,7 @@ namespace Funhouse.Models
                 internal const int FourKm = 2712;
             }
 
-            internal static class VisibleRange
+            internal static class CropRange
             {
                 internal const double DefaultMinLatitude = -81.3282;
                 internal const double DefaultMaxLatitude = 81.3282;

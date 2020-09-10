@@ -2,12 +2,14 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using CommandLine;
 using Extend;
 using FluentValidation.Results;
 using Funhouse.Builders;
+using Funhouse.Exceptions;
 using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Models.CommandLine;
@@ -27,13 +29,22 @@ namespace Funhouse
     {
         internal static async Task Main(params string[] args)
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                Converters = new Collection<JsonConverter> { new StringEnumConverter() }
-            };
 
             try
             {
+                var cancellationToken = new CancellationTokenSource();
+
+                Console.CancelKeyPress += (sender, e) =>
+                {
+                    e.Cancel = true;
+                    cancellationToken.Cancel();
+                };
+
+                JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+                {
+                    Converters = new Collection<JsonConverter> { new StringEnumConverter() }
+                };
+
                 RenderOptions renderOptions = null!;
 
                 var parser = Parser.Default
@@ -42,7 +53,7 @@ namespace Funhouse
                     .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
 
                 // Exit if required options not present
-                if (parser.Tag == ParserResultType.NotParsed) Environment.Exit(-1);
+                if (parser.Tag == ParserResultType.NotParsed) throw new ValidationException();
                 Guard.Against.Null(renderOptions, nameof(renderOptions));
 
                 // Disable stdout if required
@@ -60,7 +71,15 @@ namespace Funhouse
                 // Perform image processing
                 await container
                     .GetInstance<Funhouse>()
-                    .ProcessAsync();
+                    .ProcessAsync(cancellationToken.Token);
+            }
+            catch (ValidationException)
+            {
+                Log.Warning("No image procesing possible");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Unhandled failure");
             }
             finally
             {
@@ -77,8 +96,7 @@ namespace Funhouse
             }
 
             ReportErrors(validation);
-            Environment.Exit(-1);
-            return null;
+            throw new ValidationException();
         }
 
         private static RenderOptions ParseReprojectOptions(EquirectangularOptions options)
@@ -90,8 +108,7 @@ namespace Funhouse
             }
 
             ReportErrors(validation);
-            Environment.Exit(-1);
-            return null;
+            throw new ValidationException();
         }
 
         private static void ReportErrors(ValidationResult result) => result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
@@ -114,7 +131,7 @@ namespace Funhouse
         {
             if (options.EquirectangularRender?.AutoCrop == true) Log.Information("Autocrop enabled");
             Log.Information("Interpolation type {type}", options.InterpolationType);
-            Log.Information("Normalising to {km}km spatial resolution", options.SpatialResolution);
+            Log.Information("Normalising images to {km} km spatial resolution", options.SpatialResolution);
         }
     }
 }

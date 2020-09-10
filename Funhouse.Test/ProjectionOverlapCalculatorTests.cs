@@ -68,11 +68,11 @@ namespace Funhouse.Test
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(first),
-                new Range(Angle.FromDegrees(-100), Angle.FromDegrees(10)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(-100), Angle.FromDegrees(10)));
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(second),
-                new Range(Angle.FromDegrees(140), Angle.FromDegrees(-100)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(140), Angle.FromDegrees(260)));
         }
 
         [Test]
@@ -86,11 +86,11 @@ namespace Funhouse.Test
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(first),
-                new Range(Angle.FromDegrees(-100), Angle.FromDegrees(-25)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(-100), Angle.FromDegrees(-25)));
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(second),
-                new Range(Angle.FromDegrees(-25), Angle.FromDegrees(150)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(-25), Angle.FromDegrees(150)));
         }
 
         [Test]
@@ -106,15 +106,15 @@ namespace Funhouse.Test
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(first),
-                new Range(Angle.FromDegrees(-100), Angle.FromDegrees(5)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(-100), Angle.FromDegrees(5)));
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(second),
-                new Range(Angle.FromDegrees(140), Angle.FromDegrees(-100)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(140), Angle.FromDegrees(260)));
 
             VerifyRangeEquivalency(
                 calculator.GetNonOverlappingRange(third),
-                new Range(Angle.FromDegrees(5), Angle.FromDegrees(60)).NormaliseLongitude());
+                new Range(Angle.FromDegrees(5), Angle.FromDegrees(60)));
         }
 
 

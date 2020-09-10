@@ -74,6 +74,7 @@ namespace Funhouse.Services
                     minLongitude = (otherRange.End - range.Start) / 2 + range.Start;
                 }
 
+                // Remove offset which was added to simplify calculations
                 maxLongitude -= offset;
                 minLongitude -= offset;
             }

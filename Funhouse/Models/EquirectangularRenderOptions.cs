@@ -2,9 +2,9 @@
 {
     public class EquirectangularRenderOptions
     {
-        public EquirectangularRenderOptions(bool autocrop)
+        public EquirectangularRenderOptions(bool autoCrop)
         {
-            AutoCrop = autocrop;
+            AutoCrop = autoCrop;
         }
 
         public bool AutoCrop { get; }

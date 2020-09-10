@@ -20,7 +20,8 @@ namespace Funhouse.Builders
             container.RegisterSingleton<IUnderlayCacheRepository, UnderlayCacheRepository>();
             container.RegisterSingleton<IDatabaseMigrator, DatabaseMigrator>();
             container.RegisterSingleton<IEquirectangularImageRenderer, EquirectangularImageRenderer>();
-            container.RegisterSingleton<IImageLocator, ImageLocator>();
+            container.RegisterSingleton<IImageMatcher, ImageMatcher>();
+            container.RegisterSingleton<IFileService, FileService>();
             container.RegisterSingleton<FilenameParserProvider>();
             
             container.RegisterInstance(options);

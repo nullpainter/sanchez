@@ -1,12 +1,15 @@
-﻿using Funhouse.Models.Angles;
+﻿using System;
 using Funhouse.Models.Configuration;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using Range = Funhouse.Models.Angles.Range;
 
 namespace Funhouse.Models.Projections
 {
-    public class SatelliteImage
+    public sealed class SatelliteImage : IDisposable
     {
+        private bool _disposed;
+        
         public SatelliteImage(string path, Image<Rgba32> image, SatelliteDefinition definition)
         {
             Path = path;
@@ -28,5 +31,13 @@ namespace Funhouse.Models.Projections
         ///     Visible latitude range of satellite.
         /// </summary>
         public Range LatitudeRange { get; set; }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            Image.Dispose();
+            
+            _disposed = true;
+        }
     }
 }

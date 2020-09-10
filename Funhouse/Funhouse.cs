@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Funhouse.Exceptions;
 using Funhouse.Models;
 using Funhouse.Services;
 using Funhouse.Services.Underlay;
@@ -23,13 +25,13 @@ namespace Funhouse
             _underlayCacheRepository = underlayCacheRepository;
         }
 
-        public async Task ProcessAsync()
+        public async Task ProcessAsync(CancellationToken cancellationToken)
         {
             var stopwatch = Stopwatch.StartNew();
 
             _underlayCacheRepository.Initialise();
             await InitialiseSatelliteRegistryAsync();
-            await _compositor.ComposeAsync();
+            await _compositor.ComposeAsync(cancellationToken);
 
             Log.Information("Elapsed time: {elapsed}", stopwatch.Elapsed);
         }
@@ -45,8 +47,7 @@ namespace Funhouse
             if (!File.Exists(definitionsPath))
             {
                 await Console.Error.WriteLineAsync($"Unable to find satellite definition file: {definitionsPath}");
-                Environment.Exit(-1);
-                return;
+                throw new ValidationException();
             }
 
             try
@@ -57,7 +58,7 @@ namespace Funhouse
             catch (JsonSerializationException e)
             {
                 await Console.Error.WriteLineAsync($"Unable to parse satellite definition file: {e.Message}");
-                Environment.Exit(-1);
+                throw new ValidationException();
             }
         }
     }

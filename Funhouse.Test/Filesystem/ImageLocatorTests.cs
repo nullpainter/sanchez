@@ -1,22 +1,32 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
+using Funhouse.Models;
+using Funhouse.Services;
 using Funhouse.Services.Filesystem;
 using Funhouse.Test.Helper;
 using NUnit.Framework;
 
 namespace Funhouse.Test.Filesystem
 {
-    [TestFixture(TestOf = typeof(ImageLocator))]
+    [TestFixture(TestOf = typeof(ImageMatcher))]
     public class ImageLocatorTests : AbstractTests
     {
-        private IImageLocator Locator => GetService<IImageLocator>();
+        private IImageMatcher Matcher => GetService<IImageMatcher>();
+        private IFileService FileService => GetService<IFileService>();
 
         [Test]
         public void LocateImages()
         {
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false);
+
+            RenderOptions.TargetTimestamp = new DateTime(2020, 08, 30, 03, 30, 00, DateTimeKind.Utc);
+            RenderOptions.Tolerance = TimeSpan.FromMinutes(30);
+
             using var state = FileHelper.NewState();
             var rootDirectory = state.CreateTempDirectory();
+            RenderOptions.SourcePath = rootDirectory;
 
             // Create sample files
             state.CreateFile(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg");
@@ -32,7 +42,8 @@ namespace Funhouse.Test.Filesystem
             state.CreateFile(directory.FullName, "bogus.jpg");
 
             // Run method under test
-            var matchedFiles = Locator.LocateImages(rootDirectory).Select(Path.GetFileName);
+            var sourceFiles = FileService.GetSourceFiles();
+            var matchedFiles = Matcher.LocateMatchingImages(sourceFiles).Select(Path.GetFileName);
             matchedFiles.Should().BeEquivalentTo("GOES16_FD_CH13_20200830T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg", "Himawari8_FD_IR_20200830T035100Z.jpg");
         }
     }

@@ -11,7 +11,7 @@ namespace Funhouse.Models
 
         public SatelliteImages(IEnumerable<SatelliteImage> images) => Images = images.ToList();
             
-        public void GetVisibleRange(out Range latitudeRange, out Range longitudeRange)
+        public void GetCropRange(out Range latitudeRange, out Range longitudeRange)
         {
             latitudeRange = new Range(
                 Images.Min(a => a.LatitudeRange.Start),

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Funhouse.Extensions;
 using Funhouse.ImageProcessing.Offset;
 using Funhouse.ImageProcessing.Underlay;
 using Funhouse.Models;
-using Funhouse.Models.Angles;
 using Funhouse.Models.Configuration;
 using Serilog;
 using SixLabors.ImageSharp;
@@ -67,9 +67,9 @@ namespace Funhouse.Services.Underlay
         private static void Resize(UnderlayProjectionOptions options, Image<Rgba32> underlay)
         {
             if (options.TargetHeight == null) return;
-            var targetHeight = options.TargetHeight.Value;
-
+            
             // Resize underlay to target image size
+            var targetHeight = options.TargetHeight.Value;
 
             // Ensure correct aspect ratio
             var targetWidth = (int)Math.Round(underlay.Width / (float) underlay.Height * targetHeight);
@@ -112,7 +112,7 @@ namespace Funhouse.Services.Underlay
         /// </summary>
         private void Offset(Image<Rgba32> underlay, Range longitudeRange)
         {
-            var xPixelRange = PixelRange.ToPixelRangeX(longitudeRange, underlay.Width);
+            var xPixelRange = longitudeRange.ToPixelRangeX(underlay.Width);
 
             Log.Information("Cropping underlay to {min} - {max} px width", xPixelRange.Start, xPixelRange.End);
 
@@ -130,7 +130,7 @@ namespace Funhouse.Services.Underlay
         /// </summary>
         private void Crop(Image<Rgba32> underlay, Range latitudeRange)
         {
-            var yPixelRange = PixelRange.ToPixelRangeY(latitudeRange, underlay.Height);
+            var yPixelRange = latitudeRange.ToPixelRangeY(underlay.Height);
 
             // Crop underlay to target height
             Log.Information("Cropping underlay to {min} - {max} px height", yPixelRange.Start, yPixelRange.End);
