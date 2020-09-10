@@ -8,7 +8,7 @@ namespace Funhouse.Models
     /// <summary>
     ///     Rendering options used to composite the image.
     /// </summary>
-    public class RenderOptions
+    public sealed class RenderOptions
     {
         public EquirectangularRenderOptions? EquirectangularRender { get; set; }
         public GeostationaryRenderOptions? GeostationaryRender { get; set; }
@@ -94,7 +94,7 @@ namespace Funhouse.Models
         /// <summary>
         ///     Indicates whether the output should be a single file or a directory.
         /// </summary>
-        public virtual bool MultipleTargets
+        public bool MultipleTargets
         {
             get
             {

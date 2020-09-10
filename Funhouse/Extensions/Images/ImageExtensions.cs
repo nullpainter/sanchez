@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using ExifLibrary;
+using Funhouse.Helpers;
 using Funhouse.Models;
 using Serilog;
 using SixLabors.ImageSharp;
@@ -35,15 +36,7 @@ namespace Funhouse.Extensions.Images
             file.Properties.Set(ExifTag.Software, $"Sanchez {version}");
             await file.SaveAsync(path);
 
-
-            if (options.Verbose)
-            {
-                Log.Information("Output written to {path}", Path.GetFullPath(path));
-            }
-            else
-            {
-                Console.WriteLine($"Output written to {Path.GetFullPath(path)}");
-            }
+            ConsoleLog.Information($"Output written to {Path.GetFullPath(path)}");
         }
 
         /// <summary>

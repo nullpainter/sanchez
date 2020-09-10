@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DotNet.Globbing;
+using Funhouse.Helpers;
 using Funhouse.Models;
-using Serilog;
 
 namespace Funhouse.Services
 {
@@ -52,10 +51,7 @@ namespace Funhouse.Services
             }
             catch (IOException)
             {
-                const string message = "Unable to create target directory";
-                Console.Error.WriteLine(message);
-                Log.Error(message);
-                
+                ConsoleLog.Error( "Unable to create target directory");
                 throw;
             }
         }

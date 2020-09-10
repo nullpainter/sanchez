@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Funhouse.Exceptions;
+using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Services;
 using Funhouse.Services.Underlay;
@@ -46,7 +47,7 @@ namespace Funhouse
             // Verify that satellite definitions file is present
             if (!File.Exists(definitionsPath))
             {
-                await Console.Error.WriteLineAsync($"Unable to find satellite definition file: {definitionsPath}");
+                ConsoleLog.Error($"Unable to find satellite definition file: {definitionsPath}");
                 throw new ValidationException();
             }
 
@@ -57,7 +58,7 @@ namespace Funhouse
             }
             catch (JsonSerializationException e)
             {
-                await Console.Error.WriteLineAsync($"Unable to parse satellite definition file: {e.Message}");
+                ConsoleLog.Error($"Unable to parse satellite definition file: {e.Message}");
                 throw new ValidationException();
             }
         }

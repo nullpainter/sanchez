@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Funhouse.Exceptions;
+using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Models.Configuration;
 using Funhouse.Models.Projections;
@@ -49,10 +50,7 @@ namespace Funhouse.Services
             // Verify images were found
             if (!matchedFiles.Any())
             {
-                const string message = "No matching source images found";
-                Log.Warning(message);
-                await Console.Error.WriteLineAsync(message);
-                
+                ConsoleLog.Warning("No matching source images found");
                 throw new ValidationException();
             }
 
@@ -63,7 +61,7 @@ namespace Funhouse.Services
 
                 if (definition == null)
                 {
-                    await Console.Error.WriteLineAsync($"Unable to determine satellite for file: {path}; ignoring");
+                    ConsoleLog.Warning($"Unable to determine satellite for file: {path}; ignoring");
                     continue;
                 }
 

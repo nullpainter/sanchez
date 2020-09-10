@@ -111,7 +111,7 @@ namespace Funhouse
             throw new ValidationException();
         }
 
-        private static void ReportErrors(ValidationResult result) => result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
+        private static void ReportErrors(ValidationResult result) => result.Errors.ForEach(error => ConsoleLog.Error(error.ErrorMessage));
 
         /// <summary>
         ///     Configures logging output.
