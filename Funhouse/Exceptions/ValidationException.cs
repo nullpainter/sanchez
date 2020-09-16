@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation.Results;
 
 namespace Funhouse.Exceptions
 {
@@ -7,7 +8,15 @@ namespace Funhouse.Exceptions
     /// </summary>
     public class ValidationException : Exception
     {
+        public ValidationResult? Result { get; }
+
         public ValidationException()
+        {
+            
+        }
+        public ValidationException(ValidationResult result) => Result = result;
+
+        public ValidationException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
 

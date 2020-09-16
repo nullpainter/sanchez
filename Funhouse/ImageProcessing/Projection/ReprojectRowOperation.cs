@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Ardalis.GuardClauses;
 using Funhouse.Extensions.Images;
 using Funhouse.Helpers;
 using Funhouse.Models;
@@ -15,7 +16,7 @@ namespace Funhouse.ImageProcessing.Projection
 {
     public readonly struct ReprojectRowOperation : IRowOperation
     {
-        private readonly SatelliteImage _image;
+        private readonly Registration _registration;
         private readonly Image<Rgba32> _target;
         private readonly int _xOffset, _yOffset;
         private readonly Range _latitudeRange, _longitudeRange;
@@ -31,24 +32,27 @@ namespace Funhouse.ImageProcessing.Projection
         private const float BlendRatio = 0.05f;
 
         public ReprojectRowOperation(
-            SatelliteImage image,
+            Registration registration,
             Image<Rgba32> target,
             int xOffset,
             int yOffset,
             RenderOptions options) 
         {
-            _image = image;
+            _registration = registration;
             _target = target;
             _xOffset = xOffset;
             _yOffset = yOffset;
             _options = options;
 
-            _sourceBuffer = ImageBuffer.ToBuffer(image.Image);
+            Guard.Against.Null(registration.Image, nameof(registration.Image));
+            Guard.Against.Null(options.ImageOffset, nameof(options.ImageOffset));
+            
+            _sourceBuffer = ImageBuffer.ToBuffer(registration.Image);
             _imageOffset = options.ImageOffset;
 
             // Normalise longitude range so it doesn't wrap around the map
-            _longitudeRange = image.LongitudeRange.UnwrapLongitude();
-            _latitudeRange = image.Definition.LatitudeRange;
+            _longitudeRange = registration.LongitudeRange.UnwrapLongitude();
+            _latitudeRange = registration.Definition.LatitudeRange;
 
             // Calculate end longitude for blend
             var overlap = BlendRatio * (_longitudeRange.End - _longitudeRange.Start);
@@ -68,15 +72,15 @@ namespace Funhouse.ImageProcessing.Projection
             var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset);
 
             // Convert image x,y to Mercator projection angle
-            var targetWidth = _image.Image!.Width * 2;
-            var projectionY = ProjectionAngleConverter.FromY(y + _yOffset, _image.Image!.Height);
+            var targetWidth = _registration.Width * 2;
+            var projectionY = ProjectionAngleConverter.FromY(y + _yOffset, _registration.Height);
 
             for (var x = 0; x < span.Length; x++)
             {
                 var projectionX = ProjectionAngleConverter.FromX(x + _xOffset, targetWidth);
 
                 // Convert latitude/longitude to geostationary scanning angle
-                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _image.Definition, out var scanningX, out var scanningY);
+                GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _registration.Definition, out var scanningX, out var scanningY);
 
                 // Map pixel from satellite image back to target image
                 span[x] = GetTargetColour(scanningX, scanningY, projectionY, projectionX);

@@ -9,10 +9,11 @@ namespace Funhouse.Extensions.Images
     {
         internal static Image<Rgba32> AddBackgroundColour(this Image<Rgba32> source, Color backgroundColour)
         {
-            var original = source.Clone();
             
             source.Mutate(context =>
             {
+                using var original = source.Clone();
+
                 context.Fill(backgroundColour);
                 context.DrawImage(original, PixelColorBlendingMode.Normal, 1.0f);
             });

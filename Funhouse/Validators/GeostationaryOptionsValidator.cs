@@ -8,6 +8,11 @@ namespace Funhouse.Validators
     {
         public GeostationaryOptionsValidator()
         {
+            RuleFor(o => o.TargetTimestamp)
+                .NotNull()
+                .When(o => o.Longitude != null)
+                .WithMessage("Target timestamp must be provided if combining files.");
+            
             RuleFor(o => o.Longitude)
                 .InclusiveBetween(-180, 180)
                 .WithMessage("Invalid target longitude; longitude must be between -180 and 180 degrees.");
@@ -15,10 +20,6 @@ namespace Funhouse.Validators
             RuleFor(o => o.HazeAmount)
                 .InclusiveBetween(0, 1)
                 .WithMessage("Invalid haze amount; valid values are between 0.0 and 1.0.");
-
-
-            // TODO also need to add a rule for the source path, yeah? Verify that the file exists, etc.
-            // TODO reintroduce glob
 
             // Verify that a directory can be created if multiple source files are provided without a target latitude
             RuleFor(o => o.OutputPath)

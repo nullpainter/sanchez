@@ -7,14 +7,13 @@ namespace Funhouse.Extensions
     public static class MathExtensions
     {
         public static double Limit(this double value, double min, double max) => ((value - min) % (max - min) + (max - min)) % (max - min) + min;
-        public static float Limit(this float value, float min, float max) => ((value - min) % (max - min) + (max - min)) % (max - min) + min;
 
-        public static float ClosestTo(this List<float> collection, float target)
+        public static double ClosestTo(this List<double> collection, double target)
         {
             if (!collection.Any()) throw new InvalidOperationException("Collection is empty");
 
-            var closest = float.MaxValue;
-            var minDifference = float.MaxValue;
+            var closest = double.MaxValue;
+            var minDifference = double.MaxValue;
 
             foreach (var element in collection)
             {

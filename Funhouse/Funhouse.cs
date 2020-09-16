@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Funhouse.Compositors;
 using Funhouse.Exceptions;
 using Funhouse.Helpers;
-using Funhouse.Models;
 using Funhouse.Services;
 using Funhouse.Services.Underlay;
 using Newtonsoft.Json;
@@ -15,12 +14,18 @@ namespace Funhouse
 {
     internal class Funhouse
     {
+        private readonly IConsoleLogger _consoleLogger;
         private readonly ISatelliteRegistry _satelliteRegistry;
         private readonly ICompositor _compositor;
         private readonly IUnderlayCacheRepository _underlayCacheRepository;
 
-        public Funhouse(ISatelliteRegistry satelliteRegistry, ICompositor compositor, IUnderlayCacheRepository underlayCacheRepository)
+        public Funhouse(
+            IConsoleLogger consoleLogger,
+            ISatelliteRegistry satelliteRegistry, 
+            ICompositor compositor, 
+            IUnderlayCacheRepository underlayCacheRepository)
         {
+            _consoleLogger = consoleLogger;
             _satelliteRegistry = satelliteRegistry;
             _compositor = compositor;
             _underlayCacheRepository = underlayCacheRepository;
@@ -34,6 +39,8 @@ namespace Funhouse
             await InitialiseSatelliteRegistryAsync();
             await _compositor.ComposeAsync(cancellationToken);
 
+            Console.WriteLine();
+
             Log.Information("Elapsed time: {elapsed}", stopwatch.Elapsed);
         }
 
@@ -42,23 +49,14 @@ namespace Funhouse
         /// </summary>
         private async Task InitialiseSatelliteRegistryAsync()
         {
-            const string definitionsPath = Constants.DefinitionsPath;
-
-            // Verify that satellite definitions file is present
-            if (!File.Exists(definitionsPath))
-            {
-                ConsoleLog.Error($"Unable to find satellite definition file: {definitionsPath}");
-                throw new ValidationException();
-            }
-
             try
             {
                 // Initialise satellite registry
-                await _satelliteRegistry.InitialiseAsync(Constants.DefinitionsPath);
+                await _satelliteRegistry.InitialiseAsync();
             }
             catch (JsonSerializationException e)
             {
-                ConsoleLog.Error($"Unable to parse satellite definition file: {e.Message}");
+                _consoleLogger.Error($"Unable to parse satellite definition file: {e.Message}");
                 throw new ValidationException();
             }
         }

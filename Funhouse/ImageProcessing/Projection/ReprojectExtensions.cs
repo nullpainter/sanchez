@@ -11,9 +11,9 @@ namespace Funhouse.ImageProcessing.Projection
 {
     public static class ReprojectExtensions
     {
-        public static Image<Rgba32> Reproject(this SatelliteImage image, RenderOptions options)
+        public static Image<Rgba32> Reproject(this Registration registration, RenderOptions options)
         {
-            var definition = image.Definition;
+            var definition = registration.Definition;
 
             // Preserve 2:1 equirectangular aspect ratio
             var maxWidth = options.ImageSize * 2;
@@ -29,13 +29,13 @@ namespace Funhouse.ImageProcessing.Projection
 
             Log.Information("{definition:l0} latitude range {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                latitudeRange.Start,
-                latitudeRange.End);
+                Angle.FromRadians(latitudeRange.Start).Degrees,
+                Angle.FromRadians(latitudeRange.End).Degrees);
 
             Log.Information("{definition:l0} unwrapped longitude range {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                longitudeRange.Start,
-                longitudeRange.End);
+                Angle.FromRadians(longitudeRange.Start).Degrees,
+                Angle.FromRadians(longitudeRange.End).Degrees);
 
             // Get size of projection in pixels
             var xRange = new PixelRange(longitudeRange, a => a.ScaleToWidth(maxWidth));
@@ -52,7 +52,7 @@ namespace Funhouse.ImageProcessing.Projection
             Log.Information("{definition:l0} Reprojecting", definition.DisplayName);
 
             // Perform reprojection
-            var operation = new ReprojectRowOperation(image, target, xRange.Start, yRange.Start, options);
+            var operation = new ReprojectRowOperation(registration, target, xRange.Start, yRange.Start, options);
             ParallelRowIterator.IterateRows(Configuration.Default, target.Bounds(), in operation);
 
             return target;

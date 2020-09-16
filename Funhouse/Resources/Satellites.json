@@ -45,7 +45,7 @@
     "FilenamePrefix": "IMG_FD_",
     "FilenameParser": "Xrit",
     "Longitude": 128.2,
-    "LongitudeAdjustment": -0.8,
+    "LongitudeAdjustment": -0.1,
     "CropRange": {
       "MinLongitude": 40,
       "MaxLongitude": -140 

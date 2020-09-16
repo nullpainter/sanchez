@@ -8,7 +8,7 @@ namespace Funhouse.Extensions.Images
 {
     public static class BorderCropExtensions
     {
-        public static Image<Rgba32> AutoCropBorder(this Image<Rgba32> image, double[] cropRatios)
+        public static void AutoCropBorder(this Image<Rgba32> image, double[] cropRatios)
         {
             if (cropRatios.Length != 4) throw new InvalidOperationException("Invalid number of crop ratios");
 
@@ -21,8 +21,6 @@ namespace Funhouse.Extensions.Images
             ));
             
             Log.Information("Cropped image to {width} x {height} px", image.Width, image.Height);
-
-            return image;
         }
     }
 }

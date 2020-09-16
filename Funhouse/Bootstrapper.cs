@@ -13,6 +13,7 @@ using Funhouse.Exceptions;
 using Funhouse.Helpers;
 using Funhouse.Models;
 using Funhouse.Models.CommandLine;
+using Funhouse.Services;
 using Funhouse.Validators;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -22,18 +23,17 @@ using Serilog.Exceptions;
 using SimpleInjector;
 
 [assembly: InternalsVisibleTo("Funhouse.Test")]
-
 namespace Funhouse
 {
     internal static class Bootstrapper
     {
         internal static async Task Main(params string[] args)
         {
-
             try
             {
                 var cancellationToken = new CancellationTokenSource();
 
+                // Explicitly handle ctrl+c to avoid writing corrupted files
                 Console.CancelKeyPress += (sender, e) =>
                 {
                     e.Cancel = true;
@@ -75,10 +75,12 @@ namespace Funhouse
             }
             catch (ValidationException)
             {
-                Log.Warning("No image procesing possible");
+                Log.Warning("No image processing possible");
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
+                Console.WriteLine("Unhandled failure; check logs for details.");
                 Log.Error(e, "Unhandled failure");
             }
             finally
@@ -96,7 +98,7 @@ namespace Funhouse
             }
 
             ReportErrors(validation);
-            throw new ValidationException();
+            throw new ValidationException(validation);
         }
 
         private static RenderOptions ParseReprojectOptions(EquirectangularOptions options)
@@ -108,10 +110,11 @@ namespace Funhouse
             }
 
             ReportErrors(validation);
-            throw new ValidationException();
+            throw new ValidationException(validation);
         }
 
-        private static void ReportErrors(ValidationResult result) => result.Errors.ForEach(error => ConsoleLog.Error(error.ErrorMessage));
+        // TODO would be nice to use ConsoleLogger here, but options aren't yet provided - provide alternative constructor?
+        private static void ReportErrors(ValidationResult result) => result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
 
         /// <summary>
         ///     Configures logging output.
@@ -130,8 +133,16 @@ namespace Funhouse
         private static void LogOptions(RenderOptions options)
         {
             if (options.EquirectangularRender?.AutoCrop == true) Log.Information("Autocrop enabled");
-            Log.Information("Interpolation type {type}", options.InterpolationType);
+            Log.Information("Using {type} interpolation", options.InterpolationType);
             Log.Information("Normalising images to {km} km spatial resolution", options.SpatialResolution);
+            Log.Information("Using underlay path {path}", options.UnderlayPath);
+            Log.Information("Using satellite definitions {path}", options.DefinitionsPath);
+            Log.Information("Processing {numParallel} images in parallel", options.NumImagesParallel);
+
+            if (options.GeostationaryRender != null)
+            {
+                Log.Information("Apply {haze} haze", options.GeostationaryRender.HazeAmount);
+            }
         }
     }
 }

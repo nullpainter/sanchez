@@ -1,4 +1,6 @@
-﻿using Funhouse.Models;
+﻿using Funhouse.Compositors;
+using Funhouse.Helpers;
+using Funhouse.Models;
 using Funhouse.Seeder;
 using Funhouse.Services;
 using Funhouse.Services.Equirectangular;
@@ -12,9 +14,9 @@ namespace Funhouse.Builders
     {
         public static Container AddAllService(this Container container, RenderOptions options)
         {
-            container.RegisterSingleton<ICompositor, Compositor>();
+            container.RegisterCompositors();
             container.RegisterSingleton<IImageStitcher, ImageStitcher>();
-            container.RegisterSingleton<IImageLoader, ImageLoader>();
+            container.RegisterSingleton<ISatelliteImageLoader, SatelliteImageLoader>();
             container.RegisterSingleton<IUnderlayCache, UnderlayCache>();
             container.RegisterSingleton<IUnderlayService, UnderlayService>();
             container.RegisterSingleton<IUnderlayCacheRepository, UnderlayCacheRepository>();
@@ -22,14 +24,26 @@ namespace Funhouse.Builders
             container.RegisterSingleton<IEquirectangularImageRenderer, EquirectangularImageRenderer>();
             container.RegisterSingleton<IImageMatcher, ImageMatcher>();
             container.RegisterSingleton<IFileService, FileService>();
+            container.RegisterSingleton<IConsoleLogger, ConsoleLogger>();
             container.RegisterSingleton<FilenameParserProvider>();
-            
+
             container.RegisterInstance(options);
-            
-            container.RegisterSingleton<IProjectionActivityOperations, ProjectionActivityOperations>();
+
             container.RegisterSingleton<IProjectionOverlapCalculator, ProjectionOverlapCalculator>();
             container.RegisterSingleton<ISatelliteRegistry, SatelliteRegistry>();
             container.RegisterSingleton<Funhouse>();
+
+            var progressBar = ProgressBarFactory.NewProgressBar(options);
+            container.RegisterInstance(progressBar);
+
+            return container;
+        }
+
+        public static Container RegisterCompositors(this Container container)
+        {
+            container.RegisterSingleton<IGeostationaryCompositor, GeostationaryCompositor>();
+            container.RegisterSingleton<IEquirectangularCompositor, EquirectangularCompositor>();
+            container.RegisterSingleton<ICompositor, Compositor>();
 
             return container;
         }

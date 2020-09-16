@@ -20,6 +20,7 @@ namespace Funhouse.Services
         public void Initialise(IEnumerable<SatelliteDefinition> definitions)
         {
             _definitions = definitions
+
                 .Select(entry => new
                 {
                     Definition = entry,

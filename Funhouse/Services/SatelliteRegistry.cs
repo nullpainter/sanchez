@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Funhouse.Models;
 using Funhouse.Models.Configuration;
 using Newtonsoft.Json;
 using Angle = Funhouse.Models.Angle;
@@ -12,18 +13,21 @@ namespace Funhouse.Services
 {
     public interface ISatelliteRegistry
     {
-        Task InitialiseAsync(string definitionsPath);
+        Task InitialiseAsync();
         SatelliteDefinition? Locate(string pattern);
     }
 
     public class SatelliteRegistry : ISatelliteRegistry
     {
+        private readonly RenderOptions _options;
         private List<SatelliteDefinition>? _definitions;
         private bool _initialised;
 
-        public async Task InitialiseAsync(string definitionsPath)
+        public SatelliteRegistry(RenderOptions options) => _options = options;
+
+        public async Task InitialiseAsync()
         {
-            var json = await File.ReadAllTextAsync(definitionsPath);
+            var json = await File.ReadAllTextAsync(_options.DefinitionsPath);
             var definitions = JsonConvert.DeserializeObject<List<SatelliteConfiguration>>(json);
 
             _definitions = definitions.Select(d => new SatelliteDefinition(

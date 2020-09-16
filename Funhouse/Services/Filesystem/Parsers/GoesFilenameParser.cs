@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Funhouse.Services.Filesystem
+namespace Funhouse.Services.Filesystem.Parsers
 {
     /// <summary>
     ///     Parses filenames of satellite imagery received from GOES-R satellites and processed by <c>goesproc</c>.

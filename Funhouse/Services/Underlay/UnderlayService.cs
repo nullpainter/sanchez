@@ -67,12 +67,12 @@ namespace Funhouse.Services.Underlay
         private static void Resize(UnderlayProjectionOptions options, Image<Rgba32> underlay)
         {
             if (options.TargetHeight == null) return;
-            
+
             // Resize underlay to target image size
             var targetHeight = options.TargetHeight.Value;
 
             // Ensure correct aspect ratio
-            var targetWidth = (int)Math.Round(underlay.Width / (float) underlay.Height * targetHeight);
+            var targetWidth = (int) Math.Round(underlay.Width / (float) underlay.Height * targetHeight);
             Log.Information("Resizing underlay to {width} x {height} px", targetWidth, targetHeight);
 
             underlay.Mutate(c => c.Resize(targetWidth, targetHeight));
@@ -114,17 +114,11 @@ namespace Funhouse.Services.Underlay
         {
             var xPixelRange = longitudeRange.ToPixelRangeX(underlay.Width);
 
-            Log.Information("Cropping underlay to {min} - {max} px width", xPixelRange.Start, xPixelRange.End);
-
-            // Offset and wrap underlay horizontally if required to match projection
-            if (xPixelRange.End > underlay.Width)
-            {
-                var offset = -xPixelRange.Start;
-                Log.Information("Offsetting underlay by {pixels} px", offset);
-                underlay.HorizontalOffset(offset);
-            }
+            var offset = -xPixelRange.Start;
+            Log.Information("Offsetting underlay by {pixels} px", offset);
+            underlay.HorizontalOffset(offset);
         }
-        
+
         /// <summary>
         ///     Crop to a specified latitude range.
         /// </summary>

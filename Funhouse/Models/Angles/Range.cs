@@ -36,7 +36,7 @@ namespace Funhouse.Models.Angles
         ///     Unwraps a longitude range so the end angle is always greater than the start angle.
         ///     This is to simplify maths for projections which wrap around the standard -180 to 180 degrees.
         /// </summary>
-        public Range UnwrapLongitude() => End < Start ? new Range(Start, End+ Constants.Pi2) : this;
+        public Range UnwrapLongitude() => End < Start ? new Range(Start, End + Constants.Pi2) : this;
 
         public Range NormaliseLongitude() => new Range(Start.NormaliseLongitude(), End.NormaliseLongitude());
 

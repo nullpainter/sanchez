@@ -1,29 +1,48 @@
 ﻿using System;
+using Funhouse.Models;
 using Serilog;
+using Serilog.Events;
 
 namespace Funhouse.Helpers
 {
+    public interface IConsoleLogger
+    {
+        /// <summary>
+        ///     Write a log entry at <see cref="LogEventLevel.Warning"/> level and to stdout.
+        /// </summary>
+        void Warning(string message);
+
+        /// <summary>
+        ///     Write a log entry at <see cref="LogEventLevel"/> level and to stderr1G.
+        /// </summary>
+        void Error(string message);
+    }
+
     /// <summary>
     ///     Methods which write to Serilog and the console.
     /// </summary>
-    public static class ConsoleLog
+    public class ConsoleLogger : IConsoleLogger
     {
-        public static void Information(string message)
-        {
-            Log.Information(message);
-            Console.WriteLine(message);
-        }
+        private readonly RenderOptions _options;
 
-        public static void Warning(string message)
+        public ConsoleLogger(RenderOptions options) => _options = options;
+
+        /// <summary>
+        ///     Write a log entry at <see cref="LogEventLevel.Warning"/> level and to stdout.
+        /// </summary>
+        public void Warning(string message)
         {
             Log.Warning(message);
-            Console.WriteLine(message);
+            if (!_options.Verbose) Console.WriteLine(message);
         }
 
-        public static void Error(string message)
+        /// <summary>
+        ///     Write a log entry at <see cref="LogEventLevel"/> level and to stderr1G.
+        /// </summary>
+        public void Error(string message)
         {
             Log.Error(message);
-            Console.Error.WriteLine(message);
+            if (!_options.Verbose) Console.Error.WriteLine(message);
         }
     }
 }

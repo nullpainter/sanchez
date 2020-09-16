@@ -5,7 +5,7 @@ namespace Funhouse.Models
 {
     public static class Constants
     {
-        internal const string DefinitionsPath = @"Resources\Satellites.json";
+        internal const string DefaultDefinitionsPath = @"Resources\Satellites.json";
         internal const string DefaultUnderlayPath = @"Resources\world.200411.3x10848x5424.jpg";
 
         internal static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
@@ -14,6 +14,10 @@ namespace Funhouse.Models
         public const double PiOver2 = 1.5707963267949;
         
 
+        /// <summary>
+        ///     GOES-R satellite defaults. Non GOES-R satellite images are modified so these values
+        ///     and associated calculations can be applied universally.
+        /// </summary>
         internal static class Satellite
         {
             internal const double DefaultHeight = 35786023.0;

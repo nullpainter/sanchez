@@ -62,6 +62,11 @@ namespace Funhouse.Models
         public string UnderlayPath { get; set; } = Constants.DefaultUnderlayPath;
 
         /// <summary>
+        ///     Path to satellite definitions.
+        /// </summary>
+        public string DefinitionsPath { get; set; } = Constants.DefaultDefinitionsPath;
+
+        /// <summary>
         ///     If no underlay should be rendered.
         /// </summary>
         public bool NoUnderlay { get; set; }
@@ -110,5 +115,6 @@ namespace Funhouse.Models
 
         public DateTime? TargetTimestamp { get; set; }
         public TimeSpan Tolerance { get; set; }
+        public int NumImagesParallel { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Funhouse.Extensions.Images
         public static Rectangle? GetAutoCropBounds(this Image<Rgba32> source)
         {
             var thresholds = new List<CropDetails>();
-
+            
             // Additional vertical offset to deal with vertical asymmetry
             var verticalOffset = 80; // FIXME bodge
 
@@ -30,12 +30,15 @@ namespace Funhouse.Extensions.Images
 
             if (!thresholds.Any()) return null;
 
-            var middleThreshold = thresholds.Select(v => v.Ratio).ToList().ClosestTo(1.0f);
+            var middleThreshold = thresholds.Select(v => v.Ratio).ToList().ClosestTo(1.0);
             var cropThreshold = thresholds.First(k => Math.Abs(k.Ratio - middleThreshold) < 0.00001);
 
             var croppedHeight = (cropThreshold.CropHeight - source.Height / 2) * 2;
             var croppedWidth = (cropThreshold.CropWidth - source.Width / 2) * 2;
 
+            // Fail if we were unable to find a sensible crop region
+            if (croppedWidth <= 0 || croppedHeight <= 0) return null;
+            
             return new Rectangle(
                 source.Width / 2 - croppedWidth / 2,
                 source.Height / 2 - croppedHeight / 2 + verticalOffset,
@@ -72,7 +75,7 @@ namespace Funhouse.Extensions.Images
 
         private readonly struct CropDetails
         {
-            public float Ratio { get; }
+            public double Ratio { get; }
             public int CropWidth { get; }
             public int CropHeight { get; }
 

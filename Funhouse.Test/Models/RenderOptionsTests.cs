@@ -108,7 +108,7 @@ namespace Funhouse.Test.Models
         {
             return new RenderOptions
             {
-                GeostationaryRender = new GeostationaryRenderOptions(longitude, 1.0f)
+                GeostationaryRender = new GeostationaryRenderOptions(longitude, 1.0f, true)
             };
         }
 

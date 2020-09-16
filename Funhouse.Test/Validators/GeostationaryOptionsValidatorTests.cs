@@ -11,6 +11,26 @@ namespace Funhouse.Test.Validators
     [TestFixture(TestOf = typeof(GeostationaryOptionsValidator))]
     public class GeostationaryOptionsValidatorTests : AbstractValidatorTests<GeostationaryOptionsValidator, GeostationaryOptions>
     {
+        [Test]
+        public void TimestampRequiredWithLongitude()
+        {
+            var options = ValidOptions();
+            options.TargetTimestamp = null;
+            options.Longitude = 174;
+
+            VerifyFailure(options, nameof(GeostationaryOptions.TargetTimestamp));
+        }
+
+        [Test]
+        public void TimestampAndLongitude()
+        {
+            var options = ValidOptions();
+            options.TargetTimestamp = DateTime.Now;
+            options.Longitude = 174;
+
+           VerifyNoFailure(options, nameof(GeostationaryOptions.TargetTimestamp)); 
+        }
+
         [TestCase(-0.1f)]
         [TestCase(-1.1f)]
         public void InvalidHaze(float haze)
@@ -72,7 +92,7 @@ namespace Funhouse.Test.Validators
             options.OutputPath = outputFile;
 
             VerifyFailure(
-                options, 
+                options,
                 nameof(GeostationaryOptions.OutputPath),
                 "If multiple source files are specified, the output must be a directory.");
         }
@@ -85,7 +105,7 @@ namespace Funhouse.Test.Validators
 
             options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
             options.OutputPath = state.CreateTempDirectory();
-            
+
             VerifyNoFailure(options);
         }
 
@@ -94,15 +114,15 @@ namespace Funhouse.Test.Validators
         {
             var options = ValidOptions();
             options.Longitude = 147;
-            
+
             using var state = new FileState();
 
             options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
             options.OutputPath = state.CreateTempDirectory();
 
             VerifyFailure(
-                options, 
-                nameof(GeostationaryOptions.OutputPath), 
+                options,
+                nameof(GeostationaryOptions.OutputPath),
                 "If multiple source files are specified with a target latitude reprojection, the output cannot be a directory.");
         }
 
@@ -111,12 +131,13 @@ namespace Funhouse.Test.Validators
         {
             var options = ValidOptions();
             options.Longitude = 147;
-            
+            options.TargetTimestamp = DateTime.Now;
+
             using var state = new FileState();
 
             options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
             options.OutputPath = Path.Combine(state.CreateTempDirectory(), "out.jpg");
-            
+
             VerifyNoFailure(options);
         }
 
@@ -171,5 +192,5 @@ namespace Funhouse.Test.Validators
                 SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm
             };
         }
-   }
+    }
 }

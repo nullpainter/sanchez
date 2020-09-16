@@ -47,6 +47,8 @@ namespace Funhouse.ImageProcessing.Mask
             for (var x = 0; x < span.Length; x++)
             {
                 if (InEarth(x, y)) continue;
+                
+                // Set zero alpha for areas outside the earth
                 span[x] = Constants.Transparent;
             }
         }

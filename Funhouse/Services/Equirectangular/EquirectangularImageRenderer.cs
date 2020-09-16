@@ -12,7 +12,7 @@ namespace Funhouse.Services.Equirectangular
 {
     public interface IEquirectangularImageRenderer
     {
-        Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, SatelliteImages images);
+        Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, Activity activity);
     }
 
     public class EquirectangularImageRenderer : IEquirectangularImageRenderer
@@ -28,23 +28,30 @@ namespace Funhouse.Services.Equirectangular
             _underlayService = underlayService;
         }
 
-        public async Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, SatelliteImages images)
+        public async Task<Image<Rgba32>> StitchImagesAsync(Image<Rgba32> stitched, Activity activity)
         {
             // Determine visible range of all satellite imagery
-            images.GetCropRange(out var latitudeRange, out var longitudeRange);
+            activity.GetCropRange(out var latitudeRange, out var longitudeRange);
 
             // Load underlay
             Image<Rgba32> target;
-            if (_options.NoUnderlay) target = stitched;
+            if (_options.NoUnderlay)
+            {
+                // Draw stitched image over black background because of alpha
+                target = stitched.AddBackgroundColour(Color.Black);
+            }
             else
             {
                 Log.Information("Tinting and normalising IR imagery");
 
-                var clone = stitched.Clone();
-                clone.Mutate(c => c.HistogramEqualization());
-                stitched.Tint(_options.Tint);
-
-                stitched.Mutate(c => c.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f));
+                stitched.Mutate(c =>
+                {
+                    using var clone = stitched.Clone();
+                    clone.Mutate(cloneContext => cloneContext.HistogramEqualization());
+                    stitched.Tint(_options.Tint);        
+                    
+                    c.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f);
+                });
 
                 var underlayOptions = new UnderlayProjectionOptions(
                     ProjectionType.Equirectangular,
@@ -60,7 +67,7 @@ namespace Funhouse.Services.Equirectangular
                 // Render underlay and optionally crop to size
                 Log.Information("Blending with underlay");
                 target.Mutate(ctx => ctx.DrawImage(stitched, PixelColorBlendingMode.Screen, 1.0f));
-                
+
                 // Perform global colour correction
                 target.ColourCorrect(_options);
             }

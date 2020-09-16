@@ -24,7 +24,7 @@ namespace Funhouse.Test.Filesystem
             RenderOptions.TargetTimestamp = new DateTime(2020, 08, 30, 03, 30, 00, DateTimeKind.Utc);
             RenderOptions.Tolerance = TimeSpan.FromMinutes(30);
 
-            using var state = FileHelper.NewState();
+            using var state = new FileState();
             var rootDirectory = state.CreateTempDirectory();
             RenderOptions.SourcePath = rootDirectory;
 
