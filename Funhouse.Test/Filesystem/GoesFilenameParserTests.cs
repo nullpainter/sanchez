@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Funhouse.Services.Filesystem;
+using Funhouse.Services.Filesystem.Parsers;
 using NUnit.Framework;
 
 namespace Funhouse.Test.Filesystem

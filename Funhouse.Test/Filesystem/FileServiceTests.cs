@@ -13,64 +13,6 @@ namespace Funhouse.Test.Filesystem
     {
         private IFileService FileService => GetService<IFileService>();
 
-        [Test(Description = "Verifies that the output folder is created for batches if it doesn't already exist")]
-        public void OutputFolderCreatedIfBatch()
-        {
-            using var state = new FileState();
-            var imageFolder = state.CreateTempDirectory();
-            var outputPath = Path.Combine(imageFolder, "output");
-
-            RenderOptions.SourcePath = Path.Combine(imageFolder, "images/*.*");
-            RenderOptions.OutputPath = outputPath;
-
-            // Sanity check
-            RenderOptions.MultipleSources.Should().BeTrue();
-            Directory.Exists(outputPath).Should().BeFalse();
-
-            // Run method under test
-            FileService.PrepareOutput();
-            Directory.Exists(outputPath).Should().BeTrue("output directory should be created for batch processing");
-        }
-
-        [Test(Description = "Verifies that the output folder isn't created if it already exists")]
-        public void OutputFolderNotCreatedIfPresent()
-        {
-            using var state = new FileState();
-            var imageFolder = state.CreateTempDirectory();
-            var outputPath = Path.Combine(imageFolder, "output");
-            Directory.CreateDirectory(outputPath);
-
-            RenderOptions.SourcePath = Path.Combine(imageFolder, "images/*.*");
-            RenderOptions.OutputPath = outputPath;
-
-            // Sanity check
-            RenderOptions.MultipleSources.Should().BeTrue();
-            Directory.Exists(outputPath).Should().BeTrue();
-
-            // Run method under test
-            FileService.PrepareOutput();
-            Directory.Exists(outputPath).Should().BeTrue();
-        }
-
-        [Test(Description = "Verifies that the output is not treated as a folder when processing a single input file")]
-        public void OutputFolderNotCreatedForSingle()
-        {
-            using var state = new FileState();
-            var imageFolder = state.CreateTempDirectory();
-            var outputPath = Path.Combine(imageFolder, "output", "output.jpg");
-
-            RenderOptions.SourcePath = Path.Combine(imageFolder, "images/source.jpg");
-            RenderOptions.OutputPath = outputPath;
-
-            // Sanity check
-            RenderOptions.MultipleTargets.Should().BeFalse();
-
-            // Run method under test
-            FileService.PrepareOutput();
-            Directory.Exists(outputPath).Should().BeFalse("no directory should be created for non-batch mode");
-            File.Exists(outputPath).Should().BeFalse();
-        }
-
         [Test]
         public void OutputFilenameBatch()
         {
@@ -78,7 +20,7 @@ namespace Funhouse.Test.Filesystem
             RenderOptions.OutputPath = Path.Combine("test", "output");
 
             var outputFilename = FileService.GetOutputFilename("source.jpg");
-            outputFilename.Should().Be(Path.Combine("test", "output", "source-fc.jpg"));
+            outputFilename.Should().Be(Path.Combine("test", "output", "source-FC.jpg"));
         }
 
         [Test]

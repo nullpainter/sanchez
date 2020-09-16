@@ -7,14 +7,6 @@ namespace Funhouse.Test.Helper
     /// <summary>
     ///     Helper methods for file manipulation and cleanup in unit tests
     /// </summary>
-    public static class FileHelper
-    {
-        public static FileState NewState()
-        {
-            return new FileState();
-        }
-    }
-
     public class FileState : IDisposable
     {
         private readonly List<string> _tempDirectories = new List<string>();

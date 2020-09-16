@@ -4,8 +4,12 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
 
         <IsPackable>false</IsPackable>
-    </PropertyGroup>
 
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+        <DefineConstants>OS_WINDOWS</DefineConstants>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="5.10.3" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
