@@ -124,7 +124,6 @@ Sanchez supports any of the following tint formats, with or without the leading 
 
 - `#xxx`
 - `#xxxxxx`
-- `#xxxxxxxx`
 
 ## Batch file conversion
 
