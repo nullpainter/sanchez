@@ -1,6 +1,6 @@
-﻿using SixLabors.ImageSharp;
+﻿﻿using SixLabors.ImageSharp;
 
-namespace Sanchez.Extensions
+ namespace Sanchez.Extensions
 {
     public static class ColorExtensions
     {

@@ -1,14 +1,7 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	
-	
-	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8d835597_002D96de_002D4f61_002Dbe9d_002Db14d3d0d3b0e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=307f1415_002D5ef5_002D4a6a_002Db17f_002D653c52cc1750/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Stitched" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Solution /&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=97f89f55_002D236a_002D459d_002Db4de_002D3bf1214c3d47/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="FileServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::6B7641F7-DD84-4B1B-8798-0C10DB93DAB8::.NETCoreApp,Version=v3.1::Sanchez.Test.Services.FileServiceTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
 	
