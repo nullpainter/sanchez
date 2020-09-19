@@ -15,37 +15,37 @@ namespace Sanchez.Builders
         public static Container AddAllService(this Container container, RenderOptions options)
         {
             container.RegisterCompositors();
+            container.RegisterUnderlaySupport();
+            
             container.RegisterSingleton<IImageStitcher, ImageStitcher>();
             container.RegisterSingleton<ISatelliteImageLoader, SatelliteImageLoader>();
-            container.RegisterSingleton<IUnderlayCache, UnderlayCache>();
-            container.RegisterSingleton<IUnderlayService, UnderlayService>();
-            container.RegisterSingleton<IUnderlayCacheRepository, UnderlayCacheRepository>();
             container.RegisterSingleton<IDatabaseMigrator, DatabaseMigrator>();
             container.RegisterSingleton<IEquirectangularImageRenderer, EquirectangularImageRenderer>();
             container.RegisterSingleton<IImageMatcher, ImageMatcher>();
             container.RegisterSingleton<IFileService, FileService>();
-            container.RegisterSingleton<IConsoleLogger, ConsoleLogger>();
-            container.RegisterSingleton<FilenameParserProvider>();
-
-            container.RegisterInstance(options);
-
             container.RegisterSingleton<IProjectionOverlapCalculator, ProjectionOverlapCalculator>();
             container.RegisterSingleton<ISatelliteRegistry, SatelliteRegistry>();
             container.RegisterSingleton<Sanchez>();
+            container.RegisterSingleton<FilenameParserProvider>();
 
-            var progressBar = ProgressBarFactory.NewProgressBar(options);
-            container.RegisterInstance(progressBar);
+            container.RegisterInstance(ProgressBarFactory.NewProgressBar(options));
+            container.RegisterInstance(options);
 
             return container;
         }
 
-        public static Container RegisterCompositors(this Container container)
+        private static void RegisterUnderlaySupport(this Container container)
+        {
+            container.RegisterSingleton<IUnderlayCache, UnderlayCache>();
+            container.RegisterSingleton<IUnderlayService, UnderlayService>();
+            container.RegisterSingleton<IUnderlayCacheRepository, UnderlayCacheRepository>();
+        }
+
+        private static void RegisterCompositors(this Container container)
         {
             container.RegisterSingleton<IGeostationaryCompositor, GeostationaryCompositor>();
             container.RegisterSingleton<IEquirectangularCompositor, EquirectangularCompositor>();
             container.RegisterSingleton<ICompositor, Compositor>();
-
-            return container;
         }
     }
 }

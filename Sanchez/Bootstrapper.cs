@@ -22,6 +22,7 @@ using Serilog.Exceptions;
 using SimpleInjector;
 
 [assembly: InternalsVisibleTo("Sanchez.Test")]
+
 namespace Sanchez
 {
     internal static class Bootstrapper
@@ -50,9 +51,8 @@ namespace Sanchez
                     {
                         with.CaseInsensitiveEnumValues = true;
                         with.HelpWriter = Console.Error;
-                    }).
-                    ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
-                    .WithParsed<EquirectangularOptions>(options => renderOptions = ParseReprojectOptions(options)) 
+                    }).ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
+                    .WithParsed<EquirectangularOptions>(options => renderOptions = ParseReprojectOptions(options))
                     .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
 
                 // Exit if required options not present
@@ -79,9 +79,9 @@ namespace Sanchez
             catch (ValidationException e)
             {
                 Log.Warning(e, "No image processing possible");
-                
-                if (!string.IsNullOrEmpty(e.Message)) await Console.Error.WriteLineAsync(e.Message);
-                else e.Result?.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
+
+                if (e.Result != null) e.Result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
+                else if (!string.IsNullOrEmpty(e.Message)) await Console.Error.WriteLineAsync(e.Message);
             }
             catch (Exception e)
             {

@@ -11,9 +11,6 @@ namespace Sanchez.Extensions.Images
         public static Rectangle? GetAutoCropBounds(this Image<Rgba32> source)
         {
             var thresholds = new List<CropDetails>();
-            
-            // Additional vertical offset to deal with vertical asymmetry
-            var verticalOffset = 80; // FIXME bodge
 
             for (var x = source.Width / 2; x < source.Width; x++)
             {
@@ -38,11 +35,11 @@ namespace Sanchez.Extensions.Images
 
             // Fail if we were unable to find a sensible crop region
             if (croppedWidth <= 0 || croppedHeight <= 0) return null;
-            
+
             return new Rectangle(
                 source.Width / 2 - croppedWidth / 2,
-                source.Height / 2 - croppedHeight / 2 + verticalOffset,
-                croppedWidth, croppedHeight - verticalOffset * 2);
+                source.Height / 2 - croppedHeight / 2,
+                croppedWidth, croppedHeight);
         }
 
         private static Point GetCrop(Image<Rgba32> target, int x)

@@ -10,7 +10,7 @@ namespace Sanchez.Exceptions
     {
        public ValidationResult? Result { get; }
 
-        public ValidationException()
+        public ValidationException() : base(string.Empty)
         {
         }
         
@@ -20,8 +20,7 @@ namespace Sanchez.Exceptions
         {
         }
 
-        public ValidationException(string message) 
-            : base(message)
+        public ValidationException(string message) : base(message)
         {
         }
     }
