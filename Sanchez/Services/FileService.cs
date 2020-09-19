@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DotNet.Globbing;
@@ -10,62 +9,55 @@ namespace Sanchez.Services
     public interface IFileService
     {
         /// <summary>
-        ///     Creates the target directory if required.
-        /// </summary>
-        void PrepareOutput(CommandLineOptions options);
-
-        /// <summary>
         ///     Returns the output filename, based on whether we are processing a single or multiple source files. For multiple source
         ///     files, the output filename is the source filename with a <see cref="FileService.BatchFileSuffix"/> suffix.
         /// </summary>
-        string GetOutputFilename(CommandLineOptions options, string sourceFile);
+        string GetOutputFilename(string sourceFile);
 
         /// <summary>
-        ///     Returns a list of files to process, based on <see cref="CommandLineOptions.SourcePath"/>. This property
+        ///     Returns a list of files to process, based on <see cref="RenderOptions.SourcePath"/>. This property
         ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
         /// </summary>
-        List<string> GetSourceFiles(CommandLineOptions options);
+        List<string> GetSourceFiles();
+
+        /// <summary>
+        ///     Returns whether the output file should be written, based on options and whether the file already exists.
+        /// </summary>
+        bool ShouldWrite(string path);
     }
 
     internal class FileService : IFileService
     {
+        private readonly RenderOptions _options;
+
+        public FileService(RenderOptions options) => _options = options;
+
         /// <summary>
         ///     Suffix applied to filenames when converting files in bulk.
         /// </summary>
-        private const string BatchFileSuffix = "-fc";
+        private const string OutputFileSuffix = "-FC";
 
         /// <summary>
-        ///     Creates the target directory if required.
+        ///     Returns the output filename, based on whether we are processing a batch. For batches, the output
+        ///     filename is the source filename with a <see cref="OutputFileSuffix"/> suffix.
         /// </summary>
-        public void PrepareOutput(CommandLineOptions options)
+        public string GetOutputFilename(string sourceFile)
         {
-            if (options.IsBatch && !Directory.Exists(options.OutputPath!))
-            {
-                Directory.CreateDirectory(options.OutputPath!);
-            }
+            return _options.MultipleTargets || !Path.HasExtension(_options.OutputPath)
+                ? Path.Combine(_options.OutputPath!, $"{Path.GetFileNameWithoutExtension(sourceFile)}{OutputFileSuffix}{Path.GetExtension(sourceFile)}"!)
+                : _options.OutputPath!;
         }
 
         /// <summary>
-        ///     Returns the output filename, based on whether we are processing a batch. For batches, , the output
-        ///     filename is the source filename with a <see cref="BatchFileSuffix"/> suffix.
-        /// </summary>
-        public string GetOutputFilename(CommandLineOptions options, string sourceFile)
-        {
-            return options.IsBatch
-                ? Path.Combine(options.OutputPath!, $"{Path.GetFileNameWithoutExtension(sourceFile)}{BatchFileSuffix}{Path.GetExtension(sourceFile)}"!)
-                : options.OutputPath!;
-        }
-
-        /// <summary>
-        ///     Returns a list of files to process, based on <see cref="CommandLineOptions.SourcePath"/>. This property
+        ///     Returns a list of files to process, based on <see cref="RenderOptions.SourcePath"/>. This property
         ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
         /// </summary>
-        public List<string> GetSourceFiles(CommandLineOptions options)
+        public List<string> GetSourceFiles()
         {
-            var absolutePath = Path.GetFullPath(options.SourcePath!);
+            var absolutePath = Path.GetFullPath(_options.SourcePath!);
 
             // Source is a single file
-            if (!options.IsBatch) return new List<string> { absolutePath };
+            if (!_options.MultipleSources) return new List<string> { absolutePath };
 
             // If the source is a directory, enumerate all files
             if (Directory.Exists(absolutePath))
@@ -85,6 +77,16 @@ namespace Sanchez.Services
                 .Where(file => sourceGlob.IsMatch(file))
                 .OrderBy(file => file)
                 .ToList();
+        }
+
+        /// <summary>
+        ///     Returns whether the output file should be written, based on options and whether the file already exists.
+        /// </summary>
+        public bool ShouldWrite(string path)
+        {
+            // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
+            if (_options.Force || !File.Exists(path)) return true;
+            return false;
         }
 
         private static string GetGlobBase(string path)

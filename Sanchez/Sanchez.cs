@@ -1,75 +1,75 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using CommandLine;
-using Sanchez.Builders;
+using System.Threading.Tasks;
+using Sanchez.Compositors;
+using Sanchez.Exceptions;
+using Sanchez.Helpers;
 using Sanchez.Models;
 using Sanchez.Services;
+using Sanchez.Services.Underlay;
+using Newtonsoft.Json;
 using Serilog;
-using Serilog.Events;
-using Serilog.Exceptions;
-using SimpleInjector;
+using ShellProgressBar;
 
-[assembly: InternalsVisibleTo("Sanchez.Test")]
 namespace Sanchez
 {
-    internal static class Sanchez
+    internal class Sanchez
     {
-        /// <summary>
-        ///     Main entry point to application, parsing command-line arguments and creating composite image.
-        /// </summary>
-        internal static void Main(params string[] args)
+        private readonly RenderOptions _renderOptions;
+        private readonly IProgressBar _progressBar;
+        private readonly IConsoleLogger _consoleLogger;
+        private readonly ISatelliteRegistry _satelliteRegistry;
+        private readonly ICompositor _compositor;
+        private readonly IUnderlayCacheRepository _underlayCacheRepository;
+
+        public Sanchez(
+            RenderOptions renderOptions,
+            IProgressBar progressBar,
+            IConsoleLogger consoleLogger,
+            ISatelliteRegistry satelliteRegistry,
+            ICompositor compositor,
+            IUnderlayCacheRepository underlayCacheRepository)
         {
-            var cancellationToken = new CancellationTokenSource();
+            _renderOptions = renderOptions;
+            _progressBar = progressBar;
+            _consoleLogger = consoleLogger;
+            _satelliteRegistry = satelliteRegistry;
+            _compositor = compositor;
+            _underlayCacheRepository = underlayCacheRepository;
+        }
+
+        public async Task ProcessAsync(CancellationToken cancellationToken)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            _underlayCacheRepository.Initialise();
+            await InitialiseSatelliteRegistryAsync();
+            var numRendered = await _compositor.ComposeAsync(cancellationToken);
             
-            Console.CancelKeyPress += (sender, e) =>
-            {
-                e.Cancel = true;
-                cancellationToken.Cancel();
-            };
+            _progressBar.Dispose();
             
-            var container = new Container().AddAllService();
-            container.Verify();
+            if (numRendered > 0) Console.WriteLine($"Output saved to {Path.GetFullPath(_renderOptions.OutputPath)}");
 
-            try
-            {
-                Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(options =>
-                {
-                    ConfigureLogging();
-
-                    // Disable stdout if required
-                    if (options.Quiet) Console.SetOut(TextWriter.Null);
-
-                    // Perform additional validation on input options
-                    var validator = container.GetInstance<IOptionValidator>();
-                    if (!validator.Validate(options)) return;
-
-                    // Composite images
-                    var compositor = container.GetInstance<ICompositor>();
-                    compositor.Compose(options, cancellationToken);
-                });
-            }
-            finally
-            {
-                Console.ResetColor();
-            }
+            Log.Information("Elapsed time: {elapsed}", stopwatch.Elapsed);
         }
 
         /// <summary>
-        ///     Configures logging output.
+        ///     Registers all known satellites.
         /// </summary>
-        private static void ConfigureLogging()
+        private async Task InitialiseSatelliteRegistryAsync()
         {
-            var applicationPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)!;
-            
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(applicationPath, "logs", "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails()
-                .CreateLogger();
+            try
+            {
+                // Initialise satellite registry
+                await _satelliteRegistry.InitialiseAsync();
+            }
+            catch (JsonSerializationException e)
+            {
+                _consoleLogger.Error($"Unable to parse satellite definition file: {e.Message}");
+                throw new ValidationException();
+            }
         }
     }
 }
