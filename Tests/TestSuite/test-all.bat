@@ -7,11 +7,13 @@ call .\create-distribution.bat
 call .\equirectangular-nostitch.bat
 call .\equirectangular-nostitch-autocrop.bat
 call .\equirectangular-nostitch-verbose.bat
-call .\equirectangular-single-typebat
+call .\equirectangular-single-type.bat
+call .\equirectangular-nounderlay.bat
 call .\equirectangular-stitch.bat
 call .\equirectangular-stitch-goes-autocrop.bat
 call .\equirectangular-stitch-goes-all-autocrop.bat
 call .\equirectangular-stitch-autocrop.bat
+call .\equirectangular-stitch-nounderlay.bat
 call .\equirectangular-verbose.bat
 call .\geostationary.bat
 call .\geostationary-latitude.bat
