@@ -15,9 +15,7 @@ Need to talk about migration
 [![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
-<a href="Documentation/Equirectangular-stitched.jpg"><img src="Documentation/Equirectangular-stitched-thumb.jpg" title="Reprojectd GK-2A, Himawari-8, GOES-16 and GOES-17" align="left"></a><br/>
-<a href="Documentation/GOES-16.JPG"><img src="Documentation/GOES-16-thumb.jpg" title="GOES-16" align="left"></a>
-<a href="Documentation/GOES-17.jpg"><img src="Documentation/GOES-17-thumb.jpg" title="GOES-17"></a>
+<img src="Documentation/hero.jpg" title="Sample images" align="left"></a>
 
 **Sanchez brings your dull IR satellite images to life.**
 
