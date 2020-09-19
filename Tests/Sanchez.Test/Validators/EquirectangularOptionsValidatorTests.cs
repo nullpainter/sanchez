@@ -37,7 +37,7 @@ namespace Sanchez.Test.Validators
             VerifyFailure(
                 options, 
                 nameof(EquirectangularOptions.OutputPath), 
-                "The output cannot be a directory if combining satellite imagery.");
+                "The output cannot be a directory if rendering a single image.");
         }
 
         [Test]
