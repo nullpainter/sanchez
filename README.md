@@ -6,18 +6,18 @@
 [![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
-<a href="Documentation/sample-images-legacy/Himawari-8.jpg"><img src="Documentation/sample-images-legacy/Himawari-8-thumb.jpg" title="Himawari 8" align="left"></a>
-<a href="Documentation/sample-images-legacy/GK-2A.jpg"><img src="Documentation/sample-images-legacy/GK-2A-thumb.jpg" title="GK-2A"></a>
-<a href="Documentation/sample-images-legacy/GOES-16.JPG"><img src="Documentation/sample-images-legacy/GOES-16-thumb.jpg" title="GOES-16" align="left"></a>
-<a href="Documentation/sample-images-legacy/GOES-17.jpg"><img src="Documentation/sample-images-legacy/GOES-17-thumb.jpg"  title="GOES-17"></a>
+<img src="Documentation/hero.jpg" title="Sample images" align="left"></a>
 
 **Sanchez brings your dull IR satellite images to life.**
 
-Utilising a full-colour, high resolution, static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, an optional mask and overlay and some zhushing, Sanchez will create beautiful images to be proud of.
+Utilising a full-colour, high resolution, static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, and some serious maths, Sanchez will create beautiful images to be proud of.
 
 This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enough for you.
 
-If you provide a mask image, you can compensate for discrepancies in scale or distortion between the satellite image and the full-colour image. Sanchez also provides options for batch conversion, colour tinting, an overlay for text or other imagery, brightness and contrast adjustment.
+Sanchez can bring colour to full-disc images, but it can also reproject and blend images from multiple satellites - either creating a flat projected image, or by creating a virtual satellite image at a given longitude.
+
+Full documentation with examples of all options is available in the [wiki](https://github.com/nullpainter/sanchez/wiki). 
+
 
 _¡Arriba, Arriba! ¡Ándale, Ándale!_
 
@@ -31,58 +31,92 @@ Releases are available for Raspberry Pi, Linux, Mac OS X and Windows. [Head on o
 
 For Raspberry Pi, pick the ARM build.
 
-## Image resources
-
-Sample underlays, masks and IR images for Himawari-8, GK-2A, GOES-16 and GOES-17 are in the [Resources](Sanchez/Resources) folder. Each satellite has an underlay which matches the pixel dimensions of the IR image, and an additional high-resolution underlay. It is recommended to use the high-resolution underlay unless you care about pixel-perfect IR.
-
 ## Usage
 
-All images are expected to be the same aspect ratio. If images are different sizes - for example, when using the high-resolution underlays - source images will be scaled up.
-
-The tint is optimised for Himawari-8 and GOES. For GK-2A, you may find a tint of `#0070ba` to better suited.
+### Common arguments
 
 ```
-  -u, --underlay      Required. Path to full-colour underlay image
+  -b, --brightness        (Default: 1) Brightness adjustment
 
-  -s, --source        Required. Path to IR satellite image(s)
+  -d, --tolerance         (Default: 30) Time tolerance in minutes in identifying suitable satellite images when combining
 
-  -m, --mask          Optional path to mask image
+  -D, --definitions       Path to custom satellite definitions
 
-  -O, --overlay       Optional path to overlay image
+  -i, --interpolation     (Default: B) Interpolation type. Valid values are N (nearest neighbour), B (bilinear)
 
-  -o, --output        Required. Path to output file or folder
+  -f, --force             (Default: false) Force overwrite existing output file
 
-  -t, --tint          (Default: 5ebfff) Tint to apply to satellite image
+  -L, --noadjustlevels    (Default: false) Don't perform histogram equalisation on satellite imagery
 
-  -b, --brightness    (Default: 1.0) Brightness adjustment
+  -o, --output            Required. Path to output file or folder
 
-  -S, --saturation    (Default: 0.7) Saturation adjustment
+  -p, --parallel          (Default: 1) Number of files to process in parallel
 
-  -q, --quiet         (Default: false) Don't provide any console output
+  -q, --quiet             (Default: false) Don't perform console output
 
-  -f, --force         (Default: false) Force overwrite existing output file
+  -r, --resolution        (Default: 4) Output spatial resolution in km; valid values are 2 or 4
 
-  -T, --threads       (Default: CPU core count) Number of threads to use for batch processing
+  -s, --source            Required. Path to IR satellite image(s)
 
-  --help              Display this help screen.
+  -S, --saturation        (Default: 0.7) Saturation adjustment
 
-  --version           Display version information.
+  -t, --tint              (Default: 1b3f66) Tint to apply to satellite image
+
+  -T, --timestamp         Target timestamp in UTC if combining multiple files; e.g. 2020-12-20T23:00:30
+
+  -u, --underlay          Path to custom full-colour underlay image
+
+  -U, --nounderlay        If no underlay should be rendered
+
+  -v, --verbose           (Default: false) Verbose console output
+
+  --help                  Display this help screen.
+
+  --version               Display version information.
+```
+
+### Geostationary (full disc) compositing
 
 ```
+  -l, --longitude         Target longitude for geostationary satellite projection
+
+  -h, --haze              (Default: 0.2) Amount of haze to apply to image; valid values are between 0 (no haze) and 1 (full haze)
+```
+
+
+### Equirectangular projection
+
+```
+  -a, --autocrop          (Default: false) Whether to create an automatically cropped image. Only applicable when stitching.
+
+  -m, --mode              (Default: Batch) Whether source images are stitched together or rendered individually in a batch
+```
+
 
 ### Sample usage
 
 #### Batch
 
+Sanchez automatically identifies target images based on known file prefixes, so to convert multiple images, just specify the input and output folders:
+
 ```
-./Sanchez -s "c:\images\Himawari8\**\*-IR*.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output
+./Sanchez -s "c:\images\Himawari8" -o Output
 ```
 
 #### Single image
 
 ```
-./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -m Resources\Mask.jpg -u Resources\Himawari-8\Underlay-Hirez.jpg -o Output.jpg -t "#0096FA"
+./Sanchez -s "c:\images\Himawari8\**\Himawari8_FD_VS_20200727T005100Z.jpg" -o Output.jpg"
 ```
+
+#### Multiple satellite stitching with auto-crop
+
+```
+./Sanchez reproject -s c:\images -o stitched.jpg --mode stitch -T 2020-08-30T03:50:20 -fa
+```
+
+More examples are available in the [wiki](https://github.com/nullpainter/sanchez/wiki).  
+
 
 ## Tint formats
 
@@ -90,7 +124,6 @@ Sanchez supports any of the following tint formats, with or without the leading 
 
 - `#xxx`
 - `#xxxxxx`
-- `#xxxxxxxx`
 
 ## Batch file conversion
 
@@ -113,11 +146,3 @@ Note that patterns with wildcards should be quoted with `""` on shells that do w
 ## Logging
 
 Detailed logs are written to disk in the `logs` directory relative to the directory where Sanchez is called from.
-
-## Creating underlay images
-
-NASA's collection of [Blue Marble](https://visibleearth.nasa.gov/collection/1484/blue-marble) images is an excellent source of high resolution underlay images.
-
-In order to correctly projection map photos from geostationary satellites, the [Cartophy](https://scitools.org.uk/cartopy/docs/latest/) Python library can be used. Sample code is in the [Tools](Tools) directory. If you just want to create a high resolution globe and don't need to worry about precise projection, NASA's [G.Projector](https://www.giss.nasa.gov/tools/gprojector/) application is useful.
-
-This is the approach, software and source images used for the sample underlay images in the [Resources](Sanchez/Resources) folder.
