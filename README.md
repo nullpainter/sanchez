@@ -89,7 +89,7 @@ For Raspberry Pi, pick the ARM build.
 ```
   -a, --autocrop          (Default: false) Whether to create an automatically cropped image. Only applicable when stitching.
 
-  -m, --mode              (Default: Batch) Whether source images are stitched together or rendered individually in a batch
+  -m, --mode              (Default: Batch) Whether source images are stitched together or rendered individually in a batch; valid values are stitch or batch.
 ```
 
 

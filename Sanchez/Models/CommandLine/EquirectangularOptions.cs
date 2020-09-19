@@ -9,7 +9,7 @@ namespace Sanchez.Models.CommandLine
         [Option('a', "autocrop", HelpText = "Whether to create an automatically cropped image. Only applicable when stitching.", Required = false, Default = false)]
         public bool AutoCrop { get; [UsedImplicitly] set; }
         
-        [Option('m', "mode", HelpText = "Whether source images are stitched together or rendered individually in a batch", Default = EquirectangularMode.Batch)]
+        [Option('m', "mode", HelpText = "Whether source images are stitched together or rendered individually in a batch; valid values are stitch or batch.", Default = EquirectangularMode.Batch)]
         public EquirectangularMode Mode { get; [UsedImplicitly] set; }
     }
 
