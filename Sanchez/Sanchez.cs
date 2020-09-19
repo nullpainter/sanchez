@@ -45,9 +45,10 @@ namespace Sanchez
             var numRendered = await _compositor.ComposeAsync(cancellationToken);
             
             _progressBar.Dispose();
-            
-            if (numRendered > 0) Console.WriteLine($"Output saved to {Path.GetFullPath(_renderOptions.OutputPath)}");
 
+            if (numRendered > 0) Console.WriteLine($"Output saved to {Path.GetFullPath(_renderOptions.OutputPath)}");
+            else Console.WriteLine($"No output written");
+            
             Log.Information("Elapsed time: {elapsed}", stopwatch.Elapsed);
         }
 
