@@ -1,13 +1,4 @@
-﻿Examples:
--s c:\temp\GOES\goes17\fd\**\*CH02*.jpg -o out -v -D Resources\Goes17AllChannels.json
--s c:\temp\GOES\goes17\fd\**\*CH02*.jpg -o out1 -v -D Resources\Goes17AllChannels.json -f -h 0 -r 2 -u Resources\world.lights.3x10848x5424.jpg
-reproject -o foo.jpg -s Resources -T 2020-08-30T03:50:20 -fva 
-
-Need to document meaning of source and target, particularly with various options (geostationary single, stitching, w/latitude, etc.)
-Need to talk about migration
-
-
-# Sanchez
+﻿# Sanchez
 
 ![.NET Core](https://github.com/nullpainter/sanchez/workflows/.NET%20Core/badge.svg)
 ![Publish](https://github.com/nullpainter/sanchez/workflows/Publish/badge.svg)
