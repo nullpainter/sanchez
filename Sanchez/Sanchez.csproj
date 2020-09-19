@@ -9,7 +9,7 @@
         <Product>Sanchez</Product>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PropertyGroup>
       <NoWarn>1701;1702;S3925</NoWarn>
     </PropertyGroup>
 
@@ -85,16 +85,6 @@
 
     <ItemGroup>
         <EmbeddedResource Include="Resources\Migration\001. Create cache table.sql" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="out" />
-      <Folder Include="release\arse" />
-      <Folder Include="release\cache" />
-      <Folder Include="release\foo" />
-      <Folder Include="release\logs" />
-      <Folder Include="release\Resources\SampleImages" />
-      <Folder Include="release\test" />
     </ItemGroup>
 
 </Project>

@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Sanchez.Compositors;
 using Sanchez.Exceptions;
-using Sanchez.Helpers;
 using Sanchez.Models;
 using Sanchez.Services;
 using Sanchez.Services.Underlay;
@@ -19,7 +18,6 @@ namespace Sanchez
     {
         private readonly RenderOptions _renderOptions;
         private readonly IProgressBar _progressBar;
-        private readonly IConsoleLogger _consoleLogger;
         private readonly ISatelliteRegistry _satelliteRegistry;
         private readonly ICompositor _compositor;
         private readonly IUnderlayCacheRepository _underlayCacheRepository;
@@ -27,14 +25,12 @@ namespace Sanchez
         public Sanchez(
             RenderOptions renderOptions,
             IProgressBar progressBar,
-            IConsoleLogger consoleLogger,
             ISatelliteRegistry satelliteRegistry,
             ICompositor compositor,
             IUnderlayCacheRepository underlayCacheRepository)
         {
             _renderOptions = renderOptions;
             _progressBar = progressBar;
-            _consoleLogger = consoleLogger;
             _satelliteRegistry = satelliteRegistry;
             _compositor = compositor;
             _underlayCacheRepository = underlayCacheRepository;
@@ -67,7 +63,9 @@ namespace Sanchez
             }
             catch (JsonSerializationException e)
             {
-                _consoleLogger.Error($"Unable to parse satellite definition file: {e.Message}");
+                await Console.Error.WriteLineAsync($"Unable to parse satellite definition file: {e.Message}");
+                Log.Error(e, "Unable to parse satellite definition file");
+                
                 throw new ValidationException();
             }
         }

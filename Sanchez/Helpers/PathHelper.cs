@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Extend;
 
 namespace Sanchez.Helpers
 {
@@ -36,11 +37,11 @@ namespace Sanchez.Helpers
 
             // Determine correct location of directories relative to application, depending on whether we are running
             // from a published executable or via dotnet.
-            var applicationPath = (Path.GetFileNameWithoutExtension(processFilename) == "dotnet"
-                ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-                : Path.GetDirectoryName(processFilename))!;
+            var applicationPath = Path.GetFileNameWithoutExtension(processFilename).CompareOrdinalIgnoreCase("sanchez")
+                ? Path.GetDirectoryName(processFilename)
+                : Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            return applicationPath;
+            return applicationPath!;
         }
     }
 }

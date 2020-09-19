@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Sanchez.Test.Helper;
@@ -123,6 +124,34 @@ namespace Sanchez.Test
             var outputImage = await Image.LoadAsync(outputFile);
             outputImage.Width.Should().Be(1918);
             outputImage.Height.Should().Be(1756);
+        }
+        
+        [Test]
+        public async Task Quiet()
+        {
+            using var fileState = new FileState();
+            const string sourceFile = "GOES17_FD_CH13_20200830T033031Z.jpg";
+
+            var rootDirectory = await CreateSingleSimpleImageAsync(fileState, sourceFile);
+
+            var outputDirectory = fileState.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var writer = new StringWriter();
+            Console.SetOut(writer);
+
+            await Bootstrapper.Main(
+                "reproject",
+                "-s", Path.Combine(rootDirectory, sourceFile),
+                "-o", outputFile,
+                "-aq");
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+            outputImage.Width.Should().Be(1918);
+            outputImage.Height.Should().Be(1756);
+
+            writer.ToString().Should().BeEmpty("no output should be written in quiet mode");
         }
 
         [Test]
