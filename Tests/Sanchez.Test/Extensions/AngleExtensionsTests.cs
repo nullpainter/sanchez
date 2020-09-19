@@ -13,8 +13,8 @@ namespace Sanchez.Test.Extensions
         public int ScaleToWidth(double value, int width) => Angle.FromDegrees(value).Radians.ScaleToWidth(width);
         
         [TestCase(0, 200, ExpectedResult = 100)]
-        [TestCase(-90, 200, ExpectedResult = 0)]
-        [TestCase(90, 200, ExpectedResult = 200)]
+        [TestCase(-90, 200, ExpectedResult = 200)]
+        [TestCase(90, 200, ExpectedResult = 0)]
         public int ScaleToHeight(double value, int width) => Angle.FromDegrees(value).Radians.ScaleToHeight(width);
     }
 }

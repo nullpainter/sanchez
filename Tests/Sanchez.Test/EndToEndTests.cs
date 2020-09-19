@@ -100,7 +100,7 @@ namespace Sanchez.Test
             var outputImage = await Image.LoadAsync(outputFile);
 
             outputImage.Width.Should().Be(4066);
-            outputImage.Height.Should().Be(1916);
+            outputImage.Height.Should().Be(2076);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Sanchez.Test
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
             outputImage.Width.Should().Be(1918);
-            outputImage.Height.Should().Be(1756);
+            outputImage.Height.Should().Be(1916);
         }
         
         [Test]
@@ -149,7 +149,7 @@ namespace Sanchez.Test
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
             outputImage.Width.Should().Be(1918);
-            outputImage.Height.Should().Be(1756);
+            outputImage.Height.Should().Be(1916);
 
             writer.ToString().Should().BeEmpty("no output should be written in quiet mode");
         }
