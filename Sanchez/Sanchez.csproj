@@ -4,100 +4,87 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
-        <Copyright> </Copyright>
-        <Version>0.0.1</Version>
+        <LangVersion>default</LangVersion>
+        <Company>Matt Painter</Company>
+        <Product>Sanchez</Product>
     </PropertyGroup>
+
+    <PropertyGroup>
+      <NoWarn>1701;1702;S3925</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>Sanchez.Tests</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.2.0" />
-        <PackageReference Include="Serilog.Exceptions" Version="5.5.0" />
         <PackageReference Include="DotNet.Glob" Version="3.0.9" />
-        <PackageReference Include="Ardalis.GuardClauses" Version="2.0.0" />
-        <PackageReference Include="CommandLineParser" Version="2.8.0" />
+        <PackageReference Include="Dapper" Version="2.0.35" />
+        <PackageReference Include="dbup-sqlite" Version="4.4.0" />
+        <PackageReference Include="ExifLibNet" Version="2.1.3" />
         <PackageReference Include="Extend" Version="1.2.1" />
-        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+        <PackageReference Include="FluentValidation" Version="9.2.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.12.0.21095">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+        <PackageReference Include="Serilog.Exceptions" Version="5.6.0" />
+        <PackageReference Include="Ardalis.GuardClauses" Version="3.0.0" />
+        <PackageReference Include="CommandLineParser" Version="2.8.0" />
         <PackageReference Include="ShellProgressBar" Version="5.0.0" />
         <PackageReference Include="SimpleInjector" Version="5.0.3" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.9.0.19135" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Resources\GK-2A" />
-        <Folder Include="Resources\Himawari-8" />
-        <Folder Include="Resources\GOES-16" />
-        <Folder Include="Resources\GOES-17" />
+        <None Update="Resources\Satellites.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\Goes17AllChannels.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\world.200411.3x10848x5424.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\world.lights.3x10848x5424.jpg">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Remove="out\Himawari8_FD_IR_20200830T035100Z-FC.jpg" />
+        <None Remove="out\GOES17_FD_CH13_20200830T033031Z-FC.jpg" />
+        <None Remove="release\test\IMG_FD_011_IR105_20200912_015006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_010_IR105_20200912_014006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_009_IR105_20200912_013006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_008_IR105_20200912_012006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_006_IR105_20200912_010006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_005_IR105_20200912_005006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_004_IR105_20200912_004006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_003_IR105_20200912_003006-FC.jpg" />
+        <None Remove="release\test\IMG_FD_002_IR105_20200912_002006-FC.jpg" />
+        <None Remove="release\foo\IMG_FD_004_IR105_20200912_004006-FC.jpg" />
+        <None Remove="release\foo\IMG_FD_003_IR105_20200912_003006-FC.jpg" />
+        <None Remove="release\foo\IMG_FD_002_IR105_20200912_002006-FC.jpg" />
+        <None Remove="release\cache\cache.db" />
+        <None Remove="release\arse\IMG_FD_005_IR105_20200912_005006-FC.jpg" />
+        <None Remove="release\arse\IMG_FD_004_IR105_20200912_004006-FC.jpg" />
+        <None Remove="release\arse\IMG_FD_003_IR105_20200912_003006-FC.jpg" />
+        <None Remove="release\arse\IMG_FD_002_IR105_20200912_002006-FC.jpg" />
+        <None Remove="release\Resources\world.lights.3x10848x5424.jpg" />
+        <None Remove="release\Resources\world.200411.3x10848x5424.jpg" />
+        <None Remove="release\Resources\Satellites.json" />
+        <None Remove="release\Resources\SampleImages\Himawari8_FD_IR_20200830T035100Z.jpg" />
+        <None Remove="release\Resources\SampleImages\GOES17_FD_CH13_20200830T033031Z.jpg" />
+        <None Remove="release\Resources\Goes17AllChannels.json" />
+        <None Remove="release\Funhouse.pdb" />
+        <None Remove="release\Funhouse.exe" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\README.md">
-            <Link>README.md</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </Content>
-        <Content Include="Resources\Mask.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </Content>
-        <Content Include="Resources\Himawari-8\Himawari8_B_FD_IR_20200719T005100Z.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </Content>
-        <Content Update="Resources\Himawari-8\Underlay.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </Content>
-        <None Remove="Resources\Himawari-8\Underlay.jpg" />
-        <Content Include="Resources\Himawari-8\Underlay.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </Content>
-        <None Update="Resources\GK-2A\Underlay.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <Content Include="Resources\GK-2A\IMG_FD_069_IR105_20200723_113006.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </Content>
-        <None Update="Resources\GK-2A\IMG_FD_020_IR105_20190907_032006_ENHANCED.png">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GK-2A\IMG_FD_020_IR105_20190907_032006.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GOES-16\GOES16_FD_CH13_20200726T155024Z.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GOES-16\Underlay-Hirez.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GOES-16\Underlay.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GOES-17\GOES17_FD_CH13_20200727T003031Z.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GOES-17\Underlay-Hirez.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
-        <None Update="Resources\GOES-17\Underlay.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        </None>
+        <EmbeddedResource Include="Resources\Migration\001. Create cache table.sql" />
     </ItemGroup>
 
 </Project>
