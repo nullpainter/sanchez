@@ -2,4 +2,5 @@
 bin/
 obj/
 *.DotSettings.user
-/Tests/TestSuite/sanchez/
+Tests/TestSuite/sanchez/
+Tests/TestSuite/output/
