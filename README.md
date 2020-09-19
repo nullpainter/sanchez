@@ -6,10 +6,10 @@
 [![Github All Releases](https://img.shields.io/github/downloads/nullpainter/sanchez/total.svg)]()
 ![Happiness](https://img.shields.io/badge/happiness-100%25-orange)
 
-<a href="Documentation/Himawari-8.jpg"><img src="Documentation/Himawari-8-thumb.jpg" title="Himawari 8" align="left"></a>
-<a href="Documentation/GK-2A.jpg"><img src="Documentation/GK-2A-thumb.jpg" title="GK-2A"></a>
-<a href="Documentation/GOES-16.JPG"><img src="Documentation/GOES-16-thumb.jpg" title="GOES-16" align="left"></a>
-<a href="Documentation/GOES-17.jpg"><img src="Documentation/GOES-17-thumb.jpg"  title="GOES-17"></a>
+<a href="Documentation/sample-images-legacy/Himawari-8.jpg"><img src="Documentation/sample-images-legacy/Himawari-8-thumb.jpg" title="Himawari 8" align="left"></a>
+<a href="Documentation/sample-images-legacy/GK-2A.jpg"><img src="Documentation/sample-images-legacy/GK-2A-thumb.jpg" title="GK-2A"></a>
+<a href="Documentation/sample-images-legacy/GOES-16.JPG"><img src="Documentation/sample-images-legacy/GOES-16-thumb.jpg" title="GOES-16" align="left"></a>
+<a href="Documentation/sample-images-legacy/GOES-17.jpg"><img src="Documentation/sample-images-legacy/GOES-17-thumb.jpg"  title="GOES-17"></a>
 
 **Sanchez brings your dull IR satellite images to life.**
 
