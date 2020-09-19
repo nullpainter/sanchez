@@ -16,6 +16,7 @@ call .\equirectangular-stitch-autocrop.bat
 call .\equirectangular-stitch-nounderlay.bat
 call .\equirectangular-verbose.bat
 call .\geostationary.bat
+call .\geostationary-custom-underlay.bat
 call .\geostationary-longitude.bat
 call .\geostationary-longitude-verbose.bat
 call .\geostationary-verbose.bat
