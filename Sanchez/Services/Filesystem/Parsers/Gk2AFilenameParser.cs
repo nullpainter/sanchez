@@ -9,7 +9,9 @@ namespace Sanchez.Services.Filesystem.Parsers
     /// </summary>
     public class Gk2AFilenameParser : IFilenameParser
     {
-        private static readonly Regex Regex = new Regex("IMG_FD_.*_([0-9]{8}_[0-9]{6})\\.jpg", RegexOptions.Compiled);
+        // Note that the prefix has intentionally been left flexible in order to allow for users to define an alternative
+        // prefix in the Satellite.json file.
+        private static readonly Regex Regex = new Regex(".*_([0-9]{8}_[0-9]{6})\\.jpg", RegexOptions.Compiled);
         private const string TimestampFormat = "yyyyMMdd_HHmmss";
 
         public DateTime? GetTimestamp(string filename)
