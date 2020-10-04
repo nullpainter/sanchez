@@ -8,7 +8,7 @@ namespace Sanchez.Workflow.Builders
         internal static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
-                .AddTransient<GetSourceRegistrations>()
+                .AddTransient<GetSourceFiles>()
                 .AddTransient<InitialiseProgressBar>()
                 .AddTransient<InitialiseSatelliteRegistry>()
                 .AddTransient<CreateActivity>()

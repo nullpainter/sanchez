@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using JetBrains.Annotations;
+using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Equirectangular;
@@ -14,9 +15,7 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
         public void Build(IWorkflowBuilder<EquirectangularWorkflowData> builder)
         {
             builder
-                .InitialiseUnderlayCache()
-                .InitialiseSatelliteRegistry()
-                .GetSourceRegistrations()
+                .Initialise()
                 .RegisterImages()
                 .InitialiseProgressBar(data => data.Activities.Count)
                 .If(data => data.Activities.Any())
@@ -44,7 +43,8 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                             )
                         )
                     )
-                ).LogCompletion();
+                )
+                .LogCompletion();
         }
 
         public string Id => WorkflowConstants.Equirectangular;
