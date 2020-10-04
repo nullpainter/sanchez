@@ -46,7 +46,7 @@ namespace Sanchez
                     .ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
                     .WithParsed<EquirectangularOptions>(options => renderOptions = ParseReprojectOptions(options))
                     .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
-
+                
                 // Exit if required options not present
                 if (parser.Tag == ParserResultType.NotParsed) throw new ValidationException();
                 Guard.Against.Null(renderOptions, nameof(renderOptions));
@@ -57,7 +57,7 @@ namespace Sanchez
                 // Build DI container
                 var serviceProvider = ServiceProviderFactory.ConfigureServices(renderOptions);
 
-                Log.Information("Sanchez starting");
+                Log.Information($"Sanchez starting with arguments: {string.Join(' ', args)}");
                 LogOptions(renderOptions);
 
                 // Initialise workflow host
