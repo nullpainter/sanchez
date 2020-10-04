@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq;
+using JetBrains.Annotations;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Geostationary;
@@ -17,17 +18,20 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                 .GetSourceRegistrations()
                 .CreateActivity()
                 .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
-                .ForEach(data => data.Activity!.Registrations, _ => false)
-                .Do(registration => registration
-                    .SetWorkflowRegistration()
-                    .ShouldWriteSingle()
-                    .Branch(true, builder.CreateBranch()
-                        .LoadImageSingle()
-                        .NormaliseImage()
-                        .RenderUnderlay()
-                        .ColourCorrect()
-                        .ApplyHaze()
-                        .SaveImage()
+                .If(data => data.Activity!.Registrations.Any())
+                .Do(branch => branch
+                    .ForEach(data => data.Activity!.Registrations, _ => false)
+                    .Do(registration => registration
+                        .SetWorkflowRegistration()
+                        .ShouldWriteSingle()
+                        .Branch(true, builder.CreateBranch()
+                            .LoadImageSingle()
+                            .NormaliseImage()
+                            .RenderUnderlay()
+                            .ColourCorrect()
+                            .ApplyHaze()
+                            .SaveImage()
+                        )
                     )
                 )
                 .LogCompletion();

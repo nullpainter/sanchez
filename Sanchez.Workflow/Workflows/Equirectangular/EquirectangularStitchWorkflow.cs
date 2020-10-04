@@ -22,9 +22,9 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                 .InitialiseSatelliteRegistry()
                 .GetSourceRegistrations()
                 .CreateActivity()
+                .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
                 .If(data => data.Activity!.Registrations.Any())
                 .Do(branch => branch
-                    .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
                     .ShouldWrite(_options.Timestamp)
                     .Branch(true, builder
                         .CreateBranch()
