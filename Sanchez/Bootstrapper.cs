@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using CommandLine;
 using Extend;
-using Sanchez.Builders;
-using Sanchez.Exceptions;
-using Sanchez.Helpers;
-using Sanchez.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic.CompilerServices;
 using Sanchez.Models.CommandLine;
 using Sanchez.Services;
 using Sanchez.Validators;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Sanchez.Processing.Models;
+using Sanchez.Shared.Exceptions;
+using Sanchez.Workflow.Services;
 using Serilog;
-using Serilog.Events;
-using Serilog.Exceptions;
-using SimpleInjector;
 
 [assembly: InternalsVisibleTo("Sanchez.Test")]
 
@@ -27,31 +25,25 @@ namespace Sanchez
 {
     internal static class Bootstrapper
     {
-        internal static async Task Main(params string[] args)
+        internal static async Task<int> Main(params string[] args)
         {
+            RenderOptions renderOptions = null!;
+
             try
             {
                 var cancellationToken = new CancellationTokenSource();
-
-                // Explicitly handle ctrl+c to avoid writing corrupted files
-                Console.CancelKeyPress += (sender, e) =>
-                {
-                    e.Cancel = true;
-                    cancellationToken.Cancel();
-                };
 
                 JsonConvert.DefaultSettings = () => new JsonSerializerSettings
                 {
                     Converters = new Collection<JsonConverter> { new StringEnumConverter() }
                 };
 
-                RenderOptions renderOptions = null!;
-
                 var parser = new Parser(with =>
                     {
                         with.CaseInsensitiveEnumValues = true;
                         with.HelpWriter = Console.Error;
-                    }).ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
+                    })
+                    .ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
                     .WithParsed<EquirectangularOptions>(options => renderOptions = ParseReprojectOptions(options))
                     .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
 
@@ -63,18 +55,17 @@ namespace Sanchez
                 if (renderOptions.Quiet) Console.SetOut(TextWriter.Null);
 
                 // Build DI container
-                var container = new Container().AddAllService(renderOptions);
-                container.Verify();
-
-                ConfigureLogging(renderOptions.Verbose);
+                var serviceProvider = ServiceProviderFactory.ConfigureServices(renderOptions);
 
                 Log.Information("Sanchez starting");
                 LogOptions(renderOptions);
 
-                // Perform image processing
-                await container
-                    .GetInstance<Sanchez>()
-                    .ProcessAsync(cancellationToken.Token);
+                // Initialise workflow host
+                var workflowService = serviceProvider.GetService<IWorkflowService>();
+                workflowService.Initialise(cancellationToken);
+                
+                // Start the workflow 
+                await workflowService.StartAsync(cancellationToken);
             }
             catch (ValidationException e)
             {
@@ -82,17 +73,33 @@ namespace Sanchez
 
                 if (e.Result != null) e.Result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
                 else if (!string.IsNullOrEmpty(e.Message)) await Console.Error.WriteLineAsync(e.Message);
+
+                return -1;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Console.WriteLine("Unhandled failure; check logs for details.");
+                if (!renderOptions.Verbose) Console.WriteLine("Unhandled failure; check logs for details, or run again with verbose logging (-v / --verbose)");
                 Log.Error(e, "Unhandled failure");
+
+                return -1;
             }
             finally
             {
                 Console.ResetColor();
+
+                // Explicitly enable the cursor, as the progress bar can remove it in some situations
+                try
+                {
+                    Console.CursorVisible = true;
+                }
+                catch (IOException)
+                {
+                    // Ignored
+                }
             }
+
+            return 0;
         }
 
         private static RenderOptions ParseGeostationaryOptions(GeostationaryOptions options)
@@ -111,20 +118,6 @@ namespace Sanchez
             throw new ValidationException(validation);
         }
 
-        /// <summary>
-        ///     Configures logging output.
-        /// </summary>
-        private static void ConfigureLogging(bool consoleLogging)
-        {
-            var builder = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails();
-            if (consoleLogging) builder.WriteTo.Console();
-            Log.Logger = builder.CreateLogger();
-        }
-
         private static void LogOptions(RenderOptions options)
         {
             if (options.EquirectangularRender?.AutoCrop == true) Log.Information("Autocrop enabled");
@@ -132,7 +125,6 @@ namespace Sanchez
             Log.Information("Normalising images to {km} km spatial resolution", options.SpatialResolution);
             Log.Information("Using underlay path {path}", options.UnderlayPath);
             Log.Information("Using satellite definitions {path}", options.DefinitionsPath);
-            Log.Information("Processing {numParallel} images in parallel", options.NumImagesParallel);
 
             if (options.GeostationaryRender != null)
             {

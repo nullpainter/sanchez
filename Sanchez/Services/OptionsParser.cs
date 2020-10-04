@@ -1,8 +1,9 @@
 ﻿using System;
-using Sanchez.Extensions;
-using Sanchez.Models;
 using Sanchez.Models.CommandLine;
-using Sanchez.Models.Configuration;
+using Sanchez.Processing.Extensions;
+using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Configuration;
+using Sanchez.Processing.Models.Options;
 
 namespace Sanchez.Services
 {
@@ -21,10 +22,10 @@ namespace Sanchez.Services
             var renderOptions = ProcessBaseOptions(options);
 
             renderOptions.EquirectangularRender = new EquirectangularRenderOptions(
-                options.AutoCrop, 
-                options.Mode == EquirectangularMode.Stitch, null
+                options.AutoCrop,
+                options.Timestamp != null || options.IntervalMinutes != null, null
                 /*ExtentsHelper.ParseExtentsString(options.Extents)*/);
-            
+
             return renderOptions;
         }
 
@@ -34,21 +35,23 @@ namespace Sanchez.Services
             {
                 Quiet = options.Quiet,
                 Verbose = options.Verbose,
-                NumImagesParallel = options.NumImagesParallel,
                 SpatialResolution = options.SpatialResolution,
                 Brightness = options.Brightness,
                 Saturation = options.Saturation,
                 Tint = options.Tint.FromHexString()!.Value,
                 NoUnderlay = options.NoUnderlay,
-                OutputPath = options.OutputPath,
                 SourcePath = options.SourcePath!,
+                OutputPath = options.OutputPath!,
                 InterpolationType = ToInterpolationType(options.InterpolationType),
                 ImageSize = ToImageSize(options),
                 ImageOffset = ToImageOffset(options),
                 Force = options.Force,
+                Timestamp = options.Timestamp?.DateTime,
+                EndTimestamp = options.EndTimestamp?.DateTime,
+                Interval = options.IntervalMinutes == null ? (TimeSpan?) null : TimeSpan.FromMinutes(options.IntervalMinutes.Value),
                 Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
-                TargetTimestamp = options.TargetTimestamp,
-                AutoAdjustLevels = !options.NoAutoAdjustLevels
+                AutoAdjustLevels = !options.NoAutoAdjustLevels,
+                MinSatellites = options.MinSatellites
             };
 
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
