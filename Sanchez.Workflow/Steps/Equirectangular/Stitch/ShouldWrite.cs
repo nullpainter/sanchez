@@ -82,6 +82,15 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
 
     internal static class ShouldWriteExtensions
     {
+        internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TData>(this IWorkflowBuilder<TData> builder, DateTime? timestamp)
+            where TData : WorkflowData
+            => builder
+                .StartWith<ShouldWrite, TData>()
+                .WithActivity()
+                .WithProgressBar()
+                .Input(step => step.Timestamp, data => timestamp)
+                .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
+        
         internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TStep, TData>(this IStepBuilder<TData, TStep> builder, DateTime? timestamp)
             where TStep : IStepBody
             where TData : WorkflowData
