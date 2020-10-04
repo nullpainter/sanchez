@@ -10,11 +10,11 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common
 {
-    public class GetSourceRegistrations : StepBody
+    public class GetSourceFiles : StepBody
     {
         private readonly IFileService _fileService;
 
-        public GetSourceRegistrations(IFileService fileService) => _fileService = fileService;
+        public GetSourceFiles(IFileService fileService) => _fileService = fileService;
         public List<Registration>? SourceRegistrations { get; private set; }
 
         public override ExecutionResult Run(IStepExecutionContext context)
@@ -35,11 +35,11 @@ namespace Sanchez.Workflow.Steps.Common
     
     internal static class GetSourceFilesExtensions
     {
-        internal static IStepBuilder<TData, GetSourceRegistrations> GetSourceRegistrations<TStep, TData>(this IStepBuilder<TData, TStep> builder)
+        internal static IStepBuilder<TData, GetSourceFiles> GetSourceFiles<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
             where TData : WorkflowData
             => builder
-                .Then<TStep, GetSourceRegistrations, TData>()
+                .Then<TStep, GetSourceFiles, TData>()
                 .Output(data => data.SourceRegistrations, step => step.SourceRegistrations);
     }
 }

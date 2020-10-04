@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Sanchez.Processing.Models;
+using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
@@ -19,9 +20,7 @@ namespace Sanchez.Workflow.Workflows.Geostationary
         public void Build(IWorkflowBuilder<EquirectangularStitchWorkflowData> builder)
         {
             builder
-                .InitialiseUnderlayCache()
-                .InitialiseSatelliteRegistry()
-                .GetSourceRegistrations()
+                .Initialise()
                 .CreateActivity()
                 .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 2)
                 .ShouldWrite(_options.Timestamp)
@@ -43,8 +42,10 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                     .SaveStitchedImage(data => data.ProgressBar)
                     .LogCompletion()
                 )
-                .Branch(false, builder.CreateBranch()
-                    .LogCompletion());
+                .Branch(false, builder
+                    .CreateBranch()
+                    .LogCompletion()
+                );
         }
 
         public string Id => WorkflowConstants.GeostationaryReprojected;

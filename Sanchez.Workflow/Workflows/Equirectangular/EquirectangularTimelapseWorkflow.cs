@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using JetBrains.Annotations;
+using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
@@ -14,9 +15,7 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
         public void Build(IWorkflowBuilder<EquirectangularTimelapseWorkflowData> builder)
         {
             builder
-                .InitialiseUnderlayCache()
-                .InitialiseSatelliteRegistry()
-                .GetSourceRegistrations()
+                .Initialise()
                 .PrepareTimeIntervals()
                 .InitialiseProgressBar(data => data.TimeIntervals.Count)
                 .If(data => data.TimeIntervals.Any())

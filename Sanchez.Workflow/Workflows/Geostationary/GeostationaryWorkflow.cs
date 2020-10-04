@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using JetBrains.Annotations;
+using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Geostationary;
@@ -13,9 +14,7 @@ namespace Sanchez.Workflow.Workflows.Geostationary
         public void Build(IWorkflowBuilder<GeostationaryWorkflowData> builder)
         {
             builder
-                .InitialiseUnderlayCache()
-                .InitialiseSatelliteRegistry()
-                .GetSourceRegistrations()
+                .Initialise()
                 .CreateActivity()
                 .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
                 .If(data => data.Activity!.Registrations.Any())
