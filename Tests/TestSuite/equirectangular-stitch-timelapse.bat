@@ -1,0 +1,1 @@
+sanchez\sanchez reproject -o output\equirectangular\timelapse -s sample-images -I 60 -f

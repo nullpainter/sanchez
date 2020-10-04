@@ -42,15 +42,19 @@ For Raspberry Pi, pick the ARM build.
 
   -D, --definitions       Path to custom satellite definitions
 
+  -e, --endtimestamp      End timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30
+
   -i, --interpolation     (Default: B) Interpolation type. Valid values are N (nearest neighbour), B (bilinear)
+
+  -I, --interval          Time interval in minutes between images when stitching
 
   -f, --force             (Default: false) Force overwrite existing output file
 
   -L, --noadjustlevels    (Default: false) Don't perform histogram equalisation on satellite imagery
 
-  -o, --output            Required. Path to output file or folder
+  -m, --minsatellites     Minimum number of satellites in images when stitching
 
-  -p, --parallel          (Default: 1) Number of files to process in parallel
+  -o, --output            Required. Path to output file or folder
 
   -q, --quiet             (Default: false) Don't perform console output
 
@@ -62,7 +66,7 @@ For Raspberry Pi, pick the ARM build.
 
   -t, --tint              (Default: 1b3f66) Tint to apply to satellite image
 
-  -T, --timestamp         Target timestamp in UTC if combining multiple files; e.g. 2020-12-20T23:00:30
+  -T, --timestamp         Target timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30
 
   -u, --underlay          Path to custom full-colour underlay image
 
@@ -73,6 +77,7 @@ For Raspberry Pi, pick the ARM build.
   --help                  Display this help screen.
 
   --version               Display version information.
+
 ```
 
 ### Geostationary (full disc) compositing
@@ -88,8 +93,6 @@ For Raspberry Pi, pick the ARM build.
 
 ```
   -a, --autocrop          (Default: false) Whether to create an automatically cropped image. Only applicable when stitching.
-
-  -m, --mode              (Default: Batch) Whether source images are stitched together or rendered individually in a batch; valid values are stitch or batch.
 ```
 
 
@@ -112,8 +115,15 @@ Sanchez automatically identifies target images based on known file prefixes, so 
 #### Multiple satellite stitching with auto-crop
 
 ```
-./Sanchez reproject -s c:\images -o stitched.jpg --mode stitch -T 2020-08-30T03:50:20 -fa
+./Sanchez reproject -s c:\images -o stitched.jpg --mode stitch -T 2020-08-30T03:50:20 -a
 ```
+
+#### Multiple satellite stitching with auto-crop and timelapse
+
+```
+./Sanchez reproject -s c:\images -o stitched.jpg --mode stitch -I 60 -a
+```
+
 
 More examples are available in the [wiki](https://github.com/nullpainter/sanchez/wiki).  
 

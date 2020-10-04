@@ -2,6 +2,8 @@
 using System.IO;
 using CommandLine;
 using JetBrains.Annotations;
+using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Options;
 
 namespace Sanchez.Models.CommandLine
 {
@@ -16,20 +18,26 @@ namespace Sanchez.Models.CommandLine
         [Option('D', "definitions", HelpText = "Path to custom satellite definitions", Required = false)]
         public string? DefinitionsPath { get; [UsedImplicitly] set; }
 
+        [Option('e', "endtimestamp", HelpText = "End timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
+        public DateTimeOffset? EndTimestamp { get; [UsedImplicitly] set; }
+        
         [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are N (nearest neighbour), B (bilinear)", Required = false, Default = InterpolationOptions.B)]
         public InterpolationOptions InterpolationType { get; [UsedImplicitly] set; }
+        
+        [Option('I', "interval", HelpText = "Time interval in minutes between images when stitching", Required = false)]
+        public int? IntervalMinutes { get; [UsedImplicitly] set; }
 
         [Option('f', "force", HelpText = "Force overwrite existing output file", Required = false, Default = false)]
         public bool Force { get; [UsedImplicitly] set; }
-
+        
         [Option('L', "noadjustlevels", HelpText = "Don't perform histogram equalisation on satellite imagery", Required = false, Default = false)]
         public bool NoAutoAdjustLevels { get; [UsedImplicitly] set; }
 
+        [Option('m', "minsatellites", HelpText = "Minimum number of satellites in images when stitching", Required = false)]
+        public int? MinSatellites { get; [UsedImplicitly] set; }
+        
         [Option('o', "output", HelpText = "Path to output file or folder", Required = true)]
         public string OutputPath { get; [UsedImplicitly] set; } = null!;
-
-        [Option('p', "parallel", HelpText = "Number of files to process in parallel", Required = false, Default = 1)]
-        public int NumImagesParallel { get; [UsedImplicitly] set; }
 
         [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }
@@ -46,8 +54,8 @@ namespace Sanchez.Models.CommandLine
         [Option('t', "tint", HelpText = "Tint to apply to satellite image", Required = false, Default = "1b3f66")]
         public string Tint { get; [UsedImplicitly] set; } = null!;
 
-        [Option('T', "timestamp", HelpText = "Target timestamp in UTC if combining multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
-        public DateTime? TargetTimestamp { get; set; }
+        [Option('T', "timestamp", HelpText = "Target timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
+        public DateTimeOffset? Timestamp { get; set; }
 
         [Option('u', "underlay", HelpText = "Path to custom full-colour underlay image", Required = false)]
         public string? UnderlayPath { get; [UsedImplicitly] set; }

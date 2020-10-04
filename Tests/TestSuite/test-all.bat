@@ -15,6 +15,7 @@ call .\equirectangular-stitch-goes-autocrop.bat
 call .\equirectangular-stitch-goes-all-autocrop.bat
 call .\equirectangular-stitch-autocrop.bat
 call .\equirectangular-stitch-nounderlay.bat
+call .\equirectangular-stitch-timelapse.bat
 call .\equirectangular-verbose.bat
 call .\geostationary.bat
 call .\geostationary-custom-underlay.bat

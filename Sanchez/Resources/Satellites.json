@@ -57,5 +57,32 @@
       0.008181,
       0.006363
     ]
+  },
+  {
+    "DisplayName": "Electro",
+    "FilenamePrefix": "200",
+    "FilenameParser": "Goesproc",
+    "Longitude": -14.5,
+    "LongitudeAdjustment": 0.4,
+    "CropRange": {
+      "MinLongitude": -100,
+      "MaxLongitude": 85
+    },
+    "Brightness": 1.0,
+    "Crop": [
+      0.0161637,
+      0.01359,
+      0.016522,
+      0.014428
+    ]
   }
 ]
+
+// 45
+// 56
+// 46
+// 39
+
+// 2784 x 2484
+
+// 6.159292
