@@ -92,7 +92,7 @@ For Raspberry Pi, pick the ARM build.
 ### Equirectangular projection
 
 ```
-  -a, --autocrop          (Default: false) Whether to create an automatically cropped image. Only applicable when stitching.
+  -a, --autocrop          (Default: false) Whether to create an automatically cropped image. 
 ```
 
 
