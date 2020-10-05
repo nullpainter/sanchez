@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using CommandLine;
 using Extend;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic.CompilerServices;
 using Sanchez.Models.CommandLine;
 using Sanchez.Services;
 using Sanchez.Validators;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Sanchez.Processing.Models;
-using Sanchez.Shared.Exceptions;
 using Sanchez.Workflow.Services;
 using Serilog;
 
@@ -48,7 +47,7 @@ namespace Sanchez
                     .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
                 
                 // Exit if required options not present
-                if (parser.Tag == ParserResultType.NotParsed) throw new ValidationException();
+                if (parser.Tag == ParserResultType.NotParsed) throw new ValidationException("Unable to parse command line");
                 Guard.Against.Null(renderOptions, nameof(renderOptions));
 
                 // Disable stdout if required
@@ -71,7 +70,7 @@ namespace Sanchez
             {
                 Log.Warning(e, "No image processing possible");
 
-                if (e.Result != null) e.Result.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
+                if (e.Errors != null) e.Errors.ForEach(error => Console.Error.WriteLine(error.ErrorMessage));
                 else if (!string.IsNullOrEmpty(e.Message)) await Console.Error.WriteLineAsync(e.Message);
 
                 return -1;
@@ -107,7 +106,7 @@ namespace Sanchez
             var validation = new GeostationaryOptionsValidator().Validate(options);
             if (validation.IsValid) return OptionsParser.Populate(options);
 
-            throw new ValidationException(validation);
+            throw new ValidationException(validation.Errors);
         }
 
         private static RenderOptions ParseReprojectOptions(EquirectangularOptions options)
@@ -115,7 +114,7 @@ namespace Sanchez
             var validation = new EquirectangularOptionsValidator().Validate(options);
             if (validation.IsValid) return OptionsParser.Populate(options);
 
-            throw new ValidationException(validation);
+            throw new ValidationException(validation.Errors);
         }
 
         private static void LogOptions(RenderOptions options)

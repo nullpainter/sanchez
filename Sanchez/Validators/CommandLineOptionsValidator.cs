@@ -33,7 +33,6 @@ namespace Sanchez.Validators
                 .When(o => o.Timestamp != null)
                 .WithMessage("Interval must be a positive value.");
 
-            // TODO test this
             RuleFor(o => o.IntervalMinutes)
                 .GreaterThanOrEqualTo(o => o.ToleranceMinutes)
                 .When(o => o.Timestamp != null)

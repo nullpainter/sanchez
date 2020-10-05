@@ -1,6 +1,5 @@
 ﻿using System;
 using Sanchez.Workflow.Extensions;
-using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;

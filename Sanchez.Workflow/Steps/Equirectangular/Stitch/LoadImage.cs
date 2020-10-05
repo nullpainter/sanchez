@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Workflow.Extensions;
-using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Models.Steps;
 using ShellProgressBar;

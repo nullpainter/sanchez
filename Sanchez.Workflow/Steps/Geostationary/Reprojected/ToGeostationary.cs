@@ -5,7 +5,6 @@ using Sanchez.Processing.ImageProcessing.ShadeEdges;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
-using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Models.Steps;
 using SixLabors.ImageSharp;

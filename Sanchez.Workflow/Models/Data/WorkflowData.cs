@@ -18,9 +18,9 @@ namespace Sanchez.Workflow.Models.Data
     /// </summary>
     /// <remarks>
     ///    This is arguably a misuse of WorkflowCore data, as it should be able to be serialized. Add disposable
-    ///    services and binary data breaks this pattern.
+    ///    services and binary data breaks this pattern. In practice, this state needs to be available somewhere,
+    ///    and the workflows aren't log enough to warrant having a persistence provider specified.
     /// </remarks>
-    // TODO check if WorkflowCore has some sort of never serialize flag
     public abstract class WorkflowData : IWorkflowData, IDisposable
     {
         /// <summary>
