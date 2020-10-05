@@ -4,11 +4,11 @@ using Sanchez.Models.CommandLine;
 
 namespace Sanchez.Validators
 {
-    public class GeostationaryOptionsValidator : OptionsValidator<GeostationaryOptions>
+    public class GeostationaryOptionsValidator : CommandLineOptionsValidator<GeostationaryOptions>
     {
         public GeostationaryOptionsValidator()
         {
-            RuleFor(o => o.TargetTimestamp)
+            RuleFor(o => o.Timestamp)
                 .NotNull()
                 .When(o => o.Longitude != null)
                 .WithMessage("Target timestamp must be provided if combining files.");
