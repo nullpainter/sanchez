@@ -1,5 +1,8 @@
 ﻿namespace Sanchez.Workflow.Models
 {
+    /// <summary>
+    ///     Workflow names.
+    /// </summary>
     public static class WorkflowConstants
     {
         public const string Geostationary = "Geostationary";

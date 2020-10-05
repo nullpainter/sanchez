@@ -2,20 +2,25 @@
 using Sanchez.Workflow.Steps.Equirectangular;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using Sanchez.Workflow.Steps.Equirectangular.Timelapse;
-using ShouldWrite = Sanchez.Workflow.Steps.Equirectangular.Stitch.ShouldWrite;
+using Sanchez.Workflow.Workflows.Equirectangular;
 
 namespace Sanchez.Workflow.Builders
 {
     public static class EquirectangularStepBuilder
     {
+        /// <summary>
+        ///     Registers workflow steps which are required for equirectangular projection.
+        /// </summary>
         internal static IServiceCollection AddEquirectangularSteps(this IServiceCollection services)
         {
-            return services
-                .AddSteps()
+            return AddCommonSteps(services)
                 .AddBatchSteps()
                 .AddTimelapseSteps();
         }
 
+        /// <summary>
+        ///     Registers workflow steps which are required for <see cref="EquirectangularTimelapseWorkflow" />.
+        /// </summary>
         private static IServiceCollection AddTimelapseSteps(this IServiceCollection services)
         {
             return services
@@ -25,6 +30,9 @@ namespace Sanchez.Workflow.Builders
                 .AddTransient<PrepareTimeIntervals>();
         }
 
+        /// <summary>
+        ///     Registers workflow steps which are required for batch equirectangular processing.
+        /// </summary>
         private static IServiceCollection AddBatchSteps(this IServiceCollection services)
         {
             return services
@@ -41,7 +49,10 @@ namespace Sanchez.Workflow.Builders
                 .AddTransient<ToEquirectangular>();
         }
 
-        private static IServiceCollection AddSteps(this IServiceCollection services)
+        /// <summary>
+        ///     Registers common equirectangular rpojection steps.
+        /// </summary>
+        private static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
                 .AddTransient<RegisterImages>()

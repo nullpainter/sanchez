@@ -7,6 +7,8 @@ using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
+using Sanchez.Workflow.Models.Data;
+using Sanchez.Workflow.Models.Steps;
 using ShellProgressBar;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;

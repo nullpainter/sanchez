@@ -5,6 +5,9 @@ namespace Sanchez.Workflow.Builders
 {
     internal static class CommonStepBuilder
     {
+        /// <summary>
+        ///     Registers steps which are are shared between all workflows.
+        /// </summary>
         internal static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services

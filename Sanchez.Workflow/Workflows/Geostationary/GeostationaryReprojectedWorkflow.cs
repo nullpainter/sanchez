@@ -2,6 +2,7 @@
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
+using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using Sanchez.Workflow.Steps.Geostationary;

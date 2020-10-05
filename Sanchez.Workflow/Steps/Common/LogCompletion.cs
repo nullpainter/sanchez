@@ -3,6 +3,8 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
+using Sanchez.Workflow.Models.Data;
+using Sanchez.Workflow.Models.Steps;
 using ShellProgressBar;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
