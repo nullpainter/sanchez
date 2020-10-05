@@ -5,6 +5,9 @@ namespace Sanchez.Workflow.Builders
 {
     public static class WorkflowBuilder
     {
+        /// <summary>
+        ///     Adds application services supporting workflows, including all required workflow steps.
+        /// </summary>
         public static IServiceCollection AddWorkflow(this IServiceCollection services)
         {
             return services

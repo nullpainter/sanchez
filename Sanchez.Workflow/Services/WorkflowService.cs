@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Sanchez.Processing.Models;
 using Sanchez.Shared.Exceptions;
 using Sanchez.Workflow.Models;
+using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Workflows.Equirectangular;
 using Sanchez.Workflow.Workflows.Geostationary;
 using Serilog;
@@ -13,6 +14,10 @@ using WorkflowCore.Models.LifeCycleEvents;
 
 namespace Sanchez.Workflow.Services
 {
+    /// <summary>
+    ///     Initialises the workflow engine and provides management for starting, stopping
+    ///     and cancelling workflows.
+    /// </summary>
     public interface IWorkflowService
     {
         void Initialise(CancellationTokenSource cancellationToken);
@@ -26,6 +31,7 @@ namespace Sanchez.Workflow.Services
 
         private readonly AutoResetEvent _resetEvent;
         private string? _workflowId;
+        private bool _initialised = false;
 
         public WorkflowService(
             RenderOptions options,
@@ -38,11 +44,15 @@ namespace Sanchez.Workflow.Services
 
         public void Initialise(CancellationTokenSource cancellationToken)
         {
+            if (_initialised) throw new InvalidOperationException("Workflow service is already initialised");
+            
             RegisterWorkflows();
 
             _host.OnStepError += (workflow, step, exception) => OnStepError(exception, workflow);
             _host.OnLifeCycleEvent += evt => OnLifeCycleEvent(cancellationToken, evt);
             Console.CancelKeyPress += (sender, e) => CancelKeyPress(cancellationToken, e);
+
+            _initialised = true;
         }
 
         private void RegisterWorkflows()
@@ -119,6 +129,9 @@ namespace Sanchez.Workflow.Services
 
         public async Task StartAsync(CancellationTokenSource cancellationToken)
         {
+            if (!_initialised) throw new InvalidOperationException($"Call {nameof(Initialise)}() before starting a workflow.");
+            
+            // Start workflow host
             await _host.StartAsync(cancellationToken.Token);
 
             _workflowId = _options.Projection switch

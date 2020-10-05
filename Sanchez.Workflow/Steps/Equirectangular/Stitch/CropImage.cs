@@ -4,6 +4,8 @@ using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
+using Sanchez.Workflow.Models.Data;
+using Sanchez.Workflow.Models.Steps;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;

@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Sanchez.Processing.Models;
 
-namespace Sanchez.Workflow.Models
+namespace Sanchez.Workflow.Models.Data
 {
     public class EquirectangularWorkflowData : EquirectangularStitchWorkflowData
     {

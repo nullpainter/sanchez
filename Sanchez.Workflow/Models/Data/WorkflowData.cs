@@ -7,12 +7,20 @@ using ShellProgressBar;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace Sanchez.Workflow.Models
+namespace Sanchez.Workflow.Models.Data
 {
     public interface IWorkflowData
     {
     }
 
+    /// <summary>
+    ///     Base class for data shared between steps.
+    /// </summary>
+    /// <remarks>
+    ///    This is arguably a misuse of WorkflowCore data, as it should be able to be serialized. Add disposable
+    ///    services and binary data breaks this pattern.
+    /// </remarks>
+    // TODO check if WorkflowCore has some sort of never serialize flag
     public abstract class WorkflowData : IWorkflowData, IDisposable
     {
         /// <summary>
@@ -20,22 +28,33 @@ namespace Sanchez.Workflow.Models
         /// </summary>
         public int AlreadyRenderedCount { get; [UsedImplicitly] set; }
 
+        /// <summary>
+        ///     Number of images that have been rendered by the current workflow.
+        /// </summary>
         public int RenderedCount { get; [UsedImplicitly] set; }
-        public List<Registration>? SourceRegistrations { get; [UsedImplicitly] set; }
         
+        /// <summary>
+        ///     All source images and associated satellite definitions matching the source glob,
+        ///     unfiltered by timestamp or eligibility.
+        /// </summary>
+        public List<Registration>? SourceRegistrations { get; [UsedImplicitly] set; }
+
+        /// <summary>
+        ///     Target image being composed.
+        /// </summary>
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
 
         /// <summary>
         ///     Currently processed activity.
         /// </summary>
-        public Activity? Activity { get; set; } 
+        public Activity? Activity { get; set; }
 
         /// <summary>
         ///     Currently processed registration.
         /// </summary>
         public Registration? Registration { get; set; }
 
-        public IProgressBar? ProgressBar { get; [UsedImplicitly] set; } 
+        public IProgressBar? ProgressBar { get; [UsedImplicitly] set; }
 
         public virtual void Dispose()
         {

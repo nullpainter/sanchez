@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Sanchez.Workflow.Workflows.Equirectangular;
 using ShellProgressBar;
 
-namespace Sanchez.Workflow.Models
+namespace Sanchez.Workflow.Models.Data
 {
+    /// <summary>
+    ///     Data backing <see cref="EquirectangularTimelapseWorkflow"/>.
+    /// </summary>
     public class EquirectangularTimelapseWorkflowData : EquirectangularStitchWorkflowData
     {
         internal List<DateTime> TimeIntervals { get; [UsedImplicitly] set;  } = new List<DateTime>();

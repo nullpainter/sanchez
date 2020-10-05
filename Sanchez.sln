@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sanchez.Processing", "Sanch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sanchez.Shared", "Sanchez.Shared\Sanchez.Shared.csproj", "{7341B2CF-9F74-492A-AF65-C7FE0C26FE67}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{229C3257-9089-4C5C-B541-635F71571C5E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{229C3257-9089-4C5C-B541-635F71571C5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sanchez.Test", "Tests\Sanchez.Test\Sanchez.Test.csproj", "{22461DD1-56CF-4269-A5D7-5470E65F8C28}"
 EndProject

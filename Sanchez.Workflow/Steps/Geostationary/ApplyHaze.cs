@@ -3,6 +3,7 @@ using Sanchez.Processing.ImageProcessing.ShadeEdges;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
+using Sanchez.Workflow.Models.Data;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using WorkflowCore.Interface;
