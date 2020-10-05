@@ -16,7 +16,7 @@ namespace Sanchez.Processing.Services
         ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
         /// </summary>
         List<string> GetSourceFiles();
-        
+
         List<Registration> ToRegistrations(List<string> sourceFiles);
 
         /// <summary>
@@ -76,7 +76,10 @@ namespace Sanchez.Processing.Services
             var absolutePath = Path.GetFullPath(_options.SourcePath!);
 
             // Source is a single file
-            if (!_options.MultipleSources) return new List<string> { absolutePath };
+            if (!_options.MultipleSources)
+            {
+                return File.Exists(absolutePath) ? new List<string> { absolutePath } : new List<string>();
+            }
 
             // If the source is a directory, enumerate all files
             if (Directory.Exists(absolutePath))

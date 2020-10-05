@@ -1,11 +1,10 @@
 ﻿using JetBrains.Annotations;
-using Sanchez.Workflow.Workflows.Equirectangular;
 using SixLabors.ImageSharp;
 
 namespace Sanchez.Workflow.Models.Data
 {
     /// <summary>
-    ///     Data backing <see cref="EquirectangularStitchWorkflow"/>.
+    ///     Data backing <see cref="Sanchez.Workflow.Workflows.Equirectangular.EquirectangularStitchWorkflow"/>.
     /// </summary>
     public class EquirectangularStitchWorkflowData : WorkflowData
     {

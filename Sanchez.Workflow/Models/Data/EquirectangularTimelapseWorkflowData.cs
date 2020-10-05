@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Sanchez.Workflow.Workflows.Equirectangular;
 using ShellProgressBar;
 
 namespace Sanchez.Workflow.Models.Data
 {
     /// <summary>
-    ///     Data backing <see cref="EquirectangularTimelapseWorkflow"/>.
+    ///     Data backing <see cref="Sanchez.Workflow.Workflows.Equirectangular.EquirectangularTimelapseWorkflow"/>.
     /// </summary>
     public class EquirectangularTimelapseWorkflowData : EquirectangularStitchWorkflowData
     {

@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using ExifLibrary;
+using FluentValidation;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -22,7 +24,14 @@ namespace Sanchez.Processing.Extensions.Images
             }
 
             // Save image
-            await image.SaveAsync(path);
+            try
+            {
+                await image.SaveAsync(path);
+            }
+            catch (NotSupportedException)
+            {
+                throw new ValidationException($"Unsupported output file extension: {Path.GetExtension(path)}");
+            }
 
             // Add EXIF metadata to image
             var version = Assembly.GetExecutingAssembly().GetName().Version;

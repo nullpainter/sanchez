@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
 using Sanchez.Processing.Models;
-using Sanchez.Shared.Exceptions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Workflows.Equirectangular;
@@ -31,7 +31,7 @@ namespace Sanchez.Workflow.Services
 
         private readonly AutoResetEvent _resetEvent;
         private string? _workflowId;
-        private bool _initialised = false;
+        private bool _initialised;
 
         public WorkflowService(
             RenderOptions options,
@@ -110,11 +110,13 @@ namespace Sanchez.Workflow.Services
 
         private void OnStepError(Exception exception, WorkflowInstance workflow)
         {
+            DisposeData();
+            
             switch (exception)
             {
                 case ValidationException validationException:
                     Console.WriteLine(validationException.Message);
-                    Log.Error(validationException.Message);
+                    Log.Warning(validationException.Message);
                     break;
                 default:
                     if (!_options.Verbose) Console.WriteLine("Unhandled failure; check logs for details, or run again with verbose logging (-v / --verbose)");

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using FluentValidation;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services;
-using Sanchez.Shared.Exceptions;
 using Sanchez.Workflow.Extensions;
-using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
@@ -23,11 +23,13 @@ namespace Sanchez.Workflow.Steps.Common
             try
             {
                 var sourceFiles = _fileService.GetSourceFiles();
+                if (!sourceFiles.Any()) throw new ValidationException("No source files found");
+                
                 SourceRegistrations = _fileService.ToRegistrations(sourceFiles);
             }
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException)
             {
-                throw new ValidationException("Source directory not found", e);
+                throw new ValidationException("Source directory not found");
             }
             
             return ExecutionResult.Next();

@@ -1,10 +1,7 @@
-﻿
-using Sanchez.Workflow.Workflows.Geostationary;
-
-namespace Sanchez.Workflow.Models.Data
+﻿namespace Sanchez.Workflow.Models.Data
 {
     /// <summary>
-    ///     Data backing <see cref="GeostationaryWorkflow"/>.
+    ///     Data backing <see cref=" Sanchez.Workflow.Workflows.Geostationary.GeostationaryWorkflow"/>.
     /// </summary>
     public class GeostationaryWorkflowData : WorkflowData
     {
