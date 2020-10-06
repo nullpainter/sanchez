@@ -11,13 +11,13 @@ using WorkflowCore.Interface;
 namespace Sanchez.Workflow.Workflows.Equirectangular
 {
     [UsedImplicitly]
-    public class EquirectangularStitchWorkflow : IWorkflow<EquirectangularStitchWorkflowData>
+    public class EquirectangularStitchWorkflow : IWorkflow<StitchWorkflowData>
     {
         private readonly RenderOptions _options;
 
         public EquirectangularStitchWorkflow(RenderOptions options) => _options = options;
 
-        public void Build(IWorkflowBuilder<EquirectangularStitchWorkflowData> builder)
+        public void Build(IWorkflowBuilder<StitchWorkflowData> builder)
         {
             builder
                 .Initialise()

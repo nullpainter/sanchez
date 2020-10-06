@@ -38,7 +38,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse
     internal static class InitialiseImageProgressBarExtensions
     {
         internal static IStepBuilder<TData, InitialiseImageProgressBar> InitialiseImageProgressBar<TData>(this IWorkflowBuilder<TData> builder, Expression<Func<TData, int>> maxTicks)
-            where TData : EquirectangularTimelapseWorkflowData
+            where TData : TimelapseWorkflowData
             => builder
                 .StartWith<InitialiseImageProgressBar, TData>()
                 .WithProgressBar()

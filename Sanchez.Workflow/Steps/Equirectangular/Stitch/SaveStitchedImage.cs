@@ -50,7 +50,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
     {
         internal static IStepBuilder<TData, SaveStitchedImage> SaveStitchedImage<TStep, TData>(this IStepBuilder<TData, TStep> builder, Expression<Func<TData, IProgressBar?>> progressBar)
             where TStep : IStepBody
-            where TData : EquirectangularStitchWorkflowData
+            where TData : StitchWorkflowData
         {
             return builder
                 .Then<TStep, SaveStitchedImage, TData>("Save image")

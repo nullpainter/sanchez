@@ -69,13 +69,14 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
         public Activity? Activity { get; set; }
         public Image<Rgba32>? TargetImage { get; set; }
     }
-    
+
     public static class ToGeostationaryExtensions
     {
-        internal static IStepBuilder<EquirectangularStitchWorkflowData, ToGeostationary> ToGeostationary<TStep>(this IStepBuilder<EquirectangularStitchWorkflowData, TStep> builder)
+        internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
+            where TData : StitchWorkflowData
             => builder
-                .Then<TStep, ToGeostationary, EquirectangularStitchWorkflowData>("Reprojecting to geostationary")
+                .Then<TStep, ToGeostationary, TData>("Reprojecting to geostationary")
                 .WithActivity()
                 .Input(step => step.TargetImage, data => data.TargetImage)
                 .Output(data => data.TargetImage, step => step.TargetImage);

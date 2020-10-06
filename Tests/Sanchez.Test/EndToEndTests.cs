@@ -318,6 +318,34 @@ namespace Sanchez.Test
             outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
         }
 
+
+        [Test]
+        public async Task GeostationaryReprojectedOutputDirectory()
+        {
+            using var fileState = new FileState();
+            var rootDirectory = await CreateSampleImagesAsync(fileState);
+            var outputDirectory = fileState.CreateTempDirectory();
+
+            var returnCode = await Bootstrapper.Main(
+                "-s", rootDirectory,
+                "-o", outputDirectory,
+                "-l", "174",
+                "-T 2020-08-30T03:50:20",
+                "-q");
+
+            VerifySuccessfulExecution(returnCode);
+
+            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
+            Directory.GetFiles(outputDirectory).Should().HaveCount(1);
+
+            foreach (var outputFile in Directory.GetFiles(outputDirectory))
+            {
+                var outputImage = await Image.LoadAsync(outputFile);
+                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
+                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            }
+        }
+
         [Test]
         public async Task GeostationaryReprojectedMinSatellites()
         {
@@ -359,35 +387,33 @@ namespace Sanchez.Test
                 "-q");
 
             VerifySuccessfulExecution(returnCode);
-
             File.Exists(outputFile).Should().BeFalse("fewer than 10 satellites are present");
         }
 
-        // Not yet built
-        // [Test]
-        // public async Task GeostationaryTimestampReprojected()
-        // {
-        //     using var fileState = new FileState();
-        //     var rootDirectory = await CreateSampleImagesAsync(fileState);
-        //     var outputDirectory = fileState.CreateTempDirectory();
-        //
-        //     await Bootstrapper.Main(
-        //         "-s", rootDirectory,
-        //         "-o", outputDirectory,
-        //         "-l", "174",
-        //         "-I", "60",
-        //         "-q");
-        //
-        //     Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
-        //     Directory.GetFiles(outputDirectory).Should().HaveCount(8);
-        //
-        //     foreach (var outputFile in Directory.GetFiles(outputDirectory))
-        //     {
-        //         var outputImage = await Image.LoadAsync(outputFile);
-        //         outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        //         outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        //     }
-        // }
+        [Test]
+        public async Task GeostationaryTimestampReprojected()
+        {
+            using var fileState = new FileState();
+            var rootDirectory = await CreateSampleImagesAsync(fileState);
+            var outputDirectory = fileState.CreateTempDirectory();
+
+            await Bootstrapper.Main(
+                "-s", rootDirectory,
+                "-o", outputDirectory,
+                "-l", "174",
+                "-I", "60",
+                "-q");
+
+            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
+            Directory.GetFiles(outputDirectory).Should().HaveCount(2);
+
+            foreach (var outputFile in Directory.GetFiles(outputDirectory))
+            {
+                var outputImage = await Image.LoadAsync(outputFile);
+                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
+                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            }
+        }
 
         private async Task<string> CreateSingleSimpleImageAsync(FileState state, string filename)
         {

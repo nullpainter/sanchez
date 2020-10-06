@@ -117,7 +117,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
     {
         internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangular<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
-            where TData : EquirectangularStitchWorkflowData
+            where TData : StitchWorkflowData
             => builder
                 .Then<TStep, ToEquirectangular, TData>("Reprojecting to equirectangular")
                 .WithRegistration()

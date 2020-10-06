@@ -49,7 +49,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse
     {
         internal static IStepBuilder<TData, CreateActivities> CreateActivities<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
-            where TData : EquirectangularTimelapseWorkflowData
+            where TData : TimelapseWorkflowData
             => builder
                 .Then<TStep, CreateActivities, TData>("Create activities")
                 .Input(step => step.SourceRegistrations, data => data.SourceRegistrations)

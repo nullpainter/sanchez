@@ -12,7 +12,7 @@ namespace Sanchez.Services
         public static RenderOptions Populate(GeostationaryOptions options)
         {
             var renderOptions = ProcessBaseOptions(options);
-            renderOptions.GeostationaryRender = new GeostationaryRenderOptions(options.Longitude, options.HazeAmount);
+            renderOptions.GeostationaryRender = new GeostationaryRenderOptions(options.Longitude, options.EndLongitude, options.HazeAmount);
 
             return renderOptions;
         }

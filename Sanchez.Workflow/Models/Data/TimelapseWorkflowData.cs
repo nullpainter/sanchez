@@ -6,9 +6,9 @@ using ShellProgressBar;
 namespace Sanchez.Workflow.Models.Data
 {
     /// <summary>
-    ///     Data backing <see cref="Sanchez.Workflow.Workflows.Equirectangular.EquirectangularTimelapseWorkflow"/>.
+    ///     Data backing workflows which perform timelapse animations.
     /// </summary>
-    public class EquirectangularTimelapseWorkflowData : EquirectangularStitchWorkflowData
+    public class TimelapseWorkflowData : StitchWorkflowData
     {
         internal List<DateTime> TimeIntervals { get; [UsedImplicitly] set;  } = new List<DateTime>();
         

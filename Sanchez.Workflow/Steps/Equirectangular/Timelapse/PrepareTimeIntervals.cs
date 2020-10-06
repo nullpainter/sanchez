@@ -42,7 +42,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse
     {
         internal static IStepBuilder<TData, PrepareTimeIntervals> PrepareTimeIntervals<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
-            where TData : EquirectangularTimelapseWorkflowData
+            where TData : TimelapseWorkflowData
             => builder
                 .Then<TStep, PrepareTimeIntervals, TData>("Prepare time intervals")
                 .Input(step => step.SourceRegistrations, data => data.SourceRegistrations)

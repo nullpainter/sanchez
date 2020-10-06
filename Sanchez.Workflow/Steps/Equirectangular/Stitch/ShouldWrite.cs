@@ -104,7 +104,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
 
         internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
-            where TData : EquirectangularTimelapseWorkflowData
+            where TData : TimelapseWorkflowData
             => builder
                 .Then<TStep, ShouldWrite, TData>()
                 .WithActivity()
