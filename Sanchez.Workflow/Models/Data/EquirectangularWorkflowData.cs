@@ -4,7 +4,7 @@ using Sanchez.Processing.Models;
 
 namespace Sanchez.Workflow.Models.Data
 {
-    public class EquirectangularWorkflowData : EquirectangularStitchWorkflowData
+    public class EquirectangularWorkflowData : StitchWorkflowData
     {
         /// <summary>
         ///     Batch activities for single item rendering.

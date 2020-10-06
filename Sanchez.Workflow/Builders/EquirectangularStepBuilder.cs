@@ -2,7 +2,6 @@
 using Sanchez.Workflow.Steps.Equirectangular;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using Sanchez.Workflow.Steps.Equirectangular.Timelapse;
-using Sanchez.Workflow.Workflows.Equirectangular;
 
 namespace Sanchez.Workflow.Builders
 {
@@ -19,7 +18,7 @@ namespace Sanchez.Workflow.Builders
         }
 
         /// <summary>
-        ///     Registers workflow steps which are required for <see cref="EquirectangularTimelapseWorkflow" />.
+        ///     Registers workflow steps which are required for <see cref="Sanchez.Workflow.Workflows.Equirectangular.EquirectangularTimelapseWorkflow" />.
         /// </summary>
         private static IServiceCollection AddTimelapseSteps(this IServiceCollection services)
         {

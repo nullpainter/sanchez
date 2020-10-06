@@ -11,7 +11,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             var timestamp = (DateTime) context.Item;
-            var data = (EquirectangularTimelapseWorkflowData) context.Workflow.Data;
+            var data = (TimelapseWorkflowData) context.Workflow.Data;
 
             data.TargetTimestamp = timestamp;
             return ExecutionResult.Next();

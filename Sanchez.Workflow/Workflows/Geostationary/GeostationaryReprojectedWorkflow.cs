@@ -12,13 +12,13 @@ using WorkflowCore.Interface;
 namespace Sanchez.Workflow.Workflows.Geostationary
 {
     [UsedImplicitly]
-    internal class GeostationaryReprojectedWorkflow : IWorkflow<EquirectangularStitchWorkflowData>
+    internal class GeostationaryReprojectedWorkflow : IWorkflow<StitchWorkflowData>
     {
         private readonly RenderOptions _options;
 
         public GeostationaryReprojectedWorkflow(RenderOptions options) => _options = options;
 
-        public void Build(IWorkflowBuilder<EquirectangularStitchWorkflowData> builder)
+        public void Build(IWorkflowBuilder<StitchWorkflowData> builder)
         {
             builder
                 .Initialise()

@@ -63,7 +63,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
     {
         internal static IStepBuilder<TData, GetCropBounds> GetCropBounds<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
-            where TData : EquirectangularStitchWorkflowData
+            where TData : StitchWorkflowData
         {
             return builder
                 .Then<TStep, GetCropBounds, TData>("Get crop bounds")

@@ -4,9 +4,9 @@ using SixLabors.ImageSharp;
 namespace Sanchez.Workflow.Models.Data
 {
     /// <summary>
-    ///     Data backing <see cref="Sanchez.Workflow.Workflows.Equirectangular.EquirectangularStitchWorkflow"/>.
+    ///     Data backing workflows which stitch multiple satellite images together.
     /// </summary>
-    public class EquirectangularStitchWorkflowData : WorkflowData
+    public class StitchWorkflowData : WorkflowData
     {
         /// <summary>
         ///     Longitude offset in radians to apply to all images so the first satellite is at

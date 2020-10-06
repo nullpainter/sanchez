@@ -45,7 +45,7 @@ namespace Sanchez.Workflow.Services
         public void Initialise(CancellationTokenSource cancellationToken)
         {
             if (_initialised) throw new InvalidOperationException("Workflow service is already initialised");
-            
+
             RegisterWorkflows();
 
             _host.OnStepError += (workflow, step, exception) => OnStepError(exception, workflow);
@@ -58,10 +58,11 @@ namespace Sanchez.Workflow.Services
         private void RegisterWorkflows()
         {
             _host.RegisterWorkflow<GeostationaryWorkflow, GeostationaryWorkflowData>();
-            _host.RegisterWorkflow<GeostationaryReprojectedWorkflow, EquirectangularStitchWorkflowData>();
-            _host.RegisterWorkflow<EquirectangularStitchWorkflow, EquirectangularStitchWorkflowData>();
-            _host.RegisterWorkflow<EquirectangularTimelapseWorkflow, EquirectangularTimelapseWorkflowData>();
+            _host.RegisterWorkflow<GeostationaryReprojectedWorkflow, StitchWorkflowData>();
+            _host.RegisterWorkflow<EquirectangularStitchWorkflow, StitchWorkflowData>();
+            _host.RegisterWorkflow<EquirectangularTimelapseWorkflow, TimelapseWorkflowData>();
             _host.RegisterWorkflow<EquirectangularWorkflow, EquirectangularWorkflowData>();
+            _host.RegisterWorkflow<GeostationaryReprojectedTimelapseWorkflow, TimelapseWorkflowData>();
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Sanchez.Workflow.Services
         private void CancelKeyPress(CancellationTokenSource cancellationToken, ConsoleCancelEventArgs args)
         {
             args.Cancel = true;
-           
+
             _host.StopAsync(cancellationToken.Token).Wait();
             DisposeData();
 
@@ -93,7 +94,7 @@ namespace Sanchez.Workflow.Services
 
                 return;
             }
-            
+
             // Ignore other lifecycle events which aren't related to user cancellation
             if (!cancellationToken.IsCancellationRequested) return;
 
@@ -102,7 +103,7 @@ namespace Sanchez.Workflow.Services
 
             _host.TerminateWorkflow(evt.WorkflowInstanceId);
             DisposeData();
-            
+
             _resetEvent.Set();
         }
 
@@ -111,7 +112,7 @@ namespace Sanchez.Workflow.Services
         private void OnStepError(Exception exception, WorkflowInstance workflow)
         {
             DisposeData();
-            
+
             switch (exception)
             {
                 case ValidationException validationException:
@@ -132,32 +133,36 @@ namespace Sanchez.Workflow.Services
         public async Task StartAsync(CancellationTokenSource cancellationToken)
         {
             if (!_initialised) throw new InvalidOperationException($"Call {nameof(Initialise)}() before starting a workflow.");
-            
+
             // Start workflow host
             await _host.StartAsync(cancellationToken.Token);
 
             _workflowId = _options.Projection switch
             {
-                // Geostationary without target longitude
-                ProjectionType.Geostationary when _options.GeostationaryRender!.Longitude == null
-                    => await _host.StartWorkflow(WorkflowConstants.Geostationary),
-                
+                // Geostationary timelapse with target longitude
+                ProjectionType.Geostationary when _options.GeostationaryRender!.Longitude != null && _options.Interval != null
+                    => await _host.StartWorkflow(WorkflowConstants.GeostationaryReprojectedTimelapse),
+
                 // Geostationary with target longitude
-                ProjectionType.Geostationary
+                ProjectionType.Geostationary when _options.GeostationaryRender!.Longitude != null
                     => await _host.StartWorkflow(WorkflowConstants.GeostationaryReprojected),
 
+                // Geostationary without target longitude
+                ProjectionType.Geostationary
+                    => await _host.StartWorkflow(WorkflowConstants.Geostationary),
+
                 // Equirectangular stitched timelapse
-                ProjectionType.Equirectangular when _options.StitchImages && _options.Interval != null 
+                ProjectionType.Equirectangular when _options.StitchImages && _options.Interval != null
                     => await _host.StartWorkflow(WorkflowConstants.EquirectangularTimelapse),
-                
+
                 // Equirectangular stitched
-                ProjectionType.Equirectangular when _options.StitchImages 
+                ProjectionType.Equirectangular when _options.StitchImages
                     => await _host.StartWorkflow(WorkflowConstants.EquirectangularBatch),
-                
+
                 // Equirectangular 
                 ProjectionType.Equirectangular
                     => await _host.StartWorkflow(WorkflowConstants.Equirectangular),
-                
+
                 _ => throw new InvalidOperationException("Unhandled projection scenario")
             };
 

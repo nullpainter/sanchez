@@ -6,12 +6,14 @@ using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Steps.Common;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using Sanchez.Workflow.Steps.Equirectangular.Timelapse;
+using Sanchez.Workflow.Steps.Geostationary;
+using Sanchez.Workflow.Steps.Geostationary.Reprojected;
 using WorkflowCore.Interface;
 
-namespace Sanchez.Workflow.Workflows.Equirectangular
+namespace Sanchez.Workflow.Workflows.Geostationary
 {
     [UsedImplicitly]
-    public class EquirectangularTimelapseWorkflow : IWorkflow<TimelapseWorkflowData>
+    public class GeostationaryReprojectedTimelapseWorkflow : IWorkflow<TimelapseWorkflowData>
     {
         public void Build(IWorkflowBuilder<TimelapseWorkflowData> builder)
         {
@@ -39,18 +41,18 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                                 .ToEquirectangular()
                             )
                             .StitchImages()
-                            .GetCropBounds()
                             .RenderUnderlay()
                             .ColourCorrect()
-                            .CropImage()
-                            .SaveStitchedImage(data => data.ImageProgressBar)
+                            .ToGeostationary()
+                            .ApplyHaze()
+                            .SaveStitchedImage(data => data.ProgressBar)
                         )
                     )
                 )
                 .LogCompletion();
         }
 
-        public string Id => WorkflowConstants.EquirectangularTimelapse;
+        public string Id => WorkflowConstants.GeostationaryReprojectedTimelapse;
         public int Version => 1;
     }
 }

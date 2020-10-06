@@ -103,11 +103,11 @@ namespace Sanchez.Processing.Test.Models
             options.StitchImages.Should().BeFalse("geostationary rendering without a longitude doesn't stitch images");
         }
 
-        private static RenderOptions GeostationaryOptions(double? longitude = null)
+        private static RenderOptions GeostationaryOptions(double? longitude = null, double? endLongitude = null)
         {
             return new RenderOptions
             {
-                GeostationaryRender = new GeostationaryRenderOptions(longitude, 1.0f)
+                GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, 1.0f)
             };
         }
 

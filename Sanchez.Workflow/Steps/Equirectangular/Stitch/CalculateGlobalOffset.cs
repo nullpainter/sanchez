@@ -30,7 +30,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
     {
         internal static IStepBuilder<TData, CalculateGlobalOffset> CalculateGlobalOffset<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
-            where TData : EquirectangularStitchWorkflowData
+            where TData : StitchWorkflowData
             => builder
                 .Then<TStep, CalculateGlobalOffset, TData>("Calculate global offset")
                 .Input(step => step.Activity, data => data.Activity)
