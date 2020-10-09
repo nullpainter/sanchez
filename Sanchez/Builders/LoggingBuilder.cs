@@ -20,7 +20,11 @@ namespace Sanchez.Builders
             var builder = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("WorkflowCore", LogEventLevel.Information)
-                .WriteTo.RollingFile(Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), LogEventLevel.Information, fileSizeLimitBytes: 5 * 1024 * 1024)
+                .WriteTo.RollingFile(
+                    Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), 
+                    LogEventLevel.Information, 
+                    fileSizeLimitBytes: 5 * 1024 * 1024, 
+                    retainedFileCountLimit: 10)
                 .WriteTo.ValidationWrapper(c => c.Sentry(o =>
                 {
                     o.MinimumEventLevel = LogEventLevel.Error;
