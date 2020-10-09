@@ -16,10 +16,12 @@ This could be considered cheating, but this is the approach that NASA used to ut
 
 Sanchez can bring colour to full-disc images, but it can also reproject and blend images from multiple satellites - either creating a flat projected image, or by creating a virtual satellite image at a given longitude.
 
-Full documentation with examples of all options is available in the [wiki](https://github.com/nullpainter/sanchez/wiki). 
-
 
 _¡Arriba, Arriba! ¡Ándale, Ándale!_
+
+## Documentation
+
+Full documentation with examples of all options is available in the [wiki](https://github.com/nullpainter/sanchez/wiki). 
 
 ## Sample images
 
