@@ -22,11 +22,11 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                 .If(data => data.TimeIntervals.Any())
                 .Do(branch => branch
                     .ForEach(data => data.TimeIntervals, options => false)
-                    .Do(timeStep => timeStep
+                    .Do(step => step
                         .SetTargetTimestamp()
                         .CreateActivities()
                         .ShouldWrite()
-                        .Branch(true, timeStep
+                        .Branch(true, step
                             .CreateBranch()
                             .InitialiseImageProgressBar(data => data.Activity!.Registrations.Count + 1)
                             .CalculateVisibleRange()

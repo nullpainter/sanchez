@@ -10,7 +10,7 @@ namespace Sanchez.Processing.Extensions
         /// </summary>
         /// <param name="angle">angle in radians</param>
         public static double NormaliseLongitude(this double angle) => angle.Limit(-Math.PI, Math.PI);
-
+        
         /// <summary>
         ///     Scales an angle to a fractional pixel width, based on an equirectangular projection.
         /// </summary>

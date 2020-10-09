@@ -20,7 +20,7 @@ namespace Sanchez.Processing.Test.Models
         [Test]
         public void NoMultipleTargetsIfGeostationaryWithLongitude()
         {
-            var options = GeostationaryOptions(174);
+            var options = GeostationaryOptions(Angle.FromDegrees(174));
             options.SourcePath = "images/*";
 
             options.MultipleTargets.Should().BeFalse("geostationary render with multiple sources and longitude should result in a single target");
@@ -92,7 +92,7 @@ namespace Sanchez.Processing.Test.Models
         [Test]
         public void StitchIfGeostationaryWithLongitude()
         {
-            var options = GeostationaryOptions(17);
+            var options = GeostationaryOptions(Angle.FromDegrees(17));
             options.StitchImages.Should().BeTrue("geostationary rendering with a longitude should stitch images");
         }
 
@@ -103,11 +103,11 @@ namespace Sanchez.Processing.Test.Models
             options.StitchImages.Should().BeFalse("geostationary rendering without a longitude doesn't stitch images");
         }
 
-        private static RenderOptions GeostationaryOptions(double? longitude = null, double? endLongitude = null)
+        private static RenderOptions GeostationaryOptions(Angle? longitude = null, Angle? endLongitude = null)
         {
             return new RenderOptions
             {
-                GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, 1.0f)
+                GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, false, 1.0f)
             };
         }
 

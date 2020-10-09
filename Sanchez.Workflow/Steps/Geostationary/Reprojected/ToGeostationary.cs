@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.ImageProcessing.ShadeEdges;
@@ -34,21 +35,24 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
             _options = options;
         }
 
+        /// <summary>
+        ///     Target longitude, in radians.
+        /// </summary>
+        internal double? Longitude { get; set; }
+
         public override ExecutionResult Run(IStepExecutionContext context)
         {
-            Guard.Against.Null(_options.GeostationaryRender!.Longitude, nameof(GeostationaryRenderOptions.Longitude));
+            Guard.Against.Null(Longitude, nameof(Longitude));
             Guard.Against.Null(Activity, nameof(Activity));
             Guard.Against.Null(TargetImage, nameof(TargetImage));
 
             var longitudeRange = Activity.GetVisibleLongitudeRange();
 
             // Determine visible range of all satellite imagery
-            var longitudeDegrees = _options.GeostationaryRender!.Longitude!.Value;
-
-            _logger.LogInformation("Reprojecting to geostationary with longitude {longitudeDegrees} degrees", longitudeDegrees);
+            _logger.LogInformation("Reprojecting to geostationary with longitude {longitude} degrees", Angle.FromRadians(Longitude!.Value).Degrees);
 
             // Adjust longitude based on the underlay wrapping for visible satellites
-            var adjustedLongitude = -Math.PI - longitudeRange.Start + Angle.FromDegrees(longitudeDegrees).Radians;
+            var adjustedLongitude = -Math.PI - longitudeRange.Start + Longitude!.Value;
 
             // Render geostationary image
             using (var sourceImage = TargetImage.Clone())
@@ -56,7 +60,7 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
                 TargetImage = sourceImage.ToGeostationaryProjection(adjustedLongitude, Constants.Satellite.DefaultHeight, _options);
 
                 // Apply haze if required
-                var hazeAmount = _options.GeostationaryRender.HazeAmount;
+                var hazeAmount = _options.GeostationaryRender!.HazeAmount;
                 if (hazeAmount > 0 && !_options.NoUnderlay)
                 {
                     TargetImage.ApplyHaze(_options.Tint, hazeAmount);
@@ -72,12 +76,13 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
 
     public static class ToGeostationaryExtensions
     {
-        internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TStep, TData>(this IStepBuilder<TData, TStep> builder)
+        internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TStep, TData>(this IStepBuilder<TData, TStep> builder, Expression<Func<TData, double?>> longitude)
             where TStep : IStepBody
-            where TData : StitchWorkflowData
+            where TData : WorkflowData
             => builder
                 .Then<TStep, ToGeostationary, TData>("Reprojecting to geostationary")
                 .WithActivity()
+                .Input(step => step.Longitude, longitude)
                 .Input(step => step.TargetImage, data => data.TargetImage)
                 .Output(data => data.TargetImage, step => step.TargetImage);
     }

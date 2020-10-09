@@ -10,16 +10,21 @@ namespace Sanchez.Validators
         {
             RuleFor(o => o.Timestamp)
                 .NotNull()
-                .When(o => o.Longitude != null && o.IntervalMinutes == null)
+                .When(o => o.LongitudeDegrees != null && o.IntervalMinutes == null)
                 .WithMessage("Target timestamp must be provided if combining files.");
 
-            RuleFor(o => o.Longitude)
+            RuleFor(o => o.LongitudeDegrees)
                 .InclusiveBetween(-180, 180)
                 .WithMessage("Invalid target longitude; longitude must be between -180 and 180 degrees.");
 
-            RuleFor(o => o.EndLongitude)
+            RuleFor(o => o.EndLongitudeDegrees)
                 .InclusiveBetween(-180, 180)
                 .WithMessage("Invalid end longitude; longitude must be between -180 and 180 degrees.");
+
+            // RuleFor(o => o.InverseRotation)
+            //     .Null()
+            //     .When(o => o.EndLongitudeDegrees == null)
+            //     .WithMessage("Inverse rotation can only be applied when sweeping through a longitude range.");
 
             RuleFor(o => o.HazeAmount)
                 .InclusiveBetween(0, 1)
@@ -28,7 +33,7 @@ namespace Sanchez.Validators
             // Verify that a directory can be created if multiple source files are provided without a target latitude
             RuleFor(o => o.OutputPath)
                 .Must((options, outputPath) => !File.Exists(outputPath))
-                .When(o => o.MultipleSources && o.Longitude == null)
+                .When(o => o.MultipleSources && o.LongitudeDegrees == null)
                 .WithMessage("If multiple source files are specified, the output must be a directory.");
         }
     }

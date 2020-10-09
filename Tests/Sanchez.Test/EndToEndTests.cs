@@ -89,7 +89,7 @@ namespace Sanchez.Test
                 "reproject",
                 "-s", rootDirectory,
                 "-o", outputFile,
-                "-T", "2020-08-30T03:50:20");
+                "-vT", "2020-08-30T03:50:20");
 
             VerifySuccessfulExecution(returnCode);
 
@@ -402,6 +402,34 @@ namespace Sanchez.Test
                 "-o", outputDirectory,
                 "-l", "174",
                 "-I", "60",
+                "-q");
+
+            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
+            Directory.GetFiles(outputDirectory).Should().HaveCount(2);
+
+            foreach (var outputFile in Directory.GetFiles(outputDirectory))
+            {
+                var outputImage = await Image.LoadAsync(outputFile);
+                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
+                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            }
+        }
+
+        // TODO test with just end timestamp, start and end, just interval, etc.
+        [Test]
+        public async Task GeostationaryTimestampReprojectedRotation()
+        {
+            using var fileState = new FileState();
+            var rootDirectory = await CreateSampleImagesAsync(fileState);
+            var outputDirectory = fileState.CreateTempDirectory();
+
+            await Bootstrapper.Main(
+                "-s", rootDirectory,
+                "-o", outputDirectory,
+                "-l", "174",
+                "-E", "-20",
+                "-I", "60",
+                "-e", "2020-08-30T05:50:20",
                 "-q");
 
             Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");

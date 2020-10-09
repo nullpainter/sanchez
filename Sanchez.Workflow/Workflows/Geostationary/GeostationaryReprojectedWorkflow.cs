@@ -38,7 +38,7 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                     .StitchImages()
                     .RenderUnderlay()
                     .ColourCorrect()
-                    .ToGeostationary()
+                    .ToGeostationary(options => _options.GeostationaryRender!.Longitude)
                     .ApplyHaze()
                     .SaveStitchedImage(data => data.ProgressBar)
                     .LogCompletion()

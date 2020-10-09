@@ -2,20 +2,27 @@
 {
     public class GeostationaryRenderOptions
     {
-        public GeostationaryRenderOptions(double? longitude, double? endLongitude, float hazeAmount)
+        public GeostationaryRenderOptions(Angle? longitude, Angle? endLongitude, bool inverseRotation, float hazeAmount)
         {
-            Longitude = longitude;
-            EndLongitude = endLongitude;
+            InverseRotation = inverseRotation;
+            Longitude = longitude?.Radians;
+            EndLongitude = endLongitude?.Radians;
             HazeAmount = hazeAmount;
         }
 
         /// <summary>
-        ///     Target longitude for geostationary satellite projection.
+        ///     Whether Earth rotation should be performed in a counter-clockwise manner when rotating from <see cref="Longitude"/>
+        ///     to <see cref="EndLongitude"/>.
+        /// </summary>
+        public bool InverseRotation { get; set; }
+
+        /// <summary>
+        ///     Target longitude in radians for geostationary satellite projection.
         /// </summary>
         public double? Longitude { get; }
 
         /// <summary>
-        ///     End longitude for timelapse geostationary satellite projection.
+        ///     End longitude in radians for timelapse geostationary satellite projection.
         /// </summary>
         public double? EndLongitude { get; }
 
