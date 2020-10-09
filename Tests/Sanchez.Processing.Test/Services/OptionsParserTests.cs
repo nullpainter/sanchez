@@ -19,7 +19,7 @@ namespace Sanchez.Processing.Test.Services
             var options = new GeostationaryOptions
             {
                 HazeAmount = 0.5f,
-                Longitude = 147,
+                LongitudeDegrees = 147,
                 Tint = "ff0000",
                 SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
                 InterpolationType = InterpolationOptions.N,
@@ -31,7 +31,7 @@ namespace Sanchez.Processing.Test.Services
             var renderOptions = OptionsParser.Populate(options);
             Assert.NotNull(renderOptions.GeostationaryRender);
 
-            renderOptions.GeostationaryRender.Longitude.Should().Be(147);
+            renderOptions.GeostationaryRender.Longitude.Should().Be(Angle.FromDegrees(147).Radians);
             renderOptions.GeostationaryRender.HazeAmount.Should().Be(0.5f);
             renderOptions.InterpolationType.Should().Be(InterpolationType.NearestNeighbour);
             renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.TwoKm);

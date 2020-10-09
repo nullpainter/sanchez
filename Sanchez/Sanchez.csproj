@@ -46,11 +46,25 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
+        <None Remove="out\stitched-20200907T193031Z.jpg" />
+        <None Remove="out\stitched-20200907T183031Z.jpg" />
+        <None Remove="out\stitched-20200907T173031Z.jpg" />
+        <None Remove="out\stitched-20200907T163031Z.jpg" />
+        <None Remove="out\stitched-20200907T153031Z.jpg" />
+        <None Remove="out\stitched-20200907T133031Z.jpg" />
+        <None Remove="out\stitched-20200907T113031Z.jpg" />
+        <None Remove="out\stitched-20200907T103031Z.jpg" />
+        <None Remove="out\stitched-20200907T093031Z.jpg" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Sanchez.Processing\Sanchez.Processing.csproj" />
       <ProjectReference Include="..\Sanchez.Shared\Sanchez.Shared.csproj" />
       <ProjectReference Include="..\Sanchez.Workflow\Sanchez.Workflow.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="out" />
+      <Folder Include="output\geostationary" />
     </ItemGroup>
 </Project>

@@ -53,7 +53,7 @@ namespace Sanchez.Validators
 
             RuleFor(o => o.EndTimestamp)
                 .GreaterThanOrEqualTo(o => o.Timestamp)
-                .When(o => o.EndTimestamp != null)
+                .When(o => o.EndTimestamp != null && o.Timestamp != null)
                 .WithMessage("End timestamp must be empty or later than start timestamp.");
 
             RuleFor(o => o.ToleranceMinutes)

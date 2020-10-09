@@ -12,9 +12,16 @@ namespace Sanchez.Services
         public static RenderOptions Populate(GeostationaryOptions options)
         {
             var renderOptions = ProcessBaseOptions(options);
-            renderOptions.GeostationaryRender = new GeostationaryRenderOptions(options.Longitude, options.EndLongitude, options.HazeAmount);
+            
+            renderOptions.GeostationaryRender = new GeostationaryRenderOptions(
+                ToOptionalAngle(options.LongitudeDegrees),
+                ToOptionalAngle(options.EndLongitudeDegrees),                
+                false, // options.InverseRotation,
+                options.HazeAmount);
 
             return renderOptions;
+
+            static Angle? ToOptionalAngle(double? longitudeDegrees) => longitudeDegrees == null ? (Angle?) null : Angle.FromDegrees(longitudeDegrees.Value);
         }
 
         public static RenderOptions Populate(EquirectangularOptions options)

@@ -5,6 +5,11 @@ using ShellProgressBar;
 
 namespace Sanchez.Workflow.Models.Data
 {
+    public class GeostationaryTimelapseWorkflowData : TimelapseWorkflowData
+    {
+       public double? Longitude { get; set; } 
+    }
+    
     /// <summary>
     ///     Data backing workflows which perform timelapse animations.
     /// </summary>

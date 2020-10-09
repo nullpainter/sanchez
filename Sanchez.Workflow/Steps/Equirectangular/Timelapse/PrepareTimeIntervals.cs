@@ -26,8 +26,10 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse
             Guard.Against.Null(SourceRegistrations, nameof(SourceRegistrations));
 
             // Either derive the start timestamp from the command-line or from the earliest registered file timestamp
-            var startTimestamp = _options.Timestamp ??= SourceRegistrations.Where(r => r.Timestamp != null).Min(r => r.Timestamp)!.Value;
-            var endTimestamp = _options.EndTimestamp ??= DateTime.Now;
+            var registrations = SourceRegistrations.Where(r => r.Timestamp != null).ToList();
+
+            var startTimestamp = _options.Timestamp ??= registrations.Min(r => r.Timestamp)!.Value;
+            var endTimestamp = _options.EndTimestamp ??= registrations.Max(r => r.Timestamp)!.Value;
 
             for (var timestamp = startTimestamp; timestamp < endTimestamp!; timestamp += _options.Interval!.Value)
             {

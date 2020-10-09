@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.ImageProcessing.Tint;
@@ -41,9 +40,6 @@ namespace Sanchez.Workflow.Steps.Geostationary
             Guard.Against.Null(_options.GeostationaryRender, nameof(_options.GeostationaryRender));
             Guard.Against.Null(Registration?.Image, nameof(Registration.Image));
             
-            var targetLongitude = _options.GeostationaryRender.Longitude;
-            if (targetLongitude != null) throw new InvalidOperationException("Equirectangular composition should be used used when target longitude is provided");
-
             // Get or generate projected underlay
             var underlayOptions = new UnderlayProjectionOptions(
                 ProjectionType.Geostationary,

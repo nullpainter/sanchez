@@ -16,7 +16,7 @@ namespace Sanchez.Processing.Test.Validators
         {
             var options = ValidOptions();
             options.Timestamp = null;
-            options.Longitude = 174;
+            options.LongitudeDegrees = 174;
 
             VerifyFailure(options, nameof(GeostationaryOptions.Timestamp));
         }
@@ -26,7 +26,7 @@ namespace Sanchez.Processing.Test.Validators
         {
             var options = ValidOptions();
             options.Timestamp = DateTime.Now;
-            options.Longitude = 174;
+            options.LongitudeDegrees = 174;
 
            VerifyNoFailure(options, nameof(GeostationaryOptions.Timestamp)); 
         }
@@ -110,27 +110,10 @@ namespace Sanchez.Processing.Test.Validators
         }
 
         [Test]
-        public void OutputNotDirectoryIfLongitudeSpecified()
-        {
-            var options = ValidOptions();
-            options.Longitude = 147;
-
-            using var state = new FileState();
-
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = state.CreateTempDirectory();
-
-            VerifyFailure(
-                options,
-                nameof(GeostationaryOptions.OutputPath),
-                "If multiple source files are specified with a target latitude reprojection, the output cannot be a directory.");
-        }
-
-        [Test]
         public void OutputIsFileIfLongitudeSpecified()
         {
             var options = ValidOptions();
-            options.Longitude = 147;
+            options.LongitudeDegrees = 147;
             options.Timestamp = DateTime.Now;
 
             using var state = new FileState();
@@ -146,9 +129,9 @@ namespace Sanchez.Processing.Test.Validators
         public void InvalidLongitude(double longitude)
         {
             var options = ValidOptions();
-            options.Longitude = longitude;
+            options.LongitudeDegrees = longitude;
 
-            VerifyFailure(options, nameof(GeostationaryOptions.Longitude));
+            VerifyFailure(options, nameof(GeostationaryOptions.LongitudeDegrees));
         }
 
         [TestCase(-180)]
@@ -157,9 +140,9 @@ namespace Sanchez.Processing.Test.Validators
         public void ValidLongitude(double longitude)
         {
             var options = ValidOptions();
-            options.Longitude = longitude;
+            options.LongitudeDegrees = longitude;
 
-            VerifyNoFailure(options, nameof(GeostationaryOptions.Longitude));
+            VerifyNoFailure(options, nameof(GeostationaryOptions.LongitudeDegrees));
         }
 
         [TestCase(null)]

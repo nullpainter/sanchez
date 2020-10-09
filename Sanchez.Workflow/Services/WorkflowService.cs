@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -12,6 +13,7 @@ using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using WorkflowCore.Models.LifeCycleEvents;
 
+[assembly: InternalsVisibleTo("Sanchez.Workflow.Test")]
 namespace Sanchez.Workflow.Services
 {
     /// <summary>
@@ -62,7 +64,7 @@ namespace Sanchez.Workflow.Services
             _host.RegisterWorkflow<EquirectangularStitchWorkflow, StitchWorkflowData>();
             _host.RegisterWorkflow<EquirectangularTimelapseWorkflow, TimelapseWorkflowData>();
             _host.RegisterWorkflow<EquirectangularWorkflow, EquirectangularWorkflowData>();
-            _host.RegisterWorkflow<GeostationaryReprojectedTimelapseWorkflow, TimelapseWorkflowData>();
+            _host.RegisterWorkflow<GeostationaryReprojectedTimelapseWorkflow, GeostationaryTimelapseWorkflowData>();
         }
 
         /// <summary>

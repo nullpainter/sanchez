@@ -12,6 +12,7 @@ namespace Sanchez.Workflow.Builders
         internal static IServiceCollection AddGeostationarySteps(this IServiceCollection services)
         {
             return services
+                .AddTransient<SetTargetLongitude>()
                 .AddTransient<ToGeostationary>()
                 .AddTransient<RenderUnderlay>()
                 .AddTransient<ApplyHaze>();

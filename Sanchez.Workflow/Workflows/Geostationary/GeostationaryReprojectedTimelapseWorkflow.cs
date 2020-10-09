@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using JetBrains.Annotations;
+using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
@@ -13,9 +14,9 @@ using WorkflowCore.Interface;
 namespace Sanchez.Workflow.Workflows.Geostationary
 {
     [UsedImplicitly]
-    public class GeostationaryReprojectedTimelapseWorkflow : IWorkflow<TimelapseWorkflowData>
+    public class GeostationaryReprojectedTimelapseWorkflow : IWorkflow<GeostationaryTimelapseWorkflowData>
     {
-        public void Build(IWorkflowBuilder<TimelapseWorkflowData> builder)
+        public void Build(IWorkflowBuilder<GeostationaryTimelapseWorkflowData> builder)
         {
             builder
                 .Initialise()
@@ -24,11 +25,12 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                 .If(data => data.TimeIntervals.Any())
                 .Do(branch => branch
                     .ForEach(data => data.TimeIntervals, options => false)
-                    .Do(timeStep => timeStep
+                    .Do(step => step
                         .SetTargetTimestamp()
+                        .SetTargetLongitude()
                         .CreateActivities()
-                        .ShouldWrite()
-                        .Branch(true, timeStep
+                        .ShouldWrite(data => $" / {Angle.FromRadians(data.Longitude!.Value).Degrees:F3}° longitude")
+                        .Branch(true, step
                             .CreateBranch()
                             .InitialiseImageProgressBar(data => data.Activity!.Registrations.Count + 1)
                             .CalculateVisibleRange()
@@ -43,9 +45,9 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                             .StitchImages()
                             .RenderUnderlay()
                             .ColourCorrect()
-                            .ToGeostationary()
+                            .ToGeostationary(data => data.Longitude)
                             .ApplyHaze()
-                            .SaveStitchedImage(data => data.ProgressBar)
+                            .SaveStitchedImage(data => data.ImageProgressBar)
                         )
                     )
                 )
