@@ -3,9 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Sanchez.Processing.Models;
 using Sanchez.Processing.Test.Helper;
-using Sanchez.Test.Common;
 using SixLabors.ImageSharp;
 
 namespace Sanchez.Test
@@ -247,59 +245,6 @@ namespace Sanchez.Test
             outputImage.Height.Should().Be(1916);
 
             writer.ToString().Should().BeEmpty("no output should be written in quiet mode");
-        }
-
-
-        [Test]
-        public async Task GeostationaryTimestampReprojected()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-
-            await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputDirectory,
-                "-l", "174",
-                "-I", "60",
-                "-q");
-
-            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
-            Directory.GetFiles(outputDirectory).Should().HaveCount(2);
-
-            foreach (var outputFile in Directory.GetFiles(outputDirectory))
-            {
-                var outputImage = await Image.LoadAsync(outputFile);
-                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            }
-        }
-
-        [Test]
-        public async Task GeostationaryTimestampReprojectedRotation()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-
-            await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputDirectory,
-                "-l", "174",
-                "-E", "-20",
-                "-I", "60",
-                "-e", "2020-08-30T05:50:20",
-                "-q");
-
-            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
-            Directory.GetFiles(outputDirectory).Should().HaveCount(2);
-
-            foreach (var outputFile in Directory.GetFiles(outputDirectory))
-            {
-                var outputImage = await Image.LoadAsync(outputFile);
-                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            }
         }
 
         private async Task<string> CreateSingleSimpleImageAsync(FileState state, string filename)
