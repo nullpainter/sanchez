@@ -32,7 +32,22 @@ namespace Sanchez.Workflow.Test
         [Test]
         public void MapLongitudeWithInterval()
         {
-            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(100), Angle.FromDegrees(130), false, 0);
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(130), Angle.FromDegrees(100), false, 0);
+
+            var intervals = CreateIntervals(3);
+            _step.TimeIntervals = intervals;
+
+            Options.Timestamp = intervals[0];
+
+            ExecuteAndVerifyLongitude(intervals[0], 130);
+            ExecuteAndVerifyLongitude(intervals[1], 115);
+            ExecuteAndVerifyLongitude(intervals[2], 100);
+        }
+        
+        [Test]
+        public void MapLongitudeWithIntervalInvese()
+        {
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(100), Angle.FromDegrees(130), true, 0);
 
             var intervals = CreateIntervals(3);
             _step.TimeIntervals = intervals;
@@ -56,12 +71,29 @@ namespace Sanchez.Workflow.Test
             Options.Timestamp = intervals[0];
 
             ExecuteAndVerifyLongitude(intervals[0], 150);
+            ExecuteAndVerifyLongitude(intervals[1], 100);
+            ExecuteAndVerifyLongitude(intervals[2], 50);
+            ExecuteAndVerifyLongitude(intervals[3], 0);
+            ExecuteAndVerifyLongitude(intervals[4], -50);
+        }
+        
+        [Test]
+        [Description("Verifies correct longitude when going from positive to negative")]
+        public void MapLongitudeWithIntervalWrappingInverse()
+        {
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(150), Angle.FromDegrees(-50), true, 0);
+
+            var intervals = CreateIntervals(5);
+            _step.TimeIntervals = intervals;
+
+            Options.Timestamp = intervals[0];
+       
+            ExecuteAndVerifyLongitude(intervals[0], 150);
             ExecuteAndVerifyLongitude(intervals[1], -170);
             ExecuteAndVerifyLongitude(intervals[2], -130);
             ExecuteAndVerifyLongitude(intervals[3], -90);
             ExecuteAndVerifyLongitude(intervals[4], -50);
         }
-
 
         private List<DateTime> CreateIntervals(int number)
         {

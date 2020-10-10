@@ -28,7 +28,30 @@ namespace Sanchez.Processing.Test.Validators
             options.Timestamp = DateTime.Now;
             options.LongitudeDegrees = 174;
 
-           VerifyNoFailure(options, nameof(GeostationaryOptions.Timestamp)); 
+            VerifyNoFailure(options, nameof(GeostationaryOptions.Timestamp));
+        }
+
+        [Test]
+        public void InverseRotation()
+        {
+            var options = ValidOptions();
+            options.Timestamp = DateTime.Now;
+            options.LongitudeDegrees = 174;
+            options.EndLongitudeDegrees = 130;
+            options.InverseRotation = true;
+
+            VerifyNoFailure(options, nameof(GeostationaryOptions.InverseRotation));
+        }
+
+        [Test]
+        public void NoInverseRotationIfNoTimestamp()
+        {
+            var options = ValidOptions();
+            options.Timestamp = DateTime.Now;
+            options.LongitudeDegrees = 174;
+            options.InverseRotation = true;
+
+            VerifyFailure(options, nameof(GeostationaryOptions.InverseRotation));
         }
 
         [TestCase(-0.1f)]

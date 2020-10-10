@@ -21,10 +21,10 @@ namespace Sanchez.Validators
                 .InclusiveBetween(-180, 180)
                 .WithMessage("Invalid end longitude; longitude must be between -180 and 180 degrees.");
 
-            // RuleFor(o => o.InverseRotation)
-            //     .Null()
-            //     .When(o => o.EndLongitudeDegrees == null)
-            //     .WithMessage("Inverse rotation can only be applied when sweeping through a longitude range.");
+            RuleFor(o => o.InverseRotation)
+                .Equal(false)
+                .When(o => o.EndLongitudeDegrees == null)
+                .WithMessage("Inverse rotation can only be applied when sweeping through a longitude range.");
 
             RuleFor(o => o.HazeAmount)
                 .InclusiveBetween(0, 1)

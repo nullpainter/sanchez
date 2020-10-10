@@ -16,7 +16,7 @@ namespace Sanchez.Services
             renderOptions.GeostationaryRender = new GeostationaryRenderOptions(
                 ToOptionalAngle(options.LongitudeDegrees),
                 ToOptionalAngle(options.EndLongitudeDegrees),                
-                false, // options.InverseRotation,
+                options.InverseRotation,
                 options.HazeAmount);
 
             return renderOptions;
