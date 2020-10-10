@@ -11,7 +11,7 @@ using SixLabors.ImageSharp;
 namespace Sanchez.Test
 {
     [TestFixture(TestOf = typeof(Bootstrapper))]
-    public class EndToEndTests : AbstractTests
+    public class EquirectangularEndToEndTests : EndToEndTestTests
     {
         [Test]
         public async Task MissingSource()
@@ -29,7 +29,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularSingle()
+        public async Task Single()
         {
             using var fileState = new FileState();
             const string sourceFile = "GOES17_FD_CH13_20200830T033031Z.jpg";
@@ -53,7 +53,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularMultiple()
+        public async Task Multiple()
         {
             using var fileState = new FileState();
             var rootDirectory = await CreateSampleImagesAsync(fileState);
@@ -78,7 +78,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularMultipleStitch()
+        public async Task MultipleStitch()
         {
             using var fileState = new FileState();
             var rootDirectory = await CreateSampleImagesAsync(fileState);
@@ -101,7 +101,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularStitchWithCrop()
+        public async Task StitchWithCrop()
         {
             using var fileState = new FileState();
             var rootDirectory = await CreateSampleImagesAsync(fileState);
@@ -125,7 +125,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularTimestampStitchNoStartTime()
+        public async Task TimestampStitchNoStartTime()
         {
             using var fileState = new FileState();
             var rootDirectory = await CreateSampleImagesAsync(fileState);
@@ -146,7 +146,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularTimestampStitch()
+        public async Task TimestampStitch()
         {
             using var fileState = new FileState();
             var rootDirectory = await CreateSampleImagesAsync(fileState);
@@ -172,7 +172,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularTimestampStitchLargeInterval()
+        public async Task TimestampStitchLargeInterval()
         {
             using var fileState = new FileState();
             var rootDirectory = await CreateSampleImagesAsync(fileState);
@@ -195,7 +195,7 @@ namespace Sanchez.Test
         }
 
         [Test]
-        public async Task EquirectangularSingleWithCrop()
+        public async Task SingleWithCrop()
         {
             using var fileState = new FileState();
             const string sourceFile = "GOES17_FD_CH13_20200830T033031Z.jpg";
@@ -249,146 +249,6 @@ namespace Sanchez.Test
             writer.ToString().Should().BeEmpty("no output should be written in quiet mode");
         }
 
-        [Test]
-        public async Task GeostationarySingle()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-            var outputFile = Path.Combine(outputDirectory, "out.jpg");
-
-            var returnCode = await Bootstrapper.Main(
-                "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
-                "-o", outputFile,
-                "-q");
-
-            VerifySuccessfulExecution(returnCode);
-
-            File.Exists(outputFile).Should().BeTrue("output file should have been created");
-            var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        }
-
-        [Test]
-        public async Task GeostationaryMultiple()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-
-            var returnCode = await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputDirectory,
-                "-q");
-
-            VerifySuccessfulExecution(returnCode);
-
-            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
-            Directory.GetFiles(outputDirectory).Should().HaveCount(8);
-
-            foreach (var outputFile in Directory.GetFiles(outputDirectory))
-            {
-                var outputImage = await Image.LoadAsync(outputFile);
-                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            }
-        }
-
-        [Test]
-        public async Task GeostationaryReprojected()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-            var outputFile = Path.Combine(outputDirectory, "out.jpg");
-
-            var returnCode = await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputFile,
-                "-l", "174",
-                "-T 2020-08-30T03:50:20",
-                "-q");
-
-            VerifySuccessfulExecution(returnCode);
-
-            File.Exists(outputFile).Should().BeTrue("output file should have been created");
-            var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        }
-
-
-        [Test]
-        public async Task GeostationaryReprojectedOutputDirectory()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-
-            var returnCode = await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputDirectory,
-                "-l", "174",
-                "-T 2020-08-30T03:50:20",
-                "-q");
-
-            VerifySuccessfulExecution(returnCode);
-
-            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
-            Directory.GetFiles(outputDirectory).Should().HaveCount(1);
-
-            foreach (var outputFile in Directory.GetFiles(outputDirectory))
-            {
-                var outputImage = await Image.LoadAsync(outputFile);
-                outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-                outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            }
-        }
-
-        [Test]
-        public async Task GeostationaryReprojectedMinSatellites()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-            var outputFile = Path.Combine(outputDirectory, "out.jpg");
-
-            var returnCode = await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputFile,
-                "-l", "174",
-                "-m", "3",
-                "-T 2020-08-30T03:50:20",
-                "-q");
-
-            VerifySuccessfulExecution(returnCode);
-
-            File.Exists(outputFile).Should().BeTrue("output file should have been created");
-            var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        }
-
-        [Test]
-        public async Task GeostationaryReprojectedTooFewSatellites()
-        {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
-            var outputFile = Path.Combine(outputDirectory, "out.jpg");
-
-            var returnCode = await Bootstrapper.Main(
-                "-s", rootDirectory,
-                "-o", outputFile,
-                "-l", "174",
-                "-m", "10",
-                "-T 2020-08-30T03:50:20",
-                "-q");
-
-            VerifySuccessfulExecution(returnCode);
-            File.Exists(outputFile).Should().BeFalse("fewer than 10 satellites are present");
-        }
 
         [Test]
         public async Task GeostationaryTimestampReprojected()
@@ -415,7 +275,6 @@ namespace Sanchez.Test
             }
         }
 
-        // TODO test with just end timestamp, start and end, just interval, etc.
         [Test]
         public async Task GeostationaryTimestampReprojectedRotation()
         {
@@ -451,31 +310,5 @@ namespace Sanchez.Test
             await CreateImage(Path.Combine(rootDirectory, filename));
             return rootDirectory;
         }
-
-        private async Task<string> CreateSampleImagesAsync(FileState state)
-        {
-            var rootDirectory = state.CreateTempDirectory();
-
-            // Create sample files
-            await CreateImage(Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"));
-            await CreateImage(Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T033020Z.jpg"));
-            await CreateImage(Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T034020Z.jpg"));
-
-            var directory = Directory.CreateDirectory(Path.Combine(rootDirectory, "GOES17"));
-            await CreateImage(Path.Combine(directory.FullName, "GOES17_FD_CH13_20200830T033031Z.jpg"));
-            await CreateImage(Path.Combine(directory.FullName, "GOES17_FD_CH13_20200830T044031Z.jpg"));
-
-            directory = Directory.CreateDirectory(Path.Combine(rootDirectory, "Himawari-8"));
-            await CreateImage(Path.Combine(directory.FullName, "Himawari8_FD_IR_20200830T034100Z.jpg"));
-            await CreateImage(Path.Combine(directory.FullName, "Himawari8_FD_IR_20200830T045100Z.jpg"));
-            await CreateImage(Path.Combine(directory.FullName, "IMG_FD_023_IR105_20200830_035006.jpg"));
-            await CreateImage(Path.Combine(directory.FullName, "IMG_FD.jpg"));
-            await CreateImage(Path.Combine(directory.FullName, "bogus.jpg"));
-
-            return rootDirectory;
-        }
-
-        private static void VerifySuccessfulExecution(int returnCode) => returnCode.Should().Be(0, "program should have executed successfully");
-        private static void VerifyFailedExecution(int returnCode) => returnCode.Should().Be(-1, "program should not have executed successfully");
     }
 }

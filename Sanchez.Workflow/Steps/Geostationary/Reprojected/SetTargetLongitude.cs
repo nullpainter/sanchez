@@ -30,9 +30,9 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
             Guard.Against.Null(TargetTimestamp, nameof(TargetTimestamp));
 
             var geostationaryOptions = _options.GeostationaryRender!;
-            
-            Longitude = geostationaryOptions.EndLongitude == null 
-                ? geostationaryOptions.Longitude 
+
+            Longitude = geostationaryOptions.EndLongitude == null
+                ? geostationaryOptions.Longitude
                 : GetTimelapseLongitude(geostationaryOptions);
 
             return ExecutionResult.Next();
@@ -43,11 +43,16 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
             Guard.Against.Null(TimeIntervals, nameof(TimeIntervals));
             Guard.Against.Zero(TimeIntervals.Count, nameof(TimeIntervals));
 
-            var currentIndex = TimeIntervals.IndexOf(TargetTimestamp!.Value);
+            var inverse = geostationaryOptions.InverseRotation;
+            
+            var rawIndex = TimeIntervals.IndexOf(TargetTimestamp!.Value);
+            
+            // Note that the default start and end longitude are inverted by default to simplify maths
+            var currentIndex = inverse ? rawIndex : TimeIntervals.Count - 1 - rawIndex;
             if (currentIndex < 0) throw new InvalidOperationException($"Unable to find timestamp {TargetTimestamp} in timelapse");
 
-            var start = geostationaryOptions.Longitude!.Value;
-            var end = geostationaryOptions.EndLongitude!.Value;
+            var end = inverse ? geostationaryOptions.EndLongitude!.Value : geostationaryOptions.Longitude!.Value;
+            var start = inverse ? geostationaryOptions.Longitude!.Value : geostationaryOptions.EndLongitude!.Value;
 
             var range = new Range(start, end).UnwrapLongitude();
             var offset = (range.End - range.Start) * (currentIndex / ((double) TimeIntervals.Count - 1));
