@@ -54,6 +54,7 @@ namespace Sanchez.Workflow.Builders
         private static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
+                .AddTransient<RenderOverlay>()
                 .AddTransient<RegisterImages>()
                 .AddTransient<SetWorkflowActivity>();
         }

@@ -9,7 +9,7 @@ using SixLabors.ImageSharp;
 namespace Sanchez.Test
 {
     [TestFixture(TestOf = typeof(Bootstrapper))]
-    public class GeostationaryEndToEndTests : EndToEndTestTests 
+    public class GeostationaryEndToEndTests : EndToEndTestTests
     {
         [Test]
         public async Task Single()
@@ -22,6 +22,30 @@ namespace Sanchez.Test
             var returnCode = await Bootstrapper.Main(
                 "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
                 "-o", outputFile,
+                "-q");
+
+            VerifySuccessfulExecution(returnCode);
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        }
+
+        [Test]
+        public async Task SingleWithOverlay()
+        {
+            using var fileState = new FileState();
+            var rootDirectory = await CreateSampleImagesAsync(fileState);
+            await CreateImage(Path.Combine(rootDirectory, "Overlay.jpg"));
+
+            var outputDirectory = fileState.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var returnCode = await Bootstrapper.Main(
+                "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
+                "-o", outputFile,
+                "-O", Path.Combine(rootDirectory, "Overlay.jpg"),
                 "-q");
 
             VerifySuccessfulExecution(returnCode);
@@ -70,7 +94,7 @@ namespace Sanchez.Test
                 "-o", outputFile,
                 "-l", "174",
                 "-T 2020-08-30T03:50:20",
-                "-q");
+                "-qv");
 
             VerifySuccessfulExecution(returnCode);
 
@@ -92,7 +116,7 @@ namespace Sanchez.Test
                 "-o", outputDirectory,
                 "-l", "174",
                 "-T 2020-08-30T03:50:20",
-                "-q");
+                "-qv");
 
             VerifySuccessfulExecution(returnCode);
 

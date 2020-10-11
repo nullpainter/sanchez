@@ -60,7 +60,7 @@
   },
   {
     "DisplayName": "Electro",
-    "FilenamePrefix": "200",
+    "FilenamePrefix": "20",
     "FilenameParser": "Goesproc",
     "Longitude": -14.5,
     "LongitudeAdjustment": 0.4,
@@ -77,12 +77,3 @@
     ]
   }
 ]
-
-// 45
-// 56
-// 46
-// 39
-
-// 2784 x 2484
-
-// 6.159292

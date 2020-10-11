@@ -37,13 +37,5 @@ namespace Sanchez.Workflow.Steps.Common
                 .Then<TStep, NormaliseImage, TData>("Normalise image")
                 .WithRegistration();
         }
-        
-        internal static IStepBuilder<TData, NormaliseImage> NormaliseImage<TData>(this IWorkflowBuilder<TData> builder)
-            where TData : WorkflowData
-        {
-            return builder
-                .StartWith<NormaliseImage, TData>("Normalise image")
-                .WithRegistration();
-        }
     }
 }

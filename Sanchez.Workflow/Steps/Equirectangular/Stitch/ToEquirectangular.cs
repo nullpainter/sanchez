@@ -14,6 +14,7 @@ using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
+using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
 {
@@ -30,16 +31,19 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
             _options = options;
         }
 
+        public Image<Rgba32>? SourceImage { get; set; }
+        public Image<Rgba32>? TargetImage { get; set; }
         public Registration? Registration { get; set; }
         public double GlobalOffset { get; [UsedImplicitly] set; }
 
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             Guard.Against.Null(Registration?.Definition, nameof(Registration.Definition));
+            Guard.Against.Null(SourceImage, nameof(SourceImage));
 
             // Reproject geostationary image into equirectangular
             LogStatistics();
-            Registration.Image = Reproject(Registration);
+            TargetImage = Reproject(Registration);
 
             // Overlap range relative the satellite's visible range and convert to a equirectangular map
             // offset with a pixel range of -180 to 180 degrees
@@ -90,7 +94,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
             _logger.LogInformation("{definition:l0} Reprojecting", definition.DisplayName);
 
             // Perform reprojection
-            var operation = new ReprojectRowOperation(registration, target, xRange.Start, yRange.Start, _options);
+            var operation = new ReprojectRowOperation(registration, SourceImage!, target, xRange.Start, yRange.Start, _options);
             ParallelRowIterator.IterateRows(Configuration.Default, target.Bounds(), in operation);
 
             return target;
@@ -115,12 +119,27 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
 
     internal static class ToEquirectangularExtensions
     {
-        internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangular<TStep, TData>(this IStepBuilder<TData, TStep> builder)
+        internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangularOverlay<TStep, TData>(
+            this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
             where TData : StitchWorkflowData
             => builder
                 .Then<TStep, ToEquirectangular, TData>("Reprojecting to equirectangular")
                 .WithRegistration()
-                .Input(step => step.GlobalOffset, data => data.GlobalOffset);
+                .Input(step => step.SourceImage, data => data.OverlayImage)
+                .Input(step => step.GlobalOffset, data => data.GlobalOffset)
+                .Output(data => data.OverlayImage, step => step.TargetImage);
+        
+                internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangular<TStep, TData>(
+                    this IStepBuilder<TData, TStep> builder)
+                    where TStep : IStepBody
+                    where TData : StitchWorkflowData
+                    => builder
+                        .Then<TStep, ToEquirectangular, TData>("Reprojecting to equirectangular")
+                        .WithRegistration()
+                        .Input(step => step.SourceImage, data => data.Registration!.Image)
+                        .Input(step => step.GlobalOffset, data => data.GlobalOffset)
+                        .Output(data => data.Registration!.Image, step => step.TargetImage);
+
     }
 }

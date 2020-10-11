@@ -11,6 +11,7 @@ namespace Sanchez.Workflow.Builders
         internal static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
+                .AddTransient<LoadOverlay>()
                 .AddTransient<GetSourceFiles>()
                 .AddTransient<InitialiseProgressBar>()
                 .AddTransient<InitialiseSatelliteRegistry>()

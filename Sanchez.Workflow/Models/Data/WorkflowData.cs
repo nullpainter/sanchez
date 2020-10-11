@@ -43,7 +43,12 @@ namespace Sanchez.Workflow.Models.Data
         ///     Target image being composed.
         /// </summary>
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
-
+        
+        /// <summary>
+        ///     Optional overlay image.
+        /// </summary>
+        public Image<Rgba32>? OverlayImage { get; [UsedImplicitly] set; }
+        
         /// <summary>
         ///     Currently processed activity.
         /// </summary>
@@ -59,6 +64,7 @@ namespace Sanchez.Workflow.Models.Data
         public virtual void Dispose()
         {
             TargetImage?.Dispose();
+            OverlayImage?.Dispose();
             Activity?.Dispose();
             Registration?.Dispose();
             ProgressBar?.Dispose();

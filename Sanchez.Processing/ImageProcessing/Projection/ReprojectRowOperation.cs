@@ -17,6 +17,7 @@ namespace Sanchez.Processing.ImageProcessing.Projection
     public readonly struct ReprojectRowOperation : IRowOperation
     {
         private readonly Registration _registration;
+        private readonly Image<Rgba32> _source;
         private readonly Image<Rgba32> _target;
         private readonly int _xOffset, _yOffset;
         private readonly Range _latitudeRange, _longitudeRange;
@@ -33,21 +34,22 @@ namespace Sanchez.Processing.ImageProcessing.Projection
 
         public ReprojectRowOperation(
             Registration registration,
+            Image<Rgba32> source,
             Image<Rgba32> target,
             int xOffset,
             int yOffset,
             RenderOptions options)
         {
             _registration = registration;
+            _source = source;
             _target = target;
             _xOffset = xOffset;
             _yOffset = yOffset;
             _options = options;
 
-            Guard.Against.Null(registration.Image, nameof(registration.Image));
             Guard.Against.Null(options.ImageOffset, nameof(options.ImageOffset));
 
-            _sourceBuffer = ImageBuffer.ToBuffer(registration.Image);
+            _sourceBuffer = ImageBuffer.ToBuffer(source);
             _imageOffset = options.ImageOffset;
 
             // Normalise longitude range so it doesn't wrap around the map
@@ -72,8 +74,8 @@ namespace Sanchez.Processing.ImageProcessing.Projection
             var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset);
 
             // Convert image x,y to Mercator projection angle
-            var targetWidth = _registration.Width * 2;
-            var projectionY = ProjectionAngleConverter.FromY(y + _yOffset, _registration.Height);
+            var targetWidth = _source.Width * 2;
+            var projectionY = ProjectionAngleConverter.FromY(y + _yOffset, _source.Height);
 
             for (var x = 0; x < span.Length; x++)
             {

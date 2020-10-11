@@ -37,6 +37,11 @@ namespace Sanchez.Processing.Models
         public string OutputPath { get; set; } = null!;
 
         /// <summary>
+        ///     Optional path to overlay image.
+        /// </summary>
+        public string? OverlayPath { get; set; } 
+
+        /// <summary>
         ///    Spatial resolution. 
         /// </summary>
         public int SpatialResolution { get; set; }
@@ -104,10 +109,10 @@ namespace Sanchez.Processing.Models
             get
             {
                 if (!MultipleSources) return false;
-                
+
                 // If an interval is provided, we are in timelapse mode
                 if (Interval != null) return true;
-                
+
                 // Stitching multiple images in non-batch mode results in a single image
                 if (Projection == ProjectionType.Equirectangular && EquirectangularRender!.StitchImages) return false;
 
@@ -125,13 +130,13 @@ namespace Sanchez.Processing.Models
         ///     Optional end timestamp if combining multiple files.
         /// </summary>
         public DateTime? EndTimestamp { get; set; }
-        
+
         /// <summary>
         ///     Tolerance from <see cref="Timestamp"/> in identifying suitable satellite images when combining, and interval between
         ///     frames when performing batch conversion.
         /// </summary>
         public TimeSpan? Interval { get; set; }
-        
+
         /// <summary>
         ///     Tolerance from <see cref="Timestamp"/> in identifying suitable satellite images when combining.
         /// </summary>
