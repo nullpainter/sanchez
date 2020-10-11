@@ -49,6 +49,7 @@ namespace Sanchez.Services
                 NoUnderlay = options.NoUnderlay,
                 SourcePath = options.SourcePath!,
                 OutputPath = options.OutputPath!,
+                OverlayPath = options.OverlayPath,
                 InterpolationType = ToInterpolationType(options.InterpolationType),
                 ImageSize = ToImageSize(options),
                 ImageOffset = ToImageOffset(options),

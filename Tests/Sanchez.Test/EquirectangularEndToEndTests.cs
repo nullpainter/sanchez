@@ -217,6 +217,34 @@ namespace Sanchez.Test
             outputImage.Height.Should().Be(1916);
         }
 
+        
+        [Test]
+        public async Task SingleWithCropAndOverlay()
+        {
+            using var fileState = new FileState();
+            const string sourceFile = "GOES17_FD_CH13_20200830T033031Z.jpg";
+
+            var rootDirectory = await CreateSingleSimpleImageAsync(fileState, sourceFile);
+            await CreateImage(Path.Combine(rootDirectory, "Overlay.jpg"));
+            
+            var outputDirectory = fileState.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var returnCode = await Bootstrapper.Main(
+                "reproject",
+                "-s", Path.Combine(rootDirectory, sourceFile),
+                "-o", outputFile,
+                "-O", Path.Combine(rootDirectory, "Overlay.jpg"),
+                "-av");
+
+            VerifySuccessfulExecution(returnCode);
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+            outputImage.Width.Should().Be(1918);
+            outputImage.Height.Should().Be(1916);
+        }
+        
         [Test]
         public async Task Quiet()
         {

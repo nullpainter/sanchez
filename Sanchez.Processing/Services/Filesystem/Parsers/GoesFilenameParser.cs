@@ -14,7 +14,7 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
 
         public DateTime? GetTimestamp(string filename)
         {
-            if (!Regex.IsMatch(filename) || filename.Contains("enhanced")) return null;
+            if (!Regex.IsMatch(filename) || filename.Contains("enhanced", StringComparison.CurrentCultureIgnoreCase)) return null;
 
             // Extract timestamp from filename
             var match = Regex.Match(filename);

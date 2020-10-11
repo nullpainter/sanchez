@@ -19,7 +19,12 @@ namespace Sanchez.Validators
             RuleFor(o => o.UnderlayPath)
                 .Must(path => File.Exists(path ?? Constants.DefaultUnderlayPath))
                 .WithMessage(o => $"Invalid underlay path: {o.UnderlayPath}");
-
+            
+            RuleFor(o => o.OverlayPath)
+                .Must(File.Exists)
+                .When(o => o.OverlayPath != null)
+                .WithMessage(o => $"Invalid overlay path: {o.OverlayPath}");
+            
             RuleFor(o => o.DefinitionsPath)
                 .Must(path => File.Exists(path ?? Constants.DefaultDefinitionsPath))
                 .WithMessage(o => $"Invalid satellite definitions path: {o.DefinitionsPath}");

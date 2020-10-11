@@ -48,7 +48,7 @@ namespace Sanchez.Processing.Models.Configuration
         public double Height { get; }
         
         /// <summary>
-        ///     Image crop ratio. This is expected to be a four element array of form {top ratio, right
+        ///     Image crop ratio. This is expected to be a four element array of {top, right, bottom, left}.
         /// </summary>
         public double[]? Crop { get; }
         public float Brightness { get; }

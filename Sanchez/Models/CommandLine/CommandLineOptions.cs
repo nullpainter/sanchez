@@ -20,24 +20,27 @@ namespace Sanchez.Models.CommandLine
 
         [Option('e', "endtimestamp", HelpText = "End timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
         public DateTimeOffset? EndTimestamp { get; [UsedImplicitly] set; }
-        
+
         [Option('i', "interpolation", HelpText = "Interpolation type. Valid values are N (nearest neighbour), B (bilinear)", Required = false, Default = InterpolationOptions.B)]
         public InterpolationOptions InterpolationType { get; [UsedImplicitly] set; }
-        
+
         [Option('I', "interval", HelpText = "Time interval in minutes between images when stitching", Required = false)]
         public int? IntervalMinutes { get; [UsedImplicitly] set; }
 
         [Option('f', "force", HelpText = "Force overwrite existing output file", Required = false, Default = false)]
         public bool Force { get; [UsedImplicitly] set; }
-        
+
         [Option('L', "noadjustlevels", HelpText = "Don't perform histogram equalisation on satellite imagery", Required = false, Default = false)]
         public bool NoAutoAdjustLevels { get; [UsedImplicitly] set; }
 
         [Option('m', "minsatellites", HelpText = "Minimum number of satellites in images when stitching", Required = false)]
         public int? MinSatellites { get; [UsedImplicitly] set; }
-        
+
         [Option('o', "output", HelpText = "Path to output file or folder", Required = true)]
         public string OutputPath { get; [UsedImplicitly] set; } = null!;
+
+        [Option('O', "overlay", HelpText = "Path to optional overlay file", Required = false)]
+        public string? OverlayPath { get; [UsedImplicitly] set; }
 
         [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }

@@ -16,6 +16,7 @@ namespace Sanchez.Test
             await CreateImage(Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"));
             await CreateImage(Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T033020Z.jpg"));
             await CreateImage(Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T034020Z.jpg"));
+            await CreateImage(Path.Combine(rootDirectory, "Overlay.jpg"));
 
             var directory = Directory.CreateDirectory(Path.Combine(rootDirectory, "GOES17"));
             await CreateImage(Path.Combine(directory.FullName, "GOES17_FD_CH13_20200830T033031Z.jpg"));
@@ -27,7 +28,7 @@ namespace Sanchez.Test
             await CreateImage(Path.Combine(directory.FullName, "IMG_FD_023_IR105_20200830_035006.jpg"));
             await CreateImage(Path.Combine(directory.FullName, "IMG_FD.jpg"));
             await CreateImage(Path.Combine(directory.FullName, "bogus.jpg"));
-
+            
             return rootDirectory;
         }
 

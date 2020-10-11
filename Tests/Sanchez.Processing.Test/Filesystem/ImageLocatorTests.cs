@@ -42,12 +42,16 @@ namespace Sanchez.Processing.Test.Filesystem
             state.CreateFile(directory.FullName, "Himawari8_FD_IR_20200830T035100Z.jpg");
             state.CreateFile(directory.FullName, "bogus.jpg");
 
+            directory = Directory.CreateDirectory(Path.Combine(rootDirectory, "GK-2A"));
+            state.CreateFile(directory.FullName, "IMG_FD_020_IR105_202008307_032006_ENHANCED.png");
+            state.CreateFile(directory.FullName, "IMG_FD_020_IR105_20200830_032006.jpg");
+
             // Run method under test
             var sourceFiles = FileService.GetSourceFiles();
             var registrations = FileService.ToRegistrations(sourceFiles);
-            
+
             var matchedFiles = Matcher.FilterMatchingRegistrations(registrations, targetTimestamp).Select(r => Path.GetFileName(r.Path));
-            matchedFiles.Should().BeEquivalentTo("GOES16_FD_CH13_20200830T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg", "Himawari8_FD_IR_20200830T035100Z.jpg");
+            matchedFiles.Should().BeEquivalentTo("GOES16_FD_CH13_20200830T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg", "Himawari8_FD_IR_20200830T035100Z.jpg", "IMG_FD_020_IR105_20200830_032006.jpg");
         }
     }
 }

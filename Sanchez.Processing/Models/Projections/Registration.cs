@@ -21,13 +21,23 @@ namespace Sanchez.Processing.Models.Projections
         }
 
         public SatelliteDefinition Definition { get; }
-        
+
         /// <summary>
         ///     Timestamp of image, extracted from filename.
         /// </summary>
         public DateTime? Timestamp { get; }
 
-        public Image<Rgba32>? Image { get; set; }
+        private Image<Rgba32>? _image;
+
+        public Image<Rgba32>? Image
+        {
+            get => _image;
+            set
+            {
+                _image?.Dispose();
+                _image = value;
+            }
+        }
 
         public int Width => Image!.Width;
         public int Height => Image!.Height;
