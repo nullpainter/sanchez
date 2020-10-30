@@ -12,10 +12,10 @@ namespace Sanchez.Services
         public static RenderOptions Populate(GeostationaryOptions options)
         {
             var renderOptions = ProcessBaseOptions(options);
-            
+
             renderOptions.GeostationaryRender = new GeostationaryRenderOptions(
                 ToOptionalAngle(options.LongitudeDegrees),
-                ToOptionalAngle(options.EndLongitudeDegrees),                
+                ToOptionalAngle(options.EndLongitudeDegrees),
                 options.InverseRotation,
                 options.HazeAmount);
 
@@ -49,7 +49,6 @@ namespace Sanchez.Services
                 NoUnderlay = options.NoUnderlay,
                 SourcePath = options.SourcePath!,
                 OutputPath = options.OutputPath!,
-                OverlayPath = options.OverlayPath,
                 InterpolationType = ToInterpolationType(options.InterpolationType),
                 ImageSize = ToImageSize(options),
                 ImageOffset = ToImageOffset(options),
@@ -59,13 +58,27 @@ namespace Sanchez.Services
                 Interval = options.IntervalMinutes == null ? (TimeSpan?) null : TimeSpan.FromMinutes(options.IntervalMinutes.Value),
                 Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
                 AutoAdjustLevels = !options.NoAutoAdjustLevels,
-                MinSatellites = options.MinSatellites
+                MinSatellites = options.MinSatellites,
             };
 
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
             if (options.DefinitionsPath != null) renderOptions.DefinitionsPath = options.DefinitionsPath;
+            
+            SetOverlayOptions(options, renderOptions);
 
             return renderOptions;
+        }
+
+        private static void SetOverlayOptions(CommandLineOptions options, RenderOptions renderOptions)
+        {
+            renderOptions.Overlay.ApplyOverlay = options.ClutRange != null;
+            if (!renderOptions.Overlay.ApplyOverlay || options.ClutRange == null) return;
+
+            if (options.GradientPath != null) renderOptions.Overlay.GradientPath = options.GradientPath;
+
+            var intensityRange = options.ClutRange.Split('-');
+            renderOptions.Overlay.MinIntensity = float.Parse(intensityRange[0]);
+            renderOptions.Overlay.MaxIntensity = float.Parse(intensityRange[1]);
         }
 
         private static ImageOffset ToImageOffset(CommandLineOptions options)

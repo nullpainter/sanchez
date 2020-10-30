@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using JetBrains.Annotations;
-using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
@@ -13,10 +12,6 @@ namespace Sanchez.Workflow.Workflows.Geostationary
     [UsedImplicitly]
     internal class GeostationaryWorkflow : IWorkflow<GeostationaryWorkflowData>
     {
-        private readonly RenderOptions _options;
-
-        public GeostationaryWorkflow(RenderOptions options) => _options = options;
-
         public void Build(IWorkflowBuilder<GeostationaryWorkflowData> builder)
         {
             builder
@@ -32,13 +27,11 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                         .Branch(true, builder.CreateBranch()
                             .LoadImageSingle()
                             .NormaliseImage()
+                            .EqualiseOverlayHistogram()
+                            .RenderOverlay()
                             .RenderUnderlay()
+                            .ComposeOverlay()
                             .ColourCorrect()
-                            .If(_ => _options.OverlayPath != null)
-                            .Do(overlayBranch => overlayBranch
-                                .LoadOverlay()
-                                .RenderOverlay()
-                            )
                             .ApplyHaze()
                             .SaveImage()
                         )

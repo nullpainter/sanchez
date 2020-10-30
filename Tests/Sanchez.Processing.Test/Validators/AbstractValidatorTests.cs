@@ -1,11 +1,14 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using Sanchez.Models.CommandLine;
+using Sanchez.Test.Common;
 using Sanchez.Validators;
 
 namespace Sanchez.Processing.Test.Validators
 {
-    public abstract class AbstractValidatorTests<T, TOptions> where T : CommandLineOptionsValidator<TOptions>, new() where TOptions : CommandLineOptions
+    public abstract class AbstractValidatorTests<T, TOptions> : AbstractTests
+        where T : CommandLineOptionsValidator<TOptions>, new() 
+        where TOptions : CommandLineOptions
     {
         protected static void VerifyFailure(TOptions options, string propertyName, string message = null)
         {

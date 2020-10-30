@@ -10,16 +10,17 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <NoWarn>1701;1702;S3925;S3881</NoWarn>
+        <NoWarn>1701;1702;S3925;S3881</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="9.2.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
         <PackageReference Include="Sentry" Version="2.1.6" />
         <PackageReference Include="Sentry.Serilog" Version="2.1.6" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
         <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
- 
+
         <PackageReference Include="SonarAnalyzer.CSharp" Version="8.12.0.21095">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,28 +44,21 @@
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
         <None Update="Resources\world.lights.3x10848x5424.jpg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
-        <None Remove="out\stitched-20200907T193031Z.jpg" />
-        <None Remove="out\stitched-20200907T183031Z.jpg" />
-        <None Remove="out\stitched-20200907T173031Z.jpg" />
-        <None Remove="out\stitched-20200907T163031Z.jpg" />
-        <None Remove="out\stitched-20200907T153031Z.jpg" />
-        <None Remove="out\stitched-20200907T133031Z.jpg" />
-        <None Remove="out\stitched-20200907T113031Z.jpg" />
-        <None Remove="out\stitched-20200907T103031Z.jpg" />
-        <None Remove="out\stitched-20200907T093031Z.jpg" />
+        <None Update="Resources\Gradients\Red-Blue.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\Gradients\Purple-Yellow.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sanchez.Processing\Sanchez.Processing.csproj" />
-      <ProjectReference Include="..\Sanchez.Shared\Sanchez.Shared.csproj" />
-      <ProjectReference Include="..\Sanchez.Workflow\Sanchez.Workflow.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="out" />
-      <Folder Include="output\geostationary" />
+        <ProjectReference Include="..\Sanchez.Processing\Sanchez.Processing.csproj" />
+        <ProjectReference Include="..\Sanchez.Workflow\Sanchez.Workflow.csproj" />
     </ItemGroup>
 </Project>

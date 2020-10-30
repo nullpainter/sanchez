@@ -3,7 +3,6 @@ using System.IO;
 using NUnit.Framework;
 using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
-using Sanchez.Processing.Test.Helper;
 using Sanchez.Validators;
 
 namespace Sanchez.Processing.Test.Validators
@@ -108,10 +107,9 @@ namespace Sanchez.Processing.Test.Validators
         public void OutputNotFileIfMultipleSource()
         {
             var options = ValidOptions();
-            using var state = new FileState();
-            var outputFile = state.CreateFile("foo.jpg");
+            var outputFile = State.CreateFile("foo.jpg");
 
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
+            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
             options.OutputPath = outputFile;
 
             VerifyFailure(
@@ -124,10 +122,9 @@ namespace Sanchez.Processing.Test.Validators
         public void OutputDirectoryIfMultipleSources()
         {
             var options = ValidOptions();
-            using var state = new FileState();
 
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = state.CreateTempDirectory();
+            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+            options.OutputPath = State.CreateTempDirectory();
 
             VerifyNoFailure(options);
         }
@@ -139,10 +136,8 @@ namespace Sanchez.Processing.Test.Validators
             options.LongitudeDegrees = 147;
             options.Timestamp = DateTime.Now;
 
-            using var state = new FileState();
-
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = Path.Combine(state.CreateTempDirectory(), "out.jpg");
+            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+            options.OutputPath = Path.Combine(State.CreateTempDirectory(), "out.jpg");
 
             VerifyNoFailure(options);
         }

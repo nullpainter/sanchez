@@ -45,7 +45,7 @@ namespace Sanchez.Workflow.Models.Data
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
         
         /// <summary>
-        ///     Optional overlay image.
+        ///     Optional overlay image, containing IR enhanced with a custom colour palette.
         /// </summary>
         public Image<Rgba32>? OverlayImage { get; [UsedImplicitly] set; }
         
@@ -64,7 +64,6 @@ namespace Sanchez.Workflow.Models.Data
         public virtual void Dispose()
         {
             TargetImage?.Dispose();
-            OverlayImage?.Dispose();
             Activity?.Dispose();
             Registration?.Dispose();
             ProgressBar?.Dispose();

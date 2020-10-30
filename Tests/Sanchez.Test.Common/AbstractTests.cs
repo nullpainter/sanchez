@@ -7,6 +7,7 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Options;
 using Sanchez.Processing.Services;
 using Sanchez.Processing.Services.Underlay;
+using Sanchez.Processing.Test.Helper;
 using Sanchez.Services;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -31,7 +32,15 @@ namespace Sanchez.Test.Common
         protected ISatelliteRegistry SatelliteRegistry => GetService<ISatelliteRegistry>();
         private IUnderlayCacheRepository UnderlayCacheRepository => GetService<IUnderlayCacheRepository>();
 
-        public ServiceProvider ServiceProvider { get; set; }
+        private ServiceProvider ServiceProvider { get; set; }
+        protected FileState State { get; set;  }
+
+        [SetUp]
+        public virtual void SetUp() => State = new FileState();
+
+        [TearDown]
+        public virtual void TearDown() => State.Dispose();
+
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -52,7 +61,7 @@ namespace Sanchez.Test.Common
             UnderlayCacheRepository.Initialise();
         }
 
-        protected T GetService<T>() where T : class => ServiceProvider.GetService<T>();
+        protected T GetService<T>() where T : class => ServiceProvider.GetRequiredService<T>();
 
         [SetUp]
         public async Task SetupAsync() => await SatelliteRegistry.InitialiseAsync();

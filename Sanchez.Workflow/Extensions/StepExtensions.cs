@@ -14,6 +14,7 @@ namespace Sanchez.Workflow.Extensions
             => builder
                 .InitialiseUnderlayCache()
                 .InitialiseSatelliteRegistry()
+                .InitialiseGradient()
                 .GetSourceFiles();
     }
 }

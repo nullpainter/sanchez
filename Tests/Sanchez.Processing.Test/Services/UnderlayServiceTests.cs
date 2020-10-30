@@ -14,17 +14,23 @@ namespace Sanchez.Processing.Test.Services
     {
         private IUnderlayService UnderlayService => GetService<IUnderlayService>();
 
+        [SetUp]
+        public override void SetUp()
+        {
+            base.SetUp();
+            RenderOptions.UnderlayPath = Constants.DefaultUnderlayPath;
+        }
+
         [Test]
         public async Task EquirectangularUnderlay()
         {
             var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
-            var options = new UnderlayProjectionOptions(
+            var options = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 InterpolationType.NearestNeighbour,
-                5424,
-                Constants.DefaultUnderlayPath);
+                5424);
 
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
@@ -38,11 +44,10 @@ namespace Sanchez.Processing.Test.Services
             var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
-            var options = new UnderlayProjectionOptions(
+            var options = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 InterpolationType.NearestNeighbour,
                 5424,
-                Constants.DefaultUnderlayPath,
                 latitudeCrop: new Range(Angle.FromDegrees(45), Angle.FromDegrees(-45)),
                 longitudeCrop: new Range(Angle.FromDegrees(-100), Angle.FromDegrees(100)));
 
@@ -58,10 +63,9 @@ namespace Sanchez.Processing.Test.Services
             var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
-            var options = new UnderlayProjectionOptions(
+            var options = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, 5424,
-                Constants.DefaultUnderlayPath, 1000);
+                InterpolationType.NearestNeighbour, 5424, 1000);
 
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
@@ -75,10 +79,9 @@ namespace Sanchez.Processing.Test.Services
             underlay.Height.Should().Be(1000);
 
             // Verify changing options doesn't retrieve cached underlay
-            options = new UnderlayProjectionOptions(
+            options = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, 5424,
-                Constants.DefaultUnderlayPath, 1500);
+                InterpolationType.NearestNeighbour, 5424, 1500);
 
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 

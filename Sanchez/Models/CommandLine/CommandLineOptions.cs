@@ -12,6 +12,9 @@ namespace Sanchez.Models.CommandLine
         [Option('b', "brightness", HelpText = "Brightness adjustment", Required = false, Default = 1.0f)]
         public float Brightness { get; [UsedImplicitly] set; }
 
+        [Option('c', "clut", HelpText = "Apply CLUT to IR image for intensity range; e.g. 0.0-1.0", Required = false)]
+        public string? ClutRange { get; [UsedImplicitly] set; }
+
         [Option('d', "tolerance", HelpText = "Time tolerance in minutes in identifying suitable satellite images when combining", Required = false, Default = 30)]
         public int ToleranceMinutes { get; set; }
 
@@ -30,6 +33,9 @@ namespace Sanchez.Models.CommandLine
         [Option('f', "force", HelpText = "Force overwrite existing output file", Required = false, Default = false)]
         public bool Force { get; [UsedImplicitly] set; }
 
+        [Option('g', "gradient", HelpText = "Path to gradient configuration", Required = false)]
+        public string? GradientPath { get; [UsedImplicitly] set; }
+
         [Option('L', "noadjustlevels", HelpText = "Don't perform histogram equalisation on satellite imagery", Required = false, Default = false)]
         public bool NoAutoAdjustLevels { get; [UsedImplicitly] set; }
 
@@ -38,9 +44,6 @@ namespace Sanchez.Models.CommandLine
 
         [Option('o', "output", HelpText = "Path to output file or folder", Required = true)]
         public string OutputPath { get; [UsedImplicitly] set; } = null!;
-
-        [Option('O', "overlay", HelpText = "Path to optional overlay file", Required = false)]
-        public string? OverlayPath { get; [UsedImplicitly] set; }
 
         [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }

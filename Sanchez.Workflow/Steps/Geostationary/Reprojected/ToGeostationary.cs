@@ -58,13 +58,6 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
             using (var sourceImage = TargetImage.Clone())
             {
                 TargetImage = sourceImage.ToGeostationaryProjection(adjustedLongitude, Constants.Satellite.DefaultHeight, _options);
-
-                // Apply haze if required
-                var hazeAmount = _options.GeostationaryRender!.HazeAmount;
-                if (hazeAmount > 0 && !_options.NoUnderlay)
-                {
-                    TargetImage.ApplyHaze(_options.Tint, hazeAmount);
-                }
             }
 
             return ExecutionResult.Next();
@@ -76,7 +69,9 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
 
     public static class ToGeostationaryExtensions
     {
-        internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TStep, TData>(this IStepBuilder<TData, TStep> builder, Expression<Func<TData, double?>> longitude)
+        internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TStep, TData>(
+            this IStepBuilder<TData, TStep> builder, 
+            Expression<Func<TData, double?>> longitude)
             where TStep : IStepBody
             where TData : WorkflowData
             => builder
@@ -85,5 +80,17 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
                 .Input(step => step.Longitude, longitude)
                 .Input(step => step.TargetImage, data => data.TargetImage)
                 .Output(data => data.TargetImage, step => step.TargetImage);
+
+        internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TData>(
+            this IWorkflowBuilder<TData> builder,
+            Expression<Func<TData, double?>> longitude,
+            Expression<Func<TData, Image<Rgba32>?>> image)
+            where TData : WorkflowData
+            => builder
+                .StartWith<ToGeostationary, TData>("Reprojecting to geostationary")
+                .WithActivity()
+                .Input(step => step.Longitude, longitude)
+                .Input(step => step.TargetImage, image)
+                .Output(image, step => step.TargetImage);
     }
 }

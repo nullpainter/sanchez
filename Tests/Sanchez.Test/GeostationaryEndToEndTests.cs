@@ -14,9 +14,8 @@ namespace Sanchez.Test
         [Test]
         public async Task Single()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
 
             var returnCode = await Bootstrapper.Main(
@@ -35,17 +34,16 @@ namespace Sanchez.Test
         [Test]
         public async Task SingleWithOverlay()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
+            var rootDirectory = await CreateSampleImagesAsync(State);
             await CreateImage(Path.Combine(rootDirectory, "Overlay.jpg"));
 
-            var outputDirectory = fileState.CreateTempDirectory();
+            var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
 
             var returnCode = await Bootstrapper.Main(
                 "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
                 "-o", outputFile,
-                "-O", Path.Combine(rootDirectory, "Overlay.jpg"),
+                "-c", "0.2-1.0",
                 "-q");
 
             VerifySuccessfulExecution(returnCode);
@@ -59,9 +57,8 @@ namespace Sanchez.Test
         [Test]
         public async Task Multiple()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
 
             var returnCode = await Bootstrapper.Main(
                 "-s", rootDirectory,
@@ -84,9 +81,8 @@ namespace Sanchez.Test
         [Test]
         public async Task Reprojected()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
 
             var returnCode = await Bootstrapper.Main(
@@ -107,9 +103,8 @@ namespace Sanchez.Test
         [Test]
         public async Task ReprojectedOutputDirectory()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
 
             var returnCode = await Bootstrapper.Main(
                 "-s", rootDirectory,
@@ -134,9 +129,8 @@ namespace Sanchez.Test
         [Test]
         public async Task ReprojectedMinSatellites()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
 
             var returnCode = await Bootstrapper.Main(
@@ -158,9 +152,8 @@ namespace Sanchez.Test
         [Test]
         public async Task ReprojectedTooFewSatellites()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
 
             var returnCode = await Bootstrapper.Main(
@@ -178,15 +171,15 @@ namespace Sanchez.Test
         [Test]
         public async Task TimestampReprojected()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
 
             await Bootstrapper.Main(
                 "-s", rootDirectory,
                 "-o", outputDirectory,
                 "-l", "174",
                 "-I", "60",
+                "-c", "0.5-1",
                 "-q");
 
             Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
@@ -203,9 +196,8 @@ namespace Sanchez.Test
         [Test]
         public async Task TimestampReprojectedRotation()
         {
-            using var fileState = new FileState();
-            var rootDirectory = await CreateSampleImagesAsync(fileState);
-            var outputDirectory = fileState.CreateTempDirectory();
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
 
             await Bootstrapper.Main(
                 "-s", rootDirectory,
@@ -215,6 +207,7 @@ namespace Sanchez.Test
                 "-I", "60",
                 "--inverse",
                 "-e", "2020-08-30T05:50:20",
+                "-c", "0.0-0.1",
                 "-q");
 
             Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");

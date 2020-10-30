@@ -1,9 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using ExifLibrary;
-using FluentValidation;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 

@@ -3,9 +3,9 @@ using Sanchez.Processing.Models.Configuration;
 
 namespace Sanchez.Processing.Models
 {
-    public class ProjectionOptions
+    public class ProjectionData
     {
-        public ProjectionOptions(ProjectionType projection, InterpolationType interpolation, int imageSize)
+        public ProjectionData(ProjectionType projection, InterpolationType interpolation, int imageSize)
         {
             Projection = projection;
             Interpolation = interpolation;
