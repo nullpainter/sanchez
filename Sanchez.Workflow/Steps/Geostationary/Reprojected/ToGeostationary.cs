@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
-using Sanchez.Processing.ImageProcessing.ShadeEdges;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
