@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using JetBrains.Annotations;
-using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
@@ -14,10 +13,6 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
     [UsedImplicitly]
     public class EquirectangularWorkflow : IWorkflow<EquirectangularWorkflowData>
     {
-        private readonly RenderOptions _options;
-
-        public EquirectangularWorkflow(RenderOptions options) => _options = options;
-
         public void Build(IWorkflowBuilder<EquirectangularWorkflowData> builder)
         {
             builder
@@ -41,15 +36,12 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                                 .NormaliseImage()
                                 .ToEquirectangular()
                                 .StitchImages()
+                                .EqualiseOverlayHistogram(data => data.TargetImage)
+                                .RenderOverlay(data => data.TargetImage)
                                 .GetCropBounds()
                                 .RenderUnderlay()
+                                .ComposeOverlay()
                                 .ColourCorrect()
-                                .If(_ => _options.OverlayPath != null)
-                                .Do(overlayBranch => overlayBranch
-                                    .LoadOverlay()
-                                    .ToEquirectangularOverlay()
-                                    .RenderOverlay()
-                                )
                                 .CropImage()
                                 .SaveImage()
                             )

@@ -19,12 +19,7 @@ namespace Sanchez.Validators
             RuleFor(o => o.UnderlayPath)
                 .Must(path => File.Exists(path ?? Constants.DefaultUnderlayPath))
                 .WithMessage(o => $"Invalid underlay path: {o.UnderlayPath}");
-            
-            RuleFor(o => o.OverlayPath)
-                .Must(File.Exists)
-                .When(o => o.OverlayPath != null)
-                .WithMessage(o => $"Invalid overlay path: {o.OverlayPath}");
-            
+
             RuleFor(o => o.DefinitionsPath)
                 .Must(path => File.Exists(path ?? Constants.DefaultDefinitionsPath))
                 .WithMessage(o => $"Invalid satellite definitions path: {o.DefinitionsPath}");
@@ -34,6 +29,36 @@ namespace Sanchez.Validators
                 .WithMessage($"Unsupported output spatial resolution. Valid values are: {Constants.Satellite.SpatialResolution.TwoKm}, {Constants.Satellite.SpatialResolution.FourKm}");
 
             ValidateTimeOptions();
+            ValidateOverlayOptions();
+        }
+
+        private void ValidateOverlayOptions()
+        {
+            RuleFor(o => o.GradientPath)
+                .Must(path => File.Exists(path ?? Constants.DefaultGradientPath))
+                .When(o => o.ClutRange != null)
+                .WithMessage(o => $"Invalid gradient path: {o.GradientPath}");
+            
+            RuleFor(o => o.ClutRange)
+                .Must(r =>
+                {
+                    if (r == null) return true;
+                    
+                    var range = r.Split('-');
+                    if (range.Length != 2) return false;
+
+                    if (!float.TryParse(range[0], out var minIntensity)) return false;
+                    if (!float.TryParse(range[1], out var maxIntensity)) return false;
+
+                    if (minIntensity < 0) return false;
+                    if (maxIntensity > 1) return false;
+
+                    if (minIntensity >= maxIntensity) return false;
+
+                    return true;
+                })
+                .When(r => r != null)
+                .WithMessage("Invalid intensity range; expected format is min-max; e.g. 0.0 to 1.0");
         }
 
         /// <summary>
@@ -64,7 +89,7 @@ namespace Sanchez.Validators
             RuleFor(o => o.ToleranceMinutes)
                 .GreaterThanOrEqualTo(0)
                 .WithMessage("Tolerance must be a positive value.");
-            
+
             // Verify that a file can be created if multiple source files are provided without a target timestamp 
             RuleFor(o => o.OutputPath)
                 .Must((options, outputPath) => !File.Exists(outputPath))

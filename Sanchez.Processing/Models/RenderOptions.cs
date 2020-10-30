@@ -37,11 +37,6 @@ namespace Sanchez.Processing.Models
         public string OutputPath { get; set; } = null!;
 
         /// <summary>
-        ///     Optional path to overlay image.
-        /// </summary>
-        public string? OverlayPath { get; set; } 
-
-        /// <summary>
         ///    Spatial resolution. 
         /// </summary>
         public int SpatialResolution { get; set; }
@@ -153,5 +148,7 @@ namespace Sanchez.Processing.Models
         ///     no image is produced.
         /// </summary>
         public int? MinSatellites { get; set; }
+
+        public OverlayOptions Overlay { get; } = new OverlayOptions();
     }
 }

@@ -40,12 +40,17 @@ namespace Sanchez.Workflow.Steps.Geostationary
             Guard.Against.Null(_options.GeostationaryRender, nameof(_options.GeostationaryRender));
             Guard.Against.Null(Registration?.Image, nameof(Registration.Image));
             
+            if (_options.NoUnderlay)
+            {
+                TargetImage = Registration.Image.Clone();
+                return ExecutionResult.Next();
+            }
+            
             // Get or generate projected underlay
-            var underlayOptions = new UnderlayProjectionOptions(
+            var underlayOptions = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
                 _options.InterpolationType,
-                _options.ImageSize,
-                _options.UnderlayPath);
+                _options.ImageSize);
 
             _logger.LogInformation("Retrieving underlay");
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, Registration.Definition);

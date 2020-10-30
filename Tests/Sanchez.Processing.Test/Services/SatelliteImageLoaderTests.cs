@@ -21,8 +21,7 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public async Task LoadImagesNoTimestamp()
         {
-            using var state = new FileState();
-            await CreateSampleImagesAsync(state);
+            await CreateSampleImagesAsync(State);
 
             var sourceFiles = FileService.GetSourceFiles();
             var registrations = FileService.ToRegistrations(sourceFiles);
@@ -49,9 +48,7 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public async Task LoadImagesWithTimestamp()
         {
-            using var state = new FileState();
-
-            await CreateSampleImagesAsync(state);
+            await CreateSampleImagesAsync(State);
             RenderOptions.Timestamp = new DateTime(2020, 08, 30, 03, 30, 00, DateTimeKind.Utc);
             RenderOptions.Tolerance = TimeSpan.FromMinutes(30);
 

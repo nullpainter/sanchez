@@ -1,0 +1,34 @@
+﻿[
+  {
+    "Colour": "420157",
+    "Position": 0.0
+  },
+  {
+    "Colour": "#46317e",
+    "Position": 0.1428
+  },
+  {
+    "Colour": "#38598e",
+    "Position": 0.2857
+  },
+  {
+    "Colour": "#28798e",
+    "Position": 0.4286
+  },
+  {
+    "Colour": "#1d9788",
+    "Position": 0.5713
+  },
+  {
+    "Colour": "#38b977",
+    "Position": 0.7143
+  },
+  {
+    "Colour": "#7fd14f",
+    "Position": 0.8571
+  },
+  {
+    "Position": 1.0,
+    "Colour": "#fae623"
+  }
+]

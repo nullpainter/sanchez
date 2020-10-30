@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
-using Sanchez.Processing.Test.Helper;
+using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Models
 {
     [TestFixture(TestOf = typeof(RenderOptions))]
-    public class RenderOptionsTests
+    public class RenderOptionsTests : AbstractTests
     {
         [Test]
         public void NoMultipleTargetsIfEquirectangular()
@@ -59,8 +59,7 @@ namespace Sanchez.Processing.Test.Models
         [Test]
         public void MultipleSourcesIfDirectory()
         {
-            using var state = new FileState();
-            var directory = state.CreateTempDirectory();
+            var directory = State.CreateTempDirectory();
 
             var options = EquirectangularOptions();
             options.SourcePath = directory;

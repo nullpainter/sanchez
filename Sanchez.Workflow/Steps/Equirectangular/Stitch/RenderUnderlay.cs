@@ -64,11 +64,10 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
                 imageContext.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f);
             });
             
-            var underlayOptions = new UnderlayProjectionOptions(
+            var underlayOptions = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 _options.InterpolationType,
                 _options.ImageSize,
-                _options.UnderlayPath,
                 TargetImage!.Height,
                 latitudeRange,
                 longitudeRange);

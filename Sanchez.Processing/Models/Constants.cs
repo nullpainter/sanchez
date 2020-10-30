@@ -13,6 +13,7 @@ namespace Sanchez.Processing.Models
 
         public static string DefaultDefinitionsPath => PathHelper.ResourcePath("Satellites.json");
         public static string DefaultUnderlayPath => PathHelper.ResourcePath(@"world.200411.3x10848x5424.jpg");
+        public static string DefaultGradientPath => PathHelper.ResourcePath(@"Gradients/Red-Blue.json");
 
         internal static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
         public const double Pi2 = 6.28318530717959;

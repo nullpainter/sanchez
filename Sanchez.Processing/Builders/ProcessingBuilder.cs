@@ -15,6 +15,8 @@ namespace Sanchez.Processing.Builders
             return services
                 .AddUnderlaySupport()
                 .AddFilenameProviders()
+                .AddSingleton<IGradientService, GradientService>()
+                .AddSingleton<IClutService, ClutService>()
                 .AddSingleton<ISatelliteImageLoader, SatelliteImageLoader>()
                 .AddSingleton<IDatabaseMigrator, DatabaseMigrator>()
                 .AddSingleton<IImageMatcher, ImageMatcher>()

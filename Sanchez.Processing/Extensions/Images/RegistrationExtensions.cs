@@ -18,7 +18,7 @@ namespace Sanchez.Processing.Extensions.Images
 
             if (options.AutoAdjustLevels)
             {
-                registration.Mutate(c => c
+                registration.Image.Mutate(c => c
                     .HistogramEqualization()
                     .Brightness(registration.Definition.Brightness));
             }
@@ -42,7 +42,10 @@ namespace Sanchez.Processing.Extensions.Images
         private static Registration CropBorders(this Registration registration)
         {
             Guard.Against.Null(registration.Image, nameof(registration.Image));
-            if (registration.Definition.Crop != null) registration.Image.CropBorder(registration.Definition.Crop);
+            if (registration.Definition.Crop != null)
+            {
+                registration.Image.CropBorder(registration.Definition.Crop);
+            }
 
             return registration;
         }

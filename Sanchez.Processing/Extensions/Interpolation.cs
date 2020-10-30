@@ -1,5 +1,4 @@
-﻿
-namespace Sanchez.Processing.Extensions
+﻿namespace Sanchez.Processing.Extensions
 {
     public static class Interpolation
     {
@@ -10,10 +9,7 @@ namespace Sanchez.Processing.Extensions
         /// <param name="end">second value</param>
         /// <param name="amount">amount between 0.0 - 1.0</param>
         /// <returns>interpolated value</returns>
-        public static double Lerp(double start, double end, double amount)
-        {
-            return start + (end - start) * amount;
-        }
+        public static double Lerp(double start, double end, double amount) => start + (end - start) * amount;
 
         /// <summary>
         ///     Bilinear interpolation.

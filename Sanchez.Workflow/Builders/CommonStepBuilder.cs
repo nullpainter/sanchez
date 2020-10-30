@@ -11,9 +11,12 @@ namespace Sanchez.Workflow.Builders
         internal static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
-                .AddTransient<LoadOverlay>()
+                .AddTransient<EqualiseOverlayHistogram>()
+                .AddTransient<ComposeOverlay>()
+                .AddTransient<RenderOverlay>()
                 .AddTransient<GetSourceFiles>()
                 .AddTransient<InitialiseProgressBar>()
+                .AddTransient<InitialiseGradient>()
                 .AddTransient<InitialiseSatelliteRegistry>()
                 .AddTransient<CreateActivity>()
                 .AddTransient<LogCompletion>()
@@ -24,6 +27,6 @@ namespace Sanchez.Workflow.Builders
                 .AddTransient<LoadImageSingle>()
                 .AddTransient<ColourCorrect>()
                 .AddTransient<NormaliseImage>();
-        } 
+        }
     }
 }

@@ -22,6 +22,9 @@ namespace Sanchez.Workflow.Steps.Geostationary
         {
             Guard.Against.Null(TargetImage, nameof(TargetImage));
             Guard.Against.Null(_options.GeostationaryRender, nameof(_options.GeostationaryRender));
+            
+            // Only apply haze with underlay
+            if (_options.NoUnderlay) return ExecutionResult.Next();
 
             var hazeAmount = _options.GeostationaryRender.HazeAmount;
             if (hazeAmount > 0) TargetImage.ApplyHaze(_options.Tint, hazeAmount);

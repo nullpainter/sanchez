@@ -4,7 +4,6 @@ using Extend;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Services;
-using Sanchez.Processing.Test.Helper;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Filesystem
@@ -17,9 +16,7 @@ namespace Sanchez.Processing.Test.Filesystem
         [Test]
         public void GetSourceFiles()
         {
-            using var state = new FileState();
-
-            var imageFolder = state.CreateTempDirectory();
+            var imageFolder = State.CreateTempDirectory();
             var sourceFile = Path.Combine(imageFolder, "source.jpg");
             var outputPath = Path.Combine(imageFolder, "output", "output.jpg");
 
@@ -52,10 +49,8 @@ namespace Sanchez.Processing.Test.Filesystem
         [TestCase("source/**/2*/*.*", ExpectedResult = new[] { FirstPath, SecondPath })]
         public string[] GetSourceFilesBatch(string sourcePath)
         {
-            using var state = new FileState();
-
             // Prepare source files
-            var imageFolder = state.CreateTempDirectory();
+            var imageFolder = State.CreateTempDirectory();
             var outputPath = Path.Combine(imageFolder, "output", "output.jpg");
 
             Directory.CreateDirectory(Path.Combine(imageFolder, "source", "first", "2020"));

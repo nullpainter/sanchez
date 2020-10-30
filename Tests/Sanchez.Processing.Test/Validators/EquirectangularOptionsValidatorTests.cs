@@ -3,7 +3,6 @@ using System.IO;
 using NUnit.Framework;
 using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
-using Sanchez.Processing.Test.Helper;
 using Sanchez.Validators;
 
 namespace Sanchez.Processing.Test.Validators
@@ -15,11 +14,10 @@ namespace Sanchez.Processing.Test.Validators
         public void ValidOutputStitchNoBatch()
         {
             var options = ValidOptions();
-            using var state = new FileState();
-            var outputFile = state.CreateFile("foo.jpg");
+            var outputFile = State.CreateFile("foo.jpg");
             options.Timestamp = DateTime.Now;
 
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
+            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
             options.OutputPath = outputFile;
 
             VerifyNoFailure(options);
@@ -29,12 +27,11 @@ namespace Sanchez.Processing.Test.Validators
         public void ValidOutputStitchAndBatch()
         {
             var options = ValidOptions();
-            using var state = new FileState();
             options.Timestamp = DateTime.Now;
             options.IntervalMinutes = 30;
 
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = state.CreateTempDirectory();
+            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+            options.OutputPath = State.CreateTempDirectory();
 
             VerifyNoFailure(options);
         }
@@ -43,10 +40,9 @@ namespace Sanchez.Processing.Test.Validators
         public void ValidOutputNoStitch()
         {
             var options = ValidOptions();
-            using var state = new FileState();
 
-            options.SourcePath = Path.Combine(state.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = state.CreateTempDirectory();
+            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+            options.OutputPath = State.CreateTempDirectory();
 
             VerifyNoFailure(options);
         }

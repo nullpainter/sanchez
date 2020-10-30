@@ -49,12 +49,11 @@ namespace Sanchez.Workflow.Builders
         }
 
         /// <summary>
-        ///     Registers common equirectangular rpojection steps.
+        ///     Registers common equirectangular projection steps.
         /// </summary>
         private static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
-                .AddTransient<RenderOverlay>()
                 .AddTransient<RegisterImages>()
                 .AddTransient<SetWorkflowActivity>();
         }

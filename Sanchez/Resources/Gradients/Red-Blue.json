@@ -1,0 +1,34 @@
+﻿[
+  {
+    "Colour": "0000ff",
+    "Position": 0.0
+  },
+  {
+    "Colour": "0092ff",
+    "Position": 0.1429
+  },
+  {
+    "Colour": "00ffdb",
+    "Position": 0.2857
+  },
+  {
+    "Colour": "00ff49",
+    "Position": 0.4286
+  },
+  {
+    "Colour": "49ff00",
+    "Position": 0.5714
+  },
+  {
+    "Colour": "dbff00",
+    "Position": 0.7143
+  },
+  {
+    "Colour": "ff9200",
+    "Position": 0.8571
+  },
+  {
+    "Colour": "ff0000",
+    "Position": 1.0
+  }
+]

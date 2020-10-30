@@ -119,27 +119,15 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
 
     internal static class ToEquirectangularExtensions
     {
-        internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangularOverlay<TStep, TData>(
+        internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangular<TStep, TData>(
             this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
             where TData : StitchWorkflowData
             => builder
                 .Then<TStep, ToEquirectangular, TData>("Reprojecting to equirectangular")
                 .WithRegistration()
-                .Input(step => step.SourceImage, data => data.OverlayImage)
+                .Input(step => step.SourceImage, data => data.Registration!.Image)
                 .Input(step => step.GlobalOffset, data => data.GlobalOffset)
-                .Output(data => data.OverlayImage, step => step.TargetImage);
-        
-                internal static IStepBuilder<TData, ToEquirectangular> ToEquirectangular<TStep, TData>(
-                    this IStepBuilder<TData, TStep> builder)
-                    where TStep : IStepBody
-                    where TData : StitchWorkflowData
-                    => builder
-                        .Then<TStep, ToEquirectangular, TData>("Reprojecting to equirectangular")
-                        .WithRegistration()
-                        .Input(step => step.SourceImage, data => data.Registration!.Image)
-                        .Input(step => step.GlobalOffset, data => data.GlobalOffset)
-                        .Output(data => data.Registration!.Image, step => step.TargetImage);
-
+                .Output(data => data.Registration!.Image, step => step.TargetImage);
     }
 }
