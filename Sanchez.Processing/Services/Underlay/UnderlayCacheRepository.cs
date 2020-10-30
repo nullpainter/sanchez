@@ -26,9 +26,9 @@ namespace Sanchez.Processing.Services.Underlay
         ///     Adds an underlay registration to the database.
         /// </summary>
         /// <param name="definition">optional satellite definition used to generate underlay</param>
-        /// <param name="options">underlay rendering options</param>
-        /// <param name="filename">filename of rendered underlay</param>
-        Task RegisterCacheAsync(SatelliteDefinition? definition, ProjectionOptions options, string filename);
+        /// <param name="data">underlay rendering options</param>
+        /// <param name="underlayPath">path to rendered underlay</param>
+        Task RegisterCacheAsync(SatelliteDefinition? definition, ProjectionData data, string underlayPath);
         
         /// <summary>
         ///     Removes an underlay registration from the database.
@@ -37,10 +37,10 @@ namespace Sanchez.Processing.Services.Underlay
         Task ClearCacheEntryAsync(string filename);
         
         /// <summary>
-        ///     Retrieves a cached underlay filename based on an optional satellite definition and render options, or
+        ///     Retrieves a cached underlay filename and timestamp based on an optional satellite definition and render options, or
         ///     <c>null</c> if the underlay isn't in the cache.
         /// </summary>
-        Task<string?> GetCacheFilenameAsync(SatelliteDefinition? definition, ProjectionOptions options);
+        Task<UnderlayMetadata?> GetCacheMetadataAsync(SatelliteDefinition? definition, ProjectionData data);
 
         /// <summary>
         ///     Deletes the underlay cache database.
@@ -96,22 +96,24 @@ namespace Sanchez.Processing.Services.Underlay
         ///     Adds an underlay registration to the database.
         /// </summary>
         /// <param name="definition">optional satellite definition used to generate underlay</param>
-        /// <param name="options">underlay rendering options</param>
-        /// <param name="filename">filename of rendered underlay</param>
-        public async Task RegisterCacheAsync(SatelliteDefinition? definition, ProjectionOptions options, string filename)
+        /// <param name="data">underlay rendering options</param>
+        /// <param name="underlayPath">path to rendered underlay</param>
+        public async Task RegisterCacheAsync(SatelliteDefinition? definition, ProjectionData data, string underlayPath)
         {
             await using var connection = new SqliteConnection(ConnectionString);
             await connection.OpenAsync();
 
             string sql = definition == null
-                ? "INSERT INTO UnderlayCache(Filename, Configuration) VALUES(@Filename, @Configuration)"
-                : "INSERT INTO UnderlayCache(Filename, Configuration, Longitude) VALUES(@Filename, @Configuration, @Longitude)";
+                ? "INSERT INTO UnderlayCache(Filename, Configuration, Timestamp) VALUES(@Filename, @Configuration, @Timestamp)"
+                : "INSERT INTO UnderlayCache(Filename, Configuration, Longitude, Timestamp) VALUES(@Filename, @Configuration, @Longitude, @Timestamp)";
 
+            var timestamp = File.GetLastWriteTimeUtc(underlayPath);
             await connection.ExecuteAsync(sql, new
             {
-                Filename = filename,
-                Configuration = JsonConvert.SerializeObject(options),
-                definition?.Longitude
+                Filename = underlayPath,
+                Configuration = JsonConvert.SerializeObject(data),
+                Longitude = definition?.Longitude,
+                Timestamp = (DateTimeOffset)timestamp
             });
         }
 
@@ -131,21 +133,21 @@ namespace Sanchez.Processing.Services.Underlay
         }
 
         /// <summary>
-        ///     Retrieves a cached underlay filename based on an optional satellite definition and render options, or
+        ///     Retrieves a cached underlay filename and timestamp based on an optional satellite definition and render options, or
         ///     <c>null</c> if the underlay isn't in the cache.
         /// </summary>
-        public async Task<string?> GetCacheFilenameAsync(SatelliteDefinition? definition, ProjectionOptions options)
+        public async Task<UnderlayMetadata?> GetCacheMetadataAsync(SatelliteDefinition? definition, ProjectionData data)
         {
             await using var connection = new SqliteConnection(ConnectionString);
             await connection.OpenAsync();
 
-            var sql = "SELECT Filename FROM UnderlayCache WHERE Configuration=@Configuration";
+            var sql = "SELECT Filename, Timestamp FROM UnderlayCache WHERE Configuration=@Configuration";
             if (definition != null) sql += " AND Longitude=@Longitude";
 
-            return await connection.QueryFirstOrDefaultAsync<string>(sql, new
+            return await connection.QueryFirstOrDefaultAsync<UnderlayMetadata>(sql, new
             {
                 definition?.Longitude,
-                Configuration = JsonConvert.SerializeObject(options)
+                Configuration = JsonConvert.SerializeObject(data)
             });
         }
     }
