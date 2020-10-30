@@ -18,8 +18,9 @@ namespace Sanchez.Workflow.Test
         private RenderOptions Options => GetService<RenderOptions>();
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp();
             _step = GetService<PrepareTimeIntervals>();
             
             Options.Timestamp = null;

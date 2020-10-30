@@ -30,6 +30,7 @@ namespace Sanchez.Processing.Test.Services
             var options = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 InterpolationType.NearestNeighbour,
+                "underlay.jpg",
                 5424);
 
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
@@ -47,6 +48,7 @@ namespace Sanchez.Processing.Test.Services
             var options = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 InterpolationType.NearestNeighbour,
+                "underlay.jpg",
                 5424,
                 latitudeCrop: new Range(Angle.FromDegrees(45), Angle.FromDegrees(-45)),
                 longitudeCrop: new Range(Angle.FromDegrees(-100), Angle.FromDegrees(100)));
@@ -65,7 +67,7 @@ namespace Sanchez.Processing.Test.Services
 
             var options = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, 5424, 1000);
+                InterpolationType.NearestNeighbour, "underlay.jpg", 5424, 1000);
 
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
@@ -81,7 +83,7 @@ namespace Sanchez.Processing.Test.Services
             // Verify changing options doesn't retrieve cached underlay
             options = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, 5424, 1500);
+                InterpolationType.NearestNeighbour, "underlay.jpg", 5424, 1500);
 
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 

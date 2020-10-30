@@ -16,7 +16,11 @@ namespace Sanchez.Workflow.Test
         private RenderOptions Options => GetService<RenderOptions>();
 
         [SetUp]
-        public void SetUp() => _step = GetService<SetTargetLongitude>();
+        public override void SetUp()
+        {
+            base.SetUp();
+            _step = GetService<SetTargetLongitude>();
+        }
 
         [Test]
         public void MapLongitudeNoInterval()

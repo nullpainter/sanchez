@@ -50,6 +50,7 @@ namespace Sanchez.Workflow.Steps.Geostationary
             var underlayOptions = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
                 _options.InterpolationType,
+                _options.UnderlayPath,
                 _options.ImageSize);
 
             _logger.LogInformation("Retrieving underlay");
