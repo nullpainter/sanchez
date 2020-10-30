@@ -67,6 +67,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
             var underlayOptions = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 _options.InterpolationType,
+                _options.UnderlayPath,
                 _options.ImageSize,
                 TargetImage!.Height,
                 latitudeRange,

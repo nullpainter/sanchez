@@ -12,10 +12,11 @@ namespace Sanchez.Processing.Models
         public UnderlayProjectionData(
             ProjectionType projection, 
             InterpolationType interpolation,
+            string underlayPath,
             int imageSize,
             int? targetHeight = null,
             Range? latitudeCrop = null, 
-            Range? longitudeCrop = null) : base(projection, interpolation, imageSize)
+            Range? longitudeCrop = null) : base(projection, interpolation, imageSize, underlayPath)
         {
             TargetHeight = targetHeight;
             LatitudeCrop = latitudeCrop;
