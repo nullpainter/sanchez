@@ -19,10 +19,10 @@ namespace Sanchez.Processing.Services.Underlay
         ///     Retrieves a full-colour underlay image with the target projection. Underlays are cached to disk to speed up
         ///     computation.
         /// </summary>
-        /// <param name="options">Underlay generation options</param>
+        /// <param name="data">Underlay generation options</param>
         /// <param name="definition">Optional satellite definition, if projecting underlay to match a satellite IR image</param>
         /// <returns>projected underlay</returns>
-        Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionOptions options, SatelliteDefinition? definition = null);
+        Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition = null);
     }
 
     public class UnderlayService : IUnderlayService
@@ -45,36 +45,36 @@ namespace Sanchez.Processing.Services.Underlay
         ///     Retrieves a full-colour underlay image with the target projection. Underlays are cached to disk to speed up
         ///     computation.
         /// </summary>
-        /// <param name="options">Underlay generation options</param>
+        /// <param name="data">Underlay generation options</param>
         /// <param name="definition">Optional satellite definition, if projecting underlay to match a satellite IR image</param>
         /// <returns>projected underlay</returns>
-        public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionOptions options, SatelliteDefinition? definition = null)
+        public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition = null)
         {
             // Attempt to retrieve underlay from cache
-            var cached = await _cache.GetUnderlayAsync(definition, options);
+            var cached = await _cache.GetUnderlayAsync(definition, data);
             if (cached != null) return cached;
 
             // Load master equirectangular underlay image from disk
-            var underlay = await Image.LoadAsync<Rgba32>(options.UnderlayPath);
+            var underlay = await Image.LoadAsync<Rgba32>(_options.UnderlayPath);
 
             // Project to match satellite imagery
-            var target = GetProjected(underlay, definition, options);
-            Resize(options, target);
+            var target = GetProjected(underlay, definition, data);
+            Resize(data, target);
 
             // Register underlay in cache
-            await _cache.SetUnderlayAsync(target, definition, options);
+            await _cache.SetUnderlayAsync(target, definition, data);
             return target;
         }
 
         /// <summary>
         ///     Optionally resizes the underlay based on the target height.
         /// </summary>
-        private void Resize(UnderlayProjectionOptions options, Image<Rgba32> underlay)
+        private void Resize(UnderlayProjectionData data, Image<Rgba32> underlay)
         {
-            if (options.TargetHeight == null) return;
+            if (data.TargetHeight == null) return;
 
             // Resize underlay to target image size
-            var targetHeight = options.TargetHeight.Value;
+            var targetHeight = data.TargetHeight.Value;
 
             // Ensure correct aspect ratio
             var targetWidth = (int) Math.Round(underlay.Width / (float) underlay.Height * targetHeight);
@@ -86,9 +86,9 @@ namespace Sanchez.Processing.Services.Underlay
         /// <summary>
         ///     Returns an underlay projected and optionally cropped.
         /// </summary>
-        private Image<Rgba32> GetProjected(Image<Rgba32> underlay, SatelliteDefinition? definition, UnderlayProjectionOptions options)
+        private Image<Rgba32> GetProjected(Image<Rgba32> underlay, SatelliteDefinition? definition, UnderlayProjectionData data)
         {
-            switch (options.Projection)
+            switch (data.Projection)
             {
                 case ProjectionType.Geostationary:
                     if (definition == null) throw new InvalidOperationException("Satellite definition must be provided for geostationary projection");
@@ -100,15 +100,15 @@ namespace Sanchez.Processing.Services.Underlay
                 case ProjectionType.Equirectangular:
 
                     // Optionally crop and offset to specified lat/long range
-                    if (options.CropSpecified)
+                    if (data.CropSpecified)
                     {
-                        Offset(underlay, options.LongitudeCrop!.Value);
-                        Crop(underlay, options.LatitudeCrop!.Value);
+                        Offset(underlay, data.LongitudeCrop!.Value);
+                        Crop(underlay, data.LatitudeCrop!.Value);
                     }
 
                     return underlay;
                 default:
-                    throw new ArgumentOutOfRangeException($"Unhandled projection type: {options.Projection}");
+                    throw new ArgumentOutOfRangeException($"Unhandled projection type: {data.Projection}");
             }
         }
 

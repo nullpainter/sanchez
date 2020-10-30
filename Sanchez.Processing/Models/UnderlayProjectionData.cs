@@ -1,25 +1,22 @@
-﻿using Sanchez.Processing.Models.Angles;
-using Sanchez.Processing.Models.Configuration;
+﻿using Sanchez.Processing.Models.Configuration;
+using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Models
 {
-    public class UnderlayProjectionOptions : ProjectionOptions
+    public class UnderlayProjectionData : ProjectionData
     {
-        public string? UnderlayPath { get; }
         public int? TargetHeight { get; }
         public Range? LatitudeCrop { get; }
         public Range? LongitudeCrop { get; }
 
-        public UnderlayProjectionOptions(
+        public UnderlayProjectionData(
             ProjectionType projection, 
             InterpolationType interpolation,
             int imageSize,
-            string underlayPath,
             int? targetHeight = null,
             Range? latitudeCrop = null, 
             Range? longitudeCrop = null) : base(projection, interpolation, imageSize)
         {
-            UnderlayPath = underlayPath;
             TargetHeight = targetHeight;
             LatitudeCrop = latitudeCrop;
             LongitudeCrop = longitudeCrop;

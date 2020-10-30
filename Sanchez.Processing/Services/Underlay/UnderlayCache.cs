@@ -18,39 +18,45 @@ namespace Sanchez.Processing.Services.Underlay
         /// <summary>
         ///     Retrieves an underlay image from the cache.
         /// </summary>
-        Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, ProjectionOptions options);
-        
+        Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, ProjectionData data);
+
         /// <summary>
         ///     Sets an underlay image to the cache.
         /// </summary>
-        Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, ProjectionOptions options);
+        Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, ProjectionData data);
     }
-    
+
     public class UnderlayCache : IUnderlayCache
     {
         private readonly IUnderlayCacheRepository _repository;
+        private readonly RenderOptions _options;
         private readonly string _cachePath;
         private readonly ILogger<UnderlayCache> _logger;
 
-        public UnderlayCache(IUnderlayCacheRepository repository, ILogger<UnderlayCache> logger)
+        public UnderlayCache(
+            IUnderlayCacheRepository repository,
+            RenderOptions options,
+            ILogger<UnderlayCache> logger)
         {
             _repository = repository;
+            _options = options;
             _logger = logger;
 
             // Initialise cache path if required
             _cachePath = PathHelper.CachePath();
             if (!Directory.Exists(_cachePath)) Directory.CreateDirectory(_cachePath);
-            
         }
 
         /// <summary>
         ///     Retrieves an underlay image from the cache.
         /// </summary>
-        public async Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, ProjectionOptions options)
+        public async Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, ProjectionData data)
         {
-            var path = await _repository.GetCacheFilenameAsync(definition, options);
-            if (path == null) return null;
-            
+            var metadata = await _repository.GetCacheMetadataAsync(definition, data);
+            if (metadata == null) return null;
+
+            var path = metadata.Filename;
+
             var fullPath = Path.Combine(_cachePath, path);
 
             // Remove underlay registration from cache if it has been deleted from disk
@@ -60,11 +66,21 @@ namespace Sanchez.Processing.Services.Underlay
                 await _repository.ClearCacheEntryAsync(path);
             }
 
+            var fileTimestamp = File.GetLastWriteTimeUtc(_options.UnderlayPath);
+            
+            // Check if the source underlay file has been updated since the cache was created
+            if (metadata.Timestamp < fileTimestamp)
+            {
+                _logger.LogInformation("Timestamp of underlay changed; updating cache");
+                await _repository.ClearCacheEntryAsync(path);
+                return null;
+            }
+
             try
             {
                 if (definition == null) _logger.LogInformation("Using cached underlay");
                 else _logger.LogInformation("{definition:l0} Using cached underlay", definition.DisplayName);
-                
+
                 return await Image.LoadAsync<Rgba32>(fullPath);
             }
             catch (Exception e)
@@ -80,17 +96,18 @@ namespace Sanchez.Processing.Services.Underlay
         /// <summary>
         ///     Sets an underlay image to the cache.
         /// </summary>
-        public async Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, ProjectionOptions options)
+        public async Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, ProjectionData data)
         {
             if (definition == null) _logger.LogInformation("Caching underlay");
             else _logger.LogInformation("{definition:l0} Caching underlay", definition.DisplayName);
-            
+
             // Save underlay to disk
             var filename = $"{Guid.NewGuid()}.jpg";
-            await underlay.SaveAsync(Path.Combine(_cachePath, filename));
-            
+            var underlayPath = Path.Combine(_cachePath, filename);
+            await underlay.SaveAsync(underlayPath);
+
             // Register underlay path in the cache
-            await _repository.RegisterCacheAsync(definition, options, filename);
+            await _repository.RegisterCacheAsync(definition, data, underlayPath);
         }
     }
 }
