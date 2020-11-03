@@ -14,7 +14,7 @@
         ///     Whether Earth rotation should be performed in a counter-clockwise manner when rotating from <see cref="Longitude"/>
         ///     to <see cref="EndLongitude"/>.
         /// </summary>
-        public bool InverseRotation { get; set; }
+        public bool InverseRotation { get; }
 
         /// <summary>
         ///     Target longitude in radians for geostationary satellite projection.
