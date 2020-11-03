@@ -11,6 +11,7 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
         {
             var mask = new Image<Rgba32>(image.Width, image.Height);
             var operation = new HazeRowOperation(mask, tint, hazeAmount);
+            
             ParallelRowIterator.IterateRows(Configuration.Default, mask.Bounds(), in operation);
             
             image.Mutate(context => context.DrawImage(mask, PixelColorBlendingMode.Screen, 0.9f));

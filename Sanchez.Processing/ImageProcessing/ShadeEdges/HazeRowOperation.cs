@@ -9,7 +9,7 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
     public readonly struct HazeRowOperation : IRowOperation
     {
         private readonly Image<Rgba32> _source;
-        private readonly Color _tint;
+        private readonly Rgba32 _tint;
 
         /// <summary>
         ///     Semi-minor axis, squared.
@@ -21,9 +21,6 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
         /// </summary>
         private readonly double _semiMajor2;
 
-        /// <summary>
-        ///     Amount of haze to apply, from 0.0 - 1.0.
-        /// </summary>
         private readonly float _hazeAmount;
         
         /// <summary>
@@ -32,17 +29,25 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
         /// </summary>
         private const double BorderRatio = 0.001d;
 
-        public HazeRowOperation(Image<Rgba32> source, Color tint, float hazeAmount)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="tint"></param>
+        /// <param name="hazeAmount">Amount of haze to apply, from 0.0 - 1.0</param>
+        public HazeRowOperation(Image<Rgba32> source, Rgba32 tint, float hazeAmount)
         {
             _source = source;
             _tint = tint;
-            _hazeAmount = hazeAmount;
 
             var semiMajor = source.Width / 2d;
             var semiMinor = source.Height * (Constants.Earth.RadiusPolar / Constants.Earth.RadiusEquator) / 2d;
 
             _semiMinor2 = semiMinor * semiMinor;
             _semiMajor2 = semiMajor * semiMajor;
+
+            // Adjust haze alpha based on tint
+            _hazeAmount = hazeAmount * (_tint.A / 255f);
         }
 
         public void Invoke(int y)
@@ -52,9 +57,9 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
             for (var x = 0; x < span.Length; x++)
             {
                 var distance = Distance(x, y);
-                if (distance < 1 - _hazeAmount || distance > 1) continue;
+                if (distance < 1 - _hazeAmount|| distance > 1) continue;
 
-                var alpha = (distance - 1 ) / _hazeAmount;
+                var alpha = (distance - 1) / _hazeAmount;
 
                 span[x] = _tint;
                 span[x].A = (byte) Math.Round(alpha * 255);
