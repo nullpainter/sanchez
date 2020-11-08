@@ -25,7 +25,7 @@ namespace Sanchez.Workflow.Test
         [Test]
         public void MapLongitudeNoInterval()
         {
-             Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(100), null, false, 0);
+             Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(100), null, false, 0, 1);
              _step.TargetTimestamp = DateTime.Now;
 
              _step.Run(new StepExecutionContext());
@@ -36,7 +36,7 @@ namespace Sanchez.Workflow.Test
         [Test]
         public void MapLongitudeWithInterval()
         {
-            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(130), Angle.FromDegrees(100), false, 0);
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(130), Angle.FromDegrees(100), false, 0, 1);
 
             var intervals = CreateIntervals(3);
             _step.TimeIntervals = intervals;
@@ -51,7 +51,7 @@ namespace Sanchez.Workflow.Test
         [Test]
         public void MapLongitudeWithIntervalInvese()
         {
-            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(100), Angle.FromDegrees(130), true, 0);
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(100), Angle.FromDegrees(130), true, 0, 1);
 
             var intervals = CreateIntervals(3);
             _step.TimeIntervals = intervals;
@@ -67,7 +67,7 @@ namespace Sanchez.Workflow.Test
         [Description("Verifies correct longitude when going from positive to negative")]
         public void MapLongitudeWithIntervalWrapping()
         {
-            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(150), Angle.FromDegrees(-50), false, 0);
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(150), Angle.FromDegrees(-50), false, 0, 1);
 
             var intervals = CreateIntervals(5);
             _step.TimeIntervals = intervals;
@@ -85,7 +85,7 @@ namespace Sanchez.Workflow.Test
         [Description("Verifies correct longitude when going from positive to negative")]
         public void MapLongitudeWithIntervalWrappingInverse()
         {
-            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(150), Angle.FromDegrees(-50), true, 0);
+            Options.GeostationaryRender = new GeostationaryRenderOptions(Angle.FromDegrees(150), Angle.FromDegrees(-50), true, 0, 1);
 
             var intervals = CreateIntervals(5);
             _step.TimeIntervals = intervals;
