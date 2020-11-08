@@ -4,12 +4,12 @@
     "FilenamePrefix": "GOES16_FD_CH13_",
     "FilenameParser": "Goesproc",
     "Longitude": -75.2,
-    "LongitudeAdjustment": 0.2,
+    "LongitudeAdjustment": 0.1,
     "CropRange": {
       "MinLongitude": -156.2995,
       "MaxLongitude": 6.2995
     },
-    "Brightness": 0.75
+    "Brightness": 0.95
   },
   {
     "DisplayName": "GOES-17",
@@ -20,7 +20,7 @@
       "MinLongitude": 141.7005,
       "MaxLongitude": -55.7005
     },
-    "Brightness": 0.75
+    "Brightness": 0.95
   },
   {
     "DisplayName": "Himawari-8",
@@ -32,7 +32,7 @@
       "MinLongitude": 60,
       "MaxLongitude": -140
     },
-    "Brightness": 0.8,
+    "Brightness": 1,
     "Crop": [
       0.007273,
       0.007272,
@@ -50,7 +50,7 @@
       "MinLongitude": 48,
       "MaxLongitude": -150
     },
-    "Brightness": 0.8,
+    "Brightness": 0.9,
     "Crop": [
       0.008181,
       0.006363,
