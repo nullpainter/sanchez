@@ -21,6 +21,7 @@ namespace Sanchez.Test
             var returnCode = await Bootstrapper.Main(
                 "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
                 "-o", outputFile,
+                "-O", "1.0",
                 "-q");
 
             VerifySuccessfulExecution(returnCode);

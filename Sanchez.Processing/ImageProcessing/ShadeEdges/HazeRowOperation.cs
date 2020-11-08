@@ -34,8 +34,9 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
         /// </summary>
         /// <param name="source"></param>
         /// <param name="tint"></param>
-        /// <param name="hazeAmount">Amount of haze to apply, from 0.0 - 1.0</param>
-        public HazeRowOperation(Image<Rgba32> source, Rgba32 tint, float hazeAmount)
+        /// <param name="haze">Amount of haze to apply, from 0.0 - 1.0</param>
+        /// <param name="opacity">Haze opacity; from 0.0 - 1.0</param>
+        public HazeRowOperation(Image<Rgba32> source, Rgba32 tint, float haze, float opacity)
         {
             _source = source;
             _tint = tint;
@@ -46,8 +47,7 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
             _semiMinor2 = semiMinor * semiMinor;
             _semiMajor2 = semiMajor * semiMajor;
 
-            // Adjust haze alpha based on tint
-            _hazeAmount = hazeAmount * (_tint.A / 255f);
+            _hazeAmount = haze * opacity;
         }
 
         public void Invoke(int y)

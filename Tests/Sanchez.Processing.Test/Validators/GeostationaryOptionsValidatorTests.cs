@@ -74,6 +74,28 @@ namespace Sanchez.Processing.Test.Validators
             VerifyNoFailure(options, nameof(GeostationaryOptions.UnderlayPath));
         }
 
+        [TestCase(-0.1f)]
+        [TestCase(-1.1f)]
+        public void InvalidHazeOpacity(float opacity)
+        {
+            var options = ValidOptions();
+            options.HazeOpacity = opacity;
+
+            VerifyFailure(options, nameof(GeostationaryOptions.HazeOpacity));
+        }
+
+        [TestCase(0.0f)]
+        [TestCase(0.1f)]
+        [TestCase(1.0f)]
+        public void ValidHazeOpacity(float opacity)
+        {
+            var options = ValidOptions();
+            options.HazeOpacity = opacity;
+
+            VerifyNoFailure(options, nameof(GeostationaryOptions.UnderlayPath));
+        }
+
+
         [Test]
         public void MissingUnderlay()
         {
@@ -163,6 +185,27 @@ namespace Sanchez.Processing.Test.Validators
             VerifyNoFailure(options, nameof(GeostationaryOptions.LongitudeDegrees));
         }
 
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void InvalidFrameMultiplier(int multiplier)
+        {
+            var options = ValidOptions();
+            options.FrameMultiplier = multiplier;
+
+            VerifyFailure(options, nameof(GeostationaryOptions.FrameMultiplier));
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        public void ValidFrameMultiplier(int multiplier)
+        {
+            var options = ValidOptions();
+            options.FrameMultiplier = multiplier;
+
+            VerifyNoFailure(options, nameof(GeostationaryOptions.FrameMultiplier));
+        }
+
+
         [TestCase(null)]
         [TestCase("")]
         [TestCase("bananas")]
@@ -190,7 +233,8 @@ namespace Sanchez.Processing.Test.Validators
             return new GeostationaryOptions
             {
                 Tint = "0000FF",
-                SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm
+                SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
+                FrameMultiplier = 1
             };
         }
     }

@@ -7,14 +7,14 @@ namespace Sanchez.Processing.ImageProcessing.ShadeEdges
 {
     public static class HazeExtensions
     {
-        public static void ApplyHaze(this Image<Rgba32> image, Color tint, float hazeAmount)
+        public static void ApplyHaze(this Image<Rgba32> image, Color tint, float amount, float opacity)
         {
             var mask = new Image<Rgba32>(image.Width, image.Height);
-            var operation = new HazeRowOperation(mask, tint, hazeAmount);
+            var operation = new HazeRowOperation(mask, tint, amount, opacity);
             
             ParallelRowIterator.IterateRows(Configuration.Default, mask.Bounds(), in operation);
             
-            image.Mutate(context => context.DrawImage(mask, PixelColorBlendingMode.Screen, 0.9f));
+            image.Mutate(context => context.DrawImage(mask, PixelColorBlendingMode.Screen, 1f));
         }
     }
 }

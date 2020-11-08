@@ -30,6 +30,10 @@ namespace Sanchez.Validators
                 .InclusiveBetween(0, 1)
                 .WithMessage("Invalid haze amount; valid values are between 0.0 and 1.0.");
 
+            RuleFor(o => o.HazeOpacity)
+                .InclusiveBetween(0, 1)
+                .WithMessage("Invalid haze opacity; valid values are between 0.0 and 1.0.");
+
             // Verify that a directory can be created if multiple source files are provided without a target latitude
             RuleFor(o => o.OutputPath)
                 .Must((options, outputPath) => !File.Exists(outputPath))
