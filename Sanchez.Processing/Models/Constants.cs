@@ -16,8 +16,15 @@ namespace Sanchez.Processing.Models
         public static string DefaultGradientPath => PathHelper.ResourcePath(@"Gradients/Red-Blue.json");
 
         internal static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
+        
+        /// <summary>
+        ///     The number Pi * 2.
+        /// </summary>
         public const double Pi2 = 6.28318530717959;
-        /// <summary>The number pi/2</summary>
+        
+        /// <summary>
+        ///     The number pi/2.
+        /// </summary>
         public const double PiOver2 = 1.5707963267949;
 
         /// <summary>
