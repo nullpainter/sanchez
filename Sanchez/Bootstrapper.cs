@@ -45,7 +45,7 @@ namespace Sanchez
                     .ParseArguments<GeostationaryOptions, EquirectangularOptions>(args)
                     .WithParsed<EquirectangularOptions>(options => renderOptions = ParseReprojectOptions(options))
                     .WithParsed<GeostationaryOptions>(options => renderOptions = ParseGeostationaryOptions(options));
-                
+
                 // Exit if required options not present
                 if (parser.Tag == ParserResultType.NotParsed) throw new ValidationException("Unable to parse command line");
                 Guard.Against.Null(renderOptions, nameof(renderOptions));
@@ -62,7 +62,7 @@ namespace Sanchez
                 // Initialise workflow host
                 var workflowService = serviceProvider.GetService<IWorkflowService>();
                 workflowService.Initialise(cancellationToken);
-                
+
                 // Start the workflow 
                 await workflowService.StartAsync(cancellationToken);
             }
