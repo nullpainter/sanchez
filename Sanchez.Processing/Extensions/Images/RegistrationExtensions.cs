@@ -18,9 +18,8 @@ namespace Sanchez.Processing.Extensions.Images
 
             if (options.AutoAdjustLevels)
             {
-                registration.Image.Mutate(c => c
-                    .HistogramEqualization()
-                    .Brightness(registration.Definition.Brightness));
+                registration.Image!.AdjustLevels();
+                registration.Image.Mutate(c => c.Brightness(registration.Definition.Brightness));
             }
         }
 

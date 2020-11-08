@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
+using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Tint;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Projections;
@@ -57,7 +58,7 @@ namespace Sanchez.Workflow.Steps.Geostationary
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, Registration.Definition);
 
             _logger.LogInformation("Tinting and normalising IR imagery");
-            if (_options.AutoAdjustLevels) Registration.Image.Mutate(c => c.HistogramEqualization());
+            if (_options.AutoAdjustLevels) Registration.Image.AdjustLevels();
 
             TargetImage = Registration.Image.Clone();
             TargetImage.Tint(_options.Tint);

@@ -63,7 +63,7 @@ namespace Sanchez.Models.CommandLine
         [Option('T', "timestamp", HelpText = "Target timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
         public DateTimeOffset? Timestamp { get; set; }
 
-        [Option('u', "underlay", HelpText = "Path to custom full-colour underlay image", Required = false)]
+        [Option('u', "underlay", HelpText = "Path to full-colour equirectangular underlay image", Required = false)]
         public string? UnderlayPath { get; [UsedImplicitly] set; }
 
         [Option('U', "nounderlay", HelpText = "If no underlay should be rendered", Required = false)]

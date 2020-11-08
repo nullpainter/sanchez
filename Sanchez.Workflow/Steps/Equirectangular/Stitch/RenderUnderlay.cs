@@ -58,7 +58,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
             TargetImage.Mutate(imageContext =>
             {
                 using var clone = TargetImage!.Clone();
-                clone.Mutate(cloneContext => cloneContext.HistogramEqualization());
+                clone.AdjustLevels();
                 TargetImage.Tint(_options.Tint);
 
                 imageContext.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f);
