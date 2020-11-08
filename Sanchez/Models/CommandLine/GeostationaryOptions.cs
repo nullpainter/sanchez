@@ -21,5 +21,8 @@ namespace Sanchez.Models.CommandLine
 
         [Option('h', "haze", HelpText = "Amount of haze to apply to image; valid values are between 0 (no haze) and 1 (full haze)", Required = false, Default = 0.2f)]
         public float HazeAmount { get; [UsedImplicitly] set; }
+        
+        [Option('O', "hazeopacity", HelpText = "Opacity of haze; valid values are between 0 (transparent) and 1 (opaque)", Required = false, Default = 0.9f)]
+        public float HazeOpacity { get; [UsedImplicitly] set; }
     }
 }

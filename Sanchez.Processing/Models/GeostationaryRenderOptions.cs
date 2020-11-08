@@ -2,12 +2,18 @@
 {
     public class GeostationaryRenderOptions
     {
-        public GeostationaryRenderOptions(Angle? longitude, Angle? endLongitude, bool inverseRotation, float hazeAmount)
+        public GeostationaryRenderOptions(
+            Angle? longitude, 
+            Angle? endLongitude, 
+            bool inverseRotation, 
+            float hazeAmount,
+            float hazeOpacity)
         {
             InverseRotation = inverseRotation;
             Longitude = longitude?.Radians;
             EndLongitude = endLongitude?.Radians;
             HazeAmount = hazeAmount;
+            HazeOpacity = hazeOpacity;
         }
 
         /// <summary>
@@ -30,5 +36,10 @@
         ///     Amount of haze to apply to image; valid values are between 0 (no haze) and 1 (full haze).
         /// </summary>
         public float HazeAmount { get; }
+        
+        /// <summary>
+        ///     Opacity of haze; valid values are between 0 (transparent) and 1 (opaque).
+        /// </summary>
+        public float HazeOpacity { get; }
     }
 }

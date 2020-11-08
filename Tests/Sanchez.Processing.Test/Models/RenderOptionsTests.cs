@@ -106,7 +106,7 @@ namespace Sanchez.Processing.Test.Models
         {
             return new RenderOptions
             {
-                GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, false, 1.0f)
+                GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, false, 1.0f, 0.9f)
             };
         }
 

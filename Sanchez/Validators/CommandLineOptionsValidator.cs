@@ -76,12 +76,7 @@ namespace Sanchez.Validators
                 .When(o => o.Timestamp != null)
                 .WithMessage("End timestamp must be greater than timestamp.");
 
-            RuleFor(o => o.IntervalMinutes)
-                .GreaterThanOrEqualTo(o => o.ToleranceMinutes)
-                .When(o => o.Timestamp != null)
-                .WithMessage(o => $"Interval must be greater than or equal to the tolerance of {o.ToleranceMinutes} minutes");
-
-            RuleFor(o => o.EndTimestamp)
+           RuleFor(o => o.EndTimestamp)
                 .GreaterThanOrEqualTo(o => o.Timestamp)
                 .When(o => o.EndTimestamp != null && o.Timestamp != null)
                 .WithMessage("End timestamp must be empty or later than start timestamp.");

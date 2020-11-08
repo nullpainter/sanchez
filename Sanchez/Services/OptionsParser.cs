@@ -17,7 +17,8 @@ namespace Sanchez.Services
                 ToOptionalAngle(options.LongitudeDegrees),
                 ToOptionalAngle(options.EndLongitudeDegrees),
                 options.InverseRotation,
-                options.HazeAmount);
+                options.HazeAmount,
+                options.HazeOpacity);
 
             return renderOptions;
 

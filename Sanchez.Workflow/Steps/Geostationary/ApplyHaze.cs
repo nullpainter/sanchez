@@ -27,7 +27,9 @@ namespace Sanchez.Workflow.Steps.Geostationary
             if (_options.NoUnderlay) return ExecutionResult.Next();
 
             var hazeAmount = _options.GeostationaryRender.HazeAmount;
-            if (hazeAmount > 0) TargetImage.ApplyHaze(_options.Tint, hazeAmount);
+            var hazeOpacity = _options.GeostationaryRender.HazeOpacity;
+            
+            if (hazeAmount > 0 && hazeOpacity > 0) TargetImage.ApplyHaze(_options.Tint, hazeAmount, hazeOpacity);
 
             return ExecutionResult.Next();
         }

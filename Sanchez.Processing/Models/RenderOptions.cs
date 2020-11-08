@@ -127,8 +127,7 @@ namespace Sanchez.Processing.Models
         public DateTime? EndTimestamp { get; set; }
 
         /// <summary>
-        ///     Tolerance from <see cref="Timestamp"/> in identifying suitable satellite images when combining, and interval between
-        ///     frames when performing batch conversion.
+        ///     Interval between frames when performing batch conversion.
         /// </summary>
         public TimeSpan? Interval { get; set; }
 
