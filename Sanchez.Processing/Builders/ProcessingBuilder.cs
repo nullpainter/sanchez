@@ -29,7 +29,6 @@ namespace Sanchez.Processing.Builders
         private static IServiceCollection AddFilenameProviders(this IServiceCollection services)
         {
             return services
-                .AddSingleton<StitchedBatchFilenameProvider>()
                 .AddSingleton<StitchedFilenameProvider>()
                 .AddSingleton<SingleFilenameProvider>();
         }
