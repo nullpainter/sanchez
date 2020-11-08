@@ -61,4 +61,8 @@
         <ProjectReference Include="..\Sanchez.Processing\Sanchez.Processing.csproj" />
         <ProjectReference Include="..\Sanchez.Workflow\Sanchez.Workflow.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="output" />
+    </ItemGroup>
 </Project>

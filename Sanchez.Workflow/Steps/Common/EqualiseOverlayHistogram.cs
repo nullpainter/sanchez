@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Ardalis.GuardClauses;
+using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -24,7 +24,8 @@ namespace Sanchez.Workflow.Steps.Common
             if (!_options.Overlay.ApplyOverlay) return ExecutionResult.Next();
             
             Guard.Against.Null(Image, nameof(Image));
-            Image.Mutate(c => c.HistogramEqualization());
+            Image.AdjustLevels();
+            
             return ExecutionResult.Next();
         }
     }
