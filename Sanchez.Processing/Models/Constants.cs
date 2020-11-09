@@ -40,12 +40,18 @@ namespace Sanchez.Processing.Models
             /// </summary>
             public static class SpatialResolution
             {
+                public const int OneKm = 1;
                 public const int TwoKm = 2;
                 public const int FourKm = 4; 
             }
 
             public static class ImageSize
             {
+                /// <summary>
+                ///     Width and height of target images, representing 2km spatial resolution.
+                /// </summary>
+                public const int OneKm = 10848;
+                
                 /// <summary>
                 ///     Width and height of target images, representing 2km spatial resolution.
                 /// </summary>
@@ -65,6 +71,11 @@ namespace Sanchez.Processing.Models
 
             public static class Offset
             {
+                /// <summary>
+                ///     1km spatial resolution.
+                /// </summary>
+                public static readonly ImageOffset OneKm = new ImageOffset(-0.151858, 0.151858, 0.000028);
+                
                 /// <summary>
                 ///     2km spatial resolution.
                 /// </summary>

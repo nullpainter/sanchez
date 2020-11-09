@@ -27,8 +27,8 @@ namespace Sanchez.Processing.Test.Projections
                 out var scanningX,
                 out var scanningY);
 
-            scanningX.Should().BeApproximately(-0.024052, Precision);
-            scanningY.Should().BeApproximately(0.0953399, Precision);
+            scanningX.Should().BeApproximately(-0.023807, Precision);
+            scanningY.Should().BeApproximately(0.0953439, Precision);
         }
 
         [Test]

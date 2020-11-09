@@ -25,8 +25,11 @@ namespace Sanchez.Validators
                 .WithMessage(o => $"Invalid satellite definitions path: {o.DefinitionsPath}");
 
             RuleFor(o => o.SpatialResolution)
-                .Must(resolution => resolution.IsIn(Constants.Satellite.SpatialResolution.TwoKm, Constants.Satellite.SpatialResolution.FourKm))
-                .WithMessage($"Unsupported output spatial resolution. Valid values are: {Constants.Satellite.SpatialResolution.TwoKm}, {Constants.Satellite.SpatialResolution.FourKm}");
+                .Must(resolution => resolution.IsIn(
+                     Constants.Satellite.SpatialResolution.OneKm, 
+                    Constants.Satellite.SpatialResolution.TwoKm, 
+                    Constants.Satellite.SpatialResolution.FourKm))
+                .WithMessage($"Unsupported output spatial resolution. Valid values are: {Constants.Satellite.SpatialResolution.OneKm}, {Constants.Satellite.SpatialResolution.TwoKm}, {Constants.Satellite.SpatialResolution.FourKm}");
 
             ValidateTimeOptions();
             ValidateOverlayOptions();

@@ -114,8 +114,8 @@ namespace Sanchez.Test
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
 
-            outputImage.Width.Should().Be(4066);
-            outputImage.Height.Should().Be(2076);
+            outputImage.Width.Should().Be(4072);
+            outputImage.Height.Should().Be(2078);
         }
 
         [Test]

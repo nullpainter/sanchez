@@ -104,7 +104,7 @@ namespace Sanchez.Processing.Services
         ///     Debugging method to save gradient image to disk.
         /// </summary>
         [UsedImplicitly]
-        private async Task SaveGradientAsync(string path, ReadOnlyCollection<CieLch> gradient)
+        private static async Task SaveGradientAsync(string path, List<CieLch> gradient)
         {
             var converter = new ColorSpaceConverter();
             var image = new Image<Rgba32>(gradient.Count, 50);

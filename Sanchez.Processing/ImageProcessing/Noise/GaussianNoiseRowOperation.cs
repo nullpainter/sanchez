@@ -30,7 +30,7 @@ namespace Sanchez.Processing.ImageProcessing.Noise
 
                 var randNormal = (float) (Mean + StdDev * randStdNormal);
 
-                span[x] = new Rgba32(randNormal, randNormal, randNormal, 1); //span[x].A);
+                span[x] = new Rgba32(randNormal, randNormal, randNormal); 
             }
         }
     }

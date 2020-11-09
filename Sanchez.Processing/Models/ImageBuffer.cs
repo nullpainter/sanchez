@@ -1,5 +1,6 @@
 ﻿using System;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Models
@@ -19,8 +20,26 @@ namespace Sanchez.Processing.Models
 
         private static Rgba32[] GetBuffer(Image<Rgba32> image)
         {
-            if (!image.TryGetSinglePixelSpan(out var pixelSpan)) throw new InvalidOperationException("Unable to retrieve image buffer");
-            return pixelSpan.ToArray();
+            // Return single span if present
+            if (image.TryGetSinglePixelSpan(out var pixelSpan))
+            {
+                return pixelSpan.ToArray();
+            }
+
+            // Combine spans for larger images
+            var buffer = new Rgba32[image.Width * image.Height];
+
+       
+            var offset = 0;
+            var memoryGroup = image.GetPixelMemoryGroup();
+            for (var i = 0; i < memoryGroup.Count; i++)
+            {
+                var span = memoryGroup[i].Span;
+                Array.Copy(span.ToArray(), 0, buffer, offset, span.Length);
+                offset += (i + 1) * span.Length;
+            }
+
+            return buffer;
         }
     }
 }

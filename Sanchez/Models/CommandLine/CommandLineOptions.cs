@@ -48,7 +48,7 @@ namespace Sanchez.Models.CommandLine
         [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }
 
-        [Option('r', "resolution", HelpText = "Output spatial resolution in km; valid values are 2 or 4", Default = Constants.Satellite.SpatialResolution.FourKm)]
+        [Option('r', "resolution", HelpText = "Output spatial resolution in km; valid values are 1, 2 or 4", Default = Constants.Satellite.SpatialResolution.FourKm)]
         public int SpatialResolution { get; [UsedImplicitly] set; }
 
         [Option('s', "source", HelpText = "Path to IR satellite image(s)", Required = true)]
