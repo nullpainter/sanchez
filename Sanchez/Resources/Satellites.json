@@ -59,21 +59,39 @@
     ]
   },
   {
-    "DisplayName": "Electro",
+    "DisplayName": "Electro-L N2",
     "FilenamePrefix": "20",
     "FilenameParser": "Goesproc",
     "Longitude": -14.5,
-    "LongitudeAdjustment": 0.4,
     "CropRange": {
-      "MinLongitude": -100,
-      "MaxLongitude": 85
+      "MinLongitude": -94,
+      "MaxLongitude": 67
     },
     "Brightness": 1.0,
     "Crop": [
-      0.0161637,
-      0.01359,
-      0.016522,
-      0.014428
+      0.013290,
+      0.012090,
+      0.014008,
+      0.012090
+    ]
+  },
+  // Prelminary GOES-13 configuration
+  {
+    "DisplayName": "EWS-G1",
+    "FilenamePrefix": "EWS-",
+    "FilenameParser": "Goesproc",
+    "Longitude": 61.5,
+    "LongitudeAdjustment": -0.0,
+    "CropRange": {
+      "MinLongitude": -10,
+      "MaxLongitude": 135
+    },
+    "Brightness": 0.8,
+    "Crop": [
+      0.006273,
+      0.000172,
+      0.006273,
+      0.000172
     ]
   }
 ]
