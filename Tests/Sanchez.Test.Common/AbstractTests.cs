@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using Sanchez.Builders;
 using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Options;

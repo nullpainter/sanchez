@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sanchez.Builders;
 using Sanchez.Processing.Models;
 
-namespace Sanchez
+namespace Sanchez.Builders
 {
     public static class ServiceProviderFactory
     {

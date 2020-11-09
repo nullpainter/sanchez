@@ -43,7 +43,15 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
+        <None Update="Resources\world.200412.3x21600x10800.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
         <None Update="Resources\world.lights.3x10848x5424.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\Gradients\DarkRed-Blue.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
@@ -60,9 +68,5 @@
     <ItemGroup>
         <ProjectReference Include="..\Sanchez.Processing\Sanchez.Processing.csproj" />
         <ProjectReference Include="..\Sanchez.Workflow\Sanchez.Workflow.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="output" />
     </ItemGroup>
 </Project>

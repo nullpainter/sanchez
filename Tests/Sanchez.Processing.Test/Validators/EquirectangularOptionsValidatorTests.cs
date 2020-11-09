@@ -66,17 +66,7 @@ namespace Sanchez.Processing.Test.Validators
 
             VerifyNoFailure(options);
         }
-        
-        [Test]
-        public void IntervalLessThanTolerance()
-        {
-            var options = ValidOptions();
-            options.IntervalMinutes = options.ToleranceMinutes - 1;
-            options.Timestamp = DateTime.Now;
-
-            VerifyFailure(options, nameof(CommandLineOptions.IntervalMinutes));
-        }
-
+       
         [Test]
         public void InvalidTolerance()
         {

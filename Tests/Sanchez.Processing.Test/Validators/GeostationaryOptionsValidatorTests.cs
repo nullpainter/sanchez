@@ -115,6 +115,7 @@ namespace Sanchez.Processing.Test.Validators
             VerifyFailure(options, nameof(GeostationaryOptions.SpatialResolution));
         }
 
+        [TestCase(Constants.Satellite.SpatialResolution.OneKm)]
         [TestCase(Constants.Satellite.SpatialResolution.TwoKm)]
         [TestCase(Constants.Satellite.SpatialResolution.FourKm)]
         public void ValidSpatialResolution(int spatialResolution)
