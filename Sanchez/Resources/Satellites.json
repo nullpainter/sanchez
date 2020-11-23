@@ -2,36 +2,21 @@
   {
     "DisplayName": "GOES-16",
     "FilenamePrefix": "GOES16_FD_CH13_",
-    "FilenameParser": "Goesproc",
     "Longitude": -75.2,
     "LongitudeAdjustment": 0.1,
-    "CropRange": {
-      "MinLongitude": -156.2995,
-      "MaxLongitude": 6.2995
-    },
     "Brightness": 0.95
   },
   {
     "DisplayName": "GOES-17",
     "FilenamePrefix": "GOES17_FD_CH13_",
-    "FilenameParser": "Goesproc",
     "Longitude": -137.2,
-    "CropRange": {
-      "MinLongitude": 141.7005,
-      "MaxLongitude": -55.7005
-    },
     "Brightness": 0.95
   },
   {
     "DisplayName": "Himawari-8",
     "FilenamePrefix": "Himawari8_FD_IR_",
-    "FilenameParser": "Goesproc",
     "Longitude": 140.7,
     "LongitudeAdjustment": -0.8,
-    "CropRange": {
-      "MinLongitude": 60,
-      "MaxLongitude": -140
-    },
     "Brightness": 1,
     "Crop": [
       0.007273,
@@ -43,12 +28,7 @@
   {
     "DisplayName": "GEO-KOMPSAT-2A",
     "FilenamePrefix": "IMG_FD_",
-    "FilenameParser": "Xrit",
     "Longitude": 128.2,
-    "CropRange": {
-      "MinLongitude": 48,
-      "MaxLongitude": -150
-    },
     "Brightness": 0.9,
     "Crop": [
       0.006363,
@@ -59,38 +39,41 @@
   },
   {
     "DisplayName": "Electro-L N2",
-    "FilenamePrefix": "20",
-    "FilenameParser": "Goesproc",
+    "FilenameSuffix": "[1-3]",
     "Longitude": -14.5,
-    "CropRange": {
-      "MinLongitude": -94,
-      "MaxLongitude": 67
-    },
     "Brightness": 1.0,
     "Crop": [
-      0.013290,
-      0.012090,
-      0.014008,
-      0.012090
+      0.012703,
+      0.012703,
+      0.012703,
+      0.012703
     ]
   },
-  // Prelminary GOES-13 configuration
+  {
+    "DisplayName": "Electro-L N2",
+    "FilenameSuffix": "[4-9]",
+    "Invert": true,
+    "Longitude": -14.5,
+    "Brightness": 1.2,
+    "Crop": [
+      0.012703,
+      0.012703,
+      0.012703,
+      0.012703
+    ]
+  },
+  // Preliminary EWS-G1 configuration
   {
     "DisplayName": "EWS-G1",
-    "FilenamePrefix": "EWS-",
-    "FilenameParser": "Goesproc",
+    "FilenamePrefix": "EWS-G1",
+    "Invert": true,
     "Longitude": 61.5,
-    "LongitudeAdjustment": -0.0,
-    "CropRange": {
-      "MinLongitude": -10,
-      "MaxLongitude": 135
-    },
-    "Brightness": 0.8,
+    "Brightness": 1.1,
     "Crop": [
-      0.006273,
-      0.000172,
-      0.006273,
-      0.000172
+      0.01,
+      0.05,
+      0.0,
+      0.0
     ]
   }
 ]

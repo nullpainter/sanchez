@@ -1,13 +1,8 @@
 ﻿[
   {
     "DisplayName": "GOES-17",
-    "FilenamePrefix": "GOES17_FD_",
-    "FilenameParser": "Goesproc",
+    "FilenamePrefix": "GOES17_FD_CH13_",
     "Longitude": -137.2,
-    "CropRange": {
-      "MinLongitude": 141.7005,
-      "MaxLongitude": -55.7005
-    },
-    "Brightness": 0.75
+    "Brightness": 0.95
   }
 ]
