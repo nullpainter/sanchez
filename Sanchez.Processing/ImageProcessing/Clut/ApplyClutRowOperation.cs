@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Sanchez.Processing.ImageProcessing.Intensity;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
@@ -10,12 +12,15 @@ namespace Sanchez.Processing.ImageProcessing.Clut
         private readonly Image<Rgba32> _source;
         private readonly Image<Rgba32> _target;
         private readonly List<Rgba32> _clut;
+        private readonly Range _intensityRange;
 
         public ApplyClutRowOperation(Image<Rgba32> source, Image<Rgba32> target, List<Rgba32> clut)
         {
             _source = source;
             _target = target;
             _clut = clut;
+            
+            _intensityRange = source.GetIntensityRange();
         }
 
         public void Invoke(int y)
@@ -28,7 +33,7 @@ namespace Sanchez.Processing.ImageProcessing.Clut
                 // Ignore transparent areas
                 if (sourceSpan[x].A == 0) continue;
 
-                var intensity = sourceSpan[x].R;
+                var intensity = (int) Math.Round((sourceSpan[x].R - _intensityRange.Start.Value) / (double)(_intensityRange.End.Value - _intensityRange.Start.Value) * 255);
                 targetSpan[x] = _clut[intensity];
             }
         }
