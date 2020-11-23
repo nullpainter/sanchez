@@ -45,18 +45,13 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
             Guard.Against.Null(Activity, nameof(Activity));
             Guard.Against.Null(TargetImage, nameof(TargetImage));
 
-            var longitudeRange = Activity.GetVisibleLongitudeRange();
-
             // Determine visible range of all satellite imagery
             _logger.LogInformation("Reprojecting to geostationary with longitude {longitude} degrees", Angle.FromRadians(Longitude!.Value).Degrees);
-
-            // Adjust longitude based on the underlay wrapping for visible satellites
-            var adjustedLongitude = -Math.PI - longitudeRange.Start + Longitude!.Value;
 
             // Render geostationary image
             using (var sourceImage = TargetImage.Clone())
             {
-                TargetImage = sourceImage.ToGeostationaryProjection(adjustedLongitude, Constants.Satellite.DefaultHeight, _options);
+                TargetImage = sourceImage.ToGeostationaryProjection(Longitude.Value, Constants.Satellite.DefaultHeight, _options);
             }
 
             return ExecutionResult.Next();

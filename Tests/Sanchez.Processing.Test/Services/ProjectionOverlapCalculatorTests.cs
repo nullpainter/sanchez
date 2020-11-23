@@ -5,44 +5,39 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Services;
-using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Test.Common;
 
-namespace Sanchez.Processing.Test
+namespace Sanchez.Processing.Test.Services
 {
     [TestFixture(TestOf = typeof(ProjectionOverlapCalculator))]
     public class ProjectionOverlapCalculatorTests : AbstractTests
     {
-        private void VerifyRangeEquivalency(Range first, Range second)
-        {
-            Angle.FromRadians(first.Start).Degrees.Should().BeApproximately(Angle.FromRadians(second.Start).Degrees, Precision);
-            Angle.FromRadians(first.End).Degrees.Should().BeApproximately(Angle.FromRadians(second.End).Degrees, Precision);
-        }
-        
+        private IProjectionOverlapCalculator Calculator => GetService<IProjectionOverlapCalculator>();
+
         [Test]
         public void Goes17Himawari8()
         {
             // Simplified for ease of validation
             var goes17 = ToDefinition(140, -50, "GOES-17");
             var himawari8 = ToDefinition(60, -140, "Himawari-8");
-            
-            var calculator = new ProjectionOverlapCalculator();
-            calculator.Initialise(new List<SatelliteDefinition> { goes17, himawari8 });
-            
+
+            Calculator.Initialise(new List<SatelliteDefinition> { goes17, himawari8 });
+
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(goes17),
-                new Range(Angle.FromDegrees(180).Radians, Angle.FromDegrees(-50).Radians));
+                Calculator.GetNonOverlappingRange(goes17).Range,
+                new Range(Angle.FromDegrees(180).Radians, Angle.FromDegrees(310).Radians));
         }
-        
+
         [Test]
         public void SingleSatellite()
         {
             var goes16 = ToDefinition(-156.2995, 6.2995);
 
-            var calculator = new ProjectionOverlapCalculator();
-            calculator.Initialise(new List<SatelliteDefinition> { goes16});
+            Calculator.Initialise(new List<SatelliteDefinition> { goes16 });
 
-            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(goes16), goes16.LongitudeRange);
+            VerifyRangeEquivalency(
+                Calculator.GetNonOverlappingRange(goes16).Range,
+                goes16.LongitudeRange);
         }
 
         [Test]
@@ -51,11 +46,15 @@ namespace Sanchez.Processing.Test
             var goes16 = ToDefinition(-156.2995, 6.2995);
             var nonOverlapping = ToDefinition(60, 120);
 
-            var calculator = new ProjectionOverlapCalculator();
-            calculator.Initialise(new List<SatelliteDefinition> { goes16, nonOverlapping });
+            Calculator.Initialise(new List<SatelliteDefinition> { goes16, nonOverlapping });
 
-            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(goes16), goes16.LongitudeRange);
-            VerifyRangeEquivalency(calculator.GetNonOverlappingRange(nonOverlapping), nonOverlapping.LongitudeRange);
+            VerifyRangeEquivalency(
+                Calculator.GetNonOverlappingRange(goes16).Range,
+                goes16.LongitudeRange);
+
+            VerifyRangeEquivalency(
+                Calculator.GetNonOverlappingRange(nonOverlapping).Range,
+                nonOverlapping.LongitudeRange);
         }
 
         [Test]
@@ -64,16 +63,32 @@ namespace Sanchez.Processing.Test
             var first = ToDefinition(-150, 10);
             var second = ToDefinition(140, -50);
 
-            var calculator = new ProjectionOverlapCalculator();
-            calculator.Initialise(new List<SatelliteDefinition> { first, second });
+            Calculator.Initialise(new List<SatelliteDefinition> { first, second });
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(first),
+                Calculator.GetNonOverlappingRange(first).Range,
                 new Range(Angle.FromDegrees(-100), Angle.FromDegrees(10)));
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(second),
+                Calculator.GetNonOverlappingRange(second).Range,
                 new Range(Angle.FromDegrees(140), Angle.FromDegrees(260)));
+        }
+
+        [Test]
+        public void OverlapRight()
+        {
+            var first = ToDefinition(-155, 5);
+            var second = ToDefinition(-15, 140);
+
+            Calculator.Initialise(new List<SatelliteDefinition> { second, first });
+
+            VerifyRangeEquivalency(
+                Calculator.GetNonOverlappingRange(first).Range,
+                new Range(Angle.FromDegrees(-155), Angle.FromDegrees(-5)));
+
+            VerifyRangeEquivalency(
+                Calculator.GetNonOverlappingRange(second).Range,
+                new Range(Angle.FromDegrees(-5), Angle.FromDegrees(140)));
         }
 
         [Test]
@@ -82,15 +97,14 @@ namespace Sanchez.Processing.Test
             var first = ToDefinition(-100, 0);
             var second = ToDefinition(-50, 150);
 
-            var calculator = new ProjectionOverlapCalculator();
-            calculator.Initialise(new List<SatelliteDefinition> { first, second });
+            Calculator.Initialise(new List<SatelliteDefinition> { first, second });
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(first),
+                Calculator.GetNonOverlappingRange(first).Range,
                 new Range(Angle.FromDegrees(-100), Angle.FromDegrees(-25)));
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(second),
+                Calculator.GetNonOverlappingRange(second).Range,
                 new Range(Angle.FromDegrees(-25), Angle.FromDegrees(150)));
         }
 
@@ -102,32 +116,39 @@ namespace Sanchez.Processing.Test
             var second = ToDefinition(140, -50);
             var third = ToDefinition(0, 60);
 
-            var calculator = new ProjectionOverlapCalculator();
-            calculator.Initialise(new List<SatelliteDefinition> { first, second, third });
+            Calculator.Initialise(new List<SatelliteDefinition> { first, second, third });
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(first),
+                Calculator.GetNonOverlappingRange(first).Range,
                 new Range(Angle.FromDegrees(-100), Angle.FromDegrees(5)));
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(second),
+                Calculator.GetNonOverlappingRange(second).Range,
                 new Range(Angle.FromDegrees(140), Angle.FromDegrees(260)));
 
             VerifyRangeEquivalency(
-                calculator.GetNonOverlappingRange(third),
+                Calculator.GetNonOverlappingRange(third).Range,
                 new Range(Angle.FromDegrees(5), Angle.FromDegrees(60)));
         }
 
-
         private static SatelliteDefinition ToDefinition(double startDegrees, double endDegrees, string name = "")
         {
-            var nonOverlapping = new SatelliteDefinition(name, "", FilenameParserType.Goesproc, 0,
-                new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)),
+            var nonOverlapping = new SatelliteDefinition(name, "", "", false,
+                0, new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)),
                 new Range(
                     Angle.FromDegrees(startDegrees),
                     Angle.FromDegrees(endDegrees)));
-            
+
             return nonOverlapping;
+        }
+
+        private static void VerifyRangeEquivalency(Range first, Range second)
+        {
+            Angle.FromRadians(first.Start).Degrees
+                .Should().BeApproximately(Angle.FromRadians(second.Start).Degrees, Precision);
+
+            Angle.FromRadians(first.End).Degrees
+                .Should().BeApproximately(Angle.FromRadians(second.End).Degrees, Precision);
         }
     }
 }

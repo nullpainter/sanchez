@@ -1,28 +1,29 @@
 ﻿using Sanchez.Processing.Models.Configuration;
+using SixLabors.ImageSharp;
 using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Models
 {
     public class UnderlayProjectionData : ProjectionData
     {
-        public int? TargetHeight { get; }
+        public Size? TargetSize { get; }
         public Range? LatitudeCrop { get; }
-        public Range? LongitudeCrop { get; }
 
         public UnderlayProjectionData(
             ProjectionType projection, 
             InterpolationType interpolation,
             string underlayPath,
             int imageSize,
-            int? targetHeight = null,
+            Size? targetSize = null,
             Range? latitudeCrop = null, 
-            Range? longitudeCrop = null) : base(projection, interpolation, imageSize, underlayPath)
+            double? minLongitude = null
+            ) : base(projection, interpolation, imageSize, underlayPath)
         {
-            TargetHeight = targetHeight;
+            TargetSize = targetSize;
             LatitudeCrop = latitudeCrop;
-            LongitudeCrop = longitudeCrop;
+            MinLongitude = minLongitude;
         }
 
-        public bool CropSpecified => LatitudeCrop != null && LongitudeCrop != null;
+        public double? MinLongitude { get; }
     }
 }

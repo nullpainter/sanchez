@@ -44,7 +44,7 @@ namespace Sanchez.Test
 
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(2449);
+            outputImage.Width.Should().Be(2412);
             outputImage.Height.Should().Be(2450);
         }
 
@@ -90,7 +90,7 @@ namespace Sanchez.Test
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
 
-            outputImage.Width.Should().Be(4794);
+            outputImage.Width.Should().Be(4772);
             outputImage.Height.Should().Be(2450);
         }
 
@@ -114,8 +114,8 @@ namespace Sanchez.Test
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
 
-            outputImage.Width.Should().Be(4072);
-            outputImage.Height.Should().Be(2078);
+            outputImage.Width.Should().Be(4230);
+            outputImage.Height.Should().Be(1908);
         }
 
         [Test]
@@ -205,8 +205,8 @@ namespace Sanchez.Test
 
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(1918);
-            outputImage.Height.Should().Be(1916);
+            outputImage.Width.Should().Be(1870);
+            outputImage.Height.Should().Be(1908);
         }
 
         
@@ -232,8 +232,8 @@ namespace Sanchez.Test
 
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(1918);
-            outputImage.Height.Should().Be(1916);
+            outputImage.Width.Should().Be(1870);
+            outputImage.Height.Should().Be(1908);
         }
         
         [Test]
@@ -259,8 +259,8 @@ namespace Sanchez.Test
 
             File.Exists(outputFile).Should().BeTrue("output file should have been created");
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(1918);
-            outputImage.Height.Should().Be(1916);
+            outputImage.Width.Should().Be(1870);
+            outputImage.Height.Should().Be(1908);
 
             writer.ToString().Should().BeEmpty("no output should be written in quiet mode");
         }

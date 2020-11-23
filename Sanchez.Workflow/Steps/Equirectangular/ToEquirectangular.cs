@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
 using Sanchez.Processing.ImageProcessing.Projection;
@@ -16,7 +15,7 @@ using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using Range = Sanchez.Processing.Models.Angles.Range;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
     internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
     {
@@ -34,7 +33,6 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
         public Image<Rgba32>? SourceImage { get; set; }
         public Image<Rgba32>? TargetImage { get; set; }
         public Registration? Registration { get; set; }
-        public double GlobalOffset { get; [UsedImplicitly] set; }
 
         public override ExecutionResult Run(IStepExecutionContext context)
         {
@@ -46,8 +44,8 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
             TargetImage = Reproject(Registration);
 
             // Overlap range relative the satellite's visible range and convert to a equirectangular map
-            // offset with a pixel range of -180 to 180 degrees
-            var longitude = (Registration.Definition.LongitudeRange.Start + GlobalOffset).NormaliseLongitude();
+            // offset with a pixel range of -180 to 180 degrees.
+            var longitude = Registration.Definition.LongitudeRange.Start.NormaliseLongitude();
             Registration.OffsetX = longitude.ScaleToWidth(_options.ImageSize * 2);
 
             return ExecutionResult.Next();
@@ -103,7 +101,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
         private void LogStatistics()
         {
             var definition = Registration!.Definition;
-            var longitudeCrop = Registration.LongitudeRange;
+            var longitudeRange = Registration.LongitudeRange!;
 
             _logger.LogInformation("{definition:l0} range {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
@@ -112,8 +110,8 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
 
             _logger.LogInformation("{definition:l0} crop {startRange:F2} to {endRange:F2} degrees",
                 definition.DisplayName,
-                Angle.FromRadians(longitudeCrop.Start).Degrees,
-                Angle.FromRadians(longitudeCrop.End).Degrees);
+                Angle.FromRadians(longitudeRange.Range.Start).Degrees,
+                Angle.FromRadians(longitudeRange.Range.End).Degrees);
         }
     }
 
@@ -127,7 +125,6 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
                 .Then<TStep, ToEquirectangular, TData>("Reprojecting to equirectangular")
                 .WithRegistration()
                 .Input(step => step.SourceImage, data => data.Registration!.Image)
-                .Input(step => step.GlobalOffset, data => data.GlobalOffset)
                 .Output(data => data.Registration!.Image, step => step.TargetImage);
     }
 }

@@ -32,14 +32,14 @@ namespace Sanchez.Processing.Services
         {
             var gradient = _gradientService.GetGradient();
 
-            var clut = new List<Rgba32>();
+            var lookupTable = new List<Rgba32>();
             for (var i = 0; i < 256; i++)
             {
                 var colour = GetColour(gradient, (byte) i);
-                clut.Add(colour);
+                lookupTable.Add(colour);
             }
 
-            return clut;
+            return lookupTable;
         }
 
         private Rgba32 GetColour(IReadOnlyList<CieLch> gradient, byte index)
@@ -51,10 +51,10 @@ namespace Sanchez.Processing.Services
             var temperature = GetTemperature(index);
             var range = maxIntensity - minIntensity;
 
-            if (temperature < minIntensity || temperature >= maxIntensity) return Color.Transparent;
+            if (temperature < minIntensity || temperature > maxIntensity) return Color.Transparent;
 
             var interpolateAmount = (float) (temperature - minIntensity) / range;
-            var cieLch = gradient[(int) Math.Round(interpolateAmount * gradient.Count)];
+            var cieLch = gradient[(int) Math.Round(interpolateAmount * (gradient.Count - 1))];
 
             return _converter.ToRgb(cieLch);
         }

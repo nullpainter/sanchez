@@ -21,12 +21,12 @@ namespace Sanchez.Workflow.Steps.Common
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             if (!_options.Overlay.ApplyOverlay) return ExecutionResult.Next();
-            
+
             Guard.Against.Null(OverlayImage, nameof(OverlayImage));
             Guard.Against.Null(TargetImage, nameof(TargetImage));
 
             TargetImage.Mutate(c => c.DrawImage(OverlayImage, PixelColorBlendingMode.Normal, 1.0f));
-
+            
             return ExecutionResult.Next();
         }
     }

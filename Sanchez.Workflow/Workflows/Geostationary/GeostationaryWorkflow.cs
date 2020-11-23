@@ -27,7 +27,6 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                         .Branch(true, builder.CreateBranch()
                             .LoadImageSingle()
                             .NormaliseImage()
-                            .EqualiseOverlayHistogram()
                             .RenderOverlay()
                             .RenderUnderlay()
                             .ComposeOverlay()

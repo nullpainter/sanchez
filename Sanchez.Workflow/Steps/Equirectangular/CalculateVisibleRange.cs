@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Ardalis.GuardClauses;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
@@ -8,7 +9,7 @@ using Sanchez.Workflow.Models.Steps;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
     internal sealed class CalculateVisibleRange : StepBody, IActivityStepBody
     {
@@ -33,12 +34,11 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
             // Set latitude and longitude ranges based on overlapping satellite ranges
             Activity.Registrations.ForEach(registration =>
             {
-                registration.LatitudeRange = registration.Definition.LatitudeRange;
-
+                registration.LatitudeRange = new ProjectionRange(registration.Definition.LatitudeRange);
                 registration.LongitudeRange =
                     _options.StitchImages
                         ? _projectionOverlapCalculator.GetNonOverlappingRange(registration.Definition)
-                        : registration.Definition.LongitudeRange.UnwrapLongitude();
+                        : new ProjectionRange(registration.Definition.LongitudeRange.UnwrapLongitude());
             });
 
             return ExecutionResult.Next();

@@ -1,4 +1,5 @@
 ﻿using System;
+using Sanchez.Processing.Models.Configuration;
 
 namespace Sanchez.Processing.Services.Filesystem
 {
@@ -7,6 +8,7 @@ namespace Sanchez.Processing.Services.Filesystem
         /// <summary>
         ///     Extracts the timestamp from a satellite imagery filename.
         /// </summary>
-        DateTime? GetTimestamp(string filename);
+        DateTime? GetTimestamp(string filename, SatelliteDefinition definition);
     }
+
 }

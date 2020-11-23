@@ -4,6 +4,7 @@ using Sanchez.Processing.Filesystem.Equirectangular;
 using Sanchez.Processing.Services;
 using Sanchez.Processing.Services.Database;
 using Sanchez.Processing.Services.Filesystem;
+using Sanchez.Processing.Services.Filesystem.Parsers;
 using Sanchez.Processing.Services.Underlay;
 
 namespace Sanchez.Processing.Builders
@@ -15,15 +16,24 @@ namespace Sanchez.Processing.Builders
             return services
                 .AddUnderlaySupport()
                 .AddFilenameProviders()
+                .AddFilenameParsers()
                 .AddSingleton<IGradientService, GradientService>()
                 .AddSingleton<IClutService, ClutService>()
                 .AddSingleton<ISatelliteImageLoader, SatelliteImageLoader>()
                 .AddSingleton<IDatabaseMigrator, DatabaseMigrator>()
                 .AddSingleton<IImageMatcher, ImageMatcher>()
                 .AddSingleton<IFileService, FileService>()
+                .AddSingleton<IVisibleRangeService, VisibleRangeService>()
                 .AddSingleton<IProjectionOverlapCalculator, ProjectionOverlapCalculator>()
-                .AddSingleton<ISatelliteRegistry, SatelliteRegistry>()
-                .AddSingleton<FilenameParserProvider>();
+                .AddSingleton<ISatelliteRegistry, SatelliteRegistry>();
+        }
+
+        private static IServiceCollection AddFilenameParsers(this IServiceCollection services)
+        {
+            return services
+                .AddSingleton<IFilenameParser, ElectroFilenameParser>()
+                .AddSingleton<IFilenameParser, GoesFilenameParser>()
+                .AddSingleton<IFilenameParser, Gk2AFilenameParser>();
         }
 
         private static IServiceCollection AddFilenameProviders(this IServiceCollection services)

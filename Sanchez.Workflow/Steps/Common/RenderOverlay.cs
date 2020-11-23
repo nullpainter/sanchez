@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Ardalis.GuardClauses;
+using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Clut;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Services;
@@ -31,15 +32,17 @@ namespace Sanchez.Workflow.Steps.Common
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             var overlayOptions = _options.Overlay;
-            
+
             if (!overlayOptions.ApplyOverlay) return ExecutionResult.Next();
             Guard.Against.Null(SourceImage, nameof(SourceImage));
-
             var clut = _clutService.GetClut();
 
-            OverlayImage = new Image<Rgba32>(SourceImage.Width, SourceImage.Height);
+            var equalisedSource = SourceImage.Clone();
+            equalisedSource.AdjustLevels();
 
-            var operation = new ApplyClutRowOperation(SourceImage, OverlayImage, clut);
+            OverlayImage = new Image<Rgba32>(equalisedSource.Width, equalisedSource.Height);
+
+            var operation = new ApplyClutRowOperation(equalisedSource, OverlayImage, clut);
             ParallelRowIterator.IterateRows(Configuration.Default, SourceImage.Bounds(), in operation);
 
             return ExecutionResult.Next();

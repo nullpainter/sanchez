@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sanchez.Processing.Models.Configuration;
+using Sanchez.Processing.Models.Projections;
 using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Services
@@ -9,7 +10,7 @@ namespace Sanchez.Processing.Services
     public interface IProjectionOverlapCalculator
     {
         void Initialise(IEnumerable<SatelliteDefinition> definitions);
-        Range GetNonOverlappingRange(SatelliteDefinition definition);
+        ProjectionRange GetNonOverlappingRange(SatelliteDefinition definition);
     }
 
     public class ProjectionOverlapCalculator : IProjectionOverlapCalculator
@@ -20,7 +21,6 @@ namespace Sanchez.Processing.Services
         public void Initialise(IEnumerable<SatelliteDefinition> definitions)
         {
             _definitions = definitions
-
                 .Select(entry => new
                 {
                     Definition = entry,
@@ -33,12 +33,14 @@ namespace Sanchez.Processing.Services
 
         // note only works for simple overlap on one or other side
         // only handles one satellite overlapping each side
-        public Range GetNonOverlappingRange(SatelliteDefinition definition)
+        public ProjectionRange GetNonOverlappingRange(SatelliteDefinition definition)
         {
             if (!_initialised) throw new InvalidOperationException($"Please call {nameof(Initialise)} before performing range calculations");
 
-            var minLongitude = definition.LongitudeRange.Start;
-            var maxLongitude = definition.LongitudeRange.End;
+            var minLongitude = definition.LongitudeRange.UnwrapLongitude().Start;
+            var maxLongitude = definition.LongitudeRange.UnwrapLongitude().End;
+            var overlappingLeft = false;
+            var overlappingRight = false;
 
             // Iterate over other satellites
             foreach (var other in _definitions!.Where(entry => entry.Key != definition).Select(entry => entry.Value))
@@ -68,11 +70,15 @@ namespace Sanchez.Processing.Services
 
                 if (range.Start < otherRange.Start && range.End > otherRange.Start)
                 {
-                    maxLongitude = (range.End - otherRange.Start) / 2 + otherRange.Start;
+                    var midPoint = (range.End - otherRange.Start) / 2 + otherRange.Start;
+                    if (midPoint < maxLongitude) maxLongitude = midPoint;
+                    overlappingRight = true;
                 }
                 else if (range.End > otherRange.End && range.Start < otherRange.End)
                 {
-                    minLongitude = (otherRange.End - range.Start) / 2 + range.Start;
+                    var midPoint = (otherRange.End - range.Start) / 2 + range.Start;
+                    if (midPoint > minLongitude) minLongitude = midPoint;
+                    overlappingLeft = true;
                 }
 
                 // Remove offset which was added to simplify calculations
@@ -80,7 +86,7 @@ namespace Sanchez.Processing.Services
                 minLongitude -= offset;
             }
 
-            return new Range(minLongitude, maxLongitude);
+            return new ProjectionRange(new Range(minLongitude, maxLongitude), overlappingLeft, overlappingRight);
         }
     }
 }

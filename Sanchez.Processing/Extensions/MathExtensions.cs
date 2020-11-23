@@ -7,6 +7,7 @@ namespace Sanchez.Processing.Extensions
     public static class MathExtensions
     {
         public static double Limit(this double value, double min, double max) => ((value - min) % (max - min) + (max - min)) % (max - min) + min;
+        public static int Limit(this int value, int min, int max) => ((value - min) % (max - min) + (max - min)) % (max - min) + min;
 
         public static double ClosestTo(this List<double> collection, double target)
         {

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Ardalis.GuardClauses;
+using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
@@ -7,8 +8,10 @@ using Sanchez.Workflow.Models.Steps;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
+    // TODO document this plz
+    // also, is this really needed as a separate step? only used by one other
     internal sealed class CalculateGlobalOffset : StepBody, IActivityStepBody
     {
         public Activity? Activity { get; set; }
@@ -17,10 +20,12 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             Guard.Against.Null(Activity, nameof(Activity));
-
-            GlobalOffset = -Activity.Registrations
-                .Select(p => p.LongitudeRange.UnwrapLongitude().NormaliseLongitude().Start)
-                .Min();
+            
+            GlobalOffset = Activity.IsFullEarthCoverage() ? 0d : 
+             -Activity.Registrations
+                .Where(r => !r.LongitudeRange.OverlappingLeft)
+                .Min(r => r.LongitudeRange.Range.Start)
+                .NormaliseLongitude();
 
             return ExecutionResult.Next();
         }

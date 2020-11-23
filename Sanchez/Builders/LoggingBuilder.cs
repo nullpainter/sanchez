@@ -19,7 +19,7 @@ namespace Sanchez.Builders
         {
             var builder = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .MinimumLevel.Override("WorkflowCore", LogEventLevel.Information)
+                .MinimumLevel.Override("WorkflowCore", LogEventLevel.Warning)
                 .WriteTo.RollingFile(
                     Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), 
                     LogEventLevel.Information, 

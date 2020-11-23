@@ -1,6 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using JetBrains.Annotations;
 using Sanchez.Processing.Extensions;
+using Sanchez.Processing.ImageProcessing.Offset;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
@@ -11,28 +12,26 @@ using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
     internal sealed class CropImage : StepBody, IActivityStepBody
     {
-        private readonly RenderOptions _options;
-
-        public CropImage(RenderOptions options) => _options = options;
-
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
         public Rectangle? CropBounds { get; [UsedImplicitly] set; }
 
         public Activity? Activity { get; set; }
+        public double GlobalOffset { get; [UsedImplicitly] set; }
 
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             Guard.Against.Null(TargetImage, nameof(TargetImage));
+            Guard.Against.Null(Activity, nameof(Activity));
 
-            if (!_options.NoUnderlay)
+            // TODO comment
+            if (!Activity.IsFullEarthCoverage())
             {
-                Guard.Against.Null(Activity, nameof(Activity));
-                var xPixelRange = Activity.GetVisibleLongitudeRange().UnwrapLongitude().ToPixelRangeX(TargetImage.Width);
-                if (xPixelRange.Range > 0) TargetImage.Mutate(c => c.Crop(new Rectangle(0, 0, xPixelRange.Range, c.GetCurrentSize().Height)));
+                var offset = GlobalOffset.ToX(TargetImage.Width);
+                TargetImage.HorizontalOffset(offset);
             }
 
             if (CropBounds != null) TargetImage.Mutate(ctx => ctx.Crop(CropBounds.Value));
@@ -50,7 +49,9 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
                 .Then<TStep, CropImage, TData>("Crop image")
                 .WithActivity()
                 .Input(step => step.TargetImage, data => data.TargetImage)
-                .Input(step => step.CropBounds, data => data.CropBounds);
+                .Input(step => step.GlobalOffset, data => data.GlobalOffset)
+                .Input(step => step.CropBounds, data => data.CropBounds)
+                .Input(step => step.Activity, data => data.Activity);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace Sanchez.Workflow.Builders
         internal static IServiceCollection AddCommonSteps(this IServiceCollection services)
         {
             return services
-                .AddTransient<EqualiseOverlayHistogram>()
                 .AddTransient<ComposeOverlay>()
                 .AddTransient<RenderOverlay>()
                 .AddTransient<GetSourceFiles>()

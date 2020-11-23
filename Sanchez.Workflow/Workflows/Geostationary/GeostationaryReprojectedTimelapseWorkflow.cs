@@ -5,6 +5,7 @@ using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Steps.Common;
+using Sanchez.Workflow.Steps.Equirectangular;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using Sanchez.Workflow.Steps.Equirectangular.Timelapse;
 using Sanchez.Workflow.Steps.Geostationary;
@@ -43,7 +44,6 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                                 .ToEquirectangular()
                             )
                             .StitchImages()
-                            .EqualiseOverlayHistogram(data => data.TargetImage)
                             .RenderOverlay(data => data.TargetImage)
                             .RenderUnderlay()
                             .ComposeOverlay()

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Sanchez.Processing.Models.Configuration;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Models.Projections
 {
@@ -55,12 +54,12 @@ namespace Sanchez.Processing.Models.Projections
         /// <summary>
         ///     Visible longitude range of satellite, minus overlapping ranges if required.
         /// </summary>
-        public Range LongitudeRange { get; set; }
+        public ProjectionRange? LongitudeRange { get; set; }
 
         /// <summary>
         ///     Visible latitude range of satellite.
         /// </summary>
-        public Range LatitudeRange { get; set; }
+        public ProjectionRange? LatitudeRange { get; set; }
 
         /// <summary>
         ///     Path to output file, if saving an image per satellite image.
