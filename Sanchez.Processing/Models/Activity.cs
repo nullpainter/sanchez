@@ -18,23 +18,19 @@ namespace Sanchez.Processing.Models
        
         public Activity(IEnumerable<Registration> registrations) => Registrations = registrations.ToList();
 
+        /// <summary>
+        ///     Whether satellite imagery is covering the entire Earth. This is performed by verifying that all satellites
+        ///     have overlapping visible coverage.
+        /// </summary>
+        public bool IsFullEarthCoverage() => Registrations.All(r => r.LongitudeRange!.OverlappingLeft && r.LongitudeRange.OverlappingRight);
+
         public void GetCropRange(out Range latitudeRange, out Range longitudeRange)
         {
             latitudeRange = new Range(
-                Registrations.Max(a => a.LatitudeRange.Start),
-                Registrations.Min(a => a.LatitudeRange.End));
+                Registrations.Max(a => a.LatitudeRange!.Range.Start),
+                Registrations.Min(a => a.LatitudeRange!.Range.End));
 
-            longitudeRange = GetVisibleLongitudeRange();
-        }
-
-        public Range GetVisibleLongitudeRange()
-        {
-            var sortedActivities = Registrations.OrderBy(p => p.OffsetX).ToList();
-
-            return new Range(
-                sortedActivities.First().LongitudeRange.Start,
-                sortedActivities.Last().LongitudeRange.End
-            ).UnwrapLongitude();
+            longitudeRange = new Range(Angle.FromDegrees(-180), Angle.FromDegrees(180));
         }
 
         public async Task LoadAllAsync()

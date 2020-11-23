@@ -16,6 +16,11 @@ namespace Sanchez.Processing.Extensions.Images
                 .NormaliseSize(options.ImageSize)
                 .RemoveBackground();
 
+            if (registration.Definition.Invert)
+            {
+                registration.Image.Mutate(c => c.Invert());
+            }
+
             if (options.AutoAdjustLevels)
             {
                 registration.Image!.AdjustLevels();

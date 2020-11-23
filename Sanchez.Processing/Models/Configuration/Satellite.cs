@@ -1,14 +1,14 @@
 ﻿using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models.Angles;
-using Sanchez.Processing.Services.Filesystem;
 
 namespace Sanchez.Processing.Models.Configuration
 {
     public class SatelliteDefinition
     {
-        /// <param name="filenamePrefix"></param>
         /// <param name="displayName"></param>
-        /// <param name="filenameParserType"></param>
+        /// <param name="filenamePrefix"></param>
+        /// <param name="filenameSuffix"></param>
+        /// <param name="invert"></param>
         /// <param name="longitude"></param>
         /// <param name="latitudeRange"></param>
         /// <param name="longitudeRange"></param>
@@ -16,9 +16,10 @@ namespace Sanchez.Processing.Models.Configuration
         /// <param name="crop"></param>
         /// <param name="brightness"></param>
         public SatelliteDefinition(
-            string displayName, 
-            string filenamePrefix, 
-            FilenameParserType filenameParserType,
+            string displayName,
+            string? filenamePrefix,
+            string? filenameSuffix,
+            bool invert,
             double longitude,
             Range latitudeRange,
             Range longitudeRange,
@@ -27,7 +28,8 @@ namespace Sanchez.Processing.Models.Configuration
             float brightness = 1.0f)
         {
             FilenamePrefix = filenamePrefix;
-            FilenameParserType = filenameParserType;
+            FilenameSuffix = filenameSuffix;
+            Invert = invert;
             DisplayName = displayName;
             LatitudeRange = latitudeRange;
             LongitudeRange = longitudeRange;
@@ -39,18 +41,25 @@ namespace Sanchez.Processing.Models.Configuration
             Longitude = longitude.NormaliseLongitude();
         }
 
-        public string FilenamePrefix { get; }
-        public FilenameParserType FilenameParserType { get; }
+        public string? FilenamePrefix { get; }
+        public string? FilenameSuffix { get; }
+
+        /// <summary>
+        ///     Whether pixel intensities in IR images should be inverted to match GOES-R.
+        /// </summary>
+        public bool Invert { get; set; }
+
         public string DisplayName { get; }
         public Range LatitudeRange { get; }
         public Range LongitudeRange { get; }
         public double Longitude { get; }
         public double Height { get; }
-        
+
         /// <summary>
         ///     Image crop ratio. This is expected to be a four element array of {top, right, bottom, left}.
         /// </summary>
         public double[]? Crop { get; }
+
         public float Brightness { get; }
     }
 }

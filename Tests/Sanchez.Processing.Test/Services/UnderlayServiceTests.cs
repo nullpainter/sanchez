@@ -1,11 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Drawing;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
-using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Test.Common;
+using SixLabors.ImageSharp.PixelFormats;
+using Range = Sanchez.Processing.Models.Angles.Range;
+using Size = SixLabors.ImageSharp.Size;
 
 namespace Sanchez.Processing.Test.Services
 {
@@ -24,25 +28,27 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public async Task EquirectangularUnderlay()
         {
-            var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
-            var options = new UnderlayProjectionData(
+            var data = new UnderlayProjectionData(
                 ProjectionType.Equirectangular,
                 InterpolationType.NearestNeighbour,
                 "underlay.jpg",
-                5424);
+                5424,
+                new Size(5424, 5424),
+                new Range(0, Math.PI / 2));
 
-            var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
+            var underlay = await UnderlayService.GetUnderlayAsync(data, definition);
 
-            underlay.Width.Should().Be(10848);
+            underlay.Width.Should().Be(5424);
             underlay.Height.Should().Be(5424);
         }
 
         [Test]
         public async Task EquirectangularUnderlayWithCrop()
         {
-            var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
             var options = new UnderlayProjectionData(
@@ -50,8 +56,7 @@ namespace Sanchez.Processing.Test.Services
                 InterpolationType.NearestNeighbour,
                 "underlay.jpg",
                 5424,
-                latitudeCrop: new Range(Angle.FromDegrees(45), Angle.FromDegrees(-45)),
-                longitudeCrop: new Range(Angle.FromDegrees(-100), Angle.FromDegrees(100)));
+                latitudeCrop: new Range(Angle.FromDegrees(45), Angle.FromDegrees(-45)));
 
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
@@ -62,33 +67,33 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public async Task GeostationaryUnderlay()
         {
-            var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
             var options = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, "underlay.jpg", 5424, 1000);
+                InterpolationType.NearestNeighbour, "underlay.jpg", 5424);
 
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
-            underlay.Width.Should().Be(1000);
-            underlay.Height.Should().Be(1000);
+            underlay.Width.Should().Be(5424);
+            underlay.Height.Should().Be(5424);
 
             // Retrieve cached
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
-            underlay.Width.Should().Be(1000);
-            underlay.Height.Should().Be(1000);
+            underlay.Width.Should().Be(5424);
+            underlay.Height.Should().Be(5424);
 
             // Verify changing options doesn't retrieve cached underlay
             options = new UnderlayProjectionData(
                 ProjectionType.Geostationary,
-                InterpolationType.NearestNeighbour, "underlay.jpg", 5424, 1500);
+                InterpolationType.NearestNeighbour, "underlay.jpg", 5424);
 
             underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
-            underlay.Width.Should().Be(1500);
-            underlay.Height.Should().Be(1500);
+            underlay.Width.Should().Be(5424);
+            underlay.Height.Should().Be(5424);
         }
     }
 }

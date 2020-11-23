@@ -4,6 +4,7 @@ using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Steps.Common;
+using Sanchez.Workflow.Steps.Equirectangular;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using Sanchez.Workflow.Steps.Equirectangular.Timelapse;
 using WorkflowCore.Interface;
@@ -39,7 +40,6 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                                 .ToEquirectangular()
                             )
                             .StitchImages()
-                            .EqualiseOverlayHistogram(data => data.TargetImage)
                             .RenderOverlay(data => data.TargetImage)
                             .GetCropBounds()
                             .RenderUnderlay()

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
-using Sanchez.Processing.ImageProcessing.Offset;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
@@ -33,7 +32,7 @@ namespace Sanchez.Processing.Services.Underlay
 
         public UnderlayService(
             ILogger<UnderlayService> logger,
-            IUnderlayCache cache, 
+            IUnderlayCache cache,
             RenderOptions options)
         {
             _logger = logger;
@@ -71,16 +70,10 @@ namespace Sanchez.Processing.Services.Underlay
         /// </summary>
         private void Resize(UnderlayProjectionData data, Image<Rgba32> underlay)
         {
-            if (data.TargetHeight == null) return;
+            if (data.TargetSize == null) return;
 
             // Resize underlay to target image size
-            var targetHeight = data.TargetHeight.Value;
-
-            // Ensure correct aspect ratio
-            var targetWidth = (int) Math.Round(underlay.Width / (float) underlay.Height * targetHeight);
-            _logger.LogInformation("Resizing underlay to {width} x {height} px", targetWidth, targetHeight);
-
-            underlay.Mutate(c => c.Resize(targetWidth, targetHeight));
+            underlay.Mutate(c => c.Resize(data.TargetSize.Value));
         }
 
         /// <summary>
@@ -98,30 +91,12 @@ namespace Sanchez.Processing.Services.Underlay
                     return underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, _options);
 
                 case ProjectionType.Equirectangular:
-
-                    // Optionally crop and offset to specified lat/long range
-                    if (data.CropSpecified)
-                    {
-                        Offset(underlay, data.LongitudeCrop!.Value);
-                        Crop(underlay, data.LatitudeCrop!.Value);
-                    }
+                    Crop(underlay, data.LatitudeCrop!.Value);
 
                     return underlay;
                 default:
                     throw new ArgumentOutOfRangeException($"Unhandled projection type: {data.Projection}");
             }
-        }
-
-        /// <summary>
-        ///     Offsets an equirectangular underlay to start at a specified longitude.
-        /// </summary>
-        private void Offset(Image<Rgba32> underlay, Range longitudeRange)
-        {
-            var xPixelRange = longitudeRange.ToPixelRangeX(underlay.Width);
-
-            var offset = -xPixelRange.Start;
-            _logger.LogInformation("Offsetting underlay by {pixels} px", offset);
-            underlay.HorizontalOffset(offset);
         }
 
         /// <summary>

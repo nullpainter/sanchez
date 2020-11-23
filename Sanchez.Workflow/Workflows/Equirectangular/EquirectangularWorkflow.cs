@@ -36,7 +36,6 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                                 .NormaliseImage()
                                 .ToEquirectangular()
                                 .StitchImages()
-                                .EqualiseOverlayHistogram(data => data.TargetImage)
                                 .RenderOverlay(data => data.TargetImage)
                                 .GetCropBounds()
                                 .RenderUnderlay()

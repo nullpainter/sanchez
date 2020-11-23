@@ -65,8 +65,8 @@ namespace Sanchez.Processing.Models
 
             internal static class CropRange
             {
-                internal const double DefaultMinLatitude = 81.3282;
-                internal const double DefaultMaxLatitude = -81.3282;
+                internal const double MinLatitude = 81.3282;
+                internal const double MaxLatitude = -81.3282;
             }
 
             public static class Offset

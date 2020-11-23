@@ -10,14 +10,14 @@ namespace Sanchez.Processing.Extensions
         /// <summary>
         ///     Converts an angle range to a X pixel range, assuming the target image has X pixel coordinates mapping from -180 to 180 degrees.
         /// </summary>
-        public static PixelRange ToPixelRangeX(this Range range, int width) => new PixelRange(range, angle => ToX(angle, width));
+        public static PixelRange ToPixelRangeX(this Range range, int width) => new PixelRange(range, angle => angle.ToX(width));
 
         /// <summary>
         ///     Converts an angle range to a Y pixel range, assuming the target image has Y pixel coordinates mapping from -90 to 90 degrees.
         /// </summary>
-        public static PixelRange ToPixelRangeY(this Range range, int height) => new PixelRange(range, angle => ToY(angle, height));
+        public static PixelRange ToPixelRangeY(this Range range, int height) => new PixelRange(range, angle => angle.ToY(height));
 
-        private static int ToY(double angle, int height) => (int) Math.Round(height - (angle + Constants.PiOver2) * height / Math.PI);
-        private static int ToX(double angle, int width) => (int) Math.Round((angle + Math.PI) * width / Constants.Pi2);
+        public static int ToY(this double angle, int height) => (int) Math.Round(height - (angle + Constants.PiOver2) * height / Math.PI);
+        public static int ToX(this double angle, int width) => (int) Math.Round((angle + Math.PI) * width / Constants.Pi2);
     }
 }

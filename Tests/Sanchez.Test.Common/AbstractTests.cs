@@ -5,8 +5,11 @@ using NUnit.Framework;
 using Sanchez.Builders;
 using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Angles;
+using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Options;
 using Sanchez.Processing.Services;
+using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Processing.Test.Helper;
 using Sanchez.Services;
@@ -24,8 +27,8 @@ namespace Sanchez.Test.Common
         /// </summary>
         protected const double Precision = 0.000001;
 
-        protected const string Goes16DefinitionPrefix = "GOES16_FD_CH13_";
-        protected const string Goes17DefinitionPrefix = "GOES17_FD_CH13_";
+        protected const string Goes16DefinitionPrefix = "GOES16_FD_CH13_20200830T033031Z.jpg";
+        protected const string Goes16Filename = "GOES17_FD_CH13_20200830T033031Z.jpg";
 
         private static string DefinitionsPath => Path.Combine(TestContext.CurrentContext.TestDirectory, Constants.DefaultDefinitionsPath);
         protected RenderOptions RenderOptions => GetService<RenderOptions>();

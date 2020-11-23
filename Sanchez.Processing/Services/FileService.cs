@@ -2,10 +2,8 @@
 using System.IO;
 using System.Linq;
 using DotNet.Globbing;
-using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Projections;
-using Sanchez.Processing.Services.Filesystem;
 
 namespace Sanchez.Processing.Services
 {
@@ -29,19 +27,13 @@ namespace Sanchez.Processing.Services
     {
         private readonly RenderOptions _options;
         private readonly ISatelliteRegistry _registry;
-        private readonly FilenameParserProvider _filenameParserProvider;
-        private readonly ILogger<FileService> _logger;
 
         public FileService(
             RenderOptions options,
-            ISatelliteRegistry registry,
-            FilenameParserProvider filenameParserProvider,
-            ILogger<FileService> logger)
+            ISatelliteRegistry registry)
         {
             _options = options;
             _registry = registry;
-            _filenameParserProvider = filenameParserProvider;
-            _logger = logger;
         }
 
         public List<Registration> ToRegistrations(List<string> sourceFiles)
@@ -50,17 +42,9 @@ namespace Sanchez.Processing.Services
 
             foreach (var file in sourceFiles)
             {
-                var definition = _registry.Locate(file);
+                var (definition, timestamp) = _registry.Locate(file);
                 if (definition == null) continue;
 
-                var parser = _filenameParserProvider.GetParser(definition.FilenameParserType);
-                if (parser == null)
-                {
-                    _logger.LogWarning("Unable to find parser for type {type}", definition.FilenameParserType);
-                    continue;
-                }
-
-                var timestamp = parser.GetTimestamp(file);
                 registrations.Add(new Registration(file, definition, timestamp));
             }
 

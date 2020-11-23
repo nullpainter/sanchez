@@ -52,7 +52,7 @@ namespace Sanchez.Processing.Projections
         /// </summary>
         /// <param name="scanningX">horizontal scanning angle in radians</param>
         /// <param name="verticalScanningCalculations">vertical scanning calculations</param>
-        /// <param name="definition">satellite definition</param>
+        /// <param name="satelliteLongitude">satellite longitude</param>
         /// <param name="latitude">calculated latitude in radians</param>
         /// <param name="longitude">calculated longitude in radians</param>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]

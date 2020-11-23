@@ -14,7 +14,7 @@ using ShellProgressBar;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
     public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
     {

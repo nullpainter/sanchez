@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Sanchez.Processing.Services.Filesystem;
 
 namespace Sanchez.Processing.Models.Configuration
 {
@@ -7,13 +6,22 @@ namespace Sanchez.Processing.Models.Configuration
     {
         [JsonProperty("DisplayName", Required = Required.Always)]
         public string DisplayName { get; set; } = null!;
-        
-        [JsonProperty("FilenamePrefix", Required = Required.Always)]
-        public string FilenamePrefix { get; set; } = null!;
-        
-        [JsonProperty("FilenameParser", Required = Required.Always)]
-        public FilenameParserType FilenameParserType { get; set; }
-        
+
+        [JsonProperty("FilenamePrefix")]
+        public string? FilenamePrefix { get; set; } 
+
+        /// <summary>
+        ///     Regular expression matching filename suffixes.
+        /// </summary>
+        [JsonProperty("FilenameSuffix")]
+        public string? FilenameSuffix { get; set; } 
+
+        /// <summary>
+        ///     Whether pixel intensities in IR images should be inverted to match GOES-R.
+        /// </summary>
+        [JsonProperty("Invert")]
+        public bool Invert { get; set; }
+
         [JsonProperty("Longitude", Required = Required.Always)]
         public double Longitude { get; set; }
 
@@ -23,9 +31,6 @@ namespace Sanchez.Processing.Models.Configuration
         /// </summary>
         [JsonProperty("LongitudeAdjustment")]
         public double? LongitudeAdjustment { get; set; }
-        
-        [JsonProperty("CropRange", Required = Required.Always)]
-        public CropRange CropRange { get; set; } = new CropRange();
 
         [JsonProperty("Height")]
         public double Height { get; set; } = Constants.Satellite.DefaultHeight;

@@ -16,7 +16,7 @@ using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
     public sealed class RenderUnderlay : StepBodyAsync, IActivityStepBody
     {
@@ -35,16 +35,16 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
         }
         
         public Activity? Activity { get; set; }
-        internal Image<Rgba32>? TargetImage { get; set;  }
-        
+        internal Image<Rgba32>? TargetImage { get; set; }
+        public Rectangle? CropBounds { get; set; }
+
         public override async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
         {
             Guard.Against.Null(Activity, nameof(Activity));
             Guard.Against.Null(TargetImage, nameof(TargetImage));
 
-            // Determine visible range of all satellite imagery
             Activity.GetCropRange(out var latitudeRange, out var longitudeRange);
-
+            
             // Load underlay
             if (_options.NoUnderlay)
             {
@@ -69,9 +69,9 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
                 _options.InterpolationType,
                 _options.UnderlayPath,
                 _options.ImageSize,
-                TargetImage!.Height,
+                TargetImage!.Size(),
                 latitudeRange,
-                longitudeRange);
+                longitudeRange.Start);
 
             _logger.LogInformation("Retrieving underlay");
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions);
@@ -82,7 +82,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
                 _logger.LogInformation("Blending with underlay");
                 underlay.Mutate(ctx => ctx.DrawImage(TargetImage, PixelColorBlendingMode.Screen, 1.0f));
             }
-
+            
             TargetImage = underlay;
 
             return ExecutionResult.Next();
@@ -99,6 +99,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
                 .Then<TStep, RenderUnderlay, TData>("Render underlay")
                 .WithActivity()
                 .Input(step => step.TargetImage, data => data.TargetImage)
+                .Input(step => step.CropBounds, data => data.CropBounds)
                 .Output(data => data.TargetImage, step => step.TargetImage);
         }
     }

@@ -17,13 +17,13 @@ namespace Sanchez.Processing.Test.Projections
         [Description("Sample equation from GOES-R documentation")]
         public void TextbookToScanningAngle()
         {
-            var definition = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
             Assert.NotNull(definition, "Unable to find satellite definition");
 
             GeostationaryProjection.ToScanningAngle(
                 FromDegrees(33.846162).Radians,
                 FromDegrees(-84.690932).Radians,
-                definition,
+                definition!,
                 out var scanningX,
                 out var scanningY);
 
@@ -34,7 +34,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void ProjectionFernandinaIsland()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition, "Unable to find satellite definition");
             
             var imageOffset = Constants.Satellite.Offset.TwoKm;
@@ -46,7 +46,7 @@ namespace Sanchez.Processing.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition.Longitude, definition.Height, out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition!.Longitude, definition.Height, out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(-0.4489090116682934, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(-91.39243691622593, Precision);
@@ -55,7 +55,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void ProjectionLakeTaupo()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition, "Unable to find satellite definition");
             
             var imageOffset = Constants.Satellite.Offset.TwoKm;
@@ -67,7 +67,7 @@ namespace Sanchez.Processing.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition.Longitude, definition.Height,  out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition!.Longitude, definition.Height,  out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(-38.70625734950147, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(175.9626023681634, Precision);
@@ -86,7 +86,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void ProjectionKauai()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition, "Unable to find satellite definition");
        
             var imageOffset = Constants.Satellite.Offset.TwoKm;
@@ -98,7 +98,7 @@ namespace Sanchez.Processing.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition.Longitude, definition.Height,  out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition!.Longitude, definition.Height,  out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(21.869911403254573, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(-159.66206692006023, Precision);
@@ -117,7 +117,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void ProjectionCalifornia()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition, "Unable to find satellite definition");
        
             var imageOffset = Constants.Satellite.Offset.TwoKm;
@@ -129,7 +129,7 @@ namespace Sanchez.Processing.Test.Projections
             var scanningX = imageOffset.ToHorizontalScanningAngle(x);
             var scanningY = imageOffset.ToVerticalScanningAngle(y);
 
-            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition.Longitude, definition.Height, out var latitude, out var longitude);
+            ReverseGeostationaryProjection.ToLatitudeLongitude(scanningX, scanningY, definition!.Longitude, definition.Height, out var latitude, out var longitude);
 
             FromRadians(latitude).Degrees.Should().BeApproximately(28.007393788242464, Precision);
             FromRadians(longitude).Degrees.Should().BeApproximately(-115.44783176403854, Precision);
@@ -148,7 +148,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void TextbookToScanningAngleCentre()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var definition = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition);
 
             var scanningX = Constants.Satellite.Offset.TwoKm.ToHorizontalScanningAngle(2712);
@@ -161,7 +161,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void ToScanningAngleTopLeft()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var definition = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition);
 
             var scanningX = Constants.Satellite.Offset.TwoKm.ToHorizontalScanningAngle(0);
@@ -174,7 +174,7 @@ namespace Sanchez.Processing.Test.Projections
         [Test]
         public void ToScanningAngleBottomRight()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var definition = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition);
 
             var scanningX = Constants.Satellite.Offset.TwoKm.ToHorizontalScanningAngle(5423);
@@ -188,7 +188,7 @@ namespace Sanchez.Processing.Test.Projections
         [Description("Sample equation from GOES-R documentation")]
         public void TextbookToImageCoordinates()
         {
-            var definition = SatelliteRegistry.Locate(Goes17DefinitionPrefix);
+            var definition = SatelliteRegistry.Locate(Goes16Filename);
             Assert.NotNull(definition, "Cannot find satellite definition");
 
             var imageOffset = Constants.Satellite.Offset.TwoKm;

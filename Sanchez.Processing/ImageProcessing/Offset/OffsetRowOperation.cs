@@ -1,4 +1,5 @@
 ﻿using System;
+using Sanchez.Processing.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
@@ -23,7 +24,7 @@ namespace Sanchez.Processing.ImageProcessing.Offset
 
             for (var x = 0; x < row.Length; x++)
             {
-                var targetOffset = (x - _amount) % row.Length;
+                var targetOffset = (x - _amount).Limit(0, span.Length);
                 row[x] = span[targetOffset];
             }
         }

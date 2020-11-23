@@ -11,7 +11,7 @@ using ShellProgressBar;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular.Stitch
+namespace Sanchez.Workflow.Steps.Equirectangular
 {
     internal sealed class LoadImage : StepBodyAsync, IRegistrationStepBody, IProgressBarStepBody
     {
