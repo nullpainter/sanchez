@@ -25,12 +25,13 @@ namespace Sanchez.Processing.ImageProcessing.Projection
         /// <summary>
         ///     Longitude outside of the longitude range where the image is blended.
         /// </summary>
+        private readonly double _blendStartLongitude;
         private readonly double _blendEndLongitude;
-
+        
         /// <summary>
         ///     Ratio of source image which has an alpha mask applied to blend it with overlapping images.
         /// </summary>
-        private const float BlendRatio = 0.05f;
+        private const float BlendRatio = 0.10f;
 
         public ReprojectRowOperation(
             Registration registration,
@@ -48,17 +49,19 @@ namespace Sanchez.Processing.ImageProcessing.Projection
             _options = options;
 
             Guard.Against.Null(options.ImageOffset, nameof(options.ImageOffset));
+            Guard.Against.Null(registration.LongitudeRange, nameof(registration.LongitudeRange));
 
             _sourceBuffer = ImageBuffer.ToBuffer(source);
             _imageOffset = options.ImageOffset;
 
             // Normalise longitude range so it doesn't wrap around the map
-            _longitudeRange = registration.LongitudeRange.UnwrapLongitude();
+            _longitudeRange = registration.LongitudeRange.Range.UnwrapLongitude();
             _latitudeRange = registration.Definition.LatitudeRange;
 
-            // Calculate end longitude for blend
+            // Calculate longitude range for blend
             var overlap = BlendRatio * (_longitudeRange.End - _longitudeRange.Start);
             _blendEndLongitude = _longitudeRange.End + overlap;
+            _blendStartLongitude = _longitudeRange.Start - overlap;    
         }
 
         private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new ConcurrentDictionary<int, LatitudeCalculations>();
@@ -122,21 +125,32 @@ namespace Sanchez.Processing.ImageProcessing.Projection
             // Ignore pixels outside of disc and outside of crop region
             if (double.IsNaN(scanningX)
                 || double.IsNaN(scanningY)
-                || longitude < _longitudeRange.Start
+                || longitude < _blendStartLongitude
                 || longitude > _blendEndLongitude
                 || latitude > _latitudeRange.Start
                 || latitude < _latitudeRange.End) return Constants.Transparent;
 
             // Map pixel from source image if not blending
-            if (longitude <= _longitudeRange.End) return InterpolatePixel(scanningX, scanningY);
+            if (longitude <= _longitudeRange.End && longitude > _longitudeRange.Start) return InterpolatePixel(scanningX, scanningY);
+            
+            var pixel = InterpolatePixel(scanningX, scanningY);
+            double alpha;
 
             // Blending, so identify target alpha
-            var alpha = 1 - (longitude - _longitudeRange.End) / (_blendEndLongitude - _longitudeRange.End);
+            if (longitude > _longitudeRange.End)
+            {
+                // Right blend
+                alpha = 1 - (longitude - _longitudeRange.End) / (_blendEndLongitude - _longitudeRange.End);
+            }
+            else
+            {
+                // Left blend    
+                alpha = 1 - (_longitudeRange.Start - longitude) / (_longitudeRange.Start - _blendStartLongitude);
+            }
 
             // Calculate target pixel and blend
-            var pixel = InterpolatePixel(scanningX, scanningY);
-
             pixel.A = (byte) Math.Round(alpha * pixel.A);
+            
             return pixel;
         }
 
