@@ -29,7 +29,7 @@
     "DisplayName": "GEO-KOMPSAT-2A",
     "FilenamePrefix": "IMG_FD_",
     "Longitude": 128.2,
-    "Brightness": 0.9,
+    "Brightness": 0.97,
     "Crop": [
       0.006363,
       0.006363,
