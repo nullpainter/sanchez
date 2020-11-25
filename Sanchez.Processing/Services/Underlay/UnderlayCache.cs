@@ -18,12 +18,12 @@ namespace Sanchez.Processing.Services.Underlay
         /// <summary>
         ///     Retrieves an underlay image from the cache.
         /// </summary>
-        Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, ProjectionData data);
+        Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, UnderlayProjectionData data);
 
         /// <summary>
         ///     Sets an underlay image to the cache.
         /// </summary>
-        Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, ProjectionData data);
+        Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, UnderlayProjectionData data);
     }
 
     public class UnderlayCache : IUnderlayCache
@@ -50,7 +50,7 @@ namespace Sanchez.Processing.Services.Underlay
         /// <summary>
         ///     Retrieves an underlay image from the cache.
         /// </summary>
-        public async Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, ProjectionData data)
+        public async Task<Image<Rgba32>?> GetUnderlayAsync(SatelliteDefinition? definition, UnderlayProjectionData data)
         {
             var metadata = await _repository.GetCacheMetadataAsync(definition, data);
             if (metadata == null) return null;
@@ -96,7 +96,7 @@ namespace Sanchez.Processing.Services.Underlay
         /// <summary>
         ///     Sets an underlay image to the cache.
         /// </summary>
-        public async Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, ProjectionData data)
+        public async Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, UnderlayProjectionData data)
         {
             if (definition == null) _logger.LogInformation("Caching underlay");
             else _logger.LogInformation("{definition:l0} Caching underlay", definition.DisplayName);

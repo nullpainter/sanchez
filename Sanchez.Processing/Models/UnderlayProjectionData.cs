@@ -1,28 +1,53 @@
-﻿using Sanchez.Processing.Models.Configuration;
+﻿using JetBrains.Annotations;
+using Sanchez.Processing.Models.Angles;
+using Sanchez.Processing.Models.Configuration;
 using SixLabors.ImageSharp;
-using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Models
 {
-    public class UnderlayProjectionData : ProjectionData
+    public class UnderlayProjectionData
     {
-        public Size? TargetSize { get; }
-        public Range? LatitudeCrop { get; }
-
         public UnderlayProjectionData(
-            ProjectionType projection, 
+            ProjectionType projection,
             InterpolationType interpolation,
             string underlayPath,
             int imageSize,
             Size? targetSize = null,
-            Range? latitudeCrop = null, 
-            double? minLongitude = null
-            ) : base(projection, interpolation, imageSize, underlayPath)
+            Range? latitudeCrop = null,
+            double? minLongitude = null,
+            bool noCrop = false)
         {
+            Projection = projection;
+            Interpolation = interpolation;
+            UnderlayPath = underlayPath;
+            ImageSize = imageSize;
             TargetSize = targetSize;
             LatitudeCrop = latitudeCrop;
             MinLongitude = minLongitude;
+            NoCrop = noCrop;
         }
+
+        public ProjectionType Projection { get; }
+
+        /// <remarks>
+        ///     Used only to disambiguate cache entries.
+        /// </remarks>
+        public InterpolationType Interpolation { [UsedImplicitly] get; }
+
+        /// <remarks>
+        ///     Used only to disambiguate cache entries.
+        /// </remarks>
+        public int ImageSize { [UsedImplicitly] get; }
+
+        /// <remarks>
+        ///     Used only to disambiguate cache entries.
+        /// </remarks>
+        public string UnderlayPath { [UsedImplicitly] get; }
+
+        public bool NoCrop { [UsedImplicitly] get; }
+
+        public Size? TargetSize { get; }
+        public Range? LatitudeCrop { get; }
 
         public double? MinLongitude { get; }
     }
