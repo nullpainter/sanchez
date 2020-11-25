@@ -114,7 +114,7 @@ namespace Sanchez.Processing.Test.Models
         {
             return new RenderOptions
             {
-                EquirectangularRender = new EquirectangularRenderOptions(false, true, null)
+                EquirectangularRender = new EquirectangularRenderOptions(false, false, true, null)
             };
         }
     }

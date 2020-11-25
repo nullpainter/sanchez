@@ -31,6 +31,7 @@ namespace Sanchez.Services
 
             renderOptions.EquirectangularRender = new EquirectangularRenderOptions(
                 options.AutoCrop,
+                options.NoCrop,
                 options.Timestamp != null || options.IntervalMinutes != null, null
                 /*ExtentsHelper.ParseExtentsString(options.Extents)*/);
 

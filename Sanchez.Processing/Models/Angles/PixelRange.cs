@@ -10,6 +10,12 @@ namespace Sanchez.Processing.Models.Angles
         public int Start { get; }
         public int End { get; }
 
+        public PixelRange(int start, int end)
+        {
+            Start = start;
+            End = end;
+        }
+
         /// <summary>
         ///     Construct a pixel range from an angle range, utilising a custom transformation function
         ///     to convert.

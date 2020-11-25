@@ -16,25 +16,33 @@ namespace Sanchez.Workflow.Steps.Equirectangular
 {
     internal sealed class CropImage : StepBody, IActivityStepBody
     {
+        private readonly RenderOptions _options;
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
         public Rectangle? CropBounds { get; [UsedImplicitly] set; }
 
         public Activity? Activity { get; set; }
         public double GlobalOffset { get; [UsedImplicitly] set; }
 
+        public CropImage(RenderOptions options) => _options = options;
+
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             Guard.Against.Null(TargetImage, nameof(TargetImage));
             Guard.Against.Null(Activity, nameof(Activity));
-
-            // TODO comment
+            
+            // TODO comment and move; isn't related to cropping per-se
             if (!Activity.IsFullEarthCoverage())
             {
                 var offset = GlobalOffset.ToX(TargetImage.Width);
                 TargetImage.HorizontalOffset(offset);
             }
 
-            if (CropBounds != null) TargetImage.Mutate(ctx => ctx.Crop(CropBounds.Value));
+            // Don't crop target image if not required
+            if (!_options.EquirectangularRender!.NoCrop && CropBounds != null)
+            {
+                TargetImage.Mutate(ctx => ctx.Crop(CropBounds.Value));
+            }
+
             return ExecutionResult.Next();
         }
     }

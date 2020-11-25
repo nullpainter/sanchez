@@ -25,6 +25,30 @@ namespace Sanchez.Test
         }
 
         [Test]
+        public async Task SingleNoCrop()
+        {
+            const string sourceFile = "GOES17_FD_CH13_20200830T033031Z.jpg";
+
+            var rootDirectory = await CreateSingleSimpleImageAsync(State, sourceFile);
+
+            var outputDirectory = State.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var returnCode = await Bootstrapper.Main(
+                "reproject",
+                "-s", Path.Combine(rootDirectory, sourceFile),
+                "--nocrop",
+                "-vo", outputFile);
+
+            VerifySuccessfulExecution(returnCode);
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+            outputImage.Width.Should().Be(5424);
+            outputImage.Height.Should().Be(2712);
+        }
+
+        [Test]
         public async Task Single()
         {
             const string sourceFile = "GOES17_FD_CH13_20200830T033031Z.jpg";
@@ -209,7 +233,7 @@ namespace Sanchez.Test
             outputImage.Height.Should().Be(1908);
         }
 
-        
+
         [Test]
         public async Task SingleWithCropAndOverlay()
         {
@@ -217,7 +241,7 @@ namespace Sanchez.Test
 
             var rootDirectory = await CreateSingleSimpleImageAsync(State, sourceFile);
             await CreateImage(Path.Combine(rootDirectory, "Overlay.jpg"));
-            
+
             var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
 
@@ -235,7 +259,7 @@ namespace Sanchez.Test
             outputImage.Width.Should().Be(1870);
             outputImage.Height.Should().Be(1908);
         }
-        
+
         [Test]
         public async Task Quiet()
         {
