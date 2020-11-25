@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Extend;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Tint;
@@ -35,8 +36,8 @@ namespace Sanchez.Workflow.Steps.Equirectangular
         }
         
         public Activity? Activity { get; set; }
-        internal Image<Rgba32>? TargetImage { get; set; }
-        public Rectangle? CropBounds { get; set; }
+        internal Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
+        public Rectangle? CropBounds { get; [UsedImplicitly] set; }
 
         public override async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
         {
@@ -71,7 +72,8 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                 _options.ImageSize,
                 TargetImage!.Size(),
                 latitudeRange,
-                longitudeRange.Start);
+                longitudeRange.Start,
+                _options.EquirectangularRender?.NoCrop ?? false);
 
             _logger.LogInformation("Retrieving underlay");
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions);

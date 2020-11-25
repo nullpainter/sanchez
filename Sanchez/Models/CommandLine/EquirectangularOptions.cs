@@ -8,5 +8,8 @@ namespace Sanchez.Models.CommandLine
     {
         [Option('a', "autocrop", HelpText = "Whether to create an automatically cropped image.", Required = false, Default = false)]
         public bool AutoCrop { get; [UsedImplicitly] set; }
+        
+        [Option("nocrop", HelpText = "If no cropping should be performed", Required = false, Default = false)]
+        public bool NoCrop { get; [UsedImplicitly] set; }
     }
 }

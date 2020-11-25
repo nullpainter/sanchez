@@ -139,7 +139,7 @@ namespace Sanchez.Test
                 "-l", "174",
                 "-m", "3",
                 "-T 2020-08-30T03:50:20",
-                "-q");
+                "-qv");
 
             VerifySuccessfulExecution(returnCode);
 

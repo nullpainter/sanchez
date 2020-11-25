@@ -39,6 +39,28 @@ namespace Sanchez.Processing.Test.Services
                 new Size(5424, 5424),
                 new Range(0, Math.PI / 2));
 
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null);
+            var underlay = await UnderlayService.GetUnderlayAsync(data, definition);
+
+            underlay.Width.Should().Be(5424);
+            underlay.Height.Should().Be(5424);
+        }
+        
+        [Test]
+        public async Task EquirectangularUnderlayNoCrop()
+        {
+            var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
+            Assert.NotNull(definition, "Unable to find satellite definition");
+
+            var data = new UnderlayProjectionData(
+                ProjectionType.Equirectangular,
+                InterpolationType.NearestNeighbour,
+                "underlay.jpg",
+                1000,
+                new Size(5424, 5424),
+                new Range(0, Math.PI / 2));
+
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, true, false, null);
             var underlay = await UnderlayService.GetUnderlayAsync(data, definition);
 
             underlay.Width.Should().Be(5424);
@@ -58,6 +80,7 @@ namespace Sanchez.Processing.Test.Services
                 5424,
                 latitudeCrop: new Range(Angle.FromDegrees(45), Angle.FromDegrees(-45)));
 
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null);
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(10848);

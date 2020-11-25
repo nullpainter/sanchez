@@ -19,7 +19,7 @@ namespace Sanchez.Processing.Test.Filesystem
         [Test]
         public void LocateImages()
         {
-            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, true, null);
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, true, null);
 
             var targetTimestamp = new DateTime(2020, 08, 30, 03, 30, 00, DateTimeKind.Utc);
             RenderOptions.Tolerance = TimeSpan.FromMinutes(30);

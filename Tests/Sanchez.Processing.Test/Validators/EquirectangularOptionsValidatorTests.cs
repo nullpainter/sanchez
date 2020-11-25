@@ -66,7 +66,7 @@ namespace Sanchez.Processing.Test.Validators
 
             VerifyNoFailure(options);
         }
-       
+
         [Test]
         public void InvalidTolerance()
         {
@@ -85,6 +85,35 @@ namespace Sanchez.Processing.Test.Validators
 
             VerifyNoFailure(options);
         }
+
+        [Test]
+        public void AutoCrop()
+        {
+            var options = ValidOptions();
+            options.AutoCrop = true;
+
+            VerifyNoFailure(options);
+        }
+
+        [Test]
+        public void NoCrop()
+        {
+            var options = ValidOptions();
+            options.NoCrop = true;
+
+            VerifyNoFailure(options);
+        }
+
+        [Test]
+        public void InvalidCropCombination()
+        {
+            var options = ValidOptions();
+            options.NoCrop = true;
+            options.AutoCrop = true;
+
+            VerifyFailure(options, nameof(EquirectangularOptions.AutoCrop));
+        }
+
 
         private EquirectangularOptions ValidOptions()
         {
