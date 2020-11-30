@@ -36,5 +36,7 @@ namespace Sanchez.Processing.Models.Angles
         }
 
         public int Range => End - Start;
+
+        public override string ToString() => $"{nameof(Start)}: {Start}, {nameof(End)}: {End}";
     }
 }

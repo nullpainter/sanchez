@@ -93,7 +93,8 @@ namespace Sanchez.Processing.Services.Underlay
                 case ProjectionType.Equirectangular:
                     
                     // Perform latitude crop to match IR imagery if required
-                    if (_options.EquirectangularRender?.NoCrop == false) Crop(underlay, data.LatitudeCrop!.Value);
+                    var equirectangularOptions = _options.EquirectangularRender;
+                    if (equirectangularOptions?.NoCrop == false || equirectangularOptions?.ExplicitCrop == false) Crop(underlay, data.LatitudeCrop!.Value);
 
                     return underlay;
                 default:

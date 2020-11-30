@@ -55,11 +55,6 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                 return ExecutionResult.Next();
             }
 
-            if (explicitCrop && _options.EquirectangularRender!.LongitudeRange != null)
-            {
-                GlobalOffset = _options.EquirectangularRender!.LongitudeRange.Value.Start.NormaliseLongitude();
-            }
-
             CropBounds = autoCrop ? GetAutoCropBounds(TargetImage) : GetExplicitCropBounds(TargetImage);
             
             _logger.LogInformation("Cropped image size: {width} x {height} px", CropBounds.Width, CropBounds.Height);
@@ -72,13 +67,11 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             var latitudeRange = _options.EquirectangularRender!.LatitudeRange;
             var longitudeRange = _options.EquirectangularRender!.LongitudeRange;
 
-            Console.WriteLine("Global offset: " + Angle.FromRadians(GlobalOffset).Degrees);
-            if (longitudeRange != null) longitudeRange += GlobalOffset;
-            
-
-            var xPixelRange = longitudeRange != null ? longitudeRange!.Value.UnwrapLongitude().ToPixelRangeX(targetImage.Width) : new PixelRange(0, targetImage.Width);
+            // TODO comment on global offset here
+            var xPixelRange = (longitudeRange + GlobalOffset)?.UnwrapLongitude().ToPixelRangeX(targetImage.Width) ?? new PixelRange(0, targetImage.Width);
             var yPixelRange = latitudeRange != null ? latitudeRange!.Value.ToPixelRangeY(targetImage.Height) : new PixelRange(0, targetImage.Height);
-
+            
+            _logger.LogDebug("Crop bounds: x={xBounds}, y={yBounds}", xPixelRange, yPixelRange);
             return new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range);
         }
 
@@ -128,7 +121,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                 .Input(step => step.FullEarthCoverage, data => data.Activity!.IsFullEarthCoverage())
                 .Input(step => step.TargetImage, data => data.TargetImage)
                 .Input(step => step.Activity, data => data.Activity)
-                .Output(data=> data.GlobalOffset, step => step.GlobalOffset)
+                .Input(data=> data.GlobalOffset, step => step.GlobalOffset)
                 .Output(data => data.CropBounds, step => step.CropBounds);
         }
     }
