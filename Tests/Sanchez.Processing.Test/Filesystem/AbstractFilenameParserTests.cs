@@ -1,6 +1,5 @@
 ﻿using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
-using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Filesystem

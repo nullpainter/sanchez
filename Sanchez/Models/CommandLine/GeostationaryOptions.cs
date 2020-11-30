@@ -10,6 +10,7 @@ namespace Sanchez.Models.CommandLine
     [Verb("geostationary", true, HelpText = "Composite a full-colour underlay with geostationary IR satellite images")]
     public class GeostationaryOptions : CommandLineOptions
     {
+        // TODO replace this with longitude which takes a colon-separated list to be consistent with equirectangula
         [Option('l', "longitude", HelpText = "Target longitude for geostationary satellite projection", Required = false)]
         public double? LongitudeDegrees { get; [UsedImplicitly] set; }
         

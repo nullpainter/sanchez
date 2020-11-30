@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -7,7 +6,6 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Test.Common;
-using SixLabors.ImageSharp.PixelFormats;
 using Range = Sanchez.Processing.Models.Angles.Range;
 using Size = SixLabors.ImageSharp.Size;
 
@@ -39,7 +37,7 @@ namespace Sanchez.Processing.Test.Services
                 new Size(5424, 5424),
                 new Range(0, Math.PI / 2));
 
-            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null);
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, false);
             var underlay = await UnderlayService.GetUnderlayAsync(data, definition);
 
             underlay.Width.Should().Be(5424);
@@ -80,7 +78,7 @@ namespace Sanchez.Processing.Test.Services
                 5424,
                 latitudeCrop: new Range(Angle.FromDegrees(45), Angle.FromDegrees(-45)));
 
-            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null);
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, false);
             var underlay = await UnderlayService.GetUnderlayAsync(options, definition);
 
             underlay.Width.Should().Be(10848);

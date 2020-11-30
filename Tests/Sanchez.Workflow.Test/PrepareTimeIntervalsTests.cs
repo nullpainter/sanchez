@@ -22,7 +22,7 @@ namespace Sanchez.Workflow.Test
         {
             base.SetUp();
             _step = GetService<PrepareTimeIntervals>();
-            
+
             Options.Timestamp = null;
             Options.EndTimestamp = null;
         }
@@ -33,6 +33,7 @@ namespace Sanchez.Workflow.Test
             _step.SourceRegistrations = CreateRegistrations();
             Options.Interval = TimeSpan.FromHours(1);
 
+            // Run method under test
             await _step.RunAsync(new StepExecutionContext());
 
             _step.TimeIntervals.Should().BeEquivalentTo(DateTime.Today.AddHours(-2), DateTime.Today.AddHours(-1));
@@ -70,6 +71,7 @@ namespace Sanchez.Workflow.Test
             Options.Timestamp = DateTime.Today.AddHours(-1);
             Options.EndTimestamp = DateTime.Today.AddHours(2);
 
+            // Run method under test
             await _step.RunAsync(new StepExecutionContext());
 
             _step.TimeIntervals.Should().BeEquivalentTo(DateTime.Today.AddHours(-1), DateTime.Today.AddHours(0), DateTime.Today.AddHours(1));

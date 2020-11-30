@@ -7,6 +7,10 @@ namespace Sanchez.Processing.Services
 {
     public interface IVisibleRangeService
     {
+        /// <summary>
+        ///     Calculates the minimum and maximum longitude of imagery visible to a geostationary satellite.
+        /// </summary>
+        /// <param name="satelliteLongitude">longitude of satellite</param>
         Range GetVisibleRange(Angle satelliteLongitude);
     }
 
@@ -16,14 +20,15 @@ namespace Sanchez.Processing.Services
 
         public VisibleRangeService(RenderOptions options) => _options = options;
 
+        /// <summary>
+        ///     Calculates the minimum and maximum longitude of imagery visible to a geostationary satellite.
+        /// </summary>
+        /// <param name="satelliteLongitude">longitude of satellite</param>
         public Range GetVisibleRange(Angle satelliteLongitude)
         {
             Guard.Against.Null(_options.ImageOffset, nameof(_options.ImageOffset));
 
-            // TOOD remove latitude stuff
-            var scanningY = _options.ImageOffset!.ToVerticalScanningAngle(_options.ImageSize / 2); //FIXME
-
-            // TODO remove satellite height from json / models - really not necessary 
+            var scanningY = _options.ImageOffset!.ToVerticalScanningAngle(_options.ImageSize / 2);
             var verticalScanningCalculations = ReverseGeostationaryProjection.VerticalScanningCalculations(scanningY, Constants.Satellite.DefaultHeight);
 
             var minLongitude = GetMinLongitude(satelliteLongitude, verticalScanningCalculations);
@@ -32,9 +37,16 @@ namespace Sanchez.Processing.Services
             return new Range(minLongitude, maxLongitude);
         }
 
+        /// <summary>
+        ///     Brute force calculation of maximum longitude visible to a geostationary satellite.
+        /// </summary>
         private double GetMaxLongitude(Angle satelliteLongitude, VerticalScanningCalculations verticalScanningCalculations)
         {
             double maxLongitude = 0;
+
+            // Projection returns double.NaN if a scanning angle doesn't correspond to a latitude and longitude visible to the
+            // satellite. The maximum longitude is calculated in a brute force manner by scanning backwards from the maximum x
+            // coordinate until a valid longitude is identified.
             for (var x = _options.ImageSize - 1; x > 0; x--)
             {
                 var scanningX = _options.ImageOffset!.ToHorizontalScanningAngle(x);
@@ -47,9 +59,16 @@ namespace Sanchez.Processing.Services
             return maxLongitude;
         }
 
+        /// <summary>
+        ///     Brute force calculation of minimum longitude visible to a geostationary satellite.
+        /// </summary>
         private double GetMinLongitude(Angle satelliteLongitude, VerticalScanningCalculations verticalScanningCalculations)
         {
             double minLongitude = 0;
+
+            // Projection returns double.NaN if a scanning angle doesn't correspond to a latitude and longitude visible to the
+            // satellite. The minimum longitude is calculated in a brute force manner by scanning from the minimum x coordinate
+            // until a valid longitude is identified.
             for (var x = 0; x < _options.ImageSize; x++)
             {
                 var scanningX = _options.ImageOffset!.ToHorizontalScanningAngle(x);
