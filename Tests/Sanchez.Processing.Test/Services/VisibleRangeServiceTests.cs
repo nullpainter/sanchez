@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Services;

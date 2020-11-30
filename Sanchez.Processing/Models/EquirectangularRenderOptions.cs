@@ -1,4 +1,6 @@
-﻿namespace Sanchez.Processing.Models
+﻿using Sanchez.Processing.Models.Angles;
+
+namespace Sanchez.Processing.Models
 {
     public class EquirectangularRenderOptions
     {
@@ -6,12 +8,14 @@
             bool autoCrop, 
             bool noCrop,
             bool stitchImages, 
-            Extents? extents)
+            Range? latitudeRange = null,
+            Range? longitudeRange = null)
         {
             AutoCrop = autoCrop;
             NoCrop = noCrop;
             StitchImages = stitchImages;
-            Extents = extents;
+            LatitudeRange = latitudeRange;
+            LongitudeRange = longitudeRange;
         }
 
         public bool AutoCrop { get; }
@@ -23,8 +27,18 @@
         public bool StitchImages { get; }
 
         /// <summary>
-        ///     Manual crop extents.
+        ///     Optional latitude crop.
         /// </summary>
-        public Extents? Extents { get; }
+        public Range? LatitudeRange { get; }
+
+        /// <summary>
+        ///     Optional longitude crop.
+        /// </summary>
+        public Range? LongitudeRange { get; }
+
+        /// <summary>
+        ///     Whether the user has specified crop bounds.
+        /// </summary>
+        public bool ExplicitCrop => LatitudeRange != null || LongitudeRange != null;
     }
 }

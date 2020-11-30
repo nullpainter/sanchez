@@ -31,7 +31,7 @@ namespace Sanchez.Processing.Test.Services
             var renderOptions = OptionsParser.Populate(options);
             Assert.NotNull(renderOptions.GeostationaryRender);
 
-            renderOptions.GeostationaryRender.Longitude.Should().Be(Angle.FromDegrees(147).Radians);
+            renderOptions.GeostationaryRender!.Longitude.Should().Be(Angle.FromDegrees(147).Radians);
             renderOptions.GeostationaryRender.HazeAmount.Should().Be(0.5f);
             renderOptions.InterpolationType.Should().Be(InterpolationType.NearestNeighbour);
             renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.TwoKm);
@@ -54,13 +54,25 @@ namespace Sanchez.Processing.Test.Services
                 Brightness = 1.2f,
                 Saturation = 0.5f,
                 Force = true,
-                Verbose = true
+                Verbose = true,
+                LongitudeRange = "-180:180",
+                LatitudeRange = "-50:50"
             };
 
             var renderOptions = OptionsParser.Populate(options);
             Assert.NotNull(renderOptions.EquirectangularRender);
 
-            renderOptions.EquirectangularRender.AutoCrop.Should().BeTrue();
+            renderOptions.EquirectangularRender!.AutoCrop.Should().BeTrue();
+
+            Assert.NotNull(renderOptions.EquirectangularRender.LatitudeRange);
+            Assert.NotNull(renderOptions.EquirectangularRender.LongitudeRange);
+
+            renderOptions.EquirectangularRender.LatitudeRange!.Value.Start.Should().Be(Angle.FromDegrees(-50).Radians);
+            renderOptions.EquirectangularRender.LatitudeRange!.Value.End.Should().Be(Angle.FromDegrees(50).Radians);
+
+            renderOptions.EquirectangularRender.LongitudeRange!.Value.Start.Should().Be(Angle.FromDegrees(-180).Radians);
+            renderOptions.EquirectangularRender.LongitudeRange!.Value.End.Should().Be(Angle.FromDegrees(180).Radians);
+
             renderOptions.SpatialResolution.Should().Be(Constants.Satellite.SpatialResolution.FourKm);
             renderOptions.Tint.Should().Be(Color.FromRgb(255, 0, 0));
             renderOptions.InterpolationType.Should().Be(InterpolationType.Bilinear);
