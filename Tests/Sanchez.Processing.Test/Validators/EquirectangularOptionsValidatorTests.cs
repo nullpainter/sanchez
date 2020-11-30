@@ -114,8 +114,54 @@ namespace Sanchez.Processing.Test.Validators
             VerifyFailure(options, nameof(EquirectangularOptions.AutoCrop));
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("-180:180")]
+        public void ValidLongitudeCrop(string longitudeRange)
+        {
+            var options = ValidOptions();
+            options.LongitudeRange = longitudeRange;
 
-        private EquirectangularOptions ValidOptions()
+            VerifyNoFailure(options);
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("-90:90")]
+        public void ValidLatitudeCrop(string latitudeRange)
+        {
+            var options = ValidOptions();
+            options.LatitudeRange = latitudeRange;
+
+            VerifyNoFailure(options);
+        }
+
+
+        [TestCase("1:2:3")]
+        [TestCase("1:")]
+        [TestCase("1:1")]
+        [TestCase("biscuits:bananas")]
+        public void MalformedLongitudeCrop(string range)
+        {
+            var options = ValidOptions();
+            options.LongitudeRange = range;
+
+            VerifyFailure(options, nameof(EquirectangularOptions.LongitudeRange));
+        }
+
+        [TestCase("1:2:3")]
+        [TestCase("1:")]
+        [TestCase("1:1")]
+        [TestCase("biscuits:bananas")]
+        public void MalformedLatitudeCrop(string range)
+        {
+            var options = ValidOptions();
+            options.LatitudeRange = range;
+
+            VerifyFailure(options, nameof(EquirectangularOptions.LatitudeRange));
+        }
+
+        private static EquirectangularOptions ValidOptions()
         {
             return new EquirectangularOptions
             {

@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Angles;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
 using SixLabors.ImageSharp;
@@ -33,7 +34,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
         }
 
         internal Rectangle CropBounds { get; private set; }
-        
+
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
         public bool FullEarthCoverage { get; [UsedImplicitly] set; }
         public Activity? Activity { get; [UsedImplicitly] set; }
@@ -45,59 +46,74 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             Guard.Against.Null(Activity, nameof(Activity));
 
             var autoCrop = _options.EquirectangularRender?.AutoCrop ?? false;
-            var extents = _options.EquirectangularRender?.Extents;
+            var explicitCrop = _options.EquirectangularRender?.ExplicitCrop ?? false;
 
-            // TODO document this
-            // TODO create .bat test files for full earth coverage (and integration tests)
-            if (!FullEarthCoverage)
+            // TODO document all of this - entire class really
+            if (!autoCrop && !explicitCrop)
             {
-                var minXLongitude = Activity.Registrations
-                    .Where(r => r.LongitudeRange != null && !r.LongitudeRange.OverlappingLeft)
-                    .Min(r => r.LongitudeRange!.Range.Start)
-                    .NormaliseLongitude();
-
-                var minX = minXLongitude.ToX(TargetImage.Width);
-
-                var maxXLongitude = Activity.Registrations
-                    .Where(r => r.LongitudeRange != null && !r.LongitudeRange.OverlappingRight)
-                    .Max(r => r.LongitudeRange!.Range.End)
-                    .NormaliseLongitude();
-
-                var maxX = maxXLongitude.ToX(TargetImage.Width);
-
-                var uncoveredX = minX < maxX ? maxX - minX : TargetImage.Width - (minX - maxX);
-                CropBounds = new Rectangle(0, 0, uncoveredX, TargetImage.Height);
+                CropBounds = !FullEarthCoverage ? GetPartialCoverageBounds(Activity, TargetImage) : TargetImage.Bounds();
+                return ExecutionResult.Next();
             }
-            else CropBounds = TargetImage.Bounds();
 
-            if (!autoCrop && extents == null) return ExecutionResult.Next();
-
-            if (autoCrop)
+            if (explicitCrop && _options.EquirectangularRender!.LongitudeRange != null)
             {
-                if (FullEarthCoverage)
-                {
-                    var croppedLength = (int) Math.Round(AutoCropGlobalScaleFactor * TargetImage.Width);
-                    CropBounds = new Rectangle(0, croppedLength, TargetImage.Width, TargetImage.Height - croppedLength * 2);
-                }
-                else
-                {
-                    var croppedLength = (int) Math.Round(AutoCropScaleFactor * TargetImage.Width);
-                    CropBounds = Rectangle.Inflate(CropBounds, -croppedLength, -croppedLength);
-                }
+                GlobalOffset = _options.EquirectangularRender!.LongitudeRange.Value.Start.NormaliseLongitude();
+            }
 
-                _logger.LogInformation("Cropped image size: {width} x {height} px", CropBounds.Width, CropBounds.Height);
+            CropBounds = autoCrop ? GetAutoCropBounds(TargetImage) : GetExplicitCropBounds(TargetImage);
+            
+            _logger.LogInformation("Cropped image size: {width} x {height} px", CropBounds.Width, CropBounds.Height);
+
+            return ExecutionResult.Next();
+        }
+
+        private Rectangle GetExplicitCropBounds(IImageInfo targetImage)
+        {
+            var latitudeRange = _options.EquirectangularRender!.LatitudeRange;
+            var longitudeRange = _options.EquirectangularRender!.LongitudeRange;
+
+            Console.WriteLine("Global offset: " + Angle.FromRadians(GlobalOffset).Degrees);
+            if (longitudeRange != null) longitudeRange += GlobalOffset;
+            
+
+            var xPixelRange = longitudeRange != null ? longitudeRange!.Value.UnwrapLongitude().ToPixelRangeX(targetImage.Width) : new PixelRange(0, targetImage.Width);
+            var yPixelRange = latitudeRange != null ? latitudeRange!.Value.ToPixelRangeY(targetImage.Height) : new PixelRange(0, targetImage.Height);
+
+            return new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range);
+        }
+
+        private Rectangle GetAutoCropBounds(IImageInfo targetImage)
+        {
+            if (FullEarthCoverage)
+            {
+                var croppedLength = (int) Math.Round(AutoCropGlobalScaleFactor * targetImage.Width);
+                return new Rectangle(0, croppedLength, targetImage.Width, targetImage.Height - croppedLength * 2);
             }
             else
             {
-                var xPixelRange = extents!.Value.Longitude.UnwrapLongitude().ToPixelRangeX(TargetImage.Width);
-                var yPixelRange = extents!.Value.Latitude.ToPixelRangeY(TargetImage.Height);
-
-                _logger.LogInformation("Cropped image size: {width} x {height} px", xPixelRange.Range, yPixelRange.Range);
-
-                CropBounds = new Rectangle(0, xPixelRange.Range, yPixelRange.Start, yPixelRange.Range);
+                var croppedLength = (int) Math.Round(AutoCropScaleFactor * targetImage.Width);
+                return Rectangle.Inflate(CropBounds, -croppedLength, -croppedLength);
             }
+        }
 
-            return ExecutionResult.Next();
+        private Rectangle GetPartialCoverageBounds(Activity activity, IImageInfo targetImage)
+        {
+            var minXLongitude = activity.Registrations
+                .Where(r => r.LongitudeRange != null && !r.LongitudeRange.OverlappingLeft)
+                .Min(r => r.LongitudeRange!.Range.Start)
+                .NormaliseLongitude();
+
+            var minX = minXLongitude.ToX(targetImage.Width);
+
+            var maxXLongitude = activity.Registrations
+                .Where(r => r.LongitudeRange != null && !r.LongitudeRange.OverlappingRight)
+                .Max(r => r.LongitudeRange!.Range.End)
+                .NormaliseLongitude();
+
+            var maxX = maxXLongitude.ToX(targetImage.Width);
+
+            var uncoveredX = minX < maxX ? maxX - minX : targetImage.Width - (minX - maxX);
+            return new Rectangle(0, 0, uncoveredX, targetImage.Height);
         }
     }
 
@@ -112,7 +128,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                 .Input(step => step.FullEarthCoverage, data => data.Activity!.IsFullEarthCoverage())
                 .Input(step => step.TargetImage, data => data.TargetImage)
                 .Input(step => step.Activity, data => data.Activity)
-                .Input(step => step.GlobalOffset, data => data.GlobalOffset)
+                .Output(data=> data.GlobalOffset, step => step.GlobalOffset)
                 .Output(data => data.CropBounds, step => step.CropBounds);
         }
     }

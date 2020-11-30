@@ -11,6 +11,11 @@ namespace Sanchez.Processing.Models
         /// </summary>
         public const string OutputFileSuffix = "-FC";
 
+        /// <summary>
+        ///    Tolerance for equality checks of floating point numbers.
+        /// </summary>
+        public const float FloatingTolerance = 0.0001f;
+
         public static string DefaultDefinitionsPath => PathHelper.ResourcePath("Satellites.json");
         public static string DefaultUnderlayPath => PathHelper.ResourcePath(@"world.200411.3x10848x5424.jpg");
         public static string DefaultGradientPath => PathHelper.ResourcePath(@"Gradients/DarkRed-Blue.json");

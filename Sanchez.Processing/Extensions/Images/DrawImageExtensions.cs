@@ -31,7 +31,6 @@ namespace Sanchez.Processing.Extensions.Images
                     source.Mutate(c => c.Crop(new Rectangle(0, 0, target.Width - location.X, target.Height)));
                 }
 
-
                 // Composite source and target
                 context.DrawImage(source, location, colourBlending, opacity);
             });
