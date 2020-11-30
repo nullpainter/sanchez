@@ -10,7 +10,7 @@ namespace Sanchez.Processing.Test.Validators
         where T : CommandLineOptionsValidator<TOptions>, new() 
         where TOptions : CommandLineOptions
     {
-        protected static void VerifyFailure(TOptions options, string propertyName, string message = null)
+        protected static void VerifyFailure(TOptions options, string propertyName, string? message = null)
         {
             var results = new T().Validate(options);
             results.Errors.Select(e => e.PropertyName).Should().Contain(propertyName, "validation failures should be present for property");
