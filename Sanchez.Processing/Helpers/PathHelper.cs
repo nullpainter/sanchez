@@ -10,23 +10,19 @@ namespace Sanchez.Processing.Helpers
         /// <summary>
         ///     Returns the path to where the cached underlay image and database is stored.
         /// </summary>
-        /// <returns></returns>
         public static string CachePath() => Path.Combine(GetApplicationPath(), "cache");
 
         /// <summary>
         ///     Returns the path to where the log files are written.
         /// </summary>
-        /// <returns></returns>
         public static string LogPath() => Path.Combine(GetApplicationPath(), "logs");
         
         /// <summary>
         ///     Returns the path to resources.
         /// </summary>
-        /// <returns></returns>
-        public static string ResourcePath() => Path.Combine(GetApplicationPath(), "Resources");
+        private static string ResourcePath() => Path.Combine(GetApplicationPath(), "Resources");
 
         public static string ResourcePath(string resource) => Path.Combine(ResourcePath(), resource);
-
 
         /// <summary>
         ///     Returns the absolute path to the running application.
