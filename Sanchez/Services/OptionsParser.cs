@@ -1,6 +1,7 @@
 ﻿using System;
 using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Extensions;
+using Sanchez.Processing.Helpers;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Options;
@@ -32,13 +33,14 @@ namespace Sanchez.Services
             renderOptions.EquirectangularRender = new EquirectangularRenderOptions(
                 options.AutoCrop,
                 options.NoCrop,
-                options.Timestamp != null || options.IntervalMinutes != null, null
-                /*ExtentsHelper.ParseExtentsString(options.Extents)*/);
+                options.Timestamp != null || options.IntervalMinutes != null,
+                RangeHelper.ParseRange(options.LatitudeRange),
+                RangeHelper.ParseRange(options.LongitudeRange));
 
             return renderOptions;
         }
 
-        private static RenderOptions ProcessBaseOptions(CommandLineOptions options)
+       private static RenderOptions ProcessBaseOptions(CommandLineOptions options)
         {
             var renderOptions = new RenderOptions
             {
@@ -65,7 +67,7 @@ namespace Sanchez.Services
 
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
             if (options.DefinitionsPath != null) renderOptions.DefinitionsPath = options.DefinitionsPath;
-            
+
             SetOverlayOptions(options, renderOptions);
 
             return renderOptions;
@@ -86,7 +88,7 @@ namespace Sanchez.Services
         private static ImageOffset ToImageOffset(CommandLineOptions options)
         {
             return options.SpatialResolution switch
-            { 
+            {
                 Constants.Satellite.SpatialResolution.OneKm => Constants.Satellite.Offset.OneKm,
                 Constants.Satellite.SpatialResolution.TwoKm => Constants.Satellite.Offset.TwoKm,
                 Constants.Satellite.SpatialResolution.FourKm => Constants.Satellite.Offset.FourKm,

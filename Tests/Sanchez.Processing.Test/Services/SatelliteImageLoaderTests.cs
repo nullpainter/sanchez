@@ -72,7 +72,7 @@ namespace Sanchez.Processing.Test.Services
         {
             var rootDirectory = state.CreateTempDirectory();
 
-            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(true, false, true, null);
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(true, false, true);
             RenderOptions.SourcePath = rootDirectory;
 
             // Create sample files

@@ -6,19 +6,21 @@ namespace Sanchez.Processing.ImageProcessing.Intensity
 {
     public static class IntensityRangeHelper
     {
-        // TODO comment
+        /// <summary>
+        ///     Identifies the minimum and maximum pixel intensity of a monochrome image.
+        /// </summary>
         public static Range GetIntensityRange(this Image<Rgba32> source)
         {
             var minIntensity = 255;
             var maxIntensity = 0;
 
-            // TODO can we paralleise this?
             for (var y = 0; y < source.Height; y++)
             {
                 var sourceSpan = source.GetPixelRowSpan(y);
 
                 for (var x = 0; x < sourceSpan.Length; x++)
                 {
+                    // Image is assumed to be monochrome, so we can arbitrarily select a single channel for the intensity
                     var intensity = sourceSpan[x].R;
 
                     if (intensity < minIntensity) minIntensity = intensity;
