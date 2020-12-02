@@ -1,5 +1,4 @@
-﻿using System;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Normalization;
@@ -29,15 +28,7 @@ namespace Sanchez.Processing.Extensions.Images
         {
             // FIXME image width limitation due to ImageSharp bug with performing adaptive histogram equalisation 
             // on large images. This is scheduled to be fixed in 1.1.0.
-            try
-            {
-                if (adaptive && image.Width * image.Height < int.MaxValue) image.Mutate(c => c.HistogramEqualization(AdaptiveTileOptions));
-
-            }
-            catch (Exception)
-            {
-                // Ignored. Remove when ImageSharp bug fixed
-            }
+            if (adaptive && image.Width * image.Height < 100000000) image.Mutate(c => c.HistogramEqualization(AdaptiveTileOptions));
 
             image.Mutate(c => c.HistogramEqualization());
         }
