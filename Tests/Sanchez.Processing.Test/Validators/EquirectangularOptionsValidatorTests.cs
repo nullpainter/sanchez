@@ -139,7 +139,7 @@ namespace Sanchez.Processing.Test.Validators
 
         [TestCase("1:2:3")]
         [TestCase("1:")]
-        [TestCase("1:1")]
+        [TestCase(":1")]
         [TestCase("biscuits:bananas")]
         public void MalformedLongitudeCrop(string range)
         {
@@ -151,7 +151,7 @@ namespace Sanchez.Processing.Test.Validators
 
         [TestCase("1:2:3")]
         [TestCase("1:")]
-        [TestCase("1:1")]
+        [TestCase(":1")]
         [TestCase("biscuits:bananas")]
         public void MalformedLatitudeCrop(string range)
         {

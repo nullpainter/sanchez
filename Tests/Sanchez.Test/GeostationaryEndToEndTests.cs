@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -84,7 +85,10 @@ namespace Sanchez.Test
             var rootDirectory = await CreateSampleImagesAsync(State);
             var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
-
+            
+            
+            var writer = new StringWriter();
+            Console.SetOut(writer);
             var returnCode = await Bootstrapper.Main(
                 "-s", rootDirectory,
                 "-o", outputFile,

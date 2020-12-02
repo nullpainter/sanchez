@@ -45,14 +45,14 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             if (Activity.IsFullEarthCoverage()) return 0;
 
             // Explicit longitude crop
-            var equirectangularRender = _options.EquirectangularRender!;
-            if (equirectangularRender.ExplicitCrop && equirectangularRender.LongitudeRange != null)
+            var equirectangularRender = _options.EquirectangularRender;
+            if (equirectangularRender != null && equirectangularRender.ExplicitCrop && equirectangularRender.LongitudeRange != null)
             {
-                return -equirectangularRender.LongitudeRange.Value.Start;// - Math.PI;
+                return -equirectangularRender.LongitudeRange.Value.Start;
             }
- 
+
             // Stitched crop, offsetting by the smallest longitude
-            return 
+            return
                 -Activity.Registrations
                     .Where(r => !r.LongitudeRange!.OverlappingLeft)
                     .Min(r => r.LongitudeRange!.Range.Start)

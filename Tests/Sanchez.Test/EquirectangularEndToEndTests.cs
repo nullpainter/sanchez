@@ -8,6 +8,7 @@ using SixLabors.ImageSharp;
 
 namespace Sanchez.Test
 {
+    // TODO add tests for full earth stitch
     [TestFixture(TestOf = typeof(Bootstrapper))]
     public class EquirectangularEndToEndTests : EndToEndTestTests
     {
@@ -141,6 +142,76 @@ namespace Sanchez.Test
             outputImage.Width.Should().Be(4230);
             outputImage.Height.Should().Be(1908);
         }
+        
+        [Test]
+        public async Task StitchWithLatitudeCrop()
+        {
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var returnCode = await Bootstrapper.Main(
+                "reproject",
+                "-s", rootDirectory,
+                "-o", outputFile,
+                "--lat", "-33.6:-48",
+                "-T", "2020-08-30T03:50:20");
+
+            VerifySuccessfulExecution(returnCode);
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+
+            outputImage.Width.Should().Be(5424);
+            outputImage.Height.Should().Be(217);
+        }
+        
+        [Test]
+        public async Task StitchWithLongitudeCrop()
+        {
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var returnCode = await Bootstrapper.Main(
+                "reproject",
+                "-s", rootDirectory,
+                "-o", outputFile,
+                "--lon","165.1:179.3",
+                "-T", "2020-08-30T03:50:20");
+
+            VerifySuccessfulExecution(returnCode);
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+
+            outputImage.Width.Should().Be(214);
+            outputImage.Height.Should().Be(2712);
+        }
+        
+        [Test]
+        public async Task StitchWithLatLongCrop()
+        {
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
+            var outputFile = Path.Combine(outputDirectory, "out.jpg");
+
+            var returnCode = await Bootstrapper.Main(
+                "reproject",
+                "-s", rootDirectory,
+                "-o", outputFile,
+                "--lat", "-33.6:-48",
+                "--lon","165.1:179.3",
+                "-T", "2020-08-30T03:50:20");
+
+            VerifySuccessfulExecution(returnCode);
+
+            File.Exists(outputFile).Should().BeTrue("output file should have been created");
+            var outputImage = await Image.LoadAsync(outputFile);
+
+            outputImage.Width.Should().Be(214);
+            outputImage.Height.Should().Be(217);
+        }
 
         [Test]
         public async Task TimestampStitchNoStartTime()
@@ -218,7 +289,7 @@ namespace Sanchez.Test
 
             var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
-
+            
             var returnCode = await Bootstrapper.Main(
                 "reproject",
                 "-s", Path.Combine(rootDirectory, sourceFile),
