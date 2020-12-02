@@ -55,7 +55,7 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected
             var start = inverse ? geostationaryOptions.Longitude!.Value : geostationaryOptions.EndLongitude!.Value;
 
             var range = new Range(start, end).UnwrapLongitude();
-            var offset = (range.End - range.Start) * (currentIndex / ((double) TimeIntervals.Count - 1));
+            var offset = TimeIntervals.Count == 1 ? 0 : (range.End - range.Start) * (currentIndex / ((double) TimeIntervals.Count - 1));
 
             return (start + offset).NormaliseLongitude();
         }

@@ -4,6 +4,8 @@ call .\equirectangular-nostitch-verbose.bat
 call .\equirectangular-single-type.bat
 call .\equirectangular-nounderlay.bat
 call .\equirectangular-stitch.bat
+call .\equirectangular-stitch-crop.bat
+call .\equirectangular-crop.bat
 call .\equirectangular-stitch-custom-underlay.bat
 call .\equirectangular-stitch-goes-autocrop.bat
 call .\equirectangular-stitch-goes-all-autocrop.bat

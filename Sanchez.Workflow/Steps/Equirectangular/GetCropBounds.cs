@@ -48,7 +48,9 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             var autoCrop = _options.EquirectangularRender?.AutoCrop ?? false;
             var explicitCrop = _options.EquirectangularRender?.ExplicitCrop ?? false;
 
+
             // TODO document all of this - entire class really
+            // Also, refactor. It's a mess.
             if (!autoCrop && !explicitCrop)
             {
                 CropBounds = !FullEarthCoverage ? GetPartialCoverageBounds(Activity, TargetImage) : TargetImage.Bounds();
@@ -62,12 +64,10 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             return ExecutionResult.Next();
         }
 
-        private Rectangle GetExplicitCropBounds(Image<Rgba32> targetImage)
+        private Rectangle GetExplicitCropBounds(IImageInfo targetImage)
         {
             var latitudeRange = _options.EquirectangularRender!.LatitudeRange;
             var longitudeRange = _options.EquirectangularRender!.LongitudeRange;
-
-            // TODO test cropping without underlay
 
             // Underlay is being offset by the global offset, so we need to add it back to get the 
             // correct x pixel range for crop.
@@ -93,8 +93,10 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             }
             else
             {
+                var partialCoverageBounds = GetPartialCoverageBounds(Activity!, targetImage);
+                
                 var croppedLength = (int) Math.Round(AutoCropScaleFactor * targetImage.Width);
-                return Rectangle.Inflate(CropBounds, -croppedLength, -croppedLength);
+                return Rectangle.Inflate(partialCoverageBounds, -croppedLength, -croppedLength);
             }
         }
 

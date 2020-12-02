@@ -40,7 +40,7 @@ namespace Sanchez.Workflow.Test
             await _step.RunAsync(new StepExecutionContext());
 
             Assert.NotNull(_step.CropBounds);
-            _step.CropBounds.Should().BeEquivalentTo(new Rectangle(0, 0, 100, 100));
+            _step.CropBounds.Should().BeEquivalentTo(new Rectangle(-50, 0, 100, 100));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Sanchez.Workflow.Test
             await _step.RunAsync(new StepExecutionContext());
 
             Assert.NotNull(_step.CropBounds);
-            _step.CropBounds.Should().BeEquivalentTo(new Rectangle(50, 0, 100, 100));
+            _step.CropBounds.Should().BeEquivalentTo(new Rectangle(0, 0, 100, 100));
         }
 
 
@@ -77,7 +77,7 @@ namespace Sanchez.Workflow.Test
             await _step.RunAsync(new StepExecutionContext());
 
             Assert.NotNull(_step.CropBounds);
-            _step.CropBounds.Should().BeEquivalentTo(new Rectangle(50, 0, 50, 50));
+            _step.CropBounds.Should().BeEquivalentTo(new Rectangle(0, 0, 50, 50));
         }
     }
 }
