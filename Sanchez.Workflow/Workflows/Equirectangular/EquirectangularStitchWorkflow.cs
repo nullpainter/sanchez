@@ -29,8 +29,8 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                     .ShouldWrite(_options.Timestamp)
                     .Branch(true, builder
                         .CreateBranch()
-                        .CalculateVisibleRange()
-                        .CalculateGlobalOffset()
+                        .GetVisibleRange()
+                        .GetGlobalOffset()
                         .ForEach(data => data.Activity!.Registrations, _ => false)
                         .Do(registration => registration
                             .SetWorkflowRegistration()
@@ -44,6 +44,7 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                         .RenderUnderlay()
                         .ComposeOverlay()
                         .ColourCorrect()
+                        .OffsetImage()
                         .CropImage()
                         .SaveStitchedImage(data => data.ProgressBar)
                     )

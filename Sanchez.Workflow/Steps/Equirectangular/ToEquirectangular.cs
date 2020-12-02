@@ -79,7 +79,10 @@ namespace Sanchez.Workflow.Steps.Equirectangular
 
             // Get size of projection in pixels
             var xRange = new PixelRange(longitudeRange, a => a.ScaleToWidth(maxWidth));
-            var yRange = _options.EquirectangularRender?.NoCrop == true ? new PixelRange(0, maxHeight) : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
+            
+            // Restrict height of image to the visible range if we are not performing explicit cropping or no cropping
+            var yRange = _options.EquirectangularRender?.NoCrop == true  || _options.EquirectangularRender?.ExplicitCrop == true
+                ? new PixelRange(0, maxHeight) : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
 
             _logger.LogInformation("{definition:l0} pixel range X: {minX} - {maxX} px", definition.DisplayName, xRange.Start, xRange.End);
             _logger.LogInformation("{definition:l0} pixel range Y: {minY} - {maxY} px", definition.DisplayName, yRange.Start, yRange.End);

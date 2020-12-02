@@ -56,22 +56,31 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             }
 
             CropBounds = autoCrop ? GetAutoCropBounds(TargetImage) : GetExplicitCropBounds(TargetImage);
-            
+
             _logger.LogInformation("Cropped image size: {width} x {height} px", CropBounds.Width, CropBounds.Height);
 
             return ExecutionResult.Next();
         }
 
-        private Rectangle GetExplicitCropBounds(IImageInfo targetImage)
+        private Rectangle GetExplicitCropBounds(Image<Rgba32> targetImage)
         {
             var latitudeRange = _options.EquirectangularRender!.LatitudeRange;
             var longitudeRange = _options.EquirectangularRender!.LongitudeRange;
 
-            // TODO comment on global offset here
-            var xPixelRange = (longitudeRange + GlobalOffset)?.UnwrapLongitude().ToPixelRangeX(targetImage.Width) ?? new PixelRange(0, targetImage.Width);
-            var yPixelRange = latitudeRange != null ? latitudeRange!.Value.ToPixelRangeY(targetImage.Height) : new PixelRange(0, targetImage.Height);
-            
-            _logger.LogDebug("Crop bounds: x={xBounds}, y={yBounds}", xPixelRange, yPixelRange);
+            // TODO test cropping without underlay
+
+            // Underlay is being offset by the global offset, so we need to add it back to get the 
+            // correct x pixel range for crop.
+            var xPixelRange = (longitudeRange + GlobalOffset - Math.PI)?
+                .UnwrapLongitude()
+                .ToPixelRangeX(targetImage.Width) ?? new PixelRange(0, targetImage.Width);
+
+            var yPixelRange = latitudeRange != null
+                ? latitudeRange!.Value
+                    .ToPixelRangeY(targetImage.Height)
+                : new PixelRange(0, targetImage.Height);
+
+            _logger.LogDebug("Crop bounds: [ X={xBounds}, Y={yBounds} ]", xPixelRange, yPixelRange);
             return new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range);
         }
 
@@ -121,7 +130,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                 .Input(step => step.FullEarthCoverage, data => data.Activity!.IsFullEarthCoverage())
                 .Input(step => step.TargetImage, data => data.TargetImage)
                 .Input(step => step.Activity, data => data.Activity)
-                .Input(data=> data.GlobalOffset, step => step.GlobalOffset)
+                .Input(data => data.GlobalOffset, step => step.GlobalOffset)
                 .Output(data => data.CropBounds, step => step.CropBounds);
         }
     }

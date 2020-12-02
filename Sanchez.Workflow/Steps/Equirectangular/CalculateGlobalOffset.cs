@@ -12,17 +12,20 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular
 {
-    // TODO document this plz
-    // also, is this really needed as a separate step? only used by one other
-    // note that it sets globalOffset in radians
-    internal sealed class CalculateGlobalOffset : StepBody, IActivityStepBody
+    // TODO we ned to test this!
+    /// <summary>
+    ///     Calculates the horizontal offset to be applied to stitched IR images so the images don't
+    ///     wrap around the Earth. This is applied to partial coverage and explicit longitude cropping
+    ///     only.
+    /// </summary>
+    internal sealed class GetGlobalOffset : StepBody, IActivityStepBody
     {
         private readonly RenderOptions _options;
-        private readonly ILogger<CalculateGlobalOffset> _logger;
+        private readonly ILogger<GetGlobalOffset> _logger;
         public Activity? Activity { get; set; }
         internal double GlobalOffset { get; private set; }
 
-        public CalculateGlobalOffset(RenderOptions options, ILogger<CalculateGlobalOffset> logger)
+        public GetGlobalOffset(RenderOptions options, ILogger<GetGlobalOffset> logger)
         {
             _options = options;
             _logger = logger;
@@ -30,24 +33,25 @@ namespace Sanchez.Workflow.Steps.Equirectangular
 
         public override ExecutionResult Run(IStepExecutionContext context)
         {
-            GlobalOffset = GetGlobalOffset();
+            GlobalOffset = GetOffset();
             _logger.LogDebug("Global offset: {offset:F2} degrees", Angle.FromRadians(GlobalOffset).Degrees);
 
             return ExecutionResult.Next();
         }
 
-        private double GetGlobalOffset()
+        private double GetOffset()
         {
             Guard.Against.Null(Activity, nameof(Activity));
-            if (Activity.IsFullEarthCoverage()) return -Math.PI;
+            if (Activity.IsFullEarthCoverage()) return 0;
 
+            // Explicit longitude crop
             var equirectangularRender = _options.EquirectangularRender!;
             if (equirectangularRender.ExplicitCrop && equirectangularRender.LongitudeRange != null)
             {
-                return -equirectangularRender.LongitudeRange.Value.Start.NormaliseLongitude();
+                return -equirectangularRender.LongitudeRange.Value.Start;// - Math.PI;
             }
-            
  
+            // Stitched crop, offsetting by the smallest longitude
             return 
                 -Activity.Registrations
                     .Where(r => !r.LongitudeRange!.OverlappingLeft)
@@ -56,13 +60,13 @@ namespace Sanchez.Workflow.Steps.Equirectangular
         }
     }
 
-    internal static class CalculateGlobalOffsetExtensions
+    internal static class GetGlobalOffsetExtensions
     {
-        internal static IStepBuilder<TData, CalculateGlobalOffset> CalculateGlobalOffset<TStep, TData>(this IStepBuilder<TData, TStep> builder)
+        internal static IStepBuilder<TData, GetGlobalOffset> GetGlobalOffset<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
             where TData : StitchWorkflowData
             => builder
-                .Then<TStep, CalculateGlobalOffset, TData>("Calculate global offset")
+                .Then<TStep, GetGlobalOffset, TData>("Calculate global offset")
                 .Input(step => step.Activity, data => data.Activity)
                 .Output(data => data.GlobalOffset, step => step.GlobalOffset);
     }

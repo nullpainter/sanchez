@@ -35,16 +35,16 @@ namespace Sanchez.Workflow.Builders
         private static IServiceCollection AddBatchSteps(this IServiceCollection services)
         {
             return services
-                .AddTransient<CropImage>()
                 .AddTransient<LoadImage>()
+                .AddTransient<CropImage>()
+                .AddTransient<OffsetImage>()
                 .AddTransient<ShouldWrite>()
                 .AddTransient<StitchImages>()
-                .AddTransient<CropImage>()
                 .AddTransient<RenderUnderlay>()
                 .AddTransient<SaveStitchedImage>()
                 .AddTransient<GetCropBounds>()
-                .AddTransient<CalculateVisibleRange>()
-                .AddTransient<CalculateGlobalOffset>()
+                .AddTransient<GetVisibleRange>()
+                .AddTransient<GetGlobalOffset>()
                 .AddTransient<ToEquirectangular>();
         }
 

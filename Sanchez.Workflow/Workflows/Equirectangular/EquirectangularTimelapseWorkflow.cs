@@ -30,8 +30,8 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                         .Branch(true, step
                             .CreateBranch()
                             .InitialiseImageProgressBar(data => data.Activity!.Registrations.Count + 1)
-                            .CalculateVisibleRange()
-                            .CalculateGlobalOffset()
+                            .GetVisibleRange()
+                            .GetGlobalOffset()
                             .ForEach(data => data.Activity!.Registrations, _ => false)
                             .Do(registration => registration
                                 .SetWorkflowRegistration()
@@ -45,6 +45,7 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                             .RenderUnderlay()
                             .ComposeOverlay()
                             .ColourCorrect()
+                            .OffsetImage()
                             .CropImage()
                             .SaveStitchedImage(data => data.ImageProgressBar)
                         )

@@ -73,7 +73,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                 TargetImage!.Size(),
                 latitudeRange,
                 longitudeRange.Start,
-                _options.EquirectangularRender?.NoCrop ?? false);
+                _options.EquirectangularRender?.NoCrop == true || _options.EquirectangularRender?.ExplicitCrop == true);
 
             _logger.LogInformation("Retrieving underlay");
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions);
