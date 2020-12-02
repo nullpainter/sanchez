@@ -24,8 +24,8 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                     .ForEach(data => data.Activities, _ => false)
                     .Do(activityStep => activityStep
                         .SetWorkflowActivity()
-                        .CalculateVisibleRange()
-                        .CalculateGlobalOffset()
+                        .GetVisibleRange()
+                        .GetGlobalOffset()
                         .ForEach(data => data.Activity!.Registrations, _ => false) // Single registration
                         .Do(registration => registration
                             .SetWorkflowRegistration()
@@ -41,6 +41,7 @@ namespace Sanchez.Workflow.Workflows.Equirectangular
                                 .RenderUnderlay()
                                 .ComposeOverlay()
                                 .ColourCorrect()
+                                .OffsetImage()
                                 .CropImage()
                                 .SaveImage()
                             )

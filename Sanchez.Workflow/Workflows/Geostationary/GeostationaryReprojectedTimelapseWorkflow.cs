@@ -34,8 +34,8 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                         .Branch(true, step
                             .CreateBranch()
                             .InitialiseImageProgressBar(data => data.Activity!.Registrations.Count + 1)
-                            .CalculateVisibleRange()
-                            .CalculateGlobalOffset()
+                            .GetVisibleRange()
+                            .GetGlobalOffset()
                             .ForEach(data => data.Activity!.Registrations, _ => false)
                             .Do(registration => registration
                                 .SetWorkflowRegistration()

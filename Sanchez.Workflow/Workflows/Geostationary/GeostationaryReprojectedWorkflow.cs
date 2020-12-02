@@ -27,8 +27,8 @@ namespace Sanchez.Workflow.Workflows.Geostationary
                 .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 2)
                 .ShouldWrite(_options.Timestamp)
                 .Branch(true, builder.CreateBranch()
-                    .CalculateVisibleRange()
-                    .CalculateGlobalOffset()
+                    .GetVisibleRange()
+                    .GetGlobalOffset()
                     .ForEach(data => data.Activity!.Registrations, _ => false)
                     .Do(registration => registration
                         .SetWorkflowRegistration()

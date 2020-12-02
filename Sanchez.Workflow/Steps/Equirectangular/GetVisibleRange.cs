@@ -11,12 +11,12 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular
 {
-    internal sealed class CalculateVisibleRange : StepBody, IActivityStepBody
+    internal sealed class GetVisibleRange : StepBody, IActivityStepBody
     {
         private readonly IProjectionOverlapCalculator _projectionOverlapCalculator;
         private readonly RenderOptions _options;
 
-        public CalculateVisibleRange(IProjectionOverlapCalculator projectionOverlapCalculator, RenderOptions options)
+        public GetVisibleRange(IProjectionOverlapCalculator projectionOverlapCalculator, RenderOptions options)
         {
             _projectionOverlapCalculator = projectionOverlapCalculator;
             _options = options;
@@ -45,19 +45,19 @@ namespace Sanchez.Workflow.Steps.Equirectangular
         }
     }
 
-    internal static class CalculateVisibleRangeExtensions
+    internal static class GetVisibleRangeExtensions
     {
-        internal static IStepBuilder<TData, CalculateVisibleRange> CalculateVisibleRange<TData>(this IWorkflowBuilder<TData> builder)
+        internal static IStepBuilder<TData, GetVisibleRange> GetVisibleRange<TData>(this IWorkflowBuilder<TData> builder)
             where TData : WorkflowData
             => builder
-                .StartWith<CalculateVisibleRange, TData>("Calculate visible range")
+                .StartWith<GetVisibleRange, TData>("Calculate visible range")
                 .WithActivity();
 
-        internal static IStepBuilder<TData, CalculateVisibleRange> CalculateVisibleRange<TStep, TData>(this IStepBuilder<TData, TStep> builder)
+        internal static IStepBuilder<TData, GetVisibleRange> GetVisibleRange<TStep, TData>(this IStepBuilder<TData, TStep> builder)
             where TStep : IStepBody
             where TData : WorkflowData
             => builder
-                .Then<TStep, CalculateVisibleRange, TData>("Calculate visible range")
+                .Then<TStep, GetVisibleRange, TData>("Calculate visible range")
                 .WithActivity();
     }
 }
