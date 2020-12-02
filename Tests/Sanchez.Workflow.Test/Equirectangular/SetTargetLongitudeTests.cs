@@ -7,7 +7,7 @@ using Sanchez.Test.Common;
 using Sanchez.Workflow.Steps.Geostationary.Reprojected;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Test
+namespace Sanchez.Workflow.Test.Equirectangular
 {
     [TestFixture(TestOf = typeof(SetTargetLongitude))]
     public class SetTargetLongitudeTests : AbstractTests
