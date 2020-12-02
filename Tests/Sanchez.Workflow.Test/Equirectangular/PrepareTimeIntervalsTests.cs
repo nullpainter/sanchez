@@ -9,7 +9,7 @@ using Sanchez.Test.Common;
 using Sanchez.Workflow.Steps.Equirectangular.Timelapse;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Test
+namespace Sanchez.Workflow.Test.Equirectangular
 {
     [TestFixture(TestOf = typeof(PrepareTimeIntervals))]
     public class PrepareTimeIntervalsTests : AbstractTests

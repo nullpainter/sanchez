@@ -10,7 +10,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Test
+namespace Sanchez.Workflow.Test.Equirectangular
 {
     [TestFixture(TestOf = typeof(GetCropBoundsTests))]
     public class GetCropBoundsTests : AbstractTests
