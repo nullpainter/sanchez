@@ -8,9 +8,9 @@
 
 <img src="Documentation/hero.jpg" title="Sample images" align="left"></a>
 
-**Sanchez brings your dull IR satellite images to life.**
+**Sanchez brings your dull geostationary satellite images to life.**
 
-Utilising a full-colour, high resolution, static ~~ándale~~ underlay image, combining it with a single greyscale IR satellite image, and some serious maths, Sanchez will create beautiful images to be proud of.
+Utilising a full-colour, high resolution, static ~~ándale~~ underlay image, combining it with a single greyscale geostationary satellite image, and some serious maths, Sanchez will create beautiful images to be proud of.
 
 This could be considered cheating, but this is the approach that NASA used to utilise for older weather satellites. If it's good enough for NASA, it should be good enough for you.
 
