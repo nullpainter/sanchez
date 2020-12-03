@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 using JetBrains.Annotations;
 
 namespace Sanchez.Models.CommandLine
@@ -12,12 +13,13 @@ namespace Sanchez.Models.CommandLine
         [Option("nocrop", HelpText = "If no cropping should be performed", Required = false, Default = false)]
         public bool NoCrop { get; [UsedImplicitly] set; }
         
-        // FIXME get proper longitude for nz
-        [Option("lon", HelpText = "Longitude range in degrees. format is min:max; e.g., -174:180", Required = false)]
+        [Option("lon", HelpText = "Longitude range in degrees. format is min:max; e.g., 165.1:179.3", Required = false)]
         public string? LongitudeRange { get; [UsedImplicitly] set; }
         
-        // FIXME get proper lat for NZ
-        [Option("lat", HelpText = "Latitude range in degrees. format is min:max; e.g., -174:180", Required = false)]
+        [Option("lat", HelpText = "Latitude range in degrees. format is min:max; e.g., -33.6:-48", Required = false)]
         public string? LatitudeRange { get; [UsedImplicitly] set; }
+        
+        [Option('l', "longitude", HelpText = "Start longitude to apply when not performing cropping", Required = false)]
+        public double? StartLongitudeDegrees { get; [UsedImplicitly] set; }
     }
 }

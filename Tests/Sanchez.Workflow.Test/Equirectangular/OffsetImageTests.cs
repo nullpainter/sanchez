@@ -1,9 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
-using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Test.Common;
@@ -41,15 +39,66 @@ namespace Sanchez.Workflow.Test.Equirectangular
             _image.Dispose();
         }
 
-        // public async Task NoOffsetForFullCoverage()
-        // {
-        //      Assert.Fail("write me");           
-        // }
-        //
-        // public async Task OffsetForFullCoverageWithCrop()
-        // {
-        //     Assert.Fail("write me");
-        // }
+        [Test]
+        public async Task NoOffsetForFullCoverage()
+        {
+            Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false);
+
+            _step.TargetImage = _image;
+            _step.GlobalOffset = 0; // 180 degrees
+
+            var registration = new Registration("", new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null)
+            {
+                // Create projection range which is overlapping both sides
+                LongitudeRange = new ProjectionRange(new Range(0, 0), true, true)
+            };
+
+            _step.Activity = new Activity(new[] { registration });
+
+            // Sanity check
+            _step.Activity.IsFullEarthCoverage().Should().BeTrue();
+
+            VerifyInitialImageState();
+
+            // Run method under test
+            await _step.RunAsync(new StepExecutionContext());
+
+            // Verify offset hasn't changed
+            VerifyInitialImageState();
+        }
+
+        [Test]
+        public async Task OffsetForFullCoverageWithCrop()
+        {
+            Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null, new Range(0, 1));
+
+            _step.TargetImage = _image;
+            _step.GlobalOffset = 0; // 180 degrees
+
+            var registration = new Registration("", new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null)
+            {
+                // Create projection range which is overlapping both sides
+                LongitudeRange = new ProjectionRange(new Range(0, 0), true, true)
+            };
+
+            _step.Activity = new Activity(new[] { registration });
+
+            // Sanity check
+            _step.Activity.IsFullEarthCoverage().Should().BeTrue();
+
+            VerifyInitialImageState();
+
+            // Run method under test
+            await _step.RunAsync(new StepExecutionContext());
+            
+            // Verify red square has been offset to the top right quadrant
+            _image[0, 0].R.Should().Be(0);
+            _image[99, 0].R.Should().Be(255);
+            _image[0, 99].R.Should().Be(0);
+            _image[99, 99].R.Should().Be(0);
+            _image[49, 0].R.Should().Be(0);
+            _image[50, 0].R.Should().Be(255);
+        }
 
         [Test]
         public async Task OffsetImage()
@@ -57,7 +106,7 @@ namespace Sanchez.Workflow.Test.Equirectangular
             Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false);
 
             _step.TargetImage = _image;
-            _step.GlobalOffset = 0;    // 180 degrees
+            _step.GlobalOffset = 0; // 180 degrees
 
             var registration = new Registration("", new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null)
             {
@@ -66,24 +115,29 @@ namespace Sanchez.Workflow.Test.Equirectangular
 
             _step.Activity = new Activity(new[] { registration });
 
-            // Source image sanity check
-            _image[0, 0].R.Should().Be(255);
-            _image[99, 0].R.Should().Be(0);
-            _image[0, 99].R.Should().Be(0);
-            _image[99, 99].R.Should().Be(0);
-            _image[49, 0].R.Should().Be(255);
-            _image[50, 0].R.Should().Be(0);
+            VerifyInitialImageState();
 
             // Run method under test
             await _step.RunAsync(new StepExecutionContext());
-            
-            // Verify red square has been offset
+
+            // Verify red square has been offset to the top right quadrant
             _image[0, 0].R.Should().Be(0);
             _image[99, 0].R.Should().Be(255);
             _image[0, 99].R.Should().Be(0);
             _image[99, 99].R.Should().Be(0);
             _image[49, 0].R.Should().Be(0);
             _image[50, 0].R.Should().Be(255);
+        }
+
+        private void VerifyInitialImageState()
+        {
+            //  Red rectangle is rendered in top left quadrant
+            _image[0, 0].R.Should().Be(255);
+            _image[99, 0].R.Should().Be(0);
+            _image[0, 99].R.Should().Be(0);
+            _image[99, 99].R.Should().Be(0);
+            _image[49, 0].R.Should().Be(255);
+            _image[50, 0].R.Should().Be(0);
         }
     }
 }

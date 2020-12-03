@@ -15,7 +15,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
 {
     /// <summary>
     ///     Horizontally offsets and wraps an equirectangular projected image by <see cref="GlobalOffset"/> radians. This is
-    ///     performed to ensure that visible satellite imagery is contiguous.
+    ///     performed to ensure that visible satellite imagery is contiguous in the rendered image.
     /// </summary>
     internal sealed class OffsetImage : StepBody, IActivityStepBody
     {
@@ -31,16 +31,29 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             Guard.Against.Null(TargetImage, nameof(TargetImage));
             Guard.Against.Null(Activity, nameof(Activity));
 
-            // No offset required if full earth coverage and no explicit crop is being performed
-            if (Activity.IsFullEarthCoverage() && !_options.EquirectangularRender!.ExplicitCrop) return ExecutionResult.Next();
-
-            var offset = GlobalOffset
+            var offset = GetOffset(Activity);
+            if (offset == null) return ExecutionResult.Next();
+            
+            var pixelOffset = offset.Value
                 .NormaliseLongitude()
                 .ToX(TargetImage.Width);
 
-            TargetImage.HorizontalOffset(offset);
+            TargetImage.HorizontalOffset(pixelOffset);
 
             return ExecutionResult.Next();
+        }
+
+        /// <summary>
+        ///     Returns offset in radians to apply to image, or <c>null</c> if no offset is to be performed.
+        /// </summary>
+        private double? GetOffset(Activity activity)
+        {
+            var equirectangularOptions = _options.EquirectangularRender!;
+
+            // No offset required if full earth coverage and no explicit crop is being performed
+            return activity!.IsFullEarthCoverage() && !equirectangularOptions.ExplicitCrop 
+                ? equirectangularOptions.StartLongitude?.Radians 
+                : GlobalOffset;
         }
     }
 
