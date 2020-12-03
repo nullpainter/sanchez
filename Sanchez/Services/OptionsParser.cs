@@ -29,18 +29,21 @@ namespace Sanchez.Services
         public static RenderOptions Populate(EquirectangularOptions options)
         {
             var renderOptions = ProcessBaseOptions(options);
+            var stitchImages = options.Timestamp != null || options.IntervalMinutes != null;
+            var startLongitude = options.StartLongitudeDegrees == null ? (Angle?) null : Angle.FromDegrees(options.StartLongitudeDegrees.Value);
 
             renderOptions.EquirectangularRender = new EquirectangularRenderOptions(
                 options.AutoCrop,
                 options.NoCrop,
-                options.Timestamp != null || options.IntervalMinutes != null,
+                stitchImages,
                 RangeHelper.ParseRange(options.LatitudeRange),
-                RangeHelper.ParseRange(options.LongitudeRange));
+                RangeHelper.ParseRange(options.LongitudeRange),
+                startLongitude);
 
             return renderOptions;
         }
 
-       private static RenderOptions ProcessBaseOptions(CommandLineOptions options)
+        private static RenderOptions ProcessBaseOptions(CommandLineOptions options)
         {
             var renderOptions = new RenderOptions
             {
