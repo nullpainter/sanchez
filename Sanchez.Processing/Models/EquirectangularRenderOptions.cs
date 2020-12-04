@@ -1,4 +1,4 @@
-﻿using Sanchez.Processing.Models.Angles;
+﻿using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Models
 {
@@ -8,15 +8,16 @@ namespace Sanchez.Processing.Models
             bool noCrop,
             bool stitchImages,
             Range? latitudeRange = null,
-            Range? longitudeRange = null, 
-            Angle? startLongitude = null)
+            Range? longitudeRange = null,
+            Angle? startLongitude = null
+            )
         {
             AutoCrop = autoCrop;
             NoCrop = noCrop;
             StitchImages = stitchImages;
+            StartLongitude = startLongitude ?? Angle.FromDegrees(-180);
             LatitudeRange = latitudeRange;
             LongitudeRange = longitudeRange;
-            StartLongitude = startLongitude;
         }
 
         public bool AutoCrop { get; }
@@ -38,9 +39,9 @@ namespace Sanchez.Processing.Models
         public Range? LongitudeRange { get; }
 
         /// <summary>
-        ///     Optional longitude offset to apply when not performing cropping.
+        ///     Optional longitude offset to apply with full earth coverage.
         /// </summary>
-        public Angle? StartLongitude { get; }
+        public Angle StartLongitude { get; }
 
         /// <summary>
         ///     Whether the user has specified crop bounds.

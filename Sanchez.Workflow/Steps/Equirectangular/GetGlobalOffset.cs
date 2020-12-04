@@ -12,7 +12,6 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular
 {
-    // TODO we ned to test this!
     /// <summary>
     ///     Calculates the horizontal offset to be applied to stitched IR images so the images don't
     ///     wrap around the Earth. This is applied to partial coverage and explicit longitude cropping
@@ -42,13 +41,21 @@ namespace Sanchez.Workflow.Steps.Equirectangular
         private double GetOffset()
         {
             Guard.Against.Null(Activity, nameof(Activity));
-            if (Activity.IsFullEarthCoverage()) return 0;
-
-            // Explicit longitude crop
             var equirectangularRender = _options.EquirectangularRender;
-            if (equirectangularRender != null && equirectangularRender.ExplicitCrop && equirectangularRender.LongitudeRange != null)
+
+            if (equirectangularRender != null)
             {
-                return -equirectangularRender.LongitudeRange.Value.Start;
+                // Offset by explicit or default start longitude for full earth coverage
+                if (Activity.IsFullEarthCoverage())
+                {
+                    return -equirectangularRender.StartLongitude.Radians;
+                }
+
+                // Offset by explicit longitude crop
+                if (equirectangularRender.ExplicitCrop && equirectangularRender.LongitudeRange != null)
+                {
+                    return -equirectangularRender.LongitudeRange.Value.Start;
+                }
             }
 
             // Stitched crop, offsetting by the smallest longitude

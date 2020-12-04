@@ -19,20 +19,27 @@ namespace Sanchez.Validators
             RuleFor(o => o.AutoCrop)
                 .Must(crop => !crop)
                 .When(o => o.LatitudeRange != null || o.LongitudeRange != null)
-                .WithMessage(o => "Automatic cropping cannot be performed if manual crop bounds are specified`");
+                .WithMessage(o => "Automatic cropping cannot be performed if manual crop bounds are specified");
 
+            RuleFor(o => o.StartLongitudeDegrees)
+                .Must(ValidateLongitude)
+                .When(o => o.StartLongitudeDegrees != null)
+                .WithMessage(o => "Start longitude must be between -180 and 180 degrees");
+            
             RuleFor(o => o.LatitudeRange)
-                .Must(ValidLatitude)
+                .Must(ValidLatitudeRange)
                 .When(o => !o.LatitudeRange.IsNullOrEmpty())
-                .WithMessage(o => "Unable to parse latitude crop range. Expected format is min:max; e.g. -174:180"); // TODO replace with NZ range
+                .WithMessage(o => "Unable to parse latitude crop range. Expected format is min:max; e.g. -33.6:-48");
 
             RuleFor(o => o.LongitudeRange)
-                .Must(ValidRange)
+                .Must(ValidateLongitudeRange)
                 .When(o => !o.LongitudeRange.IsNullOrEmpty())
-                .WithMessage(o => "Unable to parse longitude crop range. Expected format is min:max; e.g. -174:180"); // TODO replace with NZ range
+                .WithMessage(o => "Unable to parse longitude crop range. Expected format is min:max; e.g. 165.1:179.3"); 
         }
 
-        private static bool ValidLatitude(string? range)
+        private static bool ValidateLongitude(double? longitude) => longitude >= -180 && longitude <= 180;
+
+        private static bool ValidLatitudeRange(string? range)
         {
             var parsedRange = RangeHelper.ParseRange(range);
             if (parsedRange == null) return false;
@@ -41,7 +48,7 @@ namespace Sanchez.Validators
             return parsedRange.Value.Start >= -90 && parsedRange.Value.End <= 90;
         }
 
-        private static bool ValidRange(string? range)
+        private static bool ValidateLongitudeRange(string? range)
         {
             var parsedRange = RangeHelper.ParseRange(range);
             if (parsedRange == null) return false;
