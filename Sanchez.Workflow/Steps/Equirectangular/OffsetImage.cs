@@ -19,41 +19,22 @@ namespace Sanchez.Workflow.Steps.Equirectangular
     /// </summary>
     internal sealed class OffsetImage : StepBody, IActivityStepBody
     {
-        private readonly RenderOptions _options;
         public Activity? Activity { get; [UsedImplicitly] set; }
         public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
         public double GlobalOffset { get; [UsedImplicitly] set; }
-
-        public OffsetImage(RenderOptions options) => _options = options;
 
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             Guard.Against.Null(TargetImage, nameof(TargetImage));
             Guard.Against.Null(Activity, nameof(Activity));
 
-            var offset = GetOffset(Activity);
-            if (offset == null) return ExecutionResult.Next();
-            
-            var pixelOffset = offset.Value
+            var pixelOffset = GlobalOffset
                 .NormaliseLongitude()
                 .ToX(TargetImage.Width);
 
             TargetImage.HorizontalOffset(pixelOffset);
 
             return ExecutionResult.Next();
-        }
-
-        /// <summary>
-        ///     Returns offset in radians to apply to image, or <c>null</c> if no offset is to be performed.
-        /// </summary>
-        private double? GetOffset(Activity activity)
-        {
-            var equirectangularOptions = _options.EquirectangularRender!;
-
-            // No offset required if full earth coverage and no explicit crop is being performed
-            return activity!.IsFullEarthCoverage() && !equirectangularOptions.ExplicitCrop 
-                ? equirectangularOptions.StartLongitude?.Radians 
-                : GlobalOffset;
         }
     }
 

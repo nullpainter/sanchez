@@ -8,7 +8,7 @@ using SixLabors.ImageSharp;
 
 namespace Sanchez.Test
 {
-    // TODO add tests for full earth stitch
+    // TODO add tests for full earth stitch, including longitude offset
     [TestFixture(TestOf = typeof(Bootstrapper))]
     public class EquirectangularEndToEndTests : EndToEndTestTests
     {

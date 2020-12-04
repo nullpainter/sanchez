@@ -40,35 +40,7 @@ namespace Sanchez.Workflow.Test.Equirectangular
         }
 
         [Test]
-        public async Task NoOffsetForFullCoverage()
-        {
-            Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false);
-
-            _step.TargetImage = _image;
-            _step.GlobalOffset = 0; // 180 degrees
-
-            var registration = new Registration("", new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null)
-            {
-                // Create projection range which is overlapping both sides
-                LongitudeRange = new ProjectionRange(new Range(0, 0), true, true)
-            };
-
-            _step.Activity = new Activity(new[] { registration });
-
-            // Sanity check
-            _step.Activity.IsFullEarthCoverage().Should().BeTrue();
-
-            VerifyInitialImageState();
-
-            // Run method under test
-            await _step.RunAsync(new StepExecutionContext());
-
-            // Verify offset hasn't changed
-            VerifyInitialImageState();
-        }
-
-        [Test]
-        public async Task OffsetForFullCoverageWithCrop()
+        public async Task OffsetFullCoverageWithCrop()
         {
             Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null, new Range(0, 1));
 

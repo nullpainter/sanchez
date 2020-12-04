@@ -113,6 +113,26 @@ namespace Sanchez.Processing.Test.Validators
 
             VerifyFailure(options, nameof(EquirectangularOptions.AutoCrop));
         }
+        [TestCase(null)]
+        [TestCase(-180)]
+        [TestCase(180)]
+        public void ValidLongitudeOffset(double longitude)
+        {
+            var options = ValidOptions();
+            options.StartLongitudeDegrees = longitude;
+
+            VerifyNoFailure(options);
+        }
+        
+        [TestCase(-190)]
+        [TestCase(190)]
+        public void InvalidLongitudeOffset(double longitude)
+        {
+            var options = ValidOptions();
+            options.StartLongitudeDegrees = longitude;
+
+            VerifyFailure(options, nameof(EquirectangularOptions.StartLongitudeDegrees));
+        }
 
         [TestCase(null)]
         [TestCase("")]
