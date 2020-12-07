@@ -149,5 +149,14 @@ namespace Sanchez.Processing.Models
         public int? MinSatellites { get; set; }
 
         public OverlayOptions Overlay { get; } = new OverlayOptions();
+
+        /// <summary>
+        ///     Whether to add a sequence number prefix to output filenames. 
+        /// </summary>
+        /// <remarks>
+        ///    This is useful for xrit-rx which creates filenames which have sequence number prefixes per day, thus making
+        ///     it less useful for glob-style video rendering for imagery spanning days.
+        /// </remarks>
+        public bool AddSequenceNumber { get; set;  }
     }
 }

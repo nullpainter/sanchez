@@ -64,6 +64,7 @@ namespace Sanchez.Test
             var returnCode = await Bootstrapper.Main(
                 "-s", rootDirectory,
                 "-o", outputDirectory,
+                "--sequence",
                 "-q");
 
             VerifySuccessfulExecution(returnCode);

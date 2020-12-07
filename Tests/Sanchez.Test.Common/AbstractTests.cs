@@ -5,7 +5,10 @@ using NUnit.Framework;
 using Sanchez.Builders;
 using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Angles;
+using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Options;
+using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Processing.Test.Helper;
@@ -73,5 +76,7 @@ namespace Sanchez.Test.Common
             image.Mutate(c => c.Fill(Color.Crimson));
             await image.SaveAsync(path);
         }
+        
+        protected static Registration EmptyRegistration(string path = "") => new Registration(path, new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null);
     }
 }

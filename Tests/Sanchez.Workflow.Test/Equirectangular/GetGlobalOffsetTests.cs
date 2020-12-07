@@ -3,7 +3,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
-using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Test.Common;
 using Sanchez.Workflow.Steps.Equirectangular;
@@ -81,10 +80,12 @@ namespace Sanchez.Workflow.Test.Equirectangular
             Angle.FromRadians(_step.GlobalOffset).Degrees.Should().BeApproximately(-50, Precision);
         }
 
-        private static Registration NewRegistration(double startLongitude, bool overlappingLeft = false, bool overlappingRight = false) =>
-            new Registration("", new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null)
-            {
-                LongitudeRange = new ProjectionRange(new Range(Angle.FromDegrees(startLongitude).Radians, 0), overlappingLeft, overlappingRight)
-            };
+        private static Registration NewRegistration(double startLongitude, bool overlappingLeft = false, bool overlappingRight = false)
+        {
+            var registration = EmptyRegistration();
+            registration.LongitudeRange = new ProjectionRange(new Range(Angle.FromDegrees(startLongitude).Radians, 0), overlappingLeft, overlappingRight);
+            
+            return registration;
+        }
     }
 }

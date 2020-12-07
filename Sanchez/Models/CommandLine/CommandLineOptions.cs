@@ -56,6 +56,9 @@ namespace Sanchez.Models.CommandLine
 
         [Option('S', "saturation", HelpText = "Saturation adjustment", Required = false, Default = 0.7f)]
         public float Saturation { get; [UsedImplicitly] set; }
+        
+        [Option("sequence", HelpText = "Whether to add a sequence number prefix to output filenames", Default = false)]
+        public bool AddSequenceNumber { get; [UsedImplicitly] set; }
 
         [Option('t', "tint", HelpText = "Tint to apply to satellite image", Required = false, Default = "1b3f66")]
         public string Tint { get; [UsedImplicitly] set; } = null!;

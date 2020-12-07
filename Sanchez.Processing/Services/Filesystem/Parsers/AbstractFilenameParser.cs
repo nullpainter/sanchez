@@ -22,17 +22,21 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
             var filenameTimestamp = match.Groups[2].Value;
             var suffix = match.Groups[3].Value;
 
+            // Match filename prefix, if provided
             if (definition.FilenamePrefix != null)
             {
                 var prefixRegex = new Regex(definition.FilenamePrefix);
                 if (!prefixRegex.IsMatch(prefix)) return null;
             }
 
+            // Match filename suffix, if provided
             if (definition.FilenameSuffix != null)
             {
                 var suffixRegex = new Regex(definition.FilenameSuffix);
                 if (!suffixRegex.IsMatch(suffix)) return null;
             }
+            
+            // Ignore files created by Sanchez
             else if (suffix == Constants.OutputFileSuffix) return null;
 
             // parse timestamp
