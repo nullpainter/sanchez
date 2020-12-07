@@ -3,6 +3,7 @@ using Ardalis.GuardClauses;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Filesystem;
+using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services;
 using Sanchez.Workflow.Extensions;
@@ -14,7 +15,7 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common
 {
-    public class ShouldWriteSingle : StepBody, IRegistrationStepBody, IProgressBarStepBody
+    public class ShouldWriteSingle : StepBody, IRegistrationStepBody, IActivityStepBody, IProgressBarStepBody
     {
         private readonly ILogger<ShouldWriteSingle> _logger;
         private readonly SingleFilenameProvider _filenameProvider;
@@ -31,17 +32,19 @@ namespace Sanchez.Workflow.Steps.Common
             _fileService = fileService;
         }
 
+        public Activity? Activity { get; set; }
         public Registration? Registration { get; set; }
         public int AlreadyRenderedCount { get; [UsedImplicitly] set; }
         public IProgressBar? ProgressBar { get; set; }
 
         public override ExecutionResult Run(IStepExecutionContext context)
         {
-            Guard.Against.Null(Registration, nameof(Registration));
+            Guard.Against.Null(Registration, nameof(Registration)); 
+            Guard.Against.Null(Activity, nameof(Activity));
             Guard.Against.Null(ProgressBar, nameof(ProgressBar));
 
             // Verify that the output file can be written
-            Registration.OutputPath = _filenameProvider.GetOutputFilename(Registration.Path);
+            Registration.OutputPath = _filenameProvider.GetOutputFilename(Activity, Registration);
             if (_fileService.ShouldWrite(Registration.OutputPath))
             {
                 ProgressBar.Tick($"Rendering {Path.GetFileName(Registration.Path)}");
@@ -65,6 +68,7 @@ namespace Sanchez.Workflow.Steps.Common
             => builder
                 .Then<TStep, ShouldWriteSingle, TData>()
                 .WithRegistration()
+                .WithActivity()
                 .WithProgressBar()
                 .Input(step => step.AlreadyRenderedCount, data => data.AlreadyRenderedCount)
                 .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);

@@ -66,6 +66,7 @@ namespace Sanchez.Services
                 Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
                 AutoAdjustLevels = !options.NoAutoAdjustLevels,
                 MinSatellites = options.MinSatellites,
+                AddSequenceNumber = options.AddSequenceNumber
             };
 
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
