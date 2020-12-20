@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using DotNet.Globbing;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Projections;
@@ -15,7 +16,7 @@ namespace Sanchez.Processing.Services
         /// </summary>
         List<string> GetSourceFiles();
 
-        List<Registration> ToRegistrations(List<string> sourceFiles);
+        List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Returns whether the output file should be written, based on options and whether the file already exists.
@@ -36,12 +37,14 @@ namespace Sanchez.Processing.Services
             _registry = registry;
         }
 
-        public List<Registration> ToRegistrations(List<string> sourceFiles)
+        public List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken)
         {
             var registrations = new List<Registration>();
 
             foreach (var file in sourceFiles)
             {
+                if (cancellationToken.IsCancellationRequested) return registrations;
+                
                 var (definition, timestamp) = _registry.Locate(file);
                 if (definition == null) continue;
 

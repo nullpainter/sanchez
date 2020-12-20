@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -24,7 +25,7 @@ namespace Sanchez.Processing.Test.Services
             await CreateSampleImagesAsync(State);
 
             var sourceFiles = FileService.GetSourceFiles();
-            var registrations = FileService.ToRegistrations(sourceFiles);
+            var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
             
             // Run method under test
             var activity = ImageLoader.RegisterImages(registrations, RenderOptions.Timestamp);
@@ -53,7 +54,7 @@ namespace Sanchez.Processing.Test.Services
             RenderOptions.Tolerance = TimeSpan.FromMinutes(30);
 
             var sourceFiles = FileService.GetSourceFiles();
-            var registrations = FileService.ToRegistrations(sourceFiles);
+            var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
 
             // Run method under test
             var activity = ImageLoader.RegisterImages(registrations, RenderOptions.Timestamp);

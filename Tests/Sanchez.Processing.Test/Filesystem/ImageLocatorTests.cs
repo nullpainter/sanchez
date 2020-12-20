@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
@@ -46,7 +47,7 @@ namespace Sanchez.Processing.Test.Filesystem
 
             // Run method under test
             var sourceFiles = FileService.GetSourceFiles();
-            var registrations = FileService.ToRegistrations(sourceFiles);
+            var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
 
             var matchedFiles = Matcher.FilterMatchingRegistrations(registrations, targetTimestamp).Select(r => Path.GetFileName(r.Path));
             matchedFiles.Should().BeEquivalentTo("GOES16_FD_CH13_20200830T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg", "Himawari8_FD_IR_20200830T035100Z.jpg", "IMG_FD_020_IR105_20200830_032006.jpg");
