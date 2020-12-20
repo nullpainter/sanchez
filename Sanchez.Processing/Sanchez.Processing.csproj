@@ -36,5 +36,7 @@
     <ItemGroup>
       <EmbeddedResource Include="Resources\Migration\001. Create cache table.sql" />
       <EmbeddedResource Include="Resources\Migration\002. Add timestamp to cache table.sql" />
+      <None Remove="Resources\Migration\003. Clear cache table.sql" />
+      <EmbeddedResource Include="Resources\Migration\003. Clear cache table.sql" />
     </ItemGroup>
 </Project>

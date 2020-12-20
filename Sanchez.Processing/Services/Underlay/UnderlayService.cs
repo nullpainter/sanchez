@@ -94,7 +94,8 @@ namespace Sanchez.Processing.Services.Underlay
 
                     // Perform latitude crop to match IR imagery if required
                     var equirectangularOptions = _options.EquirectangularRender;
-                    if (equirectangularOptions?.NoCrop == false && !equirectangularOptions.ExplicitCrop)
+
+                    if (equirectangularOptions == null || !equirectangularOptions.NoCrop && !equirectangularOptions.ExplicitCrop)
                     {
                         Crop(underlay, data.LatitudeCrop!.Value);
                     }
