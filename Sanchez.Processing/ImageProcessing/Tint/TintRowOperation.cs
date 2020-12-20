@@ -45,7 +45,7 @@ namespace Sanchez.Processing.ImageProcessing.Tint
 
         private static Rgba32 Blend2(Rgba32 left, Rgba32 right, float pos)
         {
-            return new Rgba32(
+            return new(
                 left.R / 255f * (1 - pos) + right.R / 255f * pos,
                 left.G / 255f * (1 - pos) + right.G / 255f * pos,
                 left.B / 255f * (1 - pos) + right.B / 255f * pos);

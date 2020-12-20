@@ -64,7 +64,7 @@ namespace Sanchez.Processing.ImageProcessing.Projection
             _blendStartLongitude = _longitudeRange.Start - overlap;    
         }
 
-        private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new ConcurrentDictionary<int, LatitudeCalculations>();
+        private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new();
         private readonly ImageBuffer _sourceBuffer;
         private readonly ImageOffset _imageOffset;
         private readonly RenderOptions _options;

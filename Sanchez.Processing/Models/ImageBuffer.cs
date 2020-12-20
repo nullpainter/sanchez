@@ -16,7 +16,7 @@ namespace Sanchez.Processing.Models
             Size = size;
         }
 
-        public static ImageBuffer ToBuffer(Image<Rgba32> image) => new ImageBuffer(GetBuffer(image), image.Size());
+        public static ImageBuffer ToBuffer(Image<Rgba32> image) => new(GetBuffer(image), image.Size());
 
         private static Rgba32[] GetBuffer(Image<Rgba32> image)
         {

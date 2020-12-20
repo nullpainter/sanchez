@@ -15,7 +15,7 @@ namespace Sanchez.Workflow.Models.Data
     /// </summary>
     public class TimelapseWorkflowData : StitchWorkflowData
     {
-        internal List<DateTime> TimeIntervals { get; [UsedImplicitly] set;  } = new List<DateTime>();
+        internal List<DateTime> TimeIntervals { get; [UsedImplicitly] set;  } = new();
         
         /// <summary>
         ///     Timestamp of currently-processed step.

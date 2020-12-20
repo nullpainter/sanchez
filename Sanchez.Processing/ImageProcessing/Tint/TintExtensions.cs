@@ -7,7 +7,7 @@ namespace Sanchez.Processing.ImageProcessing.Tint
 {
     public static class TintExtensions
     {
-        private static readonly ColorSpaceConverter Converter = new ColorSpaceConverter(new ColorSpaceConverterOptions());
+        private static readonly ColorSpaceConverter Converter = new(new ColorSpaceConverterOptions());
 
         /// <summary>
         ///     Applies a tint to an image.

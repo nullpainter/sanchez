@@ -10,7 +10,7 @@ namespace Sanchez.Processing.Extensions.Images
         /// <summary>
         ///     Options for performing adaptive tile histogram equalisation.
         /// </summary>
-        private static readonly HistogramEqualizationOptions AdaptiveTileOptions = new HistogramEqualizationOptions
+        private static readonly HistogramEqualizationOptions AdaptiveTileOptions = new()
         {
             Method = HistogramEqualizationMethod.AdaptiveTileInterpolation,
             ClipHistogram = true,

@@ -148,6 +148,6 @@ namespace Sanchez.Processing.Models
         /// </summary>
         public int? MinSatellites { get; set; }
 
-        public OverlayOptions Overlay { get; } = new OverlayOptions();
+        public OverlayOptions Overlay { get; } = new();
     }
 }
