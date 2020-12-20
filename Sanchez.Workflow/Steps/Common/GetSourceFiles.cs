@@ -25,7 +25,7 @@ namespace Sanchez.Workflow.Steps.Common
                 var sourceFiles = _fileService.GetSourceFiles();
                 if (!sourceFiles.Any()) throw new ValidationException("No source files found");
                 
-                SourceRegistrations = _fileService.ToRegistrations(sourceFiles);
+                SourceRegistrations = _fileService.ToRegistrations(sourceFiles, context.CancellationToken);
             }
             catch (DirectoryNotFoundException)
             {
