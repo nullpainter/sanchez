@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Services.Filesystem;

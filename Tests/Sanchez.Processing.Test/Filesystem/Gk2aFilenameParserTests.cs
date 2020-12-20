@@ -31,6 +31,5 @@ namespace Sanchez.Processing.Test.Filesystem
             var date = _filenameParser.GetTimestamp("IMG_FD_020_IR105_20190907_032006_ENHANCED.jpg", NewDefinition());
             date.Should().BeNull();
         }
-        
     }
 }

@@ -5,6 +5,7 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Services;
+using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Services
@@ -133,7 +134,9 @@ namespace Sanchez.Processing.Test.Services
 
         private static SatelliteDefinition ToDefinition(double startDegrees, double endDegrees, string name = "")
         {
-            var nonOverlapping = new SatelliteDefinition(name, "", "", false,
+            var nonOverlapping = new SatelliteDefinition(name, "", "", 
+                FilenameParserType.Goesproc,
+                false,
                 0, new Range(Angle.FromDegrees(-90), Angle.FromDegrees(90)),
                 new Range(
                     Angle.FromDegrees(startDegrees),

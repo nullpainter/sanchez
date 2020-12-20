@@ -6,6 +6,7 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
+using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Test.Common;
 using Sanchez.Workflow.Steps.Equirectangular;
 using SixLabors.ImageSharp;
@@ -59,7 +60,7 @@ namespace Sanchez.Workflow.Test.Equirectangular
             _step.TargetImage = _image;
             _step.GlobalOffset = 0;    // 180 degrees
 
-            var registration = new Registration("", new SatelliteDefinition("", null, null, false, 0, new Range(0, 0), new Range(0, 0)), null)
+            var registration = new Registration("", new SatelliteDefinition("", null, null, FilenameParserType.Xrit, false, 0, new Range(0, 0), new Range(0, 0)), null)
             {
                 LongitudeRange = new ProjectionRange(new Range(0, 0))
             };

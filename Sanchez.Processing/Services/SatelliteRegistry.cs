@@ -21,6 +21,7 @@ namespace Sanchez.Processing.Services
 
     public class SatelliteRegistry : ISatelliteRegistry
     {
+        private readonly FilenameParserProvider _filenameParserProvider;
         private readonly IVisibleRangeService _visibleRangeService;
         private readonly IEnumerable<IFilenameParser> _filenameParsers;
         private readonly ILogger<SatelliteRegistry> _logger;
@@ -29,11 +30,13 @@ namespace Sanchez.Processing.Services
         private bool _initialised;
 
         public SatelliteRegistry(
-            IVisibleRangeService visibleRangeService, 
+            FilenameParserProvider filenameParserProvider,
+            IVisibleRangeService visibleRangeService,
             IEnumerable<IFilenameParser> filenameParsers,
             ILogger<SatelliteRegistry> logger,
             RenderOptions options)
         {
+            _filenameParserProvider = filenameParserProvider;
             _visibleRangeService = visibleRangeService;
             _filenameParsers = filenameParsers;
             _logger = logger;
@@ -49,6 +52,7 @@ namespace Sanchez.Processing.Services
                 d.DisplayName!,
                 d.FilenamePrefix,
                 d.FilenameSuffix,
+                d.FilenameParserType,
                 d.Invert,
                 Angle.FromDegrees(d.Longitude + d.LongitudeAdjustment.GetValueOrDefault()).Radians,
                 new Range(
@@ -67,22 +71,27 @@ namespace Sanchez.Processing.Services
             if (!_initialised) throw new InvalidOperationException($"Registry not initialised; call {nameof(InitialiseAsync)} before use");
 
             var filename = Path.GetFileName(path);
-            
-            foreach (var parser in _filenameParsers)
+
+            foreach (var definition in _definitions!)
             {
-                foreach (var definition in _definitions!)
+                // Get filename parser
+                var parser = _filenameParserProvider.GetParser(definition.FilenameParserType);
+                if (parser == null)
                 {
-                    var timestamp = parser.GetTimestamp(filename, definition);
-                    if (timestamp != null)
-                    {
-                        _logger.LogInformation("Matched {definition} handler for {filename}", definition.DisplayName, filename);
-                        return (definition, timestamp);
-                    }
+                    _logger.LogWarning("Unable to find filename parser for type {type}", definition.FilenameParserType);
+                    continue;
+                }
+
+                var timestamp = parser.GetTimestamp(filename, definition);
+                if (timestamp != null)
+                {
+                    _logger.LogInformation("Matched {definition} handler for {filename}", definition.DisplayName, filename);
+                    return (definition, timestamp);
                 }
             }
 
             _logger.LogWarning("Unable to find filename parser for {filename}", filename);
-            
+
             return (null, null);
         }
     }
