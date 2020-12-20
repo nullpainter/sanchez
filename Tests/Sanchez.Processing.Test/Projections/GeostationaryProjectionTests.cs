@@ -15,18 +15,6 @@ namespace Sanchez.Processing.Test.Projections
         private const float PixelPrecision = 1.0f;
 
         [Test]
-        public void PerformanceTest()
-        {
-            var sw = Stopwatch.StartNew();
-            for (var i = 0; i < 1000; i++)
-            {
-                SatelliteRegistry.Locate(Goes16DefinitionPrefix); 
-            }
-            
-            Console.WriteLine(sw.ElapsedMilliseconds / 1000f);
-        }
-
-        [Test]
         [Description("Sample equation from GOES-R documentation")]
         public void TextbookToScanningAngle()
         {
