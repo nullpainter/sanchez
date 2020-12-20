@@ -20,7 +20,7 @@ namespace Sanchez.Processing.Models
         public static string DefaultUnderlayPath => PathHelper.ResourcePath(@"world.200411.3x10848x5424.jpg");
         public static string DefaultGradientPath => PathHelper.ResourcePath(@"Gradients/DarkRed-Blue.json");
 
-        internal static readonly Rgba32 Transparent = new Rgba32(0, 0, 0, 0);
+        internal static readonly Rgba32 Transparent = new(0, 0, 0, 0);
         
         /// <summary>
         ///     The number Pi * 2.
@@ -79,17 +79,17 @@ namespace Sanchez.Processing.Models
                 /// <summary>
                 ///     1km spatial resolution.
                 /// </summary>
-                public static readonly ImageOffset OneKm = new ImageOffset(-0.151858, 0.151858, 0.000028);
+                public static readonly ImageOffset OneKm = new(-0.151858, 0.151858, 0.000028);
                 
                 /// <summary>
                 ///     2km spatial resolution.
                 /// </summary>
-                public static readonly ImageOffset TwoKm = new ImageOffset(-0.151844, 0.151844, 0.000056);
+                public static readonly ImageOffset TwoKm = new(-0.151844, 0.151844, 0.000056);
 
                 /// <summary>
                 ///     4km spatial resolution.
                 /// </summary>
-                public static readonly ImageOffset FourKm = new ImageOffset(-0.151816, 0.151816, 0.000112);
+                public static readonly ImageOffset FourKm = new(-0.151816, 0.151816, 0.000112);
             }
         }
 

@@ -30,12 +30,12 @@ namespace Sanchez.Processing.Models
         /// <summary>Creates a new instance of Angle.</summary>
         /// <param name="value">The value in degrees.</param>
         /// <returns> A new instance of the <see cref="T:Sanchez.Processing.Models.Angle" /> struct.</returns>
-        public static Angle FromDegrees(double value) => new Angle(value * (Math.PI / 180.0));
+        public static Angle FromDegrees(double value) => new(value * (Math.PI / 180.0));
 
         /// <summary>Creates a new instance of Angle.</summary>
         /// <param name="value">The value in radians.</param>
         /// <returns> A new instance of the <see cref="T:Sanchez.Processing.Models.Angle" /> struct.</returns>
-        public static Angle FromRadians(double value) => new Angle(value);
+        public static Angle FromRadians(double value) => new(value);
 
         public override string ToString() => $"{Radians} rad, {Degrees} degrees";
     }

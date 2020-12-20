@@ -27,7 +27,7 @@ namespace Sanchez.Processing.Helpers
 
         public static ProgressBarOptions DefaultOptions()
         {
-            return new ProgressBarOptions
+            return new()
             {
                 ProgressCharacter = '─',
                 ProgressBarOnBottom = true,

@@ -17,7 +17,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse
 
         public PrepareTimeIntervals(RenderOptions options) => _options = options;
 
-        public List<DateTime> TimeIntervals { get; } = new List<DateTime>();
+        public List<DateTime> TimeIntervals { get; } = new();
         public List<Registration>? SourceRegistrations { get; set; }
 
         public override ExecutionResult Run(IStepExecutionContext context)

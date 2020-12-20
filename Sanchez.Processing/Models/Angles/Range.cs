@@ -38,10 +38,10 @@ namespace Sanchez.Processing.Models.Angles
         /// </summary>
         public Range UnwrapLongitude() => End < Start ? new Range(Start, End + Constants.Pi2) : this;
         
-        public Range NormaliseLongitude() => new Range(Start.NormaliseLongitude(), End.NormaliseLongitude());
+        public Range NormaliseLongitude() => new(Start.NormaliseLongitude(), End.NormaliseLongitude());
 
-        public static Range operator +(Range range, double amount) => new Range(range.Start + amount, range.End + amount);
-        public static Range operator -(Range range, double amount) => new Range(range.Start - amount, range.End - amount);
+        public static Range operator +(Range range, double amount) => new(range.Start + amount, range.End + amount);
+        public static Range operator -(Range range, double amount) => new(range.Start - amount, range.End - amount);
         
         public override string ToString() => $"{Start} to {End}";
     }
