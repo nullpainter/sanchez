@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
@@ -12,6 +13,18 @@ namespace Sanchez.Processing.Test.Projections
     public class GeostationaryProjectionTests : AbstractTests
     {
         private const float PixelPrecision = 1.0f;
+
+        [Test]
+        public void PerformanceTest()
+        {
+            var sw = Stopwatch.StartNew();
+            for (var i = 0; i < 1000; i++)
+            {
+                SatelliteRegistry.Locate(Goes16DefinitionPrefix); 
+            }
+            
+            Console.WriteLine(sw.ElapsedMilliseconds / 1000f);
+        }
 
         [Test]
         [Description("Sample equation from GOES-R documentation")]

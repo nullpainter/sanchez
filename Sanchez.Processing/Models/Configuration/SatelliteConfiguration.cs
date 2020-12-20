@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Sanchez.Processing.Services.Filesystem;
 
 namespace Sanchez.Processing.Models.Configuration
 {
@@ -15,6 +16,9 @@ namespace Sanchez.Processing.Models.Configuration
         /// </summary>
         [JsonProperty("FilenameSuffix")]
         public string? FilenameSuffix { get; set; } 
+        
+        [JsonProperty("FilenameParser", Required = Required.Always)]
+        public FilenameParserType FilenameParserType { get; set; }
 
         /// <summary>
         ///     Whether pixel intensities in IR images should be inverted to match GOES-R.

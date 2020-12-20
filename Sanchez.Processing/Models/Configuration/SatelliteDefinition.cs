@@ -1,5 +1,7 @@
-﻿using Sanchez.Processing.Extensions;
+﻿using System.Text.RegularExpressions;
+using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models.Angles;
+using Sanchez.Processing.Services.Filesystem;
 
 namespace Sanchez.Processing.Models.Configuration
 {
@@ -8,6 +10,7 @@ namespace Sanchez.Processing.Models.Configuration
         /// <param name="displayName"></param>
         /// <param name="filenamePrefix"></param>
         /// <param name="filenameSuffix"></param>
+        /// <param name="filenameParserType"></param>
         /// <param name="invert"></param>
         /// <param name="longitude"></param>
         /// <param name="latitudeRange"></param>
@@ -19,6 +22,7 @@ namespace Sanchez.Processing.Models.Configuration
             string displayName,
             string? filenamePrefix,
             string? filenameSuffix,
+            FilenameParserType filenameParserType,
             bool invert,
             double longitude,
             Range latitudeRange,
@@ -29,6 +33,7 @@ namespace Sanchez.Processing.Models.Configuration
         {
             FilenamePrefix = filenamePrefix;
             FilenameSuffix = filenameSuffix;
+            FilenameParserType = filenameParserType;
             Invert = invert;
             DisplayName = displayName;
             LatitudeRange = latitudeRange;
@@ -39,15 +44,22 @@ namespace Sanchez.Processing.Models.Configuration
 
             // Convert satellite longitude to lat/long scale of -180 to 180 degrees
             Longitude = longitude.NormaliseLongitude();
+
+            if (FilenamePrefix != null) PrefixRegex = new Regex(FilenamePrefix, RegexOptions.Compiled);
+            if (FilenameSuffix != null) SuffixRegex = new Regex(FilenameSuffix, RegexOptions.Compiled);
         }
 
-        public string? FilenamePrefix { get; }
-        public string? FilenameSuffix { get; }
+        private string? FilenamePrefix { get; }
+        private string? FilenameSuffix { get; }
+        public FilenameParserType FilenameParserType { get; }
+
+        public Regex? PrefixRegex { get; }
+        public Regex? SuffixRegex { get; }
 
         /// <summary>
         ///     Whether pixel intensities in IR images should be inverted to match GOES-R.
         /// </summary>
-        public bool Invert { get; set; }
+        public bool Invert { get; }
 
         public string DisplayName { get; }
         public Range LatitudeRange { get; }

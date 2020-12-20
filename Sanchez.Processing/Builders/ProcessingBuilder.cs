@@ -31,9 +31,10 @@ namespace Sanchez.Processing.Builders
         private static IServiceCollection AddFilenameParsers(this IServiceCollection services)
         {
             return services
-                .AddSingleton<IFilenameParser, ElectroFilenameParser>()
                 .AddSingleton<IFilenameParser, GoesFilenameParser>()
-                .AddSingleton<IFilenameParser, Gk2AFilenameParser>();
+                .AddSingleton<IFilenameParser, Gk2AFilenameParser>()
+                .AddSingleton<IFilenameParser, ElectroFilenameParser>()
+                .AddSingleton<FilenameParserProvider>();
         }
 
         private static IServiceCollection AddFilenameProviders(this IServiceCollection services)

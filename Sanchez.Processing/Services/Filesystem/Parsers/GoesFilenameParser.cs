@@ -7,7 +7,7 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
     /// </summary>
     public class GoesFilenameParser : AbstractFilenameParser
     {
-        protected override Regex Regex => new("(.*)([0-9]{8}T[0-9]{6}Z)(.*)\\..*", RegexOptions.Compiled);
+        protected override Regex Regex => new("([^ ]*)([0-9]{8}T[0-9]{6}Z)([^ ]*)\\.[^ ]*", RegexOptions.Compiled);
         protected override string TimestampFormat => "yyyyMMddTHHmmssZ";
     }
 }
