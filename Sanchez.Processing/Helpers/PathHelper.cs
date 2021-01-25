@@ -29,7 +29,7 @@ namespace Sanchez.Processing.Helpers
         /// </summary>
         private static string GetApplicationPath()
         {
-            var processFilename = Process.GetCurrentProcess().MainModule.FileName;
+            var processFilename = Process.GetCurrentProcess().MainModule!.FileName;
 
             // Determine correct location of directories relative to application, depending on whether we are running
             // from a published executable or via dotnet.

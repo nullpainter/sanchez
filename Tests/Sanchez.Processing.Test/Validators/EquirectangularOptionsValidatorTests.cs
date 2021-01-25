@@ -127,15 +127,25 @@ namespace Sanchez.Processing.Test.Validators
 
         [TestCase(null)]
         [TestCase("")]
-        [TestCase("-90:90")]
-        public void ValidLatitudeCrop(string latitudeRange)
+        [TestCase("90:-90")]
+        public void ValidLatitudeCrop(string range)
         {
             var options = ValidOptions();
-            options.LatitudeRange = latitudeRange;
+            options.LatitudeRange = range;
 
             VerifyNoFailure(options);
         }
 
+        [TestCase("180:-90")]
+        [TestCase("100:-100")]
+        [TestCase("80:-100")]
+        public void InvalidLatitudeCrop(string range)
+        {
+            var options = ValidOptions();
+            options.LatitudeRange= range;
+
+            VerifyFailure(options, nameof(EquirectangularOptions.LatitudeRange)); 
+        }
 
         [TestCase("1:2:3")]
         [TestCase("1:")]

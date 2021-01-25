@@ -8,7 +8,6 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Options;
 using Sanchez.Processing.Services;
 using Sanchez.Processing.Services.Underlay;
-using Sanchez.Processing.Test.Helper;
 using Sanchez.Services;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;

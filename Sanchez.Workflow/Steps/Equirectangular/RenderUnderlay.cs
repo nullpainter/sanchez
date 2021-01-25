@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Tint;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;

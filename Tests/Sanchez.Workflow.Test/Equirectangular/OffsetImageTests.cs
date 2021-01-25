@@ -1,9 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
-using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services.Filesystem;

@@ -14,22 +14,22 @@ namespace Sanchez.Validators
             RuleFor(o => o.AutoCrop)
                 .Must(crop => !crop)
                 .When(o => o.NoCrop)
-                .WithMessage(o => "Automatic cropping cannot be performed if no cropping is specified");
+                .WithMessage(_ => "Automatic cropping cannot be performed if no cropping is specified");
 
             RuleFor(o => o.AutoCrop)
                 .Must(crop => !crop)
                 .When(o => o.LatitudeRange != null || o.LongitudeRange != null)
-                .WithMessage(o => "Automatic cropping cannot be performed if manual crop bounds are specified`");
+                .WithMessage(_ => "Automatic cropping cannot be performed if manual crop bounds are specified`");
 
             RuleFor(o => o.LatitudeRange)
                 .Must(ValidLatitude)
                 .When(o => !o.LatitudeRange.IsNullOrEmpty())
-                .WithMessage(o => "Unable to parse latitude crop range. Expected format is min:max; e.g. -174:180"); // TODO replace with NZ range
+                .WithMessage(_ => "Unable to parse latitude crop range. Expected format is min:max; e.g. -33.6:-48");
 
             RuleFor(o => o.LongitudeRange)
                 .Must(ValidRange)
                 .When(o => !o.LongitudeRange.IsNullOrEmpty())
-                .WithMessage(o => "Unable to parse longitude crop range. Expected format is min:max; e.g. -174:180"); // TODO replace with NZ range
+                .WithMessage(_ => "Unable to parse longitude crop range. Expected format is min:max; e.g. 165.1:179.3");
         }
 
         private static bool ValidLatitude(string? range)
@@ -37,8 +37,7 @@ namespace Sanchez.Validators
             var parsedRange = RangeHelper.ParseRange(range);
             if (parsedRange == null) return false;
 
-            // TODO is this back-to-front? Need to test plz
-            return parsedRange.Value.Start >= -90 && parsedRange.Value.End <= 90;
+            return Angle.FromRadians(parsedRange.Value.Start).Degrees <= 90 && Angle.FromRadians(parsedRange.Value.End).Degrees >= -90;
         }
 
         private static bool ValidRange(string? range)

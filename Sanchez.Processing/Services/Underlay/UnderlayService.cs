@@ -5,6 +5,7 @@ using Sanchez.Processing.Extensions;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
+using Sanchez.Processing.Models.Projections;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -87,7 +88,7 @@ namespace Sanchez.Processing.Services.Underlay
                     if (definition == null) throw new InvalidOperationException("Satellite definition must be provided for geostationary projection");
 
                     // Project underlay to geostationary, based on the target satellite
-                    _logger.LogInformation("{definition:l0} Rendering geostationary underlay", definition.DisplayName);
+                    _logger.LogInformation("{Definition:l0} Rendering geostationary underlay", definition.DisplayName);
                     return underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, _options);
 
                 case ProjectionType.Equirectangular:
@@ -114,7 +115,7 @@ namespace Sanchez.Processing.Services.Underlay
             var yPixelRange = latitudeRange.ToPixelRangeY(underlay.Height);
 
             // Crop underlay to target height
-            _logger.LogInformation("Cropping underlay to {min} - {max} px height", yPixelRange.Start, yPixelRange.End);
+            _logger.LogInformation("Cropping underlay to {Min} - {Max} px height", yPixelRange.Start, yPixelRange.End);
             underlay.Mutate(c => c.Crop(new Rectangle(0, yPixelRange.Start, underlay.Width, yPixelRange.Range)));
         }
     }

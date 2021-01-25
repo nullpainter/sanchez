@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Sanchez.Processing.Test.Helper;
+using Sanchez.Test.Common;
 using SixLabors.ImageSharp;
 
 namespace Sanchez.Test

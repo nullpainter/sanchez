@@ -1,5 +1,5 @@
 ﻿using Ardalis.GuardClauses;
-using Sanchez.Processing.ImageProcessing.ShadeEdges;
+using Sanchez.Processing.ImageProcessing.Haze;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;

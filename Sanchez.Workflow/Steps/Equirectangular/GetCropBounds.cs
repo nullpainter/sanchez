@@ -59,7 +59,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
 
             CropBounds = autoCrop ? GetAutoCropBounds(TargetImage) : GetExplicitCropBounds(TargetImage);
 
-            _logger.LogInformation("Cropped image size: {width} x {height} px", CropBounds.Width, CropBounds.Height);
+            _logger.LogInformation("Cropped image size: {Width} x {Height} px", CropBounds.Width, CropBounds.Height);
 
             return ExecutionResult.Next();
         }
@@ -80,7 +80,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
                     .ToPixelRangeY(targetImage.Height)
                 : new PixelRange(0, targetImage.Height);
 
-            _logger.LogDebug("Crop bounds: [ X={xBounds}, Y={yBounds} ]", xPixelRange, yPixelRange);
+            _logger.LogDebug("Crop bounds: [ X={XBounds}, Y={YBounds} ]", xPixelRange, yPixelRange);
             return new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range);
         }
 

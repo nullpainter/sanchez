@@ -20,8 +20,7 @@ namespace Sanchez.Processing.Test.Services
         public async Task MalformedGradientFile()
         {
             await CreateGradientFileAsync("Hi there");
-            
-            var exception = Assert.ThrowsAsync<JsonReaderException>(() => Service.InitialiseAsync());
+            Assert.ThrowsAsync<JsonReaderException>(() => Service.InitialiseAsync());
         }
 
         [Test]
