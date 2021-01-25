@@ -15,13 +15,13 @@ namespace Sanchez.Processing.Test.Services
         {
             for (var i = 0; i < 10000; i++)
             {
-                var (definition, _) = SatelliteRegistry.Locate("c:\\images\\GOES17_FD_CH13_20200911T080031Z.jpg");
+                var (definition, _) = SatelliteRegistry.Locate("c:/images/GOES17_FD_CH13_20200911T080031Z.jpg");
                 definition.Should().NotBeNull();
                 
-                (definition, _) = SatelliteRegistry.Locate("c:\\images\\IMG_FD_020_IR105_20190907_032006.jpg");
+                (definition, _) = SatelliteRegistry.Locate("c:/images/IMG_FD_020_IR105_20190907_032006.jpg");
                 definition.Should().NotBeNull(); 
 
-                (definition, _) = SatelliteRegistry.Locate("c:\\images\\EWS-G1_20200911T080031Z.jpg");
+                (definition, _) = SatelliteRegistry.Locate("c:/images/EWS-G1_20200911T080031Z.jpg");
                 definition.Should().NotBeNull();
             }
         }
@@ -29,7 +29,7 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public void Goes17Matched()
         {
-            var (definition, timestamp) = SatelliteRegistry.Locate("c:\\images\\GOES17_FD_CH13_20200911T080031Z.jpg");
+            var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/GOES17_FD_CH13_20200911T080031Z.jpg");
             definition.Should().NotBeNull("satellite definition should have been found");
             timestamp.Should().NotBeNull("timestamp should have been extracted");
 
@@ -40,14 +40,14 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public void Goes16EnhancedNotMatched()
         {
-            var (definition, _) = SatelliteRegistry.Locate("c:\\images\\GOES16_FD_CH13_enhanced_20200908T005019Z.jpg");
+            var (definition, _) = SatelliteRegistry.Locate("c:/images/GOES16_FD_CH13_enhanced_20200908T005019Z.jpg");
             definition.Should().BeNull("satellite definition should have not have been found for enhanced images");
         }
 
         [Test]
         public void Goes16Matched()
         {
-            var (definition, timestamp) = SatelliteRegistry.Locate("c:\\images\\GOES16_FD_CH13_20200908T005019Z.jpg");
+            var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/GOES16_FD_CH13_20200908T005019Z.jpg");
             definition.Should().NotBeNull("satellite definition should have been found");
             timestamp.Should().NotBeNull("timestamp should have been extracted");
 
@@ -58,7 +58,7 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public void Gk2AMatched()
         {
-            var (definition, timestamp) = SatelliteRegistry.Locate("c:\\images\\IMG_FD_003_IR105_20201217_003006.jpg");
+            var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/IMG_FD_003_IR105_20201217_003006.jpg");
             definition.Should().NotBeNull("satellite definition should have been found");
             timestamp.Should().NotBeNull("timestamp should have been extracted");
 
@@ -69,7 +69,7 @@ namespace Sanchez.Processing.Test.Services
         [Test]
         public void HimawariMatched()
         {
-            var (definition, timestamp) = SatelliteRegistry.Locate("c:\\images\\Himawari8_FD_IR_20200908T015100Z.jpg");
+            var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/Himawari8_FD_IR_20200908T015100Z.jpg");
             definition.Should().NotBeNull("satellite definition should have been found");
             timestamp.Should().NotBeNull("timestamp should have been extracted");
 
@@ -81,7 +81,7 @@ namespace Sanchez.Processing.Test.Services
         public void ElectroMatched()
         {
             // Verify 4-9 definition
-            var (definition, timestamp) = SatelliteRegistry.Locate("c:\\images\\200830_0230_6.jpg");
+            var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/200830_0230_6.jpg");
             definition.Should().NotBeNull("satellite definition should have been found");
             timestamp.Should().NotBeNull("timestamp should have been extracted");
 
@@ -89,14 +89,14 @@ namespace Sanchez.Processing.Test.Services
             timestamp.Should().Be(new DateTime(2020, 08, 30, 02, 30, 0));
 
             // Verify 1-3 definition
-            (definition, _) = SatelliteRegistry.Locate("c:\\images\\200830_0230_1.jpg");
+            (definition, _) = SatelliteRegistry.Locate("c:/images/200830_0230_1.jpg");
             definition.Should().NotBeNull("satellite definition should have been found");
         }
 
         [Test]
         public void NwsNotMatched()
         {
-            var (definition, _) = SatelliteRegistry.Locate("c:\\images\\20210101T230000Z_20210101230001-pac48per_latestBW.gif");
+            var (definition, _) = SatelliteRegistry.Locate("c:/images/20210101T230000Z_20210101230001-pac48per_latestBW.gif");
             definition.Should().BeNull("satellite definition should not have been found for an NWS image");
         }
     }
