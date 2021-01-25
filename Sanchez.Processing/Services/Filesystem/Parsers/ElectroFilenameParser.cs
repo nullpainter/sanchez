@@ -7,7 +7,12 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
     /// </summary>
     public class ElectroFilenameParser : AbstractFilenameParser
     {
-        protected override Regex Regex => new("([^ ]*)([0-9]{6}_[0-9]{4})_([^ ]*)\\.[^ ]*", RegexOptions.Compiled);
+        protected override Regex Regex { get; }
         protected override string TimestampFormat => "yyMMdd_HHmm";
+
+        public ElectroFilenameParser(string? prefix, string? suffix) 
+        {
+            Regex = new Regex(prefix + "([0-9]{6}_[0-9]{4})_" + suffix + "\\.[^ ]*", RegexOptions.Compiled);
+        }
     }
 }

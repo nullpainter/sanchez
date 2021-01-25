@@ -7,7 +7,13 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
     /// </summary>
     public class Gk2AFilenameParser : AbstractFilenameParser
     {
-        protected override Regex Regex => new("([^ ]*)_([0-9]{8}_[0-9]{6})([^ ]*)\\.[^ ]*", RegexOptions.Compiled);
+        protected override Regex Regex { get; }
+
         protected override string TimestampFormat => "yyyyMMdd_HHmmss";
+
+        public Gk2AFilenameParser(string? prefix, string? suffix)
+        {
+            Regex = new Regex(prefix + "_([0-9]{8}_[0-9]{6})" + suffix + "\\.[^ ]*", RegexOptions.Compiled);
+        }
     }
 }

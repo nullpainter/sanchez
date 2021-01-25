@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Diagnostics;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Processing.Services.Filesystem.Parsers;
 
-namespace Sanchez.Processing.Test.Filesystem
+namespace Sanchez.Processing.Test.Filesystem.FilenameParsers
 {
     [TestFixture(TestOf = typeof(ElectroFilenameParser))]
     public class ElectroFilenameParserTests : AbstractFilenameParserTests
     {
-        private readonly IFilenameParser _filenameParser = new ElectroFilenameParser();
-
         [Test]
-        public void ExtractDateNoSuffix()
+        public void ExtractDatePrefix()
         {
-            var date = _filenameParser.GetTimestamp("200920_1730_4.jpg", NewDefinition());
+            var definition = NewDefinition(FilenameParserType.Electro, "test_", "4");
+            var date = definition.FilenameParser.GetTimestamp("test_200920_1730_4.jpg");
             date.Should().Be(new DateTime(2020, 09, 20, 17, 30, 00));
         }
 
@@ -23,7 +21,8 @@ namespace Sanchez.Processing.Test.Filesystem
         [TestCase("[1-4]")]
         public void ExtractDateMatchingSuffix(string suffix)
         {
-            var date = _filenameParser.GetTimestamp("200920_1730_4.jpg", NewDefinition(suffix: suffix));
+            var definition = NewDefinition(FilenameParserType.Electro, suffix: suffix);
+            var date = definition.FilenameParser.GetTimestamp("200920_1730_4.jpg");
             date.Should().Be(new DateTime(2020, 09, 20, 17, 30, 00));
         }
 
@@ -31,14 +30,16 @@ namespace Sanchez.Processing.Test.Filesystem
         [TestCase("[1-3]")]
         public void ExtractDateNotMatchingSuffix(string suffix)
         {
-            var date = _filenameParser.GetTimestamp("200920_1730_4.jpg", NewDefinition(suffix: suffix));
+            var definition = NewDefinition(FilenameParserType.Electro, suffix: suffix);
+            var date = definition.FilenameParser.GetTimestamp("200920_1730_4.jpg"); 
             date.Should().BeNull();
         }
 
         [Test]
         public void MissingDate()
         {
-            var date = _filenameParser.GetTimestamp("2020.jpg", NewDefinition());
+            var definition = NewDefinition(FilenameParserType.Electro);
+            var date = definition.FilenameParser.GetTimestamp("2020.jpg");
             date.Should().BeNull();
         }
     }
