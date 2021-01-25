@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Sanchez.Processing.Services.Filesystem.Parsers;
 
 namespace Sanchez.Processing.Services.Filesystem
 {
-    public class FilenameParserProvider
+    public static class FilenameParserProvider
     {
-        private readonly Dictionary<FilenameParserType, IFilenameParser> _parsers = new();
-        
-        public FilenameParserProvider()
+        public static IFilenameParser GetParser(FilenameParserType type, string? prefix, string? suffix)
         {
-            _parsers.Add(FilenameParserType.Goesproc, new GoesFilenameParser());
-            _parsers.Add(FilenameParserType.Xrit, new Gk2AFilenameParser());
-            _parsers.Add(FilenameParserType.Electro, new ElectroFilenameParser());
+            return type switch
+            {
+                FilenameParserType.Goesproc => new GoesFilenameParser(prefix, suffix),
+                FilenameParserType.Xrit => new Gk2AFilenameParser(prefix, suffix),
+                FilenameParserType.Electro => new ElectroFilenameParser(prefix, suffix),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
         }
-
-        public IFilenameParser? GetParser(FilenameParserType type) => _parsers.TryGetValue(type, out var parser) ? parser : null;
     }
 }

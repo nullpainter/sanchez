@@ -1,7 +1,7 @@
 ﻿[
   {
     "DisplayName": "GOES-16",
-    "FilenamePrefix": "GOES16_FD_CH13_",
+    "FilenamePrefix": "GOES16_FD_CH13_(?!enhanced)",
     "FilenameParser": "Goesproc",
     "Longitude": -75.2,
     "LongitudeAdjustment": 0.1,
@@ -9,14 +9,14 @@
   },
   {
     "DisplayName": "GOES-17",
-    "FilenamePrefix": "GOES17_FD_CH13_",
+    "FilenamePrefix": "GOES17_FD_CH13_(?!enhanced)",
     "FilenameParser": "Goesproc",
     "Longitude": -137.2,
     "Brightness": 0.95
   },
   {
     "DisplayName": "Himawari-8",
-    "FilenamePrefix": "Himawari8_FD_IR_",
+    "FilenamePrefix": "^Himawari8_FD_IR_",
     "FilenameParser": "Goesproc",
     "Longitude": 140.7,
     "LongitudeAdjustment": -0.8,
@@ -30,7 +30,7 @@
   },
   {
     "DisplayName": "GEO-KOMPSAT-2A",
-    "FilenamePrefix": "IMG_FD_",
+    "FilenamePrefix": "^IMG_FD_.*",
     "FilenameParser": "Xrit",
     "Longitude": 128.2,
     "Brightness": 0.97,
@@ -44,7 +44,7 @@
   {
     "DisplayName": "Electro-L N2",
     "FilenameSuffix": "[1-3]",
-    "FilenameParser": "Goesproc",
+    "FilenameParser": "Electro",
     "Longitude": -14.5,
     "Brightness": 1.0,
     "Crop": [
@@ -71,7 +71,7 @@
   // Preliminary EWS-G1 configuration
   {
     "DisplayName": "EWS-G1",
-    "FilenamePrefix": "EWS-G1",
+    "FilenamePrefix": "EWS-G1_",
     "FilenameParser": "Goesproc",
     "Invert": true,
     "Longitude": 61.5,
