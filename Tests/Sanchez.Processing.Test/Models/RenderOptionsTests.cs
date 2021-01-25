@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Projections;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Models
@@ -104,7 +105,7 @@ namespace Sanchez.Processing.Test.Models
 
         private static RenderOptions GeostationaryOptions(Angle? longitude = null, Angle? endLongitude = null)
         {
-            return new RenderOptions
+            return new()
             {
                 GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, false, 1.0f, 0.9f)
             };
@@ -112,9 +113,9 @@ namespace Sanchez.Processing.Test.Models
 
         private static RenderOptions EquirectangularOptions()
         {
-            return new RenderOptions
+            return new()
             {
-                EquirectangularRender = new EquirectangularRenderOptions(false, false, true, null)
+                EquirectangularRender = new EquirectangularRenderOptions(false, false, true)
             };
         }
     }

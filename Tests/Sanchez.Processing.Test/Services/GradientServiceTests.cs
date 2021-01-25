@@ -28,12 +28,12 @@ namespace Sanchez.Processing.Test.Services
         {
             var gradient = new List<RgbColourStop>
             {
-                new RgbColourStop
+                new()
                 {
                     Colour = "#ff0000",
                     Position = 0.1f
                 },
-                new RgbColourStop
+                new()
                 {
                     Position = 0.1f
                 },
@@ -49,12 +49,12 @@ namespace Sanchez.Processing.Test.Services
         {
             var gradient = new List<RgbColourStop>
             {
-                new RgbColourStop
+                new()
                 {
                     Colour = "#ff0000",
                     Position = 0.1f
                 },
-                new RgbColourStop
+                new()
                 {
                     Colour = "#aa0000"
                 },
@@ -70,12 +70,12 @@ namespace Sanchez.Processing.Test.Services
                 {
                     var gradient = new List<RgbColourStop>
                     {
-                        new RgbColourStop
+                        new()
                         {
                             Colour = "#ff0000",
                             Position = -0.5f,
                         },
-                        new RgbColourStop
+                        new()
                         {
                             Colour = "#aa0000",
                             Position = 1f
@@ -92,12 +92,12 @@ namespace Sanchez.Processing.Test.Services
         {
             var gradient = new List<RgbColourStop>
             {
-                new RgbColourStop
+                new()
                 {
                     Colour = "#ff0000",
                     Position = 0.1f
                 },
-                new RgbColourStop
+                new()
                 {
                     Colour = "#aa0000",
                     Position = 2.3f
@@ -114,12 +114,12 @@ namespace Sanchez.Processing.Test.Services
         {
             var gradient = new List<RgbColourStop>
             {
-                new RgbColourStop
+                new()
                 {
                     Colour = "#ff0000",
                     Position = 0.1f
                 },
-                new RgbColourStop
+                new()
                 {
                     Colour = "#sanchez",
                     Position = 1.0f

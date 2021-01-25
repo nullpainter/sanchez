@@ -79,7 +79,7 @@ namespace Sanchez.Workflow.Test.Equirectangular
 
         private List<Registration> CreateRegistrations()
         {
-            return new List<Registration>
+            return new()
             {
                 new Registration("first.jpg", null!, null),
                 new Registration("second.jpg", null!, DateTime.Today.AddHours(-1)),

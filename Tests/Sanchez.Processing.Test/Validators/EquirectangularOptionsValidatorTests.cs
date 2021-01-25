@@ -173,7 +173,7 @@ namespace Sanchez.Processing.Test.Validators
 
         private static EquirectangularOptions ValidOptions()
         {
-            return new EquirectangularOptions
+            return new()
             {
                 Tint = "0000FF",
                 ToleranceMinutes = 30,

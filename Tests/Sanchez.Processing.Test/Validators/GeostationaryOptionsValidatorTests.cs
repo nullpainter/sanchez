@@ -210,7 +210,7 @@ namespace Sanchez.Processing.Test.Validators
 
         private GeostationaryOptions ValidOptions()
         {
-            return new GeostationaryOptions
+            return new()
             {
                 Tint = "0000FF",
                 SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm
