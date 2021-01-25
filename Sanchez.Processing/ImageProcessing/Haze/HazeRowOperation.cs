@@ -4,7 +4,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace Sanchez.Processing.ImageProcessing.ShadeEdges
+namespace Sanchez.Processing.ImageProcessing.Haze
 {
     public readonly struct HazeRowOperation : IRowOperation
     {

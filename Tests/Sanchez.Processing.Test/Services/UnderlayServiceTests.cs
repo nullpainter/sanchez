@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
+using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Test.Common;
 using Range = Sanchez.Processing.Models.Angles.Range;
@@ -58,7 +59,7 @@ namespace Sanchez.Processing.Test.Services
                 new Size(5424, 5424),
                 new Range(0, Math.PI / 2));
 
-            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, true, false, null);
+            RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, true, false);
             var underlay = await UnderlayService.GetUnderlayAsync(data, definition);
 
             underlay.Width.Should().Be(5424);

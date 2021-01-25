@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Sanchez.Processing.Models.Configuration;
+using Sanchez.Processing.Models.Projections;
 using SixLabors.ImageSharp;
 
 namespace Sanchez.Processing.Models

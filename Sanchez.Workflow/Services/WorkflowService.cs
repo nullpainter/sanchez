@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Projections;
 using Sanchez.Workflow.Models;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Workflows.Equirectangular;
@@ -50,9 +51,9 @@ namespace Sanchez.Workflow.Services
 
             RegisterWorkflows();
 
-            _host.OnStepError += (workflow, step, exception) => OnStepError(exception, workflow);
+            _host.OnStepError += (workflow, _, exception) => OnStepError(exception, workflow);
             _host.OnLifeCycleEvent += evt => OnLifeCycleEvent(cancellationToken, evt);
-            Console.CancelKeyPress += (sender, e) => CancelKeyPress(cancellationToken, e);
+            Console.CancelKeyPress += (_, e) => CancelKeyPress(cancellationToken, e);
 
             _initialised = true;
         }
@@ -119,7 +120,7 @@ namespace Sanchez.Workflow.Services
             {
                 case ValidationException validationException:
                     Console.WriteLine(validationException.Message);
-                    Log.Warning(validationException.Message);
+                    Log.Warning("{ValidationMessage}", validationException.Message);
                     break;
                 default:
                     if (!_options.Verbose) Console.WriteLine("Unhandled failure; check logs for details, or run again with verbose logging (-v / --verbose)");

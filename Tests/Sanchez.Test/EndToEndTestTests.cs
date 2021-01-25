@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Sanchez.Processing.Test.Helper;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Test

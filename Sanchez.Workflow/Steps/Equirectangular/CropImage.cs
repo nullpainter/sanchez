@@ -6,7 +6,6 @@ using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Models.Steps;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Interface;
@@ -39,7 +38,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             var equirectangularOptions = _options.EquirectangularRender!;
             if (!equirectangularOptions.NoCrop && CropBounds != null)
             {
-                _logger.LogDebug("Crop bounds: {bounds}", CropBounds);
+                _logger.LogDebug("Crop bounds: {Bounds}", CropBounds);
                 TargetImage.Mutate(ctx => ctx.Crop(CropBounds.Value));
             }
 

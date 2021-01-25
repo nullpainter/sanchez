@@ -8,7 +8,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Services;
-using Sanchez.Processing.Test.Helper;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Services

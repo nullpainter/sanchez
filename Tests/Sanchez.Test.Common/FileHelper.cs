@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sanchez.Processing.Test.Helper
+namespace Sanchez.Test.Common
 {
     /// <summary>
     ///     Helper methods for file manipulation and cleanup in unit tests
     /// </summary>
     public class FileState : IDisposable
     {
-        private readonly List<string> _tempDirectories = new List<string>();
-
-        public FileState()
-        {
-        }
+        private readonly List<string> _tempDirectories = new();
 
         public string CreateFile(string directory, string filename)
         {

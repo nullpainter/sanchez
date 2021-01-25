@@ -1,4 +1,4 @@
-﻿namespace Sanchez.Processing.Models
+﻿namespace Sanchez.Processing.Models.Projections
 {
     public enum ProjectionType
     {

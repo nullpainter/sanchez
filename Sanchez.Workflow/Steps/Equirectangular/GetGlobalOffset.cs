@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
@@ -12,7 +11,7 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular
 {
-    // TODO we ned to test this!
+    // TODO we need to test this!
     /// <summary>
     ///     Calculates the horizontal offset to be applied to stitched IR images so the images don't
     ///     wrap around the Earth. This is applied to partial coverage and explicit longitude cropping
@@ -34,7 +33,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
         public override ExecutionResult Run(IStepExecutionContext context)
         {
             GlobalOffset = GetOffset();
-            _logger.LogDebug("Global offset: {offset:F2} degrees", Angle.FromRadians(GlobalOffset).Degrees);
+            _logger.LogDebug("Global offset: {Offset:F2} degrees", Angle.FromRadians(GlobalOffset).Degrees);
 
             return ExecutionResult.Next();
         }
