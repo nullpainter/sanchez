@@ -22,6 +22,16 @@ namespace Sanchez.Processing.Test.Filesystem
         }
         
         [Test]
+        public void OutputFilenameNonBatchDirectory()
+        {
+            RenderOptions.SourcePath = "source.jpg";
+            RenderOptions.OutputPath = "test";
+
+            var outputFilename = FilenameProvider.GetOutputFilename("source.jpg");
+            outputFilename.Should().Be(Path.Combine("test", "source-FC.jpg"));
+        }
+        
+        [Test]
         public void OutputFilenameBatch()
         {
             RenderOptions.SourcePath = "images/**";

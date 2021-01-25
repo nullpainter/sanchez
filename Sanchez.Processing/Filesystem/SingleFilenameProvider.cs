@@ -15,7 +15,7 @@ namespace Sanchez.Processing.Filesystem
             Guard.Against.Null(input, nameof(input));
             
             var outputPath = _options.OutputPath;
-            if (!_options.MultipleTargets) return outputPath;
+            if (Path.GetExtension(outputPath) != "" && !_options.MultipleTargets) return outputPath;
             
             var outputFilename = $"{Path.GetFileNameWithoutExtension(input)}{Constants.OutputFileSuffix}.jpg";
             return Path.Combine(outputPath, outputFilename);
