@@ -12,6 +12,29 @@ namespace Sanchez.Test
     public class GeostationaryEndToEndTests : EndToEndTestTests
     {
         [Test]
+        public async Task SingleWithDirectoryOutput()
+        {
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
+
+            var returnCode = await Bootstrapper.Main(
+                "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
+                "-o", outputDirectory,
+                "-O", "1.0",
+                "-q");
+
+            VerifySuccessfulExecution(returnCode);
+            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
+
+            var outputFiles = Directory.GetFiles(outputDirectory);
+            outputFiles.Should().HaveCount(1);
+
+            var outputImage = await Image.LoadAsync(outputFiles[0]);
+            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm); 
+        }
+        
+        [Test]
         public async Task Single()
         {
             var rootDirectory = await CreateSampleImagesAsync(State);
