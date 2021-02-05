@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
@@ -26,17 +27,19 @@ namespace Sanchez.Processing.Models
                 return pixelSpan.ToArray();
             }
 
-            // Combine spans for larger images
-            var buffer = new Rgba32[image.Width * image.Height];
-
-       
-            var offset = 0;
             var memoryGroup = image.GetPixelMemoryGroup();
-            for (var i = 0; i < memoryGroup.Count; i++)
+
+            // Combine spans for larger images
+            var bufferSize = memoryGroup.Select(g => g.Span.Length).Sum();
+            var buffer = new Rgba32[bufferSize];
+
+            var offset = 0;
+            foreach (var group in memoryGroup)
             {
-                var span = memoryGroup[i].Span;
+                var span = group.Span;
                 Array.Copy(span.ToArray(), 0, buffer, offset, span.Length);
-                offset += (i + 1) * span.Length;
+
+                offset += span.Length;
             }
 
             return buffer;

@@ -105,9 +105,9 @@ namespace Sanchez.Processing.Test.Validators
             VerifyFailure(options, nameof(GeostationaryOptions.UnderlayPath));
         }
 
-        [TestCase(0)]
-        [TestCase(3)]
-        public void InvalidSpatialResolution(int spatialResolution)
+        [TestCase("0")]
+        [TestCase("3")]
+        public void InvalidSpatialResolution(string spatialResolution)
         {
             var options = ValidOptions();
             options.SpatialResolution = spatialResolution;
@@ -115,10 +115,11 @@ namespace Sanchez.Processing.Test.Validators
             VerifyFailure(options, nameof(GeostationaryOptions.SpatialResolution));
         }
 
+        [TestCase(Constants.Satellite.SpatialResolution.HalfKm)]
         [TestCase(Constants.Satellite.SpatialResolution.OneKm)]
         [TestCase(Constants.Satellite.SpatialResolution.TwoKm)]
         [TestCase(Constants.Satellite.SpatialResolution.FourKm)]
-        public void ValidSpatialResolution(int spatialResolution)
+        public void ValidSpatialResolution(string spatialResolution)
         {
             var options = ValidOptions();
             options.SpatialResolution = spatialResolution;

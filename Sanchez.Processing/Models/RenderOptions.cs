@@ -40,7 +40,7 @@ namespace Sanchez.Processing.Models
         /// <summary>
         ///    Spatial resolution. 
         /// </summary>
-        public int SpatialResolution { get; set; }
+        public string SpatialResolution { get; set; } =  null!;
 
         /// <summary>
         ///     Path to IR satellite image(s).
