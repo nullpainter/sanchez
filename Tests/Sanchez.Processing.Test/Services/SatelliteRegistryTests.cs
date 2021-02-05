@@ -10,7 +10,7 @@ namespace Sanchez.Processing.Test.Services
     public class SatelliteRegistryTests : AbstractTests
     {
         [Test]
-        [Timeout(500)]
+        [Timeout(1000)]
         public void PerformanceTest()
         {
             for (var i = 0; i < 10000; i++)
