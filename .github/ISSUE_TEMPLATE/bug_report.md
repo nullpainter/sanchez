@@ -11,17 +11,12 @@ assignees: nullpainter
 *A short, clear and concise description of what the bug is.*
 
 # To Reproduce
-Steps to reproduce the behavior:
-*This is only a guide, you can delete the below steps and write your own*
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+*Steps to reproduce the behaviour.*
 
-## Expected behavior
+## Expected behaviour
 *A clear and concise description of what you expected to happen.*
 
-## Real behavior
+## Real behaviour
 *A clear and concise description of what you expected to happen.*
 
 ## Screenshots
@@ -31,7 +26,7 @@ Steps to reproduce the behavior:
 *Please complete the following information to tell us how you are running Sanchez*
 ```
  - OS: [e.g. Windows, Linux]
- - Version [e.g. 22]
+ - Version [e.g. v1.0.16]
 ```
 
 ## Additional information
