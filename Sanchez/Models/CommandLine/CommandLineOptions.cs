@@ -48,11 +48,11 @@ namespace Sanchez.Models.CommandLine
         [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }
 
-        [Option('r', "resolution", HelpText = "Output spatial resolution in km; valid values are 1, 2 or 4", Default = Constants.Satellite.SpatialResolution.FourKm)]
-        public int SpatialResolution { get; [UsedImplicitly] set; }
+        [Option('r', "resolution", HelpText = "Output spatial resolution in km; valid values are 0.5, 1, 2 or 4", Default = Constants.Satellite.SpatialResolution.FourKm)]
+        public string SpatialResolution { get; [UsedImplicitly] set; } = null!;
 
         [Option('s', "source", HelpText = "Path to IR satellite image(s)", Required = true)]
-        public string? SourcePath { get; [UsedImplicitly] set; } = null!;
+        public string? SourcePath { get; [UsedImplicitly] set; }
 
         [Option('S', "saturation", HelpText = "Saturation adjustment", Required = false, Default = 0.7f)]
         public float Saturation { get; [UsedImplicitly] set; }
@@ -75,6 +75,6 @@ namespace Sanchez.Models.CommandLine
         /// <summary>
         ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
         /// </summary>
-        public bool MultipleSources => SourcePath?.Contains('*') == true || Directory.Exists(SourcePath);
+        public bool MultipleSources => SourcePath != null && SourcePath.Contains('*') || Directory.Exists(SourcePath);
     }
 }

@@ -26,10 +26,12 @@ namespace Sanchez.Validators
 
             RuleFor(o => o.SpatialResolution)
                 .Must(resolution => resolution.IsIn(
-                     Constants.Satellite.SpatialResolution.OneKm, 
-                    Constants.Satellite.SpatialResolution.TwoKm, 
+                    Constants.Satellite.SpatialResolution.HalfKm,
+                    Constants.Satellite.SpatialResolution.OneKm,
+                    Constants.Satellite.SpatialResolution.TwoKm,
                     Constants.Satellite.SpatialResolution.FourKm))
-                .WithMessage($"Unsupported output spatial resolution. Valid values are: {Constants.Satellite.SpatialResolution.OneKm}, {Constants.Satellite.SpatialResolution.TwoKm}, {Constants.Satellite.SpatialResolution.FourKm}");
+                .WithMessage(
+                    $"Unsupported output spatial resolution. Valid values are: {Constants.Satellite.SpatialResolution.HalfKm}, {Constants.Satellite.SpatialResolution.OneKm}, {Constants.Satellite.SpatialResolution.TwoKm}, {Constants.Satellite.SpatialResolution.FourKm}");
 
             ValidateTimeOptions();
             ValidateOverlayOptions();
@@ -41,12 +43,12 @@ namespace Sanchez.Validators
                 .Must(path => File.Exists(path ?? Constants.DefaultGradientPath))
                 .When(o => o.ClutRange != null)
                 .WithMessage(o => $"Invalid gradient path: {o.GradientPath}");
-            
+
             RuleFor(o => o.ClutRange)
                 .Must(r =>
                 {
                     if (r == null) return true;
-                    
+
                     var range = r.Split('-');
                     if (range.Length != 2) return false;
 
@@ -79,7 +81,7 @@ namespace Sanchez.Validators
                 .When(o => o.Timestamp != null)
                 .WithMessage("End timestamp must be greater than timestamp.");
 
-           RuleFor(o => o.EndTimestamp)
+            RuleFor(o => o.EndTimestamp)
                 .GreaterThanOrEqualTo(o => o.Timestamp)
                 .When(o => o.EndTimestamp != null && o.Timestamp != null)
                 .WithMessage("End timestamp must be empty or later than start timestamp.");

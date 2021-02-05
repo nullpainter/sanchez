@@ -89,6 +89,7 @@ namespace Sanchez.Services
         {
             return options.SpatialResolution switch
             {
+                Constants.Satellite.SpatialResolution.HalfKm => Constants.Satellite.Offset.HalfKm,
                 Constants.Satellite.SpatialResolution.OneKm => Constants.Satellite.Offset.OneKm,
                 Constants.Satellite.SpatialResolution.TwoKm => Constants.Satellite.Offset.TwoKm,
                 Constants.Satellite.SpatialResolution.FourKm => Constants.Satellite.Offset.FourKm,
@@ -100,6 +101,7 @@ namespace Sanchez.Services
         {
             return options.SpatialResolution switch
             {
+                Constants.Satellite.SpatialResolution.HalfKm => Constants.Satellite.ImageSize.HalfKm,
                 Constants.Satellite.SpatialResolution.OneKm => Constants.Satellite.ImageSize.OneKm,
                 Constants.Satellite.SpatialResolution.TwoKm => Constants.Satellite.ImageSize.TwoKm,
                 Constants.Satellite.SpatialResolution.FourKm => Constants.Satellite.ImageSize.FourKm,
