@@ -71,11 +71,11 @@
   // Preliminary EWS-G1 configuration
   {
     "DisplayName": "EWS-G1",
-    "FilenamePrefix": "EWS-G1_",
+    "FilenamePrefix": "EWS-G1_4_",
     "FilenameParser": "Goesproc",
     "Invert": true,
     "Longitude": 61.5,
-    "Brightness": 1.1,
+    "Brightness": 1.3,
     "Crop": [
       0.01,
       0.05,
