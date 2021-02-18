@@ -86,7 +86,7 @@ namespace Sanchez.Processing.Test.Services
             timestamp.Should().NotBeNull("timestamp should have been extracted");
 
             definition!.FilenameParserType.Should().Be(FilenameParserType.Electro);
-            timestamp.Should().Be(new DateTime(2020, 08, 30, 02, 30, 0));
+            timestamp.Should().Be(new DateTime(2020, 08, 29, 23, 30, 0));
 
             // Verify 1-3 definition
             (definition, _) = SatelliteRegistry.Locate("c:/images/200830_0230_1.jpg");
