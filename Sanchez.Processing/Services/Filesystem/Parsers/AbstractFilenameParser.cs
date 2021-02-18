@@ -9,6 +9,7 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
     {
         protected abstract Regex Regex { get; }
         protected abstract string TimestampFormat { get; }
+        protected virtual TimeZoneInfo TimeZone { get; } = TimeZoneInfo.Utc;
 
         public DateTime? GetTimestamp(string filename)
         {
@@ -20,10 +21,18 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
 
             var filenameTimestamp = match.Groups[1].Value;
 
-            // parse timestamp
-            return DateTime.TryParseExact(filenameTimestamp, TimestampFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var timestamp)
-                ? (DateTime?) timestamp.ToUniversalTime()
-                : null;
+            // parse timestamp, optionally converting to UTC
+            var timestampIsUtc = TimeZone.BaseUtcOffset == TimeSpan.Zero;
+            var style = timestampIsUtc ? DateTimeStyles.AssumeUniversal : DateTimeStyles.None;
+            
+            if (DateTime.TryParseExact(filenameTimestamp, TimestampFormat, CultureInfo.InvariantCulture, style, out var timestamp))
+            {
+                return timestampIsUtc 
+                    ? timestamp.ToUniversalTime() 
+                    : TimeZoneInfo.ConvertTimeToUtc(timestamp, TimeZone);
+            }
+            
+            return null;
         }
     }
 }
