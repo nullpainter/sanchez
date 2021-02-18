@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using TimeZoneConverter;
 
 namespace Sanchez.Processing.Services.Filesystem.Parsers
 {
@@ -11,7 +12,7 @@ namespace Sanchez.Processing.Services.Filesystem.Parsers
     {
         protected override Regex Regex { get; }
         protected override string TimestampFormat => "yyMMdd_HHmm";
-        protected override TimeZoneInfo TimeZone => TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
+        protected override TimeZoneInfo TimeZone => TZConvert.GetTimeZoneInfo("Russian Standard Time");
 
         public ElectroFilenameParser(string? prefix, string? suffix) 
         {
