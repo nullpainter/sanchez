@@ -25,7 +25,7 @@ namespace Sanchez.Processing.Services.Filesystem
 
         public List<Registration> FilterMatchingRegistrations(IEnumerable<Registration> registrations, DateTime targetTimestamp)
         {
-            _logger.LogInformation("Searching for images in {path} with a timestamp of {minutes} minutes tolerance to {target}",
+            _logger.LogInformation("Searching for images in {Path} with a timestamp of {Minutes} minutes tolerance to {Target}",
                 _options.SourcePath, _options.Tolerance.TotalMinutes, targetTimestamp);
 
             // Return the closest match per satellite

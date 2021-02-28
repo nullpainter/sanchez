@@ -142,6 +142,11 @@ namespace Sanchez.Processing.Models
         ///     imagery which has large variance in brightness per frame.
         /// </summary>
         public bool AutoAdjustLevels { get; set; }
+        
+        /// <summary>
+        ///     Whether to apply adaptive level adjustment when using <see cref="AutoAdjustLevels"/>.
+        /// </summary>
+        public bool AdaptiveLevelAdjustment { get; set; }
 
         /// <summary>
         ///     Minimum number of satellites in images when stitching. If there are less satellites than this number when stitching,

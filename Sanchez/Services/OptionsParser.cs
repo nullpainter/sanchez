@@ -62,7 +62,8 @@ namespace Sanchez.Services
                 Interval = options.IntervalMinutes == null ? (TimeSpan?) null : TimeSpan.FromMinutes(options.IntervalMinutes.Value),
                 Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
                 AutoAdjustLevels = !options.NoAutoAdjustLevels,
-                MinSatellites = options.MinSatellites,
+                AdaptiveLevelAdjustment = options.AdaptiveLevelAdjustment,
+                MinSatellites = options.MinSatellites
             };
 
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;

@@ -58,7 +58,7 @@ namespace Sanchez.Workflow.Steps.Geostationary
             var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, Registration.Definition);
 
             _logger.LogInformation("Tinting and normalising IR imagery");
-            if (_options.AutoAdjustLevels) Registration.Image.AdjustLevels();
+            if (_options.AutoAdjustLevels) Registration.Image.AdjustLevels(_options.AdaptiveLevelAdjustment);
 
             TargetImage = Registration.Image.Clone();
             TargetImage.Tint(_options.Tint);

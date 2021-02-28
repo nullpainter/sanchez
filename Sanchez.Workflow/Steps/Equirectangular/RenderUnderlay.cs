@@ -60,7 +60,7 @@ namespace Sanchez.Workflow.Steps.Equirectangular
             TargetImage.Mutate(imageContext =>
             {
                 using var clone = TargetImage!.Clone();
-                clone.AdjustLevels();
+                clone.AdjustLevels(_options.AdaptiveLevelAdjustment);
                 TargetImage.Tint(_options.Tint);
 
                 imageContext.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f);
