@@ -27,6 +27,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+
+        <PackageReference Include="TimeZoneConverter" Version="3.4.0" />
     </ItemGroup>
 
     <ItemGroup>

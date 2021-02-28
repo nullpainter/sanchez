@@ -14,7 +14,7 @@ namespace Sanchez.Processing.Test.Filesystem.FilenameParsers
         {
             var definition = NewDefinition(FilenameParserType.Electro, "test_", "4");
             var date = definition.FilenameParser.GetTimestamp("test_200920_1730_4.jpg");
-            date.Should().Be(new DateTime(2020, 09, 20, 17, 30, 00));
+            date.Should().Be(new DateTime(2020, 09, 20, 14, 30, 00));
         }
 
         [TestCase("4")]
@@ -23,7 +23,7 @@ namespace Sanchez.Processing.Test.Filesystem.FilenameParsers
         {
             var definition = NewDefinition(FilenameParserType.Electro, suffix: suffix);
             var date = definition.FilenameParser.GetTimestamp("200920_1730_4.jpg");
-            date.Should().Be(new DateTime(2020, 09, 20, 17, 30, 00));
+            date.Should().Be(new DateTime(2020, 09, 20, 14, 30, 00));
         }
 
         [TestCase("3")]
