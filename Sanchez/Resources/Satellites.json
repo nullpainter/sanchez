@@ -68,19 +68,32 @@
       0.012703
     ]
   },
-  // Preliminary EWS-G1 configuration
   {
     "DisplayName": "EWS-G1",
-    "FilenamePrefix": "EWS-G1_4_",
+    "FilenamePrefix": "EWS-G1_[2-5]_",
     "FilenameParser": "Goesproc",
     "Invert": true,
     "Longitude": 61.5,
     "Brightness": 1.3,
     "Crop": [
-      0.01,
-      0.05,
-      0.0,
-      0.0
+      0.003166,
+      0.089925,
+      0.001166,
+      0.001010
+    ]
+  },
+  {
+    "DisplayName": "EWS-G1",
+    "FilenamePrefix": "EWS-G1_1_",
+    "FilenameParser": "Goesproc",
+    "Invert": false,
+    "Longitude": 61.5,
+    "Brightness": 1.3,
+    "Crop": [
+      0.003166,
+      0.089925,
+      0.001166,
+      0.001010
     ]
   }
 ]

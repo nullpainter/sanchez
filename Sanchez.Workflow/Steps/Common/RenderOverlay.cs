@@ -38,7 +38,7 @@ namespace Sanchez.Workflow.Steps.Common
             var clut = _clutService.GetClut();
 
             var equalisedSource = SourceImage.Clone();
-            equalisedSource.AdjustLevels();
+            equalisedSource.AdjustLevels(_options.AdaptiveLevelAdjustment);
 
             OverlayImage = new Image<Rgba32>(equalisedSource.Width, equalisedSource.Height);
 

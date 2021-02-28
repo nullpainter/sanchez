@@ -23,8 +23,13 @@ namespace Sanchez.Processing.Extensions.Images
 
             if (options.AutoAdjustLevels)
             {
-                registration.Image!.AdjustLevels();
-                registration.Image.Mutate(c => c.Brightness(registration.Definition.Brightness));
+                registration.Image!.AdjustLevels(options.AdaptiveLevelAdjustment);
+
+                // Only apply brightness adjustment for stitched images
+                if (options.StitchImages)
+                {
+                    registration.Image.Mutate(c => c.Brightness(registration.Definition.Brightness));
+                }
             }
         }
 
@@ -46,10 +51,20 @@ namespace Sanchez.Processing.Extensions.Images
         private static Registration CropBorders(this Registration registration)
         {
             Guard.Against.Null(registration.Image, nameof(registration.Image));
-            if (registration.Definition.Crop != null)
+            if (registration.Definition.Crop == null) return registration;
+            
+            var crop = (double[])registration.Definition.Crop.Clone();
+                
+            // Swap left and right edge crop values if the image needs to be cropped on the left
+            if (registration.FlipHorizontalCrop)
             {
-                registration.Image.CropBorder(registration.Definition.Crop);
+                var temp = crop[1];
+                crop[1] = crop[3];
+                crop[3] = temp;
             }
+
+            // Perform crop
+            registration.Image.CropBorder(crop);
 
             return registration;
         }

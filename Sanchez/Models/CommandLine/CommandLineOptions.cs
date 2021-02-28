@@ -38,6 +38,9 @@ namespace Sanchez.Models.CommandLine
 
         [Option('L', "noadjustlevels", HelpText = "Don't perform histogram equalisation on satellite imagery", Required = false, Default = false)]
         public bool NoAutoAdjustLevels { get; [UsedImplicitly] set; }
+        
+        [Option('A', "adaptivelevels", HelpText = "Apply adaptive histogram equalisation", Required = false, Default = false)]
+        public bool AdaptiveLevelAdjustment { get; [UsedImplicitly] set; }
 
         [Option('m', "minsatellites", HelpText = "Minimum number of satellites in images when stitching", Required = false)]
         public int? MinSatellites { get; [UsedImplicitly] set; }

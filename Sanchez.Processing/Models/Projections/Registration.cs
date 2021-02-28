@@ -66,6 +66,11 @@ namespace Sanchez.Processing.Models.Projections
         /// </summary>
         public string? OutputPath { get; set; }
 
+        /// <summary>
+        ///     Whether the horizontal crop bounds require flipping due to image alignment.
+        /// </summary>
+        public bool FlipHorizontalCrop { get; set; }
+
         public void Dispose()
         {
             Image?.Dispose();

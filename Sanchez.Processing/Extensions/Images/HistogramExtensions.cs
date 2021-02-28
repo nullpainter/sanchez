@@ -24,7 +24,7 @@ namespace Sanchez.Processing.Extensions.Images
         /// </summary>
         /// <param name="image">image to equalise</param>
         /// <param name="adaptive">whether adaptive tile histogram equalisation should also be performed</param>
-        public static void AdjustLevels(this Image<Rgba32> image, bool adaptive = true)
+        public static void AdjustLevels(this Image<Rgba32> image, bool adaptive)
         {
             // FIXME image width limitation due to ImageSharp bug with performing adaptive histogram equalisation 
             // on large images. This is scheduled to be fixed in ImageSharp 1.1.0.
