@@ -80,7 +80,15 @@ namespace Sanchez.Processing.Models.Projections
         public async Task LoadAsync()
         {
             if (Image != null) throw new InvalidOperationException("Image has already been loaded");
-            Image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Path);
+            
+            try
+            {
+                Image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Path);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Unable to load image: {Path}", e);
+            }
         }
     }
 }
