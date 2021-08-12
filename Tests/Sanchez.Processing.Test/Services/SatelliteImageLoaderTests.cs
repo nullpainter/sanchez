@@ -33,7 +33,11 @@ namespace Sanchez.Processing.Test.Services
                 "GOES16_FD_CH13_20200830T033020Z.jpg",
                 "GOES17_FD_CH13_20200830T033031Z.jpg",
                 "Himawari8_FD_IR_20200830T035100Z.jpg",
-                "IMG_FD_023_IR105_20200830_035006.jpg"
+                "IMG_FD_023_IR105_20200830_035006.jpg",
+                "G13_4_20210807T174555Z.png",
+                "EWS-G1_4_20210807T174555Z.png",
+                "G13_1_20210807T174555Z.png",
+                "EWS-G1_1_20210807T174555Z.png"
             );
 
             await activity.LoadAllAsync();
@@ -43,6 +47,7 @@ namespace Sanchez.Processing.Test.Services
             GetDisplayNames(activity, "GOES17").Should().BeEquivalentTo("GOES-17");
             GetDisplayNames(activity, "Himawari8").Should().BeEquivalentTo("Himawari-8");
             GetDisplayNames(activity, "IMG").Should().BeEquivalentTo("GEO-KOMPSAT-2A");
+            GetDisplayNames(activity, "G13").Should().BeEquivalentTo("EWS-G1-GOES13");
         }
         
         [Test]
@@ -85,7 +90,10 @@ namespace Sanchez.Processing.Test.Services
             directory = Directory.CreateDirectory(Path.Combine(rootDirectory, "Himawari-8"));
             await CreateImage(Path.Combine(directory.FullName, "Himawari8_FD_IR_20200830T035100Z.jpg"));
             await CreateImage(Path.Combine(directory.FullName, "IMG_FD_023_IR105_20200830_035006.jpg"));
-
+            await CreateImage(Path.Combine(directory.FullName, "G13_4_20210807T174555Z.png"));
+            await CreateImage(Path.Combine(directory.FullName, "G13_1_20210807T174555Z.png"));
+            await CreateImage(Path.Combine(directory.FullName, "EWS-G1_4_20210807T174555Z.png"));
+            await CreateImage(Path.Combine(directory.FullName, "EWS-G1_1_20210807T174555Z.png"));
             await CreateImage(Path.Combine(directory.FullName, "bogus.jpg"));
         }
 

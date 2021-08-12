@@ -45,7 +45,7 @@ namespace Sanchez.Workflow.Steps.Common
         private void NormaliseEwsCrop()
         {
             Guard.Against.Null(Registration?.Image, nameof(Registration.Image));
-            if (Registration.Definition.DisplayName != "EWS-G1" || Registration.Definition.Crop == null) return;
+            if (Registration.Definition.DisplayName != "EWS-G1-GOES13" || Registration.Definition.Crop == null) return;
             
             var operation = new EwsAlignmentRowOperation(Registration.Image);
             ParallelRowIterator.IterateRows(Configuration.Default, Registration.Image.Bounds(), in operation);
