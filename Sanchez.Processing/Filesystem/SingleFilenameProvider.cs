@@ -13,12 +13,14 @@ namespace Sanchez.Processing.Filesystem
         public string GetOutputFilename(string? input = null)
         {
             Guard.Against.Null(input, nameof(input));
+            var targetExtension = _options.GetTargetExtension();
             
             var outputPath = _options.OutputPath;
-            if (Path.GetExtension(outputPath) != "" && !_options.MultipleTargets) return outputPath;
-            
-            var outputFilename = $"{Path.GetFileNameWithoutExtension(input)}{Constants.OutputFileSuffix}.jpg";
+            if (Path.GetExtension(outputPath) != "" && !_options.MultipleTargets) return Path.ChangeExtension(outputPath, targetExtension);
+
+            var outputFilename = $"{Path.GetFileNameWithoutExtension(input)}{Constants.OutputFileSuffix}.{targetExtension}";
             return Path.Combine(outputPath, outputFilename);
         }
+
     }
 }

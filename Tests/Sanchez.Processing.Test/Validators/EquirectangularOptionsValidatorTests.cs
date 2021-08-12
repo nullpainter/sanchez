@@ -159,21 +159,31 @@ namespace Sanchez.Processing.Test.Validators
             VerifyFailure(options, nameof(EquirectangularOptions.LongitudeRange));
         }
 
-        [TestCase("1:2:3")]
-        [TestCase("1:")]
-        [TestCase(":1")]
-        [TestCase("biscuits:bananas")]
-        public void MalformedLatitudeCrop(string range)
+        [Test]
+        public void ValidFileExtension()
         {
             var options = ValidOptions();
-            options.LatitudeRange = range;
+            options.OutputFormat = "jpg";
 
-            VerifyFailure(options, nameof(EquirectangularOptions.LatitudeRange));
+            VerifyNoFailure(options);
+            
+            options.OutputFormat = "PNG";
+
+            VerifyNoFailure(options);
         }
 
+        [Test]
+        public void InvalidFileExtension()
+        {
+            var options = ValidOptions();
+            options.OutputFormat = "pcx";
+
+            VerifyFailure(options, nameof(RenderOptions.OutputFormat));
+        }
+        
         private static EquirectangularOptions ValidOptions()
         {
-            return new()
+            return new EquirectangularOptions
             {
                 Tint = "0000FF",
                 ToleranceMinutes = 30,

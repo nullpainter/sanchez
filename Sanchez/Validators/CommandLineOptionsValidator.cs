@@ -33,6 +33,10 @@ namespace Sanchez.Validators
                 .WithMessage(
                     $"Unsupported output spatial resolution. Valid values are: {Constants.Satellite.SpatialResolution.HalfKm}, {Constants.Satellite.SpatialResolution.OneKm}, {Constants.Satellite.SpatialResolution.TwoKm}, {Constants.Satellite.SpatialResolution.FourKm}");
 
+            RuleFor(o => o.OutputFormat)
+                .Must(format => format == null || format.ToLower().IsIn(Constants.SupportedExtensions.Png, Constants.SupportedExtensions.Jpg))
+                .WithMessage($"Unsupported output format. Valid values are: {Constants.SupportedExtensions.Png}, {Constants.SupportedExtensions.Jpg}");
+
             ValidateTimeOptions();
             ValidateOverlayOptions();
         }
@@ -92,7 +96,7 @@ namespace Sanchez.Validators
 
             // Verify that a file can be created if multiple source files are provided without a target timestamp 
             RuleFor(o => o.OutputPath)
-                .Must((options, outputPath) => !File.Exists(outputPath))
+                .Must((_, outputPath) => !File.Exists(outputPath))
                 .When(o => o.MultipleSources && (o.IntervalMinutes != null || o.Timestamp == null))
                 .WithMessage("The output cannot be a file if rendering multiple images.");
         }

@@ -155,5 +155,31 @@ namespace Sanchez.Processing.Models
         public int? MinSatellites { get; set; }
 
         public OverlayOptions Overlay { get; } = new();
+        
+        /// <summary>
+        ///     Output image format.
+        /// </summary>
+        public ImageFormats? OutputFormat { get; set; }
+        
+        /// <summary>
+        ///     Output image extension, based off <see cref="OutputFormat"/>.
+        /// </summary>
+        public string GetTargetExtension()
+        {
+            // Use explicit output format if specified
+            if (OutputFormat != null)
+            {
+                return OutputFormat switch
+                {
+                    ImageFormats.Jpeg => Constants.SupportedExtensions.Jpg,
+                    ImageFormats.Png => Constants.SupportedExtensions.Png,
+                    _ => throw new ArgumentOutOfRangeException($"Unsupported output file format: {OutputFormat}")
+                };
+            }
+
+            // Use same extension as source image, or JPEG as a fallback if the source is a directory
+            var extension = Path.GetExtension(OutputPath);
+            return extension != string.Empty ? extension : Constants.SupportedExtensions.Jpg;
+        }
     }
 }

@@ -13,9 +13,13 @@ namespace Sanchez.Processing.Filesystem.Equirectangular
         public string GetOutputFilename(DateTime timestamp)
         {
             var outputPath = _options.OutputPath;
+            var targetExtension = _options.GetTargetExtension();
 
             Guard.Against.Null(timestamp, nameof(timestamp));
-            return Path.HasExtension(outputPath) ? outputPath : Path.Combine(outputPath, $"stitched-{timestamp:yyyyMMddTHHmmssZ}.jpg");
+            
+            return Path.HasExtension(outputPath) 
+                ? Path.ChangeExtension(outputPath, targetExtension) 
+                : Path.Combine(outputPath, $"stitched-{timestamp:yyyyMMddTHHmmssZ}.{targetExtension}");
         }
     }
 }

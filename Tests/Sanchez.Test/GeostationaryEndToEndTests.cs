@@ -11,8 +11,33 @@ namespace Sanchez.Test
     [TestFixture(TestOf = typeof(Bootstrapper))]
     public class GeostationaryEndToEndTests : EndToEndTestTests
     {
-        [Test]
-        public async Task SingleWithDirectoryOutput()
+        [TestCase("jpg")]
+        [TestCase("png")]
+        public async Task SingleWithDirectoryOutput(string extension)
+        {
+            var rootDirectory = await CreateSampleImagesAsync(State);
+            var outputDirectory = State.CreateTempDirectory();
+
+            var returnCode = await Bootstrapper.Main(
+                "-s", Path.Combine(rootDirectory, "GOES16_FD_CH13_20200830T035020Z.jpg"),
+                "-o", outputDirectory,
+                "-O", "1.0",
+                "-F", extension,
+                "-q");
+
+            VerifySuccessfulExecution(returnCode);
+            Directory.Exists(outputDirectory).Should().BeTrue("output directory should have been created");
+
+            var outputFiles = Directory.GetFiles(outputDirectory);
+            outputFiles.Should().HaveCount(1);
+
+            Path.GetExtension(outputFiles[0]).Should().Be($".{extension}");
+            var outputImage = await Image.LoadAsync(outputFiles[0]);
+            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        }
+        
+        public async Task SingleWithDirectoryOutputDefaultExtension()
         {
             var rootDirectory = await CreateSampleImagesAsync(State);
             var outputDirectory = State.CreateTempDirectory();
@@ -29,11 +54,12 @@ namespace Sanchez.Test
             var outputFiles = Directory.GetFiles(outputDirectory);
             outputFiles.Should().HaveCount(1);
 
+            Path.GetExtension(outputFiles[0]).Should().Be("jpg");
             var outputImage = await Image.LoadAsync(outputFiles[0]);
             outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm); 
+            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
         }
-        
+
         [Test]
         public async Task Single()
         {
@@ -108,8 +134,8 @@ namespace Sanchez.Test
             var rootDirectory = await CreateSampleImagesAsync(State);
             var outputDirectory = State.CreateTempDirectory();
             var outputFile = Path.Combine(outputDirectory, "out.jpg");
-            
-            
+
+
             var writer = new StringWriter();
             Console.SetOut(writer);
             var returnCode = await Bootstrapper.Main(

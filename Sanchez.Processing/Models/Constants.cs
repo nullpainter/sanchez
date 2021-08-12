@@ -10,7 +10,7 @@ namespace Sanchez.Processing.Models
         ///     Suffix applied to output filenames.
         /// </summary>
         public const string OutputFileSuffix = "-FC";
-
+        
         /// <summary>
         ///    Tolerance for equality checks of floating point numbers.
         /// </summary>
@@ -117,6 +117,15 @@ namespace Sanchez.Processing.Models
             internal const double RadiusPolar = 6356752.31414;
 
             internal const double Eccentricity = 0.0818191910435;
+        }
+
+        /// <summary>
+        ///     Supported output file extensions.
+        /// </summary>
+        public static class SupportedExtensions
+        {
+            public const string Png = "png";
+            public const string Jpg = "jpg";
         }
     }
 }

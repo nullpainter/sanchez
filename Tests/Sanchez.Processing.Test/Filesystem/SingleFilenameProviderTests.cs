@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Filesystem;
+using Sanchez.Processing.Models;
 using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Filesystem
@@ -16,9 +17,10 @@ namespace Sanchez.Processing.Test.Filesystem
         {
             RenderOptions.SourcePath = "source.jpg";
             RenderOptions.OutputPath = Path.Combine("test", "output.jpg");
+            RenderOptions.OutputFormat = ImageFormats.Png;
 
             var outputFilename = FilenameProvider.GetOutputFilename("source.jpg");
-            outputFilename.Should().Be(Path.Combine("test", "output.jpg"));
+            outputFilename.Should().Be(Path.Combine("test", "output.png"));
         }
         
         [Test]
@@ -26,6 +28,7 @@ namespace Sanchez.Processing.Test.Filesystem
         {
             RenderOptions.SourcePath = "source.jpg";
             RenderOptions.OutputPath = "test";
+            RenderOptions.OutputFormat = ImageFormats.Jpeg;
 
             var outputFilename = FilenameProvider.GetOutputFilename("source.jpg");
             outputFilename.Should().Be(Path.Combine("test", "source-FC.jpg"));

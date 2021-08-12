@@ -63,7 +63,8 @@ namespace Sanchez.Services
                 Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
                 AutoAdjustLevels = !options.NoAutoAdjustLevels,
                 AdaptiveLevelAdjustment = options.AdaptiveLevelAdjustment,
-                MinSatellites = options.MinSatellites
+                MinSatellites = options.MinSatellites,
+                OutputFormat = ToOutputFormat(options)
             };
 
             if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
@@ -74,7 +75,19 @@ namespace Sanchez.Services
             return renderOptions;
         }
 
-        private static void SetOverlayOptions(CommandLineOptions options, RenderOptions renderOptions)
+       private static ImageFormats? ToOutputFormat(CommandLineOptions options)
+       {
+           if (options.OutputFormat == null) return null;
+
+           return options.OutputFormat.ToLower() switch
+           {
+               Constants.SupportedExtensions.Png => ImageFormats.Png,
+               Constants.SupportedExtensions.Jpg => ImageFormats.Jpeg,
+               _ => throw new ArgumentOutOfRangeException($"Unsupported output format: {options.OutputFormat}")
+           };
+       }
+
+       private static void SetOverlayOptions(CommandLineOptions options, RenderOptions renderOptions)
         {
             renderOptions.Overlay.ApplyOverlay = options.ClutRange != null;
             if (!renderOptions.Overlay.ApplyOverlay || options.ClutRange == null) return;
