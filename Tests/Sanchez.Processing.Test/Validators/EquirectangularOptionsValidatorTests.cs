@@ -136,6 +136,10 @@ namespace Sanchez.Processing.Test.Validators
             VerifyNoFailure(options);
         }
 
+        [TestCase("1:2:3")]
+        [TestCase("1:")]
+        [TestCase(":1")]
+        [TestCase("biscuits:bananas")]
         [TestCase("180:-90")]
         [TestCase("100:-100")]
         [TestCase("80:-100")]

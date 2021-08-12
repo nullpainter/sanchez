@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sanchez.Processing.Helpers;
 using Sanchez.Services;
-using Sentry;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -28,7 +27,7 @@ namespace Sanchez.Builders
                 .WriteTo.ValidationWrapper(c => c.Sentry(o =>
                 {
                     o.MinimumEventLevel = LogEventLevel.Error;
-                    o.Dsn = new Dsn("https://2d7d5615b9f249f7890e275774e9eaf6@o456714.ingest.sentry.io/5450049");
+                    o.Dsn = "https://2d7d5615b9f249f7890e275774e9eaf6@o456714.ingest.sentry.io/5450049";
                 }), LogEventLevel.Debug, new LoggingLevelSwitch())
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails();

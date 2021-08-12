@@ -2,19 +2,9 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\code\sanchez\Tests\Sanchez.Processing.Test\bin\Debug\netcoreapp3.1\Sanchez.Processing.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b312e3ab_002D601b_002D4a02_002D8223_002Db4173fcd2cf2/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Not&gt;&#xD;
-    &lt;Or&gt;&#xD;
-      &lt;And&gt;&#xD;
-        &lt;Project Location="C:\code\sanchez\Tests\Sanchez.Processing.Test" Presentation="&amp;lt;Tests&amp;gt;\&amp;lt;Sanchez.Processing.Test&amp;gt;" /&gt;&#xD;
-        &lt;Namespace&gt;Sanchez.Processing.Test&lt;/Namespace&gt;&#xD;
-      &lt;/And&gt;&#xD;
-      &lt;TestAncestor&gt;&#xD;
-        &lt;TestId&gt;NUnit3x::20B7AFEC-00B8-4BBD-BA32-A604643C0B28::.NETCoreApp,Version=v3.1::Sanchez.Workflow.Test.PrepareTimeIntervalsTests&lt;/TestId&gt;&#xD;
-        &lt;TestId&gt;NUnit3x::20B7AFEC-00B8-4BBD-BA32-A604643C0B28::.NETCoreApp,Version=v3.1::Sanchez.Workflow.Test.SetTargetLongitudeTests&lt;/TestId&gt;&#xD;
-      &lt;/TestAncestor&gt;&#xD;
-    &lt;/Or&gt;&#xD;
-  &lt;/Not&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b873016b_002De057_002D44c1_002D81ea_002D731c092e3b6c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Solution /&gt;&#xD;

@@ -7,28 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Ardalis.GuardClauses" Version="3.0.0" />
-        <PackageReference Include="FluentValidation" Version="9.2.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Ardalis.GuardClauses" Version="3.2.0" />
+        <PackageReference Include="FluentValidation" Version="10.3.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
         <PackageReference Include="Serilog" Version="2.10.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" /> 
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-        <PackageReference Include="ShellProgressBar" Version="5.0.0" />
-        <PackageReference Include="ExifLibNet" Version="2.1.3" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" /> 
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="ShellProgressBar" Version="5.1.0" />
+        <PackageReference Include="ExifLibNet" Version="2.1.4" />
         <PackageReference Include="Extend" Version="1.2.1" />
-        <PackageReference Include="dbup-sqlite" Version="4.4.0" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7" />
-        <PackageReference Include="DotNet.Glob" Version="3.0.9" />
-        <PackageReference Include="Dapper" Version="2.0.35" />
-
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.12.0.21095">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-
-        <PackageReference Include="TimeZoneConverter" Version="3.4.0" />
+        <PackageReference Include="dbup-sqlite" Version="4.5.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.8" />
+        <PackageReference Include="DotNet.Glob" Version="3.1.2" />
+        <PackageReference Include="Dapper" Version="2.0.90" />
+        <PackageReference Include="TimeZoneConverter" Version="3.5.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Sanchez.Processing.Models;
+using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services.Filesystem;
@@ -12,7 +13,6 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Models;
-using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Workflow.Test.Equirectangular
 {

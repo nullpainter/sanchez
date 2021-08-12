@@ -101,7 +101,7 @@ namespace Sanchez.Processing.ImageProcessing.Projection
             var target = _target;
             var yOffset = _yOffset;
 
-            return LatitudeCalculationCache.GetOrAdd(y, angle =>
+            return LatitudeCalculationCache.GetOrAdd(y, _ =>
             {
                 // Convert pixel row to latitude
                 var projectionY = ProjectionAngleConverter.FromY(y, target.Height + yOffset * 2);

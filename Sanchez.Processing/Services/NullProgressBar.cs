@@ -20,6 +20,10 @@ namespace Sanchez.Processing.Services
         {
         }
 
+        public override void WriteErrorLine(string message)
+        {
+        }
+
         public IProgress<T> AsProgress<T>(Func<T, string>? message = null, Func<T, double?>? percentage = null) => new Progress<T>();
         
         public void Dispose()

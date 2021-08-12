@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,18 +10,17 @@ using CommandLine;
 using Extend;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Sanchez.Models.CommandLine;
-using Sanchez.Services;
-using Sanchez.Validators;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Sanchez.Builders;
+using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
+using Sanchez.Services;
+using Sanchez.Validators;
 using Sanchez.Workflow.Services;
 using Serilog;
 
 [assembly: InternalsVisibleTo("Sanchez.Test")]
-
 namespace Sanchez
 {
     internal static class Bootstrapper
@@ -61,7 +61,7 @@ namespace Sanchez
                 LogOptions(renderOptions);
 
                 // Initialise workflow host
-                var workflowService = serviceProvider.GetService<IWorkflowService>();
+                var workflowService = serviceProvider.GetRequiredService<IWorkflowService>();
                 workflowService.Initialise(cancellationToken);
 
                 // Start the workflow 

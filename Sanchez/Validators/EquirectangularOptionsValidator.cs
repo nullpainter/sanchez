@@ -19,7 +19,7 @@ namespace Sanchez.Validators
             RuleFor(o => o.AutoCrop)
                 .Must(crop => !crop)
                 .When(o => o.LatitudeRange != null || o.LongitudeRange != null)
-                .WithMessage(_ => "Automatic cropping cannot be performed if manual crop bounds are specified`");
+                .WithMessage(_ => "Automatic cropping cannot be performed if manual crop bounds are specified");
 
             RuleFor(o => o.LatitudeRange)
                 .Must(ValidLatitude)

@@ -21,7 +21,7 @@ namespace Sanchez.Processing.Test.Services
                 (definition, _) = SatelliteRegistry.Locate("c:/images/IMG_FD_020_IR105_20190907_032006.jpg");
                 definition.Should().NotBeNull(); 
 
-                (definition, _) = SatelliteRegistry.Locate("c:/images/EWS-G1_1_20200911T080031Z.jpg");
+                (definition, _) = SatelliteRegistry.Locate("c:/images/EWS-G13_4_20210807T174555Z.png");
                 definition.Should().NotBeNull();
             }
         }

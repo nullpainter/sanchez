@@ -20,17 +20,17 @@ namespace Sanchez.Processing.Models
         /// <summary>
         ///     Global brightness adjustment.
         /// </summary>
-        public float Brightness { get; set; }
+        public float Brightness { get; init; }
 
         /// <summary>
         ///    Interpolation type.
         /// </summary>
-        public InterpolationType InterpolationType { get; set; }
+        public InterpolationType InterpolationType { get; init; }
 
         /// <summary>
         ///     Whether logs should be output to console.
         /// </summary>
-        public bool Quiet { get; set; }
+        public bool Quiet { get; init; }
 
         /// <summary>
         ///     Path to output file or folder.
@@ -40,7 +40,7 @@ namespace Sanchez.Processing.Models
         /// <summary>
         ///    Spatial resolution. 
         /// </summary>
-        public string SpatialResolution { get; set; } =  null!;
+        public string SpatialResolution { get; init; } =  null!;
 
         /// <summary>
         ///     Path to IR satellite image(s).
@@ -50,12 +50,12 @@ namespace Sanchez.Processing.Models
         /// <summary>
         ///     Saturation adjustment.
         /// </summary>
-        public float Saturation { get; set; }
+        public float Saturation { get; init; }
 
         /// <summary>
         ///     Tint to apply to satellite image.
         /// </summary>
-        public Color Tint { get; set; }
+        public Color Tint { get; init; }
 
         /// <summary>
         ///     Path to custom full-colour underlay image.
@@ -70,27 +70,27 @@ namespace Sanchez.Processing.Models
         /// <summary>
         ///     If no underlay should be rendered.
         /// </summary>
-        public bool NoUnderlay { get; set; }
+        public bool NoUnderlay { get; init; }
 
         /// <summary>
         ///     Verbose console output.
         /// </summary>
-        public bool Verbose { get; set; }
+        public bool Verbose { get; init; }
 
         /// <summary>
         ///     Target edge length in pixels of normalised satellite imagery.
         /// </summary>
-        public int ImageSize { get; set; }
+        public int ImageSize { get; init; }
 
         /// <summary>
         ///    Satellite image offset factors for mapping pixels to angles, based on selected spatial resolution. 
         /// </summary>
-        public ImageOffset? ImageOffset { get; set; }
+        public ImageOffset? ImageOffset { get; init; }
 
         /// <summary>
         ///     Whether existing files should be overwritten.
         /// </summary>
-        public bool Force { get; set; }
+        public bool Force { get; init; }
 
         /// <summary>
         ///     Identifies whether <see cref="SourcePath"/> is referring to a directory or a file.
@@ -141,19 +141,19 @@ namespace Sanchez.Processing.Models
         ///     Whether the satellite histogram should be equalised. This should be disabled when creating animations with satellite
         ///     imagery which has large variance in brightness per frame.
         /// </summary>
-        public bool AutoAdjustLevels { get; set; }
+        public bool AutoAdjustLevels { get; init; }
         
         /// <summary>
         ///     Whether to apply adaptive level adjustment when using <see cref="AutoAdjustLevels"/>.
         /// </summary>
-        public bool AdaptiveLevelAdjustment { get; set; }
+        public bool AdaptiveLevelAdjustment { get; init; }
 
         /// <summary>
         ///     Minimum number of satellites in images when stitching. If there are less satellites than this number when stitching,
         ///     no image is produced.
         /// </summary>
-        public int? MinSatellites { get; set; }
-
+        public int? MinSatellites { get; init; }
+        
         public OverlayOptions Overlay { get; } = new();
         
         /// <summary>

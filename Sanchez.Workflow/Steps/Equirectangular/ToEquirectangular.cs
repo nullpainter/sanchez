@@ -13,7 +13,6 @@ using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
-using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Workflow.Steps.Equirectangular
 {
