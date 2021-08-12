@@ -95,5 +95,19 @@
       0.001166,
       0.001010
     ]
+  },
+  {
+    "DisplayName": "GOES-15",
+    "FilenamePrefix": "GOES15_FD_IR_",
+    "FilenameParser": "Goesproc",
+    "Longitude": -128.4,
+    "Brightness": 0.95
+  },
+  {
+    "DisplayName": "GOES-14",
+    "FilenamePrefix": "GOES14_FD_IR_",
+    "FilenameParser": "Goesproc",
+    "Longitude": -104.3,
+    "Brightness": 0.95
   }
 ]
