@@ -36,7 +36,7 @@ namespace Sanchez.Validators
 
             // Verify that a directory can be created if multiple source files are provided without a target latitude
             RuleFor(o => o.OutputPath)
-                .Must((options, outputPath) => !File.Exists(outputPath))
+                .Must((_, outputPath) => !File.Exists(outputPath))
                 .When(o => o.MultipleSources && o.LongitudeDegrees == null)
                 .WithMessage("If multiple source files are specified, the output must be a directory.");
         }

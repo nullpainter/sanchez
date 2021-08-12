@@ -47,6 +47,9 @@ namespace Sanchez.Models.CommandLine
 
         [Option('o', "output", HelpText = "Path to output file or folder", Required = true)]
         public string OutputPath { get; [UsedImplicitly] set; } = null!;
+        
+        [Option('F', "format", HelpText = "Output file format; valid values are png or jpg/jpeg", Required = false)] 
+        public string? OutputFormat { get; set; }
 
         [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
         public bool Quiet { get; [UsedImplicitly] set; }
