@@ -7,8 +7,8 @@ using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Test.Common;
+using SixLabors.ImageSharp;
 using Range = Sanchez.Processing.Models.Angles.Range;
-using Size = SixLabors.ImageSharp.Size;
 
 namespace Sanchez.Processing.Test.Services
 {

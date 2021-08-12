@@ -40,7 +40,9 @@ namespace Sanchez.Processing.Test.Services
             };
 
             await CreateGradientFileAsync(gradient);
+            
             var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+            Assert.NotNull(exception);
             exception.Message.Should().Be("Colour must be specified");
         }
 
@@ -61,7 +63,9 @@ namespace Sanchez.Processing.Test.Services
             };
 
             await CreateGradientFileAsync(gradient);
+            
             var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+            Assert.NotNull(exception);
             exception.Message.Should().Be("Position must be specified for all colour stops");
         }
         
@@ -83,7 +87,9 @@ namespace Sanchez.Processing.Test.Services
                     };
         
                     await CreateGradientFileAsync(gradient);
+                    
                     var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+                    Assert.NotNull(exception);
                     exception.Message.Should().Be("-0.5 is an invalid position; valid values are from 0.0 to 1.0");
                 }
 
@@ -105,7 +111,9 @@ namespace Sanchez.Processing.Test.Services
             };
 
             await CreateGradientFileAsync(gradient);
+            
             var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+            Assert.NotNull(exception);
             exception.Message.Should().Be("2.3 is an invalid position; valid values are from 0.0 to 1.0");
         }
 
@@ -127,7 +135,9 @@ namespace Sanchez.Processing.Test.Services
             };
 
             await CreateGradientFileAsync(gradient);
+            
             var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+            Assert.NotNull(exception);
             exception.Message.Should().Be("Unable to parse #sanchez as a hex triplet");
         }
 

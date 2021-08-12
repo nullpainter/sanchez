@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
-using Angle = Sanchez.Processing.Models.Angle;
 using Range = Sanchez.Processing.Models.Angles.Range;
 
 namespace Sanchez.Processing.Services

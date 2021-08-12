@@ -52,18 +52,6 @@ namespace Sanchez.Workflow.Test.Equirectangular
         }
 
         [Test]
-        public async Task NoStartTimestamp()
-        {
-            _step.SourceRegistrations = CreateRegistrations();
-            Options.Interval = TimeSpan.FromHours(1);
-            Options.Timestamp = DateTime.Today.AddHours(-1);
-
-            await _step.RunAsync(new StepExecutionContext());
-
-            _step.TimeIntervals.Should().BeEquivalentTo(DateTime.Today.AddHours(-1));
-        }
-
-        [Test]
         public async Task StartAndEndTimestamp()
         {
             _step.SourceRegistrations = CreateRegistrations();

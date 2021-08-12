@@ -23,7 +23,7 @@ namespace Sanchez.Services
 
             return renderOptions;
 
-            static Angle? ToOptionalAngle(double? longitudeDegrees) => longitudeDegrees == null ? (Angle?) null : Angle.FromDegrees(longitudeDegrees.Value);
+            static Angle? ToOptionalAngle(double? longitudeDegrees) => longitudeDegrees == null ? null : Angle.FromDegrees(longitudeDegrees.Value);
         }
 
         public static RenderOptions Populate(EquirectangularOptions options)
@@ -59,7 +59,7 @@ namespace Sanchez.Services
                 Force = options.Force,
                 Timestamp = options.Timestamp?.DateTime,
                 EndTimestamp = options.EndTimestamp?.DateTime,
-                Interval = options.IntervalMinutes == null ? (TimeSpan?) null : TimeSpan.FromMinutes(options.IntervalMinutes.Value),
+                Interval = options.IntervalMinutes == null ? null : TimeSpan.FromMinutes(options.IntervalMinutes.Value),
                 Tolerance = TimeSpan.FromMinutes(options.ToleranceMinutes),
                 AutoAdjustLevels = !options.NoAutoAdjustLevels,
                 AdaptiveLevelAdjustment = options.AdaptiveLevelAdjustment,
