@@ -69,8 +69,8 @@
     ]
   },
   {
-    "DisplayName": "EWS-G1",
-    "FilenamePrefix": "EWS-G1_[2-5]_",
+    "DisplayName": "EWS-G1-GOES13",
+    "FilenamePrefix": "(?:EWS-G1|G13)_[2-5]_",
     "FilenameParser": "Goesproc",
     "Invert": true,
     "Longitude": 61.5,
@@ -83,8 +83,8 @@
     ]
   },
   {
-    "DisplayName": "EWS-G1",
-    "FilenamePrefix": "EWS-G1_1_",
+    "DisplayName": "EWS-G1-GOES13",
+    "FilenamePrefix": "(?:EWS-G1|G13)_1_",
     "FilenameParser": "Goesproc",
     "Invert": false,
     "Longitude": 61.5,

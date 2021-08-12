@@ -45,12 +45,24 @@ namespace Sanchez.Processing.Test.Filesystem
             State.CreateFile(directory.FullName, "IMG_FD_020_IR105_202008307_032006_ENHANCED.png");
             State.CreateFile(directory.FullName, "IMG_FD_020_IR105_20200830_032006.jpg");
 
+            directory = Directory.CreateDirectory(Path.Combine(rootDirectory, "EWS-G1"));
+            State.CreateFile(directory.FullName, "G13_4_20210830T033020Z.png");
+            State.CreateFile(directory.FullName, "EWS-G1_2_20200830T033020Z.png");
+
             // Run method under test
             var sourceFiles = FileService.GetSourceFiles();
             var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
 
+            // Verify all valid files are matched
+            registrations.Select(r => Path.GetFileName(r.Path)).Should().BeEquivalentTo(
+                "EWS-G1_2_20200830T033020Z.png", "G13_4_20210830T033020Z.png", "IMG_FD_020_IR105_20200830_032006.jpg",
+                "GOES16_FD_CH13_20200830T033020Z.jpg", "GOES16_FD_CH13_20200830T035020Z.jpg", "GOES16_FD_CH13_20200930T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg",
+                "Himawari8_FD_IR_20200830T035100Z.jpg");
+
+            // Verify closest image by timestamp, per satellite, is matched
             var matchedFiles = Matcher.FilterMatchingRegistrations(registrations, targetTimestamp).Select(r => Path.GetFileName(r.Path));
-            matchedFiles.Should().BeEquivalentTo("GOES16_FD_CH13_20200830T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg", "Himawari8_FD_IR_20200830T035100Z.jpg", "IMG_FD_020_IR105_20200830_032006.jpg");
+            matchedFiles.Should().BeEquivalentTo("GOES16_FD_CH13_20200830T033020Z.jpg", "GOES17_FD_CH13_20200830T033031Z.jpg", "Himawari8_FD_IR_20200830T035100Z.jpg",
+                "IMG_FD_020_IR105_20200830_032006.jpg", "EWS-G1_2_20200830T033020Z.png");
         }
     }
 }
