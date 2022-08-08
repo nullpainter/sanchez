@@ -1,198 +1,194 @@
-﻿using System;
-using System.IO;
-using NUnit.Framework;
-using Sanchez.Models.CommandLine;
+﻿using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
 using Sanchez.Validators;
 
-namespace Sanchez.Processing.Test.Validators
+namespace Sanchez.Processing.Test.Validators;
+
+[TestFixture(TestOf = typeof(EquirectangularRenderOptions))]
+public class EquirectangularOptionsValidatorTests : AbstractValidatorTests<EquirectangularOptionsValidator, EquirectangularOptions>
 {
-    [TestFixture(TestOf = typeof(EquirectangularRenderOptions))]
-    public class EquirectangularOptionsValidatorTests : AbstractValidatorTests<EquirectangularOptionsValidator, EquirectangularOptions>
+    [Test]
+    public void ValidOutputStitchNoBatch()
     {
-        [Test]
-        public void ValidOutputStitchNoBatch()
-        {
-            var options = ValidOptions();
-            var outputFile = State.CreateFile("foo.jpg");
-            options.Timestamp = DateTime.Now;
+        var options = ValidOptions();
+        var outputFile = State.CreateFile("foo.jpg");
+        options.Timestamp = DateTime.Now;
 
-            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = outputFile;
+        options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+        options.OutputPath = outputFile;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void ValidOutputStitchAndBatch()
-        {
-            var options = ValidOptions();
-            options.Timestamp = DateTime.Now;
-            options.IntervalMinutes = 30;
+    [Test]
+    public void ValidOutputStitchAndBatch()
+    {
+        var options = ValidOptions();
+        options.Timestamp = DateTime.Now;
+        options.IntervalMinutes = 30;
 
-            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = State.CreateTempDirectory();
+        options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+        options.OutputPath = State.CreateTempDirectory();
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void ValidOutputNoStitch()
-        {
-            var options = ValidOptions();
+    [Test]
+    public void ValidOutputNoStitch()
+    {
+        var options = ValidOptions();
 
-            options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
-            options.OutputPath = State.CreateTempDirectory();
+        options.SourcePath = Path.Combine(State.CreateTempDirectory(), "*.jpg");
+        options.OutputPath = State.CreateTempDirectory();
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void InvalidInterval()
-        {
-            var options = ValidOptions();
-            options.IntervalMinutes = -1;
-            options.Timestamp = DateTime.Now;
+    [Test]
+    public void InvalidInterval()
+    {
+        var options = ValidOptions();
+        options.IntervalMinutes = -1;
+        options.Timestamp = DateTime.Now;
 
-            VerifyFailure(options, nameof(CommandLineOptions.IntervalMinutes));
-        }
+        VerifyFailure(options, nameof(CommandLineOptions.IntervalMinutes));
+    }
 
-        [Test]
-        public void ValidInterval()
-        {
-            var options = ValidOptions();
-            options.IntervalMinutes = options.ToleranceMinutes;
-            options.Timestamp = DateTime.Now;
+    [Test]
+    public void ValidInterval()
+    {
+        var options = ValidOptions();
+        options.IntervalMinutes = options.ToleranceMinutes;
+        options.Timestamp = DateTime.Now;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void InvalidTolerance()
-        {
-            var options = ValidOptions();
-            options.ToleranceMinutes = -1;
-            options.Timestamp = DateTime.Now;
+    [Test]
+    public void InvalidTolerance()
+    {
+        var options = ValidOptions();
+        options.ToleranceMinutes = -1;
+        options.Timestamp = DateTime.Now;
 
-            VerifyFailure(options, nameof(CommandLineOptions.ToleranceMinutes));
-        }
+        VerifyFailure(options, nameof(CommandLineOptions.ToleranceMinutes));
+    }
 
-        [Test]
-        public void ValidTolerance()
-        {
-            var options = ValidOptions();
-            options.IntervalMinutes = 20;
+    [Test]
+    public void ValidTolerance()
+    {
+        var options = ValidOptions();
+        options.IntervalMinutes = 20;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void AutoCrop()
-        {
-            var options = ValidOptions();
-            options.AutoCrop = true;
+    [Test]
+    public void AutoCrop()
+    {
+        var options = ValidOptions();
+        options.AutoCrop = true;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void NoCrop()
-        {
-            var options = ValidOptions();
-            options.NoCrop = true;
+    [Test]
+    public void NoCrop()
+    {
+        var options = ValidOptions();
+        options.NoCrop = true;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void InvalidCropCombination()
-        {
-            var options = ValidOptions();
-            options.NoCrop = true;
-            options.AutoCrop = true;
+    [Test]
+    public void InvalidCropCombination()
+    {
+        var options = ValidOptions();
+        options.NoCrop = true;
+        options.AutoCrop = true;
 
-            VerifyFailure(options, nameof(EquirectangularOptions.AutoCrop));
-        }
+        VerifyFailure(options, nameof(EquirectangularOptions.AutoCrop));
+    }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("-180:180")]
-        public void ValidLongitudeCrop(string longitudeRange)
-        {
-            var options = ValidOptions();
-            options.LongitudeRange = longitudeRange;
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("-180:180")]
+    public void ValidLongitudeCrop(string longitudeRange)
+    {
+        var options = ValidOptions();
+        options.LongitudeRange = longitudeRange;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("90:-90")]
-        public void ValidLatitudeCrop(string range)
-        {
-            var options = ValidOptions();
-            options.LatitudeRange = range;
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("90:-90")]
+    public void ValidLatitudeCrop(string range)
+    {
+        var options = ValidOptions();
+        options.LatitudeRange = range;
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [TestCase("1:2:3")]
-        [TestCase("1:")]
-        [TestCase(":1")]
-        [TestCase("biscuits:bananas")]
-        [TestCase("180:-90")]
-        [TestCase("100:-100")]
-        [TestCase("80:-100")]
-        public void InvalidLatitudeCrop(string range)
-        {
-            var options = ValidOptions();
-            options.LatitudeRange= range;
+    [TestCase("1:2:3")]
+    [TestCase("1:")]
+    [TestCase(":1")]
+    [TestCase("biscuits:bananas")]
+    [TestCase("180:-90")]
+    [TestCase("100:-100")]
+    [TestCase("80:-100")]
+    public void InvalidLatitudeCrop(string range)
+    {
+        var options = ValidOptions();
+        options.LatitudeRange= range;
 
-            VerifyFailure(options, nameof(EquirectangularOptions.LatitudeRange)); 
-        }
+        VerifyFailure(options, nameof(EquirectangularOptions.LatitudeRange)); 
+    }
 
-        [TestCase("1:2:3")]
-        [TestCase("1:")]
-        [TestCase(":1")]
-        [TestCase("biscuits:bananas")]
-        public void MalformedLongitudeCrop(string range)
-        {
-            var options = ValidOptions();
-            options.LongitudeRange = range;
+    [TestCase("1:2:3")]
+    [TestCase("1:")]
+    [TestCase(":1")]
+    [TestCase("biscuits:bananas")]
+    public void MalformedLongitudeCrop(string range)
+    {
+        var options = ValidOptions();
+        options.LongitudeRange = range;
 
-            VerifyFailure(options, nameof(EquirectangularOptions.LongitudeRange));
-        }
+        VerifyFailure(options, nameof(EquirectangularOptions.LongitudeRange));
+    }
 
-        [Test]
-        public void ValidFileExtension()
-        {
-            var options = ValidOptions();
-            options.OutputFormat = "jpg";
+    [Test]
+    public void ValidFileExtension()
+    {
+        var options = ValidOptions();
+        options.OutputFormat = "jpg";
 
-            VerifyNoFailure(options);
+        VerifyNoFailure(options);
             
-            options.OutputFormat = "PNG";
+        options.OutputFormat = "PNG";
 
-            VerifyNoFailure(options);
-        }
+        VerifyNoFailure(options);
+    }
 
-        [Test]
-        public void InvalidFileExtension()
-        {
-            var options = ValidOptions();
-            options.OutputFormat = "pcx";
+    [Test]
+    public void InvalidFileExtension()
+    {
+        var options = ValidOptions();
+        options.OutputFormat = "pcx";
 
-            VerifyFailure(options, nameof(RenderOptions.OutputFormat));
-        }
+        VerifyFailure(options, nameof(RenderOptions.OutputFormat));
+    }
         
-        private static EquirectangularOptions ValidOptions()
+    private static EquirectangularOptions ValidOptions()
+    {
+        return new EquirectangularOptions
         {
-            return new EquirectangularOptions
-            {
-                Tint = "0000FF",
-                ToleranceMinutes = 30,
-                SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm
-            };
-        }
+            Tint = "0000FF",
+            ToleranceMinutes = 30,
+            SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm
+        };
     }
 }

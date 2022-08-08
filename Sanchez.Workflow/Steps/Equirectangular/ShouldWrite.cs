@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using Ardalis.GuardClauses;
+﻿using System.Linq.Expressions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Filesystem.Equirectangular;
@@ -14,130 +11,129 @@ using ShellProgressBar;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Sanchez.Workflow.Steps.Equirectangular
+namespace Sanchez.Workflow.Steps.Equirectangular;
+
+public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
 {
-    public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
+    private readonly RenderOptions _options;
+    private readonly StitchedFilenameProvider _filenameProvider;
+    private readonly ILogger<ShouldWrite> _logger;
+    private readonly IFileService _fileService;
+
+    public ShouldWrite(
+        RenderOptions options,
+        StitchedFilenameProvider filenameProvider,
+        ILogger<ShouldWrite> logger,
+        IFileService fileService)
     {
-        private readonly RenderOptions _options;
-        private readonly StitchedFilenameProvider _filenameProvider;
-        private readonly ILogger<ShouldWrite> _logger;
-        private readonly IFileService _fileService;
-
-        public ShouldWrite(
-            RenderOptions options,
-            StitchedFilenameProvider filenameProvider,
-            ILogger<ShouldWrite> logger,
-            IFileService fileService)
-        {
-            _options = options;
-            _filenameProvider = filenameProvider;
-            _logger = logger;
-            _logger = logger;
-            _fileService = fileService;
-        }
-
-        public IProgressBar? ProgressBar { get; set; }
-        public Activity? Activity { get; set; }
-        public DateTime? Timestamp { get; set; }
-        public int AlreadyRenderedCount { get; [UsedImplicitly] set; }
-        public string? Identifier { get; [UsedImplicitly] set; }
-
-        public override ExecutionResult Run(IStepExecutionContext context)
-        {
-            Guard.Against.Null(Activity, nameof(Activity));
-            Guard.Against.Null(Timestamp, nameof(Timestamp));
-            Guard.Against.Null(ProgressBar, nameof(ProgressBar));
-
-            Activity.OutputPath = _filenameProvider.GetOutputFilename(Timestamp.Value);
-
-            if (!Activity.Registrations.Any())
-            {
-                _logger.LogInformation("No images found; skipping", Activity.OutputPath);
-
-                ProgressBar.Tick($"Scanning {Timestamp:s}{Identifier}");
-                return ExecutionResult.Outcome(false);
-            }
-
-            // Verify minimum number of satellites
-            if (_options.MinSatellites != null && Activity.Registrations.Count < _options.MinSatellites)
-            {
-                _logger.LogInformation("fewer than {minSatellites} for {timestamp}; skipping", _options.MinSatellites, Timestamp);
-
-                ProgressBar.Tick($"Skipping {Timestamp:s}");
-                return ExecutionResult.Outcome(false);
-            }
-
-            // Verify that the output file can be written
-            if (_fileService.ShouldWrite(Activity.OutputPath))
-            {
-                ProgressBar.Tick($"Processing {Timestamp:s}{Identifier}");
-                return ExecutionResult.Outcome(true);
-            }
-
-            _logger.LogInformation("Output file {outputFilename} exists; not overwriting", Activity.OutputPath);
-            AlreadyRenderedCount++;
-
-            ProgressBar.Tick($"Skipping {Timestamp:s}{Identifier}");
-
-            return ExecutionResult.Outcome(false);
-        }
+        _options = options;
+        _filenameProvider = filenameProvider;
+        _logger = logger;
+        _logger = logger;
+        _fileService = fileService;
     }
 
-    internal static class ShouldWriteExtensions
+    public IProgressBar? ProgressBar { get; set; }
+    public Activity? Activity { get; set; }
+    public DateTime? Timestamp { get; set; }
+    public int AlreadyRenderedCount { get; [UsedImplicitly] set; }
+    public string? Identifier { get; [UsedImplicitly] set; }
+
+    public override ExecutionResult Run(IStepExecutionContext context)
     {
-        internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TData>(
-            this IWorkflowBuilder<TData> builder,
-            DateTime? timestamp,
-            Expression<Func<TData, string?>>? identifier = null)
-            where TData : WorkflowData
+        ArgumentNullException.ThrowIfNull(Activity);
+        ArgumentNullException.ThrowIfNull(Timestamp);
+        ArgumentNullException.ThrowIfNull(ProgressBar);
+
+        Activity.OutputPath = _filenameProvider.GetOutputFilename(Timestamp.Value);
+
+        if (!Activity.Registrations.Any())
         {
-            var result = builder
-                .StartWith<ShouldWrite, TData>()
-                .WithActivity()
-                .WithProgressBar()
-                .Input(step => step.Timestamp, data => timestamp)
-                .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
+            _logger.LogInformation("No images found; skipping", Activity.OutputPath);
 
-            if (identifier != null) result.Input(step => step.Identifier, identifier);
-
-            return result;
+            ProgressBar.Tick($"Scanning {Timestamp:s}{Identifier}");
+            return ExecutionResult.Outcome(false);
         }
 
-        internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TStep, TData>(
-            this IStepBuilder<TData, TStep> builder,
-            DateTime? timestamp,
-            Expression<Func<TData, string?>>? identifier = null)
-            where TStep : IStepBody
-            where TData : WorkflowData
+        // Verify minimum number of satellites
+        if (_options.MinSatellites != null && Activity.Registrations.Count < _options.MinSatellites)
         {
-            var result = builder
-                .Then<TStep, ShouldWrite, TData>()
-                .WithActivity()
-                .WithProgressBar()
-                .Input(step => step.Timestamp, data => timestamp)
-                .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
+            _logger.LogInformation("fewer than {minSatellites} for {timestamp}; skipping", _options.MinSatellites, Timestamp);
 
-            if (identifier != null) result.Input(step => step.Identifier, identifier);
-
-            return result;
+            ProgressBar.Tick($"Skipping {Timestamp:s}");
+            return ExecutionResult.Outcome(false);
         }
 
-        internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TStep, TData>(
-            this IStepBuilder<TData, TStep> builder,
-            Expression<Func<TData, string?>>? identifier = null)
-            where TStep : IStepBody
-            where TData : TimelapseWorkflowData
+        // Verify that the output file can be written
+        if (_fileService.ShouldWrite(Activity.OutputPath))
         {
-            var result = builder
-                .Then<TStep, ShouldWrite, TData>()
-                .WithActivity()
-                .WithProgressBar()
-                .Input(step => step.Timestamp, data => data.TargetTimestamp)
-                .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
-
-            if (identifier != null) result.Input(step => step.Identifier, identifier);
-
-            return result;
+            ProgressBar.Tick($"Processing {Timestamp:s}{Identifier}");
+            return ExecutionResult.Outcome(true);
         }
+
+        _logger.LogInformation("Output file {outputFilename} exists; not overwriting", Activity.OutputPath);
+        AlreadyRenderedCount++;
+
+        ProgressBar.Tick($"Skipping {Timestamp:s}{Identifier}");
+
+        return ExecutionResult.Outcome(false);
+    }
+}
+
+internal static class ShouldWriteExtensions
+{
+    internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TData>(
+        this IWorkflowBuilder<TData> builder,
+        DateTime? timestamp,
+        Expression<Func<TData, string?>>? identifier = null)
+        where TData : WorkflowData
+    {
+        var result = builder
+            .StartWith<ShouldWrite, TData>()
+            .WithActivity()
+            .WithProgressBar()
+            .Input(step => step.Timestamp, data => timestamp)
+            .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
+
+        if (identifier != null) result.Input(step => step.Identifier, identifier);
+
+        return result;
+    }
+
+    internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TStep, TData>(
+        this IStepBuilder<TData, TStep> builder,
+        DateTime? timestamp,
+        Expression<Func<TData, string?>>? identifier = null)
+        where TStep : IStepBody
+        where TData : WorkflowData
+    {
+        var result = builder
+            .Then<TStep, ShouldWrite, TData>()
+            .WithActivity()
+            .WithProgressBar()
+            .Input(step => step.Timestamp, data => timestamp)
+            .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
+
+        if (identifier != null) result.Input(step => step.Identifier, identifier);
+
+        return result;
+    }
+
+    internal static IStepBuilder<TData, ShouldWrite> ShouldWrite<TStep, TData>(
+        this IStepBuilder<TData, TStep> builder,
+        Expression<Func<TData, string?>>? identifier = null)
+        where TStep : IStepBody
+        where TData : TimelapseWorkflowData
+    {
+        var result = builder
+            .Then<TStep, ShouldWrite, TData>()
+            .WithActivity()
+            .WithProgressBar()
+            .Input(step => step.Timestamp, data => data.TargetTimestamp)
+            .Output(data => data.AlreadyRenderedCount, step => step.AlreadyRenderedCount);
+
+        if (identifier != null) result.Input(step => step.Identifier, identifier);
+
+        return result;
     }
 }

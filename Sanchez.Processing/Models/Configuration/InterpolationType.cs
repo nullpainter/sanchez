@@ -1,8 +1,7 @@
-﻿namespace Sanchez.Processing.Models.Configuration
+﻿namespace Sanchez.Processing.Models.Configuration;
+
+public enum InterpolationType
 {
-    public enum InterpolationType
-    {
-        NearestNeighbour,
-        Bilinear
-    }
+    NearestNeighbour,
+    Bilinear
 }

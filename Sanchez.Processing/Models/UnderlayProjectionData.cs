@@ -4,52 +4,23 @@ using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using SixLabors.ImageSharp;
 
-namespace Sanchez.Processing.Models
-{
-    public class UnderlayProjectionData
-    {
-        public UnderlayProjectionData(
-            ProjectionType projection,
-            InterpolationType interpolation,
-            string underlayPath,
-            int imageSize,
-            Size? targetSize = null,
-            Range? latitudeCrop = null,
-            double? minLongitude = null,
-            bool noCrop = false)
-        {
-            Projection = projection;
-            Interpolation = interpolation;
-            UnderlayPath = underlayPath;
-            ImageSize = imageSize;
-            TargetSize = targetSize;
-            LatitudeCrop = latitudeCrop;
-            MinLongitude = minLongitude;
-            NoCrop = noCrop;
-        }
+namespace Sanchez.Processing.Models;
 
-        public ProjectionType Projection { get; }
+public record UnderlayProjectionData(
+    ProjectionType Projection,
 
-        /// <remarks>
-        ///     Used only to disambiguate cache entries.
-        /// </remarks>
-        public InterpolationType Interpolation { [UsedImplicitly] get; }
+    // Used only to disambiguate cache entries
+    [UsedImplicitly]
+    InterpolationType Interpolation,
 
-        /// <remarks>
-        ///     Used only to disambiguate cache entries.
-        /// </remarks>
-        public int ImageSize { [UsedImplicitly] get; }
+    // Used only to disambiguate cache entries
+    [UsedImplicitly]
+    string UnderlayPath,
 
-        /// <remarks>
-        ///     Used only to disambiguate cache entries.
-        /// </remarks>
-        public string UnderlayPath { [UsedImplicitly] get; }
-
-        public bool NoCrop { [UsedImplicitly] get; }
-
-        public Size? TargetSize { get; }
-        public Range? LatitudeCrop { get; }
-
-        public double? MinLongitude { get; }
-    }
-}
+    // Used only to disambiguate cache entries
+    [UsedImplicitly]
+    int ImageSize,
+    Size? TargetSize = null,
+    AngleRange? LatitudeCrop = null,
+    double? MinLongitude = null,
+    bool NoCrop = false);

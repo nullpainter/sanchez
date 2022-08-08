@@ -1,8 +1,7 @@
-﻿namespace Sanchez.Processing.Models.Projections
+﻿namespace Sanchez.Processing.Models.Projections;
+
+public enum ProjectionType
 {
-    public enum ProjectionType
-    {
-       Geostationary,
-       Equirectangular
-    }
+    Geostationary,
+    Equirectangular
 }

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Sanchez.Processing.Helpers;
 using Sanchez.Services;
 using Serilog;
@@ -7,38 +6,37 @@ using Serilog.Core;
 using Serilog.Events;
 using Serilog.Exceptions;
 
-namespace Sanchez.Builders
+namespace Sanchez.Builders;
+
+internal static class LoggingBuilder
 {
-    internal static class LoggingBuilder
+    /// <summary>
+    ///     Configures logging output.
+    /// </summary>
+    public static IServiceCollection ConfigureLogging(this IServiceCollection services, bool consoleLogging)
     {
-        /// <summary>
-        ///     Configures logging output.
-        /// </summary>
-        public static IServiceCollection ConfigureLogging(this IServiceCollection services, bool consoleLogging)
-        {
-            var builder = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("WorkflowCore", LogEventLevel.Warning)
-                .WriteTo.RollingFile(
-                    Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), 
-                    LogEventLevel.Information, 
-                    fileSizeLimitBytes: 5 * 1024 * 1024, 
-                    retainedFileCountLimit: 10)
-                .WriteTo.ValidationWrapper(c => c.Sentry(o =>
-                {
-                    o.MinimumEventLevel = LogEventLevel.Error;
-                    o.Dsn = "https://2d7d5615b9f249f7890e275774e9eaf6@o456714.ingest.sentry.io/5450049";
-                }), LogEventLevel.Debug, new LoggingLevelSwitch())
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails();
+        var builder = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("WorkflowCore", LogEventLevel.Warning)
+            .WriteTo.RollingFile(
+                Path.Combine(PathHelper.LogPath(), "sanchez-{Date}.log"), 
+                LogEventLevel.Information, 
+                fileSizeLimitBytes: 5 * 1024 * 1024, 
+                retainedFileCountLimit: 10)
+            .WriteTo.ValidationWrapper(c => c.Sentry(o =>
+            {
+                o.MinimumEventLevel = LogEventLevel.Error;
+                o.Dsn = "https://2d7d5615b9f249f7890e275774e9eaf6@o456714.ingest.sentry.io/5450049";
+            }), LogEventLevel.Debug, new LoggingLevelSwitch())
+            .Enrich.FromLogContext()
+            .Enrich.WithExceptionDetails();
 
-            if (consoleLogging) builder.WriteTo.Console();
+        if (consoleLogging) builder.WriteTo.Console();
 
-            Log.Logger = builder.CreateLogger();
+        Log.Logger = builder.CreateLogger();
 
-            services.AddLogging(serviceBuilder => serviceBuilder.AddSerilog(dispose: true));
+        services.AddLogging(serviceBuilder => serviceBuilder.AddSerilog(dispose: true));
 
-            return services;
-        }
+        return services;
     }
 }

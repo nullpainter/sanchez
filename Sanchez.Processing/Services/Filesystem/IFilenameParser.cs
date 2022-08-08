@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace Sanchez.Processing.Services.Filesystem;
 
-namespace Sanchez.Processing.Services.Filesystem
+public interface IFilenameParser
 {
-    public interface IFilenameParser
-    {
-        /// <summary>
-        ///     Extracts the timestamp from a satellite imagery filename.
-        /// </summary>
-        DateTime? GetTimestamp(string filename);
-    }
+    /// <summary>
+    ///     Extracts the timestamp from a satellite imagery filename.
+    /// </summary>
+    DateTime? GetTimestamp(string filename);
 }

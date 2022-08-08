@@ -1,19 +1,17 @@
-﻿using System;
-using Sanchez.Processing.Services.Filesystem.Parsers;
+﻿using Sanchez.Processing.Services.Filesystem.Parsers;
 
-namespace Sanchez.Processing.Services.Filesystem
+namespace Sanchez.Processing.Services.Filesystem;
+
+public static class FilenameParserProvider
 {
-    public static class FilenameParserProvider
+    public static IFilenameParser GetParser(FilenameParserType type, string? prefix, string? suffix)
     {
-        public static IFilenameParser GetParser(FilenameParserType type, string? prefix, string? suffix)
+        return type switch
         {
-            return type switch
-            {
-                FilenameParserType.Goesproc => new GoesFilenameParser(prefix, suffix),
-                FilenameParserType.Xrit => new Gk2AFilenameParser(prefix, suffix),
-                FilenameParserType.Electro => new ElectroFilenameParser(prefix, suffix),
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-            };
-        }
+            FilenameParserType.Goesproc => new GoesFilenameParser(prefix, suffix),
+            FilenameParserType.Xrit => new Gk2AFilenameParser(prefix, suffix),
+            FilenameParserType.Electro => new ElectroFilenameParser(prefix, suffix),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
     }
 }

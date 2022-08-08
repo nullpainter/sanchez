@@ -1,42 +1,24 @@
-﻿using System;
+﻿namespace Sanchez.Processing.Models.Angles;
 
-namespace Sanchez.Processing.Models.Angles
+/// <summary>
+///     Pixel coordinate range.
+/// </summary>
+public readonly record struct PixelRange(int Start, int End)
 {
     /// <summary>
-    ///     Pixel coordinate range.
+    ///     Construct a pixel range from an angle range, utilising a custom transformation function
+    ///     to convert.
     /// </summary>
-    public readonly struct PixelRange
+    public PixelRange(AngleRange range, Func<double, int> transform) : this(transform(range.Start), transform(range.End))
     {
-        public int Start { get; }
-        public int End { get; }
-
-        public PixelRange(int start, int end)
+        // Ensure end pixel is larger than start pixel. 
+        if (Start > End)
         {
-            Start = start;
-            End = end;
+            (Start, End) = (End, Start);
         }
-
-        /// <summary>
-        ///     Construct a pixel range from an angle range, utilising a custom transformation function
-        ///     to convert.
-        /// </summary>
-        public PixelRange(Range range, Func<double, int> transform)
-        {
-            Start = transform(range.Start);
-            End = transform(range.End);
-
-            // Ensure end pixel is larger than start pixel. 
-            if (Start > End)
-            {
-                var temp = Start;
-
-                Start = End;
-                End = temp;
-            }
-        }
-
-        public int Range => End - Start;
-
-        public override string ToString() => $"{nameof(Start)}: {Start}, {nameof(End)}: {End}";
     }
+
+    public int Range => End - Start;
+
+    public override string ToString() => $"{nameof(Start)}: {Start}, {nameof(End)}: {End}";
 }
