@@ -15,6 +15,13 @@
     "Brightness": 0.95
   },
   {
+    "DisplayName": "GOES-18",
+    "FilenamePrefix": "GOES18_FD_CH13_(?!enhanced)",
+    "FilenameParser": "Goesproc",
+    "Longitude": -137.2,
+    "Brightness": 0.95
+  },
+  {
     "DisplayName": "Himawari-8",
     "FilenamePrefix": "^Himawari8_FD_IR_",
     "FilenameParser": "Goesproc",
