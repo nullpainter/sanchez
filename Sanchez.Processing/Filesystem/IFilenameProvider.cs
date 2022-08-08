@@ -1,6 +1,5 @@
-﻿namespace Sanchez.Processing.Filesystem
+﻿namespace Sanchez.Processing.Filesystem;
+
+public interface IFilenameProvider
 {
-    public interface IFilenameProvider
-    {
-    }
 }

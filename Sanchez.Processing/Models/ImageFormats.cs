@@ -1,7 +1,6 @@
-﻿namespace Sanchez.Processing.Models
+﻿namespace Sanchez.Processing.Models;
+
+public enum ImageFormats
 {
-    public enum ImageFormats
-    {
-        Jpeg, Png
-    }
+    Jpeg, Png
 }

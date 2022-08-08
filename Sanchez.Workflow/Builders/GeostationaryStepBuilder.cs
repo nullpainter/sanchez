@@ -2,20 +2,19 @@
 using Sanchez.Workflow.Steps.Geostationary;
 using Sanchez.Workflow.Steps.Geostationary.Reprojected;
 
-namespace Sanchez.Workflow.Builders
+namespace Sanchez.Workflow.Builders;
+
+internal static class GeostationaryStepBuilder
 {
-    internal static class GeostationaryStepBuilder
+    /// <summary>
+    ///     Registers workflow steps which are required for geostationary projection.
+    /// </summary>
+    internal static IServiceCollection AddGeostationarySteps(this IServiceCollection services)
     {
-        /// <summary>
-        ///     Registers workflow steps which are required for geostationary projection.
-        /// </summary>
-        internal static IServiceCollection AddGeostationarySteps(this IServiceCollection services)
-        {
-            return services
-                .AddTransient<SetTargetLongitude>()
-                .AddTransient<ToGeostationary>()
-                .AddTransient<RenderUnderlay>()
-                .AddTransient<ApplyHaze>();
-        } 
-    }
+        return services
+            .AddTransient<SetTargetLongitude>()
+            .AddTransient<ToGeostationary>()
+            .AddTransient<RenderUnderlay>()
+            .AddTransient<ApplyHaze>();
+    } 
 }

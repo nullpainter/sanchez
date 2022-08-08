@@ -1,37 +1,35 @@
-﻿using System;
-using Sanchez.Processing.Models;
+﻿using Sanchez.Processing.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace Sanchez.Processing.ImageProcessing.Noise
+namespace Sanchez.Processing.ImageProcessing.Noise;
+
+public struct GaussianNoiseRowOperation : IRowOperation
 {
-    public struct GaussianNoiseRowOperation : IRowOperation
+    private readonly Image<Rgba32> _image;
+
+    private const int Mean = 0;
+    private const int StdDev = 1;
+
+    public GaussianNoiseRowOperation(Image<Rgba32> image) => _image = image;
+
+    public void Invoke(int y)
     {
-        private readonly Image<Rgba32> _image;
+        var random = new Random();
 
-        private const int Mean = 0;
-        private const int StdDev = 1;
+        var span = _image.GetPixelRowSpan(y);
 
-        public GaussianNoiseRowOperation(Image<Rgba32> image) => _image = image;
-
-        public void Invoke(int y)
+        for (var x = 0; x < span.Length; x++)
         {
-            var random = new Random();
+            var u1 = 1.0 - random.NextDouble();
+            var u2 = 1.0 - random.NextDouble();
 
-            var span = _image.GetPixelRowSpan(y);
+            var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(Constants.Pi2 * u2);
 
-            for (var x = 0; x < span.Length; x++)
-            {
-                var u1 = 1.0 - random.NextDouble();
-                var u2 = 1.0 - random.NextDouble();
+            var randNormal = (float) (Mean + StdDev * randStdNormal);
 
-                var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(Constants.Pi2 * u2);
-
-                var randNormal = (float) (Mean + StdDev * randStdNormal);
-
-                span[x] = new Rgba32(randNormal, randNormal, randNormal); 
-            }
+            span[x] = new Rgba32(randNormal, randNormal, randNormal); 
         }
     }
 }

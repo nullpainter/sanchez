@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models;
@@ -9,50 +8,49 @@ using Sanchez.Workflow.Steps.Equirectangular;
 using Sanchez.Workflow.Steps.Equirectangular.Stitch;
 using WorkflowCore.Interface;
 
-namespace Sanchez.Workflow.Workflows.Equirectangular
+namespace Sanchez.Workflow.Workflows.Equirectangular;
+
+[UsedImplicitly]
+public class EquirectangularStitchWorkflow : IWorkflow<StitchWorkflowData>
 {
-    [UsedImplicitly]
-    public class EquirectangularStitchWorkflow : IWorkflow<StitchWorkflowData>
+    private readonly RenderOptions _options;
+
+    public EquirectangularStitchWorkflow(RenderOptions options) => _options = options;
+
+    public void Build(IWorkflowBuilder<StitchWorkflowData> builder)
     {
-        private readonly RenderOptions _options;
-
-        public EquirectangularStitchWorkflow(RenderOptions options) => _options = options;
-
-        public void Build(IWorkflowBuilder<StitchWorkflowData> builder)
-        {
-            builder
-                .Initialise()
-                .CreateActivity()
-                .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
-                .If(data => data.Activity!.Registrations.Any())
-                .Do(branch => branch
-                    .ShouldWrite(_options.Timestamp)
-                    .Branch(true, builder
-                        .CreateBranch()
-                        .GetVisibleRange()
-                        .GetGlobalOffset()
-                        .ForEach(data => data.Activity!.Registrations, _ => false)
-                        .Do(registration => registration
-                            .SetWorkflowRegistration()
-                            .LoadImage(data => data.ProgressBar)
-                            .NormaliseImage()
-                            .ToEquirectangular()
-                        )
-                        .StitchImages()
-                        .RenderOverlay(data => data.TargetImage)
-                        .GetCropBounds()
-                        .RenderUnderlay()
-                        .ComposeOverlay()
-                        .ColourCorrect()
-                        .OffsetImage()
-                        .CropImage()
-                        .SaveStitchedImage(data => data.ProgressBar)
+        builder
+            .Initialise()
+            .CreateActivity()
+            .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
+            .If(data => data.Activity!.Registrations.Any())
+            .Do(branch => branch
+                .ShouldWrite(_options.Timestamp)
+                .Branch(true, builder
+                    .CreateBranch()
+                    .GetVisibleRange()
+                    .GetGlobalOffset()
+                    .ForEach(data => data.Activity!.Registrations, _ => false)
+                    .Do(registration => registration
+                        .SetWorkflowRegistration()
+                        .LoadImage(data => data.ProgressBar)
+                        .NormaliseImage()
+                        .ToEquirectangular()
                     )
+                    .StitchImages()
+                    .RenderOverlay(data => data.TargetImage)
+                    .GetCropBounds()
+                    .RenderUnderlay()
+                    .ComposeOverlay()
+                    .ColourCorrect()
+                    .OffsetImage()
+                    .CropImage()
+                    .SaveStitchedImage(data => data.ProgressBar)
                 )
-                .LogCompletion();
-        }
-
-        public string Id => WorkflowConstants.EquirectangularBatch;
-        public int Version => 1;
+            )
+            .LogCompletion();
     }
+
+    public string Id => WorkflowConstants.EquirectangularBatch;
+    public int Version => 1;
 }

@@ -3,34 +3,33 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Normalization;
 
-namespace Sanchez.Processing.Extensions.Images
+namespace Sanchez.Processing.Extensions.Images;
+
+public static class HistogramExtensions
 {
-    public static class HistogramExtensions
+    /// <summary>
+    ///     Options for performing adaptive tile histogram equalisation.
+    /// </summary>
+    private static readonly HistogramEqualizationOptions AdaptiveTileOptions = new()
     {
-        /// <summary>
-        ///     Options for performing adaptive tile histogram equalisation.
-        /// </summary>
-        private static readonly HistogramEqualizationOptions AdaptiveTileOptions = new()
-        {
-            Method = HistogramEqualizationMethod.AdaptiveTileInterpolation,
-            ClipHistogram = true,
-            LuminanceLevels = 65536
-        };
+        Method = HistogramEqualizationMethod.AdaptiveTileInterpolation,
+        ClipHistogram = true,
+        LuminanceLevels = 65536
+    };
 
-        /// <summary>
-        ///     Performs global histogram equalisation on a satellite image in order to increase contrast and
-        ///     to assist in blending imagery from multiple satellites. Adaptive equalisation can also be performed
-        ///     to increase contrast on localised regions of interest. 
-        /// </summary>
-        /// <param name="image">image to equalise</param>
-        /// <param name="adaptive">whether adaptive tile histogram equalisation should also be performed</param>
-        public static void AdjustLevels(this Image<Rgba32> image, bool adaptive)
-        {
-            // FIXME image width limitation due to ImageSharp bug with performing adaptive histogram equalisation 
-            // on large images. This is scheduled to be fixed in ImageSharp 1.1.0.
-            if (adaptive && image.Width * image.Height < 100000000) image.Mutate(c => c.HistogramEqualization(AdaptiveTileOptions));
+    /// <summary>
+    ///     Performs global histogram equalisation on a satellite image in order to increase contrast and
+    ///     to assist in blending imagery from multiple satellites. Adaptive equalisation can also be performed
+    ///     to increase contrast on localised regions of interest. 
+    /// </summary>
+    /// <param name="image">image to equalise</param>
+    /// <param name="adaptive">whether adaptive tile histogram equalisation should also be performed</param>
+    public static void AdjustLevels(this Image<Rgba32> image, bool adaptive)
+    {
+        // FIXME image width limitation due to ImageSharp bug with performing adaptive histogram equalisation 
+        // on large images. This is scheduled to be fixed in ImageSharp 1.1.0.
+        if (adaptive && image.Width * image.Height < 100000000) image.Mutate(c => c.HistogramEqualization(AdaptiveTileOptions));
 
-            image.Mutate(c => c.HistogramEqualization());
-        }
+        image.Mutate(c => c.HistogramEqualization());
     }
 }

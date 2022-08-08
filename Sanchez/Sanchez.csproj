@@ -2,9 +2,6 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <LangVersion>9</LangVersion>
         <Company>Matt Painter</Company>
         <Product>Sanchez</Product>
     </PropertyGroup>
@@ -62,6 +59,10 @@
         <None Update="Resources\Gradients\Purple-Yellow.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+        <None Update="Resources\Goes18AllChannels.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         </None>
     </ItemGroup>
 

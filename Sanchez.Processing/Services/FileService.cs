@@ -1,117 +1,112 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using DotNet.Globbing;
+﻿using DotNet.Globbing;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Projections;
 
-namespace Sanchez.Processing.Services
+namespace Sanchez.Processing.Services;
+
+public interface IFileService
 {
-    public interface IFileService
+    /// <summary>
+    ///     Returns a list of files to process, based on <see cref="RenderOptions.SourcePath"/>. This property
+    ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
+    /// </summary>
+    List<string> GetSourceFiles();
+
+    List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Returns whether the output file should be written, based on options and whether the file already exists.
+    /// </summary>
+    bool ShouldWrite(string path);
+}
+
+public class FileService : IFileService
+{
+    private readonly RenderOptions _options;
+    private readonly ISatelliteRegistry _registry;
+
+    public FileService(
+        RenderOptions options,
+        ISatelliteRegistry registry)
     {
-        /// <summary>
-        ///     Returns a list of files to process, based on <see cref="RenderOptions.SourcePath"/>. This property
-        ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
-        /// </summary>
-        List<string> GetSourceFiles();
-
-        List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken);
-
-        /// <summary>
-        ///     Returns whether the output file should be written, based on options and whether the file already exists.
-        /// </summary>
-        bool ShouldWrite(string path);
+        _options = options;
+        _registry = registry;
     }
 
-    public class FileService : IFileService
+    public List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken)
     {
-        private readonly RenderOptions _options;
-        private readonly ISatelliteRegistry _registry;
+        var registrations = new List<Registration>();
 
-        public FileService(
-            RenderOptions options,
-            ISatelliteRegistry registry)
+        foreach (var file in sourceFiles)
         {
-            _options = options;
-            _registry = registry;
-        }
-
-        public List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken)
-        {
-            var registrations = new List<Registration>();
-
-            foreach (var file in sourceFiles)
-            {
-                if (cancellationToken.IsCancellationRequested) return registrations;
+            if (cancellationToken.IsCancellationRequested) return registrations;
                 
-                var (definition, timestamp) = _registry.Locate(file);
-                if (definition == null) continue;
+            var (definition, timestamp) = _registry.Locate(file);
+            if (definition == null) continue;
 
-                registrations.Add(new Registration(file, definition, timestamp));
-            }
-
-            return registrations;
+            registrations.Add(new Registration(file, definition, timestamp));
         }
 
-        /// <summary>
-        ///     Returns a list of files to process, based on <see cref="RenderOptions.SourcePath"/>. This property
-        ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
-        /// </summary>
-        public List<string> GetSourceFiles()
+        return registrations;
+    }
+
+    /// <summary>
+    ///     Returns a list of files to process, based on <see cref="RenderOptions.SourcePath"/>. This property
+    ///     can be a single file, a directory or a glob and wildcard pattern (such as <c>source/**/*IR.jpg</c>)
+    /// </summary>
+    public List<string> GetSourceFiles()
+    {
+        var absolutePath = Path.GetFullPath(_options.SourcePath);
+
+        // Source is a single file
+        if (!_options.MultipleSources)
         {
-            var absolutePath = Path.GetFullPath(_options.SourcePath!);
+            return File.Exists(absolutePath) ? new List<string> { absolutePath } : new List<string>();
+        }
 
-            // Source is a single file
-            if (!_options.MultipleSources)
-            {
-                return File.Exists(absolutePath) ? new List<string> { absolutePath } : new List<string>();
-            }
-
-            // If the source is a directory, enumerate all files
-            if (Directory.Exists(absolutePath))
-            {
-                return Directory
-                    .GetFiles(absolutePath, "*.*", SearchOption.AllDirectories)
-                    .OrderBy(file => file)
-                    .ToList();
-            }
-
-            // Source is a glob, so enumerate all files in its base directory directory and return
-            // glob matches
-            var sourceGlob = Glob.Parse(absolutePath);
-
+        // If the source is a directory, enumerate all files
+        if (Directory.Exists(absolutePath))
+        {
             return Directory
-                .GetFiles(GetGlobBase(absolutePath), "*.*", SearchOption.AllDirectories)
-                .Where(file => sourceGlob.IsMatch(file))
+                .GetFiles(absolutePath, "*.*", SearchOption.AllDirectories)
                 .OrderBy(file => file)
                 .ToList();
         }
 
-        /// <summary>
-        ///     Returns whether the output file should be written, based on options and whether the file already exists.
-        /// </summary>
-        public bool ShouldWrite(string path)
-        {
-            // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
-            if (_options.Force || !File.Exists(path)) return true;
-            return false;
-        }
+        // Source is a glob, so enumerate all files in its base directory directory and return
+        // glob matches
+        var sourceGlob = Glob.Parse(absolutePath);
 
-        private static string GetGlobBase(string path)
-        {
-            // Normalise separators
-            path = path.Replace('\\', '/');
+        return Directory
+            .GetFiles(GetGlobBase(absolutePath), "*.*", SearchOption.AllDirectories)
+            .Where(file => sourceGlob.IsMatch(file))
+            .OrderBy(file => file)
+            .ToList();
+    }
 
-            // Extract all directories in the path prior to the glob pattern. Note that the glob library
-            // also supports [a-z] style ranges, however we don't.
-            var directorySegments = path
-                .Split('/')
-                .TakeWhile(segment => !segment.Contains('?') && !segment.Contains('*'))
-                .ToList();
+    /// <summary>
+    ///     Returns whether the output file should be written, based on options and whether the file already exists.
+    /// </summary>
+    public bool ShouldWrite(string path)
+    {
+        // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
+        if (_options.Force || !File.Exists(path)) return true;
+        return false;
+    }
 
-            // Recombine path
-            return string.Join(Path.DirectorySeparatorChar, directorySegments);
-        }
+    private static string GetGlobBase(string path)
+    {
+        // Normalise separators
+        path = path.Replace('\\', '/');
+
+        // Extract all directories in the path prior to the glob pattern. Note that the glob library
+        // also supports [a-z] style ranges, however we don't.
+        var directorySegments = path
+            .Split('/')
+            .TakeWhile(segment => !segment.Contains('?') && !segment.Contains('*'))
+            .ToList();
+
+        // Recombine path
+        return string.Join(Path.DirectorySeparatorChar, directorySegments);
     }
 }
