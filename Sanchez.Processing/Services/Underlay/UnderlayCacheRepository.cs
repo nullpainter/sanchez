@@ -87,7 +87,11 @@ public class UnderlayCacheRepository : IUnderlayCacheRepository
     /// <summary>
     ///     Deletes the underlay cache database.
     /// </summary> 
-    public void DeleteCache() => File.Delete(CacheDatabase);
+    public void DeleteCache()
+    {
+        SqliteConnection.ClearAllPools();
+        File.Delete(CacheDatabase);
+    }
 
     /// <summary>
     ///     Adds an underlay registration to the database.
