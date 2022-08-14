@@ -33,7 +33,7 @@ internal sealed class SaveStitchedImage : StepBodyAsync, IActivityStepBody, IPro
         using (TargetImage)
         using (Activity)
         {
-            await TargetImage!.SaveWithExifAsync(Activity.OutputPath);
+            await TargetImage!.SaveWithExifAsync(Activity.OutputPath, context.CancellationToken);
         }
 
         RenderedCount++;

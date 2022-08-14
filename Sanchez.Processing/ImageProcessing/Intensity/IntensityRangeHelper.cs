@@ -1,6 +1,7 @@
 ﻿using Sanchez.Processing.Models.Angles;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.ImageProcessing.Intensity;
 
@@ -11,22 +12,20 @@ public static class IntensityRangeHelper
     /// </summary>
     public static AngleRange GetIntensityRange(this Image<Rgba32> source)
     {
-        var minIntensity = 255;
-        var maxIntensity = 0;
+        var minIntensity = 1.0;
+        var maxIntensity = 0.0;
 
-        for (var y = 0; y < source.Height; y++)
+        source.Mutate(c => c.ProcessPixelRowsAsVector4(row =>
         {
-            var sourceSpan = source.GetPixelRowSpan(y);
-
-            for (var x = 0; x < sourceSpan.Length; x++)
+            for (var x = 0; x < row.Length; x++)
             {
                 // Image is assumed to be monochrome, so we can arbitrarily select a single channel for the intensity
-                var intensity = sourceSpan[x].R;
+                var intensity = row[x].X;
 
                 if (intensity < minIntensity) minIntensity = intensity;
                 if (intensity > maxIntensity) maxIntensity = intensity;
             }
-        }
+        }));
 
         return new AngleRange(minIntensity, maxIntensity);
     }

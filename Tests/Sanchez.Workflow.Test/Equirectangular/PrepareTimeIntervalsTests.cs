@@ -31,7 +31,7 @@ public class PrepareTimeIntervalsTests : AbstractTests
         // Run method under test
         await _step.RunAsync(new StepExecutionContext());
 
-        _step.TimeIntervals.Should().BeEquivalentTo(DateTime.Today.AddHours(-2), DateTime.Today.AddHours(-1));
+        _step.TimeIntervals.Should().BeEquivalentTo(new List<DateTime> { DateTime.Today.AddHours(-2), DateTime.Today.AddHours(-1) });
     }
 
     [Test]
@@ -43,7 +43,7 @@ public class PrepareTimeIntervalsTests : AbstractTests
 
         await _step.RunAsync(new StepExecutionContext());
 
-        _step.TimeIntervals.Should().BeEquivalentTo(DateTime.Today.AddHours(-1));
+        _step.TimeIntervals.Should().BeEquivalentTo(new List<DateTime> { DateTime.Today.AddHours(-1) });
     }
 
     [Test]
@@ -57,7 +57,7 @@ public class PrepareTimeIntervalsTests : AbstractTests
         // Run method under test
         await _step.RunAsync(new StepExecutionContext());
 
-        _step.TimeIntervals.Should().BeEquivalentTo(DateTime.Today.AddHours(-1), DateTime.Today.AddHours(0), DateTime.Today.AddHours(1));
+        _step.TimeIntervals.Should().BeEquivalentTo(new List<DateTime> { DateTime.Today.AddHours(-1), DateTime.Today.AddHours(0), DateTime.Today.AddHours(1) });
     }
 
     private List<Registration> CreateRegistrations()

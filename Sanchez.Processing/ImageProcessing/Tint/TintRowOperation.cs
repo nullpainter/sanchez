@@ -1,43 +1,37 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
+﻿using System.Numerics;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Tint;
 
-public readonly struct TintRowOperation : IRowOperation
+public class TintRowOperation
 {
-    private readonly Image<Rgba32> _source;
     private readonly Rgba32 _tint;
     private readonly float _tintLightness;
 
-    public TintRowOperation(Image<Rgba32> source, Rgba32 tint, float tintLightness)
+    public TintRowOperation(Rgba32 tint, float tintLightness)
     {
-        _source = source;
         _tint = tint;
         _tintLightness = tintLightness;
     }
 
-    public void Invoke(int y)
+    public void Invoke(Span<Vector4> row)
     {
-        var span = _source.GetPixelRowSpan(y);
-
-        for (var x = 0; x < span.Length; x++)
+        for (var x = 0; x < row.Length; x++)
         {
-            var colour = span[x];
-                
-            var targetColour = ColorizeSinglePixel(colour, _tint);
-                
+            var targetColour = ColorizeSinglePixel(row[x], _tint);
+
             // Apply target colour, preserving alpha
-            span[x].R = targetColour.R;
-            span[x].G = targetColour.G;
-            span[x].B = targetColour.B; 
+            row[x].X = targetColour.R / 255f;
+            row[x].Y = targetColour.G / 255f;
+            row[x].Z = targetColour.B / 255f;
         }
     }
 
-    private Rgba32 ColorizeSinglePixel(Rgba32 pixel, Rgba32 tint)
+    private Rgba32 ColorizeSinglePixel(Vector4 pixel, Rgba32 tint)
     {
         // Assume greyscale
-        var value = pixel.R / 255f;
+        var value = pixel.X;
 
         // Always tint; never shade
         return Blend3(Color.Black, tint, Color.White, _tintLightness * (value - 1) + 1);

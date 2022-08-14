@@ -25,6 +25,7 @@ internal static class CommonStepBuilder
             .AddTransient<InitialiseUnderlayCache>()
             .AddTransient<LoadImageSingle>()
             .AddTransient<ColourCorrect>()
+            .AddTransient<ApplyNoise>()
             .AddTransient<NormaliseImage>();
     }
 }

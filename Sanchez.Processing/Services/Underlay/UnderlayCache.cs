@@ -59,7 +59,7 @@ public class UnderlayCache : IUnderlayCache
         // Remove underlay registration from cache if it has been deleted from disk
         if (!File.Exists(fullPath))
         {
-            _logger.LogWarning("Cache file {path} not found; removing from cache registration", path);
+            _logger.LogWarning("Cache file {Path} not found; removing from cache registration", path);
             await _repository.ClearCacheEntryAsync(path);
         }
 
@@ -76,14 +76,14 @@ public class UnderlayCache : IUnderlayCache
         try
         {
             if (definition == null) _logger.LogInformation("Using cached underlay");
-            else _logger.LogInformation("{definition:l0} Using cached underlay", definition.DisplayName);
+            else _logger.LogInformation("{Definition:l0} Using cached underlay", definition.DisplayName);
 
             return await Image.LoadAsync<Rgba32>(fullPath);
         }
         catch (Exception e)
         {
             // Remove underlay registration from cache if there was an error reading it from disk
-            _logger.LogWarning(e, "Cache file {path} unable to be read; removing from cache registration", path);
+            _logger.LogWarning(e, "Cache file {Path} unable to be read; removing from cache registration", path);
             await _repository.ClearCacheEntryAsync(path);
         }
 
@@ -96,7 +96,7 @@ public class UnderlayCache : IUnderlayCache
     public async Task SetUnderlayAsync(Image<Rgba32> underlay, SatelliteDefinition? definition, UnderlayProjectionData data)
     {
         if (definition == null) _logger.LogInformation("Caching underlay");
-        else _logger.LogInformation("{definition:l0} Caching underlay", definition.DisplayName);
+        else _logger.LogInformation("{Definition:l0} Caching underlay", definition.DisplayName);
 
         // Save underlay to disk
         var filename = $"{Guid.NewGuid()}.jpg";

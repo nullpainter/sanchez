@@ -4,7 +4,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Models;
 
-public readonly struct ImageBuffer
+public class ImageBuffer
 {
     public Rgba32[] Buffer { get; }
     public Size Size { get; }
@@ -20,7 +20,7 @@ public readonly struct ImageBuffer
     private static Rgba32[] GetBuffer(Image<Rgba32> image)
     {
         // Return single span if present
-        if (image.TryGetSinglePixelSpan(out var pixelSpan))
+        if (image.DangerousTryGetSinglePixelMemory(out var pixelSpan))
         {
             return pixelSpan.ToArray();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
 using Sanchez.Processing.ImageProcessing.Projection;
 using Sanchez.Processing.Models;
@@ -8,13 +9,14 @@ using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Models.Steps;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular;
 
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
 {
     private readonly ILogger<ToEquirectangular> _logger;
@@ -65,12 +67,12 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
 
         var latitudeRange = new AngleRange(definition.LatitudeRange.Start, definition.LatitudeRange.End);
 
-        _logger.LogInformation("{definition:l0} latitude range {startRange:F2} to {endRange:F2} degrees",
+        _logger.LogInformation("{Definition:l0} latitude range {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,
             Angle.FromRadians(latitudeRange.Start).Degrees,
             Angle.FromRadians(latitudeRange.End).Degrees);
 
-        _logger.LogInformation("{definition:l0} unwrapped longitude range {startRange:F2} to {endRange:F2} degrees",
+        _logger.LogInformation("{Definition:l0} unwrapped longitude range {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,
             Angle.FromRadians(longitudeRange.Start).Degrees,
             Angle.FromRadians(longitudeRange.End).Degrees);
@@ -82,19 +84,19 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
         var yRange = _options.EquirectangularRender?.NoCrop == true  || _options.EquirectangularRender?.ExplicitCrop == true
             ? new PixelRange(0, maxHeight) : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
 
-        _logger.LogInformation("{definition:l0} pixel range X: {minX} - {maxX} px", definition.DisplayName, xRange.Start, xRange.End);
-        _logger.LogInformation("{definition:l0} pixel range Y: {minY} - {maxY} px", definition.DisplayName, yRange.Start, yRange.End);
+        _logger.LogInformation("{Definition:l0} pixel range X: {MinX} - {MaxX} px", definition.DisplayName, xRange.Start, xRange.End);
+        _logger.LogInformation("{Definition:l0} pixel range Y: {MinY} - {MaxY} px", definition.DisplayName, yRange.Start, yRange.End);
 
-        _logger.LogInformation("{definition:l0} width: {targetWidth} px", definition.DisplayName, xRange.Range);
-        _logger.LogInformation("{definition:l0} height: {targetWidth} px", definition.DisplayName, yRange.Range);
+        _logger.LogInformation("{Definition:l0} width: {TargetWidth} px", definition.DisplayName, xRange.Range);
+        _logger.LogInformation("{Definition:l0} height: {TargetWidth} px", definition.DisplayName, yRange.Range);
 
         // Create target image with the correct dimensions for the projected satellite image
         var target = new Image<Rgba32>(xRange.Range, yRange.Range);
-        _logger.LogInformation("{definition:l0} Reprojecting", definition.DisplayName);
+        _logger.LogInformation("{Definition:l0} Reprojecting", definition.DisplayName);
 
         // Perform reprojection
         var operation = new ReprojectRowOperation(registration, SourceImage!, target, xRange.Start, yRange.Start, _options);
-        ParallelRowIterator.IterateRows(Configuration.Default, target.Bounds(), in operation);
+        target.Mutate(c => c.ProcessPixelRowsAsVector4((row, point) => operation.Invoke(row, point)));
 
         return target;
     }
@@ -104,12 +106,12 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
         var definition = Registration!.Definition;
         var longitudeRange = Registration.LongitudeRange!;
 
-        _logger.LogInformation("{definition:l0} range {startRange:F2} to {endRange:F2} degrees",
+        _logger.LogInformation("{Definition:l0} range {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,
             Angle.FromRadians(definition.LongitudeRange.Start).Degrees,
             Angle.FromRadians(definition.LongitudeRange.End).Degrees);
 
-        _logger.LogInformation("{definition:l0} crop {startRange:F2} to {endRange:F2} degrees",
+        _logger.LogInformation("{Definition:l0} crop {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,
             Angle.FromRadians(longitudeRange!.Value.Range.Start).Degrees,
             Angle.FromRadians(longitudeRange.Value.Range.End).Degrees);

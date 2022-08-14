@@ -14,6 +14,7 @@ public sealed record RenderOptions
 
     public ProjectionType Projection => GeostationaryRender != null ? ProjectionType.Geostationary : ProjectionType.Equirectangular;
     public bool StitchImages => EquirectangularRender?.StitchImages == true || GeostationaryRender?.Longitude != null;
+    public bool HasAtmosphere => GeostationaryRender is { AtmosphereAmount: > 0, AtmosphereOpacity: > 0 };
 
     /// <summary>
     ///     Global brightness adjustment.
@@ -158,7 +159,12 @@ public sealed record RenderOptions
     ///     Output image format.
     /// </summary>
     public ImageFormats? OutputFormat { get; set; }
-        
+
+    /// <summary>
+    ///     Whether to apply gaussian noise to target image.
+    /// </summary>
+    public bool Noise { get; set; }
+
     /// <summary>
     ///     Output image extension, based off <see cref="OutputFormat"/>.
     /// </summary>

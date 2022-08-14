@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Numerics;
 using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.Helpers;
 using Sanchez.Processing.Models;
@@ -7,14 +8,19 @@ using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Projections;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Projection;
 
-public readonly struct ReprojectRowOperation : IRowOperation
+public class ReprojectRowOperation
 {
+    
+    private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new();
+    
     private readonly Registration _registration;
+    private readonly ImageBuffer _sourceBuffer;
+    private readonly ImageOffset _imageOffset;
+    private readonly RenderOptions _options;
     private readonly Image<Rgba32> _source;
     private readonly Image<Rgba32> _target;
     private readonly int _xOffset, _yOffset;
@@ -24,8 +30,9 @@ public readonly struct ReprojectRowOperation : IRowOperation
     ///     Longitude outside of the longitude range where the image is blended.
     /// </summary>
     private readonly double _blendStartLongitude;
+
     private readonly double _blendEndLongitude;
-        
+
     /// <summary>
     ///     Ratio of source image which has an alpha mask applied to blend it with overlapping images.
     /// </summary>
@@ -59,18 +66,12 @@ public readonly struct ReprojectRowOperation : IRowOperation
         // Calculate longitude range for blend
         var overlap = BlendRatio * (_longitudeRange.End - _longitudeRange.Start);
         _blendEndLongitude = _longitudeRange.End + overlap;
-        _blendStartLongitude = _longitudeRange.Start - overlap;    
+        _blendStartLongitude = _longitudeRange.Start - overlap;
     }
-
-    private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new();
-    private readonly ImageBuffer _sourceBuffer;
-    private readonly ImageOffset _imageOffset;
-    private readonly RenderOptions _options;
-
-    public void Invoke(int y)
+    public void Invoke(Span<Vector4> row, Point value)
     {
-        var span = _target.GetPixelRowSpan(y);
-
+        var y = value.Y;
+        
         // Calculate or retrieve the latitude calculation component of geostationary projection
         var latitudeCalculations = CalculateGeostationaryLatitude(y + _yOffset);
 
@@ -78,7 +79,7 @@ public readonly struct ReprojectRowOperation : IRowOperation
         var targetWidth = _source.Width * 2;
         var projectionY = ProjectionAngleConverter.FromY(y + _yOffset, _source.Height);
 
-        for (var x = 0; x < span.Length; x++)
+        for (var x = 0; x < row.Length; x++)
         {
             var projectionX = ProjectionAngleConverter.FromX(x + _xOffset, targetWidth);
 
@@ -86,7 +87,7 @@ public readonly struct ReprojectRowOperation : IRowOperation
             GeostationaryProjection.ToScanningAngle(latitudeCalculations, projectionX, _registration.Definition, out var scanningX, out var scanningY);
 
             // Map pixel from satellite image back to target image
-            span[x] = GetTargetColour(scanningX, scanningY, projectionY, projectionX);
+            row[x] = GetTargetColour(scanningX, scanningY, projectionY, projectionX).ToVector4();
         }
     }
 
@@ -130,7 +131,7 @@ public readonly struct ReprojectRowOperation : IRowOperation
 
         // Map pixel from source image if not blending
         if (longitude <= _longitudeRange.End && longitude > _longitudeRange.Start) return InterpolatePixel(scanningX, scanningY);
-            
+
         var pixel = InterpolatePixel(scanningX, scanningY);
         double alpha;
 
@@ -147,8 +148,8 @@ public readonly struct ReprojectRowOperation : IRowOperation
         }
 
         // Calculate target pixel and blend
-        pixel.A = (byte) Math.Round(alpha * pixel.A);
-            
+        pixel.A = (byte)Math.Round(alpha * pixel.A);
+
         return pixel;
     }
 

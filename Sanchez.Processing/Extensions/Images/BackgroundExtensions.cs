@@ -1,5 +1,4 @@
 ﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
@@ -13,8 +12,9 @@ public static class BackgroundExtensions
         {
             using var original = source.Clone();
 
-            context.Fill(backgroundColour);
-            context.DrawImage(original, PixelColorBlendingMode.Normal, 1.0f);
+            context
+                .BackgroundColor(backgroundColour)
+                .DrawImage(original, PixelColorBlendingMode.Normal, 1.0f);
         });
 
         return source;

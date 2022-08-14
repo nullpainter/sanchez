@@ -1,6 +1,6 @@
-﻿using Sanchez.Processing.Models;
+﻿using System.Numerics;
+using Sanchez.Processing.Models;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Mask;
@@ -8,7 +8,7 @@ namespace Sanchez.Processing.ImageProcessing.Mask;
 /// <summary>
 ///     Sets the background outside the Earth on geostationary images to be transparent in order to facilitate blending.
 /// </summary>
-public readonly struct RemoveBackgroundRowOperation : IRowOperation
+public class RemoveBackgroundRowOperation
 {
     private readonly Image<Rgba32> _source;
 
@@ -28,7 +28,6 @@ public readonly struct RemoveBackgroundRowOperation : IRowOperation
     /// </summary>
     private const double BorderRatio = 0.001d;
 
-    /// <param name="source">source image</param>
     public RemoveBackgroundRowOperation(Image<Rgba32> source)
     {
         _source = source;
@@ -40,16 +39,12 @@ public readonly struct RemoveBackgroundRowOperation : IRowOperation
         _semiMajor2 = semiMajor * semiMajor;
     }
 
-    public void Invoke(int y)
+    public void Invoke(Span<Vector4> row, Point value)
     {
-        var span = _source.GetPixelRowSpan(y);
-
-        for (var x = 0; x < span.Length; x++)
+        for (var x = 0; x < row.Length; x++)
         {
-            if (InEarth(x, y)) continue;
-                
-            // Set zero alpha for areas outside the earth
-            span[x] = Constants.Transparent;
+            if (InEarth(x, value.Y)) continue;
+            row[x] = Vector4.Zero;
         }
     }
 

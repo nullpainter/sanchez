@@ -1,4 +1,5 @@
-﻿using Sanchez.Processing.Models;
+﻿using JetBrains.Annotations;
+using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
 using Sanchez.Workflow.Models.Data;
 using SixLabors.ImageSharp;
@@ -9,6 +10,7 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public class ComposeOverlay : StepBody
 {
     private readonly RenderOptions _options;

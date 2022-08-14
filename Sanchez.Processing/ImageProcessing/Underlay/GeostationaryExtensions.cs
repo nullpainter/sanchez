@@ -1,7 +1,7 @@
 ﻿using Sanchez.Processing.Models;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.ImageProcessing.Underlay;
 
@@ -17,8 +17,8 @@ public static class GeostationaryExtensions
         var target = new Image<Rgba32>(options.ImageSize, options.ImageSize);
 
         // Reproject image to match the given satellite
-        var operation = new GeostationaryProjectionRowOperation(source, target, satelliteLongitude, satelliteHeight, options);
-        ParallelRowIterator.IterateRows(Configuration.Default, target.Bounds(), in operation);
+        var operation = new GeostationaryProjectionRowOperation(source, satelliteLongitude, satelliteHeight, options);
+        target.Mutate(c => c.ProcessPixelRowsAsVector4((row, point) => operation.Invoke(row, point)));
 
         return target;
     }

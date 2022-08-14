@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
+using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
@@ -7,6 +8,7 @@ using Sanchez.Workflow.Models.Data;
 using Sanchez.Workflow.Models.Steps;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -44,12 +46,19 @@ public class ToGeostationary : StepBody, IActivityStepBody
         ArgumentNullException.ThrowIfNull(TargetImage);
 
         // Determine visible range of all satellite imagery
-        _logger.LogInformation("Reprojecting to geostationary with longitude {longitude} degrees", Angle.FromRadians(Longitude!.Value).Degrees);
+        _logger.LogInformation("Reprojecting to geostationary with longitude {Longitude} degrees", Angle.FromRadians(Longitude!.Value).Degrees);
 
         // Render geostationary image
         using (var sourceImage = TargetImage.Clone())
         {
-            TargetImage = sourceImage.ToGeostationaryProjection(Longitude.Value, Constants.Satellite.DefaultHeight, _options);
+            var geostationary = sourceImage.ToGeostationaryProjection(Longitude.Value, Constants.Satellite.DefaultHeight, _options);
+
+            // Set black background
+            TargetImage = new Image<Rgba32>(geostationary.Width, geostationary.Height);
+            TargetImage.Mutate(c => c
+                .BackgroundColor(Color.Black)
+                .DrawImage(geostationary, PixelColorBlendingMode.Normal, 1.0f)
+            );
         }
 
         return ExecutionResult.Next();
@@ -62,7 +71,7 @@ public class ToGeostationary : StepBody, IActivityStepBody
 public static class ToGeostationaryExtensions
 {
     internal static IStepBuilder<TData, ToGeostationary> ToGeostationary<TStep, TData>(
-        this IStepBuilder<TData, TStep> builder, 
+        this IStepBuilder<TData, TStep> builder,
         Expression<Func<TData, double?>> longitude)
         where TStep : IStepBody
         where TData : WorkflowData

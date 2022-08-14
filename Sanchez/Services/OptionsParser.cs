@@ -17,8 +17,8 @@ public static class OptionsParser
             ToOptionalAngle(options.LongitudeDegrees),
             ToOptionalAngle(options.EndLongitudeDegrees),
             options.InverseRotation,
-            options.HazeAmount,
-            options.HazeOpacity);
+            options.AtmosphereAmount,
+            options.AtmosphereOpacity);
 
         return renderOptions;
 
@@ -63,7 +63,8 @@ public static class OptionsParser
             AutoAdjustLevels = !options.NoAutoAdjustLevels,
             AdaptiveLevelAdjustment = options.AdaptiveLevelAdjustment,
             MinSatellites = options.MinSatellites,
-            OutputFormat = ToOutputFormat(options)
+            OutputFormat = ToOutputFormat(options),
+            Noise = options.Noise
         };
 
         if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;

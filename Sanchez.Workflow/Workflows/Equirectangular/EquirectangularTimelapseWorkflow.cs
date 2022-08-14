@@ -46,6 +46,7 @@ public class EquirectangularTimelapseWorkflow : IWorkflow<TimelapseWorkflowData>
                         .ColourCorrect()
                         .OffsetImage()
                         .CropImage()
+                        .ApplyNoise()
                         .SaveStitchedImage(data => data.ImageProgressBar)
                     )
                 )

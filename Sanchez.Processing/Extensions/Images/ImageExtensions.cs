@@ -11,7 +11,7 @@ public static class ImageExtensions
     /// <summary>
     ///     Saves an image, adding EXIF metadata.
     /// </summary>
-    public static async Task SaveWithExifAsync(this Image<Rgba32> image, string path)
+    public static async Task SaveWithExifAsync(this Image<Rgba32> image, string path, CancellationToken ct = default)
     {
         // Create target directory if required
         var targetDirectory = Path.GetDirectoryName(path);
@@ -23,7 +23,7 @@ public static class ImageExtensions
         // Save image
         try
         {
-            await image.SaveAsync(path);
+            await image.SaveAsync(path, cancellationToken: ct);
         }
         catch (NotSupportedException)
         {

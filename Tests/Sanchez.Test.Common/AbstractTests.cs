@@ -2,15 +2,14 @@
 using NUnit.Framework;
 using Sanchez.Builders;
 using Sanchez.Models.CommandLine;
+using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Options;
 using Sanchez.Processing.Services;
 using Sanchez.Processing.Services.Underlay;
 using Sanchez.Services;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Test.Common;
 
@@ -39,7 +38,6 @@ public abstract class AbstractTests
     [TearDown]
     public virtual void TearDown() => State.Dispose();
 
-
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
@@ -49,7 +47,7 @@ public abstract class AbstractTests
             InterpolationType = InterpolationOptions.B,
             SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
             DefinitionsPath = DefinitionsPath,
-            HazeAmount = 1.0f
+            AtmosphereAmount = 1.0f
         });
 
         // Build DI container
@@ -64,10 +62,10 @@ public abstract class AbstractTests
     [SetUp]
     public Task SetupAsync() => SatelliteRegistry.InitialiseAsync();
 
-    protected Task CreateImage(string path)
+    protected static Task CreateImage(string path)
     {
         var image = new Image<Rgba32>(10, 10);
-        image.Mutate(c => c.Fill(Color.Crimson));
+        image.AddBackgroundColour(Color.Crimson);
         return image.SaveAsync(path);
     }
 }

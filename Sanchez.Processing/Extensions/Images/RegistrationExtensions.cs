@@ -69,7 +69,7 @@ public static class RegistrationExtensions
     ///     Normalises the source image size to match the specified output spatial resolution. Doing
     ///     so simplifies maths when blending multiple pages.
     /// </summary>
-    public static Registration NormaliseSize(this Registration registration, int imageSize)
+    private static Registration NormaliseSize(this Registration registration, int imageSize)
     {
         ArgumentNullException.ThrowIfNull(registration.Image);
         if (registration.Width != imageSize || registration.Height != imageSize)

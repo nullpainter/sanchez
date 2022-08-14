@@ -15,7 +15,7 @@ public class OptionsParserTests
     {
         var options = new GeostationaryOptions
         {
-            HazeAmount = 0.5f,
+            AtmosphereAmount = 0.5f,
             LongitudeDegrees = 147,
             Tint = "ff0000",
             SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
@@ -29,7 +29,7 @@ public class OptionsParserTests
         Assert.NotNull(renderOptions.GeostationaryRender);
 
         renderOptions.GeostationaryRender!.Longitude.Should().Be(Angle.FromDegrees(147).Radians);
-        renderOptions.GeostationaryRender.HazeAmount.Should().Be(0.5f);
+        renderOptions.GeostationaryRender.AtmosphereAmount.Should().Be(0.5f);
         renderOptions.InterpolationType.Should().Be(InterpolationType.NearestNeighbour);
         renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.TwoKm);
         renderOptions.ImageOffset.Should().Be(Constants.Satellite.Offset.TwoKm);

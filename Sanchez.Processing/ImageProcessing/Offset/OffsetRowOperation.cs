@@ -1,30 +1,23 @@
-﻿using Sanchez.Processing.Extensions;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
-using SixLabors.ImageSharp.PixelFormats;
+﻿using System.Numerics;
+using Sanchez.Processing.Extensions;
 
 namespace Sanchez.Processing.ImageProcessing.Offset;
 
-public readonly struct OffsetRowOperation : IRowOperation<Rgba32>
+public class OffsetRowOperation 
 {
-    private readonly Image<Rgba32> _target;
     private readonly int _amount;
 
-    public OffsetRowOperation(Image<Rgba32> target, int amount)
-    {
-        _target = target;
-        _amount = amount;
-    }
+    public OffsetRowOperation(int amount) => _amount = amount;
 
-    public void Invoke(int y, Span<Rgba32> span)
+    public void Invoke(Span<Vector4> row)
     {
-        var row = _target.GetPixelRowSpan(y);
-        row.CopyTo(span);
+        var buffer = new Vector4[row.Length];
+        row.CopyTo(buffer);
 
         for (var x = 0; x < row.Length; x++)
         {
-            var targetOffset = (x - _amount).Limit(0, span.Length);
-            row[x] = span[targetOffset];
+            var targetOffset = (x - _amount).Limit(0, buffer.Length);
+            row[x] = buffer[targetOffset];
         }
     }
 }

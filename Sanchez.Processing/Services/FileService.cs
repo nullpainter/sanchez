@@ -12,7 +12,7 @@ public interface IFileService
     /// </summary>
     List<string> GetSourceFiles();
 
-    List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken);
+    List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken ct = default);
 
     /// <summary>
     ///     Returns whether the output file should be written, based on options and whether the file already exists.
@@ -33,13 +33,13 @@ public class FileService : IFileService
         _registry = registry;
     }
 
-    public List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken cancellationToken)
+    public List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken ct = default)
     {
         var registrations = new List<Registration>();
 
         foreach (var file in sourceFiles)
         {
-            if (cancellationToken.IsCancellationRequested) return registrations;
+            if (ct.IsCancellationRequested) return registrations;
                 
             var (definition, timestamp) = _registry.Locate(file);
             if (definition == null) continue;
@@ -90,8 +90,7 @@ public class FileService : IFileService
     public bool ShouldWrite(string path)
     {
         // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
-        if (_options.Force || !File.Exists(path)) return true;
-        return false;
+        return _options.Force || !File.Exists(path);
     }
 
     private static string GetGlobBase(string path)

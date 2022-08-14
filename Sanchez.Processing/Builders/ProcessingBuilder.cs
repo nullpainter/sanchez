@@ -16,7 +16,7 @@ public static class ProcessingBuilder
             .AddUnderlaySupport()
             .AddFilenameProviders()
             .AddSingleton<IGradientService, GradientService>()
-            .AddSingleton<IClutService, ClutService>()
+            .AddSingleton<ILookupService, LookupService>()
             .AddSingleton<ISatelliteImageLoader, SatelliteImageLoader>()
             .AddSingleton<IDatabaseMigrator, DatabaseMigrator>()
             .AddSingleton<IImageMatcher, ImageMatcher>()

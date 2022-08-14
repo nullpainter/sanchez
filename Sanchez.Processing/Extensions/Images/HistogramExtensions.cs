@@ -26,10 +26,7 @@ public static class HistogramExtensions
     /// <param name="adaptive">whether adaptive tile histogram equalisation should also be performed</param>
     public static void AdjustLevels(this Image<Rgba32> image, bool adaptive)
     {
-        // FIXME image width limitation due to ImageSharp bug with performing adaptive histogram equalisation 
-        // on large images. This is scheduled to be fixed in ImageSharp 1.1.0.
-        if (adaptive && image.Width * image.Height < 100000000) image.Mutate(c => c.HistogramEqualization(AdaptiveTileOptions));
-
+        if (adaptive) image.Mutate(c => c.HistogramEqualization(AdaptiveTileOptions));
         image.Mutate(c => c.HistogramEqualization());
     }
 }
