@@ -1,4 +1,5 @@
-﻿using Sanchez.Processing.Models;
+﻿using Sanchez.Processing.ImageProcessing.Atmosphere;
+using Sanchez.Processing.Models;
 using SixLabors.ImageSharp;
 
 namespace Sanchez.Test;
@@ -6,6 +7,9 @@ namespace Sanchez.Test;
 [TestFixture(TestOf = typeof(Bootstrapper))]
 public class GeostationaryEndToEndTests : EndToEndTestTests
 {
+    private static readonly int ScaledLength = (int)Math.Round(Constants.Satellite.ImageSize.FourKm * AtmosphereRowOperation.ImageScaleFactor);
+
+
     [TestCase("jpg")]
     [TestCase("png")]
     public async Task SingleWithDirectoryOutput(string extension)
@@ -28,10 +32,10 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 
         Path.GetExtension(outputFiles[0]).Should().Be($".{extension}");
         var outputImage = await Image.LoadAsync(outputFiles[0]);
-        outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        outputImage.Width.Should().Be(ScaledLength);
+        outputImage.Height.Should().Be(ScaledLength);
     }
-        
+
     [Test]
     public async Task SingleWithDirectoryOutputDefaultExtension()
     {
@@ -52,8 +56,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 
         Path.GetExtension(outputFiles[0]).Should().Be(".jpg");
         var outputImage = await Image.LoadAsync(outputFiles[0]);
-        outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        outputImage.Width.Should().Be(ScaledLength);
+        outputImage.Height.Should().Be(ScaledLength);
     }
 
     [Test]
@@ -73,8 +77,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 
         File.Exists(outputFile).Should().BeTrue("output file should have been created");
         var outputImage = await Image.LoadAsync(outputFile);
-        outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        outputImage.Width.Should().Be(ScaledLength);
+        outputImage.Height.Should().Be(ScaledLength);
     }
 
     [Test]
@@ -96,8 +100,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 
         File.Exists(outputFile).Should().BeTrue("output file should have been created");
         var outputImage = await Image.LoadAsync(outputFile);
-        outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        outputImage.Width.Should().Be(ScaledLength);
+        outputImage.Height.Should().Be(ScaledLength);
     }
 
     [Test]
@@ -119,8 +123,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
         foreach (var outputFile in Directory.GetFiles(outputDirectory))
         {
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Width.Should().Be((int)(ScaledLength));
+            outputImage.Height.Should().Be(ScaledLength);
         }
     }
 
@@ -145,8 +149,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 
         File.Exists(outputFile).Should().BeTrue("output file should have been created");
         var outputImage = await Image.LoadAsync(outputFile);
-        outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        outputImage.Width.Should().Be(ScaledLength);
+        outputImage.Height.Should().Be(ScaledLength);
     }
 
     [Test]
@@ -170,8 +174,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
         foreach (var outputFile in Directory.GetFiles(outputDirectory))
         {
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Width.Should().Be(ScaledLength);
+            outputImage.Height.Should().Be(ScaledLength);
         }
     }
 
@@ -194,8 +198,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 
         File.Exists(outputFile).Should().BeTrue("output file should have been created");
         var outputImage = await Image.LoadAsync(outputFile);
-        outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+        outputImage.Width.Should().Be(ScaledLength);
+        outputImage.Height.Should().Be(ScaledLength);
     }
 
     [Test]
@@ -237,8 +241,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
         foreach (var outputFile in Directory.GetFiles(outputDirectory))
         {
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Width.Should().Be(ScaledLength);
+            outputImage.Height.Should().Be(ScaledLength);
         }
     }
 
@@ -265,8 +269,8 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
         foreach (var outputFile in Directory.GetFiles(outputDirectory))
         {
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be(Constants.Satellite.ImageSize.FourKm);
-            outputImage.Height.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            outputImage.Width.Should().Be(ScaledLength);
+            outputImage.Height.Should().Be(ScaledLength);
         }
     }
 }
