@@ -1,6 +1,6 @@
 ﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.ImageProcessing.Mask;
 
@@ -13,6 +13,6 @@ public static class RemoveBackgroundExtensions
     public static void RemoveBackground(this Image<Rgba32> image)
     {
         var operation = new RemoveBackgroundRowOperation(image);
-        ParallelRowIterator.IterateRows(Configuration.Default, image.Bounds(), in operation);
+        image.Mutate(c => c.ProcessPixelRowsAsVector4((row, point) => operation.Invoke(row, point)));
     }
 }

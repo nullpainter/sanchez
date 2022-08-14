@@ -22,7 +22,7 @@ internal sealed class LoadImage : StepBodyAsync, IRegistrationStepBody, IProgres
         ProgressBar.Message = $"Rendering {Path.GetFileName(Registration.Path)}";
 
         // Load image
-        await Registration.LoadAsync();
+        await Registration.LoadAsync(context.CancellationToken);
             
         ProgressBar.Tick();
         return ExecutionResult.Next();

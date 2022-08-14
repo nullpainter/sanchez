@@ -45,6 +45,7 @@ public class EquirectangularStitchWorkflow : IWorkflow<StitchWorkflowData>
                     .ColourCorrect()
                     .OffsetImage()
                     .CropImage()
+                    .ApplyNoise()
                     .SaveStitchedImage(data => data.ProgressBar)
                 )
             )

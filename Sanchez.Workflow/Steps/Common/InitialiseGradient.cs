@@ -8,7 +8,7 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-public class InitialiseGradient : StepBodyAsync
+public class InitialiseGradient : StepBody
 {
     private readonly ILogger<InitialiseGradient> _logger;
     private readonly IGradientService _gradientService;
@@ -18,11 +18,11 @@ public class InitialiseGradient : StepBodyAsync
         _logger = logger;
         _gradientService = gradientService;
     }
-    public override async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
+    public override ExecutionResult Run(IStepExecutionContext context)
     {
         try
         {
-            await _gradientService.InitialiseAsync();
+            _gradientService.GetGradient();
         }
         catch (ValidationException e)
         {
@@ -38,7 +38,6 @@ public class InitialiseGradient : StepBodyAsync
         return ExecutionResult.Next();
     }
 }
-    
     
 internal static class InitialiseGradientExtensions
 {

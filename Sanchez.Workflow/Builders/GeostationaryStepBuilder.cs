@@ -15,6 +15,6 @@ internal static class GeostationaryStepBuilder
             .AddTransient<SetTargetLongitude>()
             .AddTransient<ToGeostationary>()
             .AddTransient<RenderUnderlay>()
-            .AddTransient<ApplyHaze>();
+            .AddTransient<ApplyAtmosphere>();
     } 
 }

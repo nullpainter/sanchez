@@ -25,13 +25,13 @@ public class GeostationaryOptionsValidator : CommandLineOptionsValidator<Geostat
             .When(o => o.EndLongitudeDegrees == null)
             .WithMessage("Inverse rotation can only be applied when sweeping through a longitude range.");
 
-        RuleFor(o => o.HazeAmount)
+        RuleFor(o => o.AtmosphereAmount)
             .InclusiveBetween(0, 1)
-            .WithMessage("Invalid haze amount; valid values are between 0.0 and 1.0.");
+            .WithMessage("Invalid atmosphere amount; valid values are between 0.0 and 1.0.");
 
-        RuleFor(o => o.HazeOpacity)
+        RuleFor(o => o.AtmosphereOpacity)
             .InclusiveBetween(0, 1)
-            .WithMessage("Invalid haze opacity; valid values are between 0.0 and 1.0.");
+            .WithMessage("Invalid atmosphere opacity; valid values are between 0.0 and 1.0.");
 
         // Verify that a directory can be created if multiple source files are provided without a target latitude
         RuleFor(o => o.OutputPath)

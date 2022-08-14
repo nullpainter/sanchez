@@ -31,7 +31,7 @@ public class DatabaseMigrator : IDatabaseMigrator
             
         if (!result.Successful)
         {
-            _logger.LogError("Unable to perform data migration: {error}", result.Error);
+            _logger.LogError("Unable to perform data migration: {Error}", result.Error);
             throw new InvalidOperationException("Fatal error initialising database");
         }
             

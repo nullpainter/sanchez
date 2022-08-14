@@ -1,6 +1,6 @@
 ﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.ImageProcessing.Offset;
 
@@ -8,7 +8,7 @@ public static class OffsetExtensions
 {
     public static void HorizontalOffset(this Image<Rgba32> image, int amount)
     {
-        var operation = new OffsetRowOperation(image, amount);
-        ParallelRowIterator.IterateRows<OffsetRowOperation, Rgba32>(Configuration.Default, image.Bounds(), in operation);
+        var operation = new OffsetRowOperation(amount);
+        image.Mutate(c => c.ProcessPixelRowsAsVector4(row => operation.Invoke(row)));
     }
 }

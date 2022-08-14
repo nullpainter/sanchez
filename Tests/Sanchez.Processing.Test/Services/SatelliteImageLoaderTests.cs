@@ -16,7 +16,7 @@ public class SatelliteImageLoaderTests : AbstractTests
         await CreateSampleImagesAsync(State);
 
         var sourceFiles = FileService.GetSourceFiles();
-        var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
+        var registrations = FileService.ToRegistrations(sourceFiles);
 
         // Run method under test
         var activity = ImageLoader.RegisterImages(registrations, RenderOptions.Timestamp);
@@ -52,7 +52,7 @@ public class SatelliteImageLoaderTests : AbstractTests
         RenderOptions.Tolerance = TimeSpan.FromMinutes(30);
 
         var sourceFiles = FileService.GetSourceFiles();
-        var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
+        var registrations = FileService.ToRegistrations(sourceFiles);
 
         // Run method under test
         var activity = ImageLoader.RegisterImages(registrations, RenderOptions.Timestamp);

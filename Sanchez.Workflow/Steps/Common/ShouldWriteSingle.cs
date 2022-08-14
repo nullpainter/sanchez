@@ -46,7 +46,7 @@ public class ShouldWriteSingle : StepBody, IRegistrationStepBody, IProgressBarSt
             return ExecutionResult.Outcome(true);
         }
 
-        _logger.LogInformation("Output file {outputFilename} exists; not overwriting", Registration.OutputPath);
+        _logger.LogInformation("Output file {OutputFilename} exists; not overwriting", Registration.OutputPath);
 
         AlreadyRenderedCount++;
         ProgressBar.Tick($"Skipping {Path.GetFileName(Registration.Path)}");

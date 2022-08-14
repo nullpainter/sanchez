@@ -6,7 +6,6 @@ using Sanchez.Processing.Services.Filesystem;
 using Sanchez.Test.Common;
 using Sanchez.Workflow.Steps.Equirectangular;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using WorkflowCore.Models;
@@ -28,7 +27,7 @@ public class OffsetImageTests : AbstractTests
 
         // Create a sample image, filling a region so we can verify offset
         _image = new Image<Rgba32>(100, 100);
-        _image.Mutate(c => c.Fill(Color.Red, new Rectangle(0, 0, 50, 50)));
+        _image.Mutate(c => c.BackgroundColor(Color.Red, new Rectangle(0, 0, 50, 50)));
     }
 
     public override void TearDown()

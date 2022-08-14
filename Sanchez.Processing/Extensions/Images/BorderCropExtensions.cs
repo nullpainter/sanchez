@@ -25,6 +25,6 @@ public static class BorderCropExtensions
                 (int) Math.Round(image.Height - cropRatios[0] * image.Height - cropRatios[2] * image.Height))
         ));
             
-        Log.Information("Cropped image to {width} x {height} px", image.Width, image.Height);
+        Log.Information("Cropped image to {Width} x {Height} px", image.Width, image.Height);
     }
 }

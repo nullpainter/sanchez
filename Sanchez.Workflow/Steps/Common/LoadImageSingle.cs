@@ -15,9 +15,9 @@ internal sealed class LoadImageSingle : StepBodyAsync, IRegistrationStepBody
     {
         // Get output filename
         ArgumentNullException.ThrowIfNull(Registration);
-
+        
         // Load image
-        await Registration.LoadAsync();
+        await Registration.LoadAsync(context.CancellationToken);
         return ExecutionResult.Next();
     }
 }

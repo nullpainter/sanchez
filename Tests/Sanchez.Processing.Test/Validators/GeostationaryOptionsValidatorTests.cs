@@ -52,42 +52,42 @@ public class GeostationaryOptionsValidatorTests : AbstractValidatorTests<Geostat
 
     [TestCase(-0.1f)]
     [TestCase(-1.1f)]
-    public void InvalidHaze(float haze)
+    public void InvalidAtmosphere(float atmosphere)
     {
         var options = ValidOptions();
-        options.HazeAmount = haze;
+        options.AtmosphereAmount = atmosphere;
 
-        VerifyFailure(options, nameof(GeostationaryOptions.HazeAmount));
+        VerifyFailure(options, nameof(GeostationaryOptions.AtmosphereAmount));
     }
 
     [TestCase(0.0f)]
     [TestCase(0.1f)]
     [TestCase(1.0f)]
-    public void ValidHaze(float haze)
+    public void ValidAtmosphere(float atmosphere)
     {
         var options = ValidOptions();
-        options.HazeAmount = haze;
+        options.AtmosphereAmount = atmosphere;
 
         VerifyNoFailure(options, nameof(GeostationaryOptions.UnderlayPath));
     }
 
     [TestCase(-0.1f)]
     [TestCase(-1.1f)]
-    public void InvalidHazeOpacity(float opacity)
+    public void InvalidAtmosphereOpacity(float opacity)
     {
         var options = ValidOptions();
-        options.HazeOpacity = opacity;
+        options.AtmosphereOpacity = opacity;
 
-        VerifyFailure(options, nameof(GeostationaryOptions.HazeOpacity));
+        VerifyFailure(options, nameof(GeostationaryOptions.AtmosphereOpacity));
     }
 
     [TestCase(0.0f)]
     [TestCase(0.1f)]
     [TestCase(1.0f)]
-    public void ValidHazeOpacity(float opacity)
+    public void ValidAtmosphereOpacity(float opacity)
     {
         var options = ValidOptions();
-        options.HazeOpacity = opacity;
+        options.AtmosphereOpacity = opacity;
 
         VerifyNoFailure(options, nameof(GeostationaryOptions.UnderlayPath));
     }

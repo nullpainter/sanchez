@@ -29,9 +29,9 @@ public sealed class Activity : IDisposable
         longitudeRange = new AngleRange(Angle.FromDegrees(-180), Angle.FromDegrees(180));
     }
 
-    public Task LoadAllAsync()
+    public Task LoadAllAsync(CancellationToken ct = default)
     {
-        var tasks = Registrations.Select(i => i.LoadAsync());
+        var tasks = Registrations.Select(i => i.LoadAsync(ct));
         return Task.WhenAll(tasks);
     }
 

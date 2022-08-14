@@ -58,7 +58,7 @@ public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
         // Verify minimum number of satellites
         if (_options.MinSatellites != null && Activity.Registrations.Count < _options.MinSatellites)
         {
-            _logger.LogInformation("fewer than {minSatellites} for {timestamp}; skipping", _options.MinSatellites, Timestamp);
+            _logger.LogInformation("fewer than {MinSatellites} for {Timestamp}; skipping", _options.MinSatellites, Timestamp);
 
             ProgressBar.Tick($"Skipping {Timestamp:s}");
             return ExecutionResult.Outcome(false);
@@ -71,7 +71,7 @@ public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
             return ExecutionResult.Outcome(true);
         }
 
-        _logger.LogInformation("Output file {outputFilename} exists; not overwriting", Activity.OutputPath);
+        _logger.LogInformation("Output file {OutputFilename} exists; not overwriting", Activity.OutputPath);
         AlreadyRenderedCount++;
 
         ProgressBar.Tick($"Skipping {Timestamp:s}{Identifier}");

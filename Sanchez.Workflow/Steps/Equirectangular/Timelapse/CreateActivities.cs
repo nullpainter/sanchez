@@ -35,7 +35,7 @@ internal sealed class CreateActivities : StepBody, IActivityStepBody
         ArgumentNullException.ThrowIfNull(SourceRegistrations);
 
         // Load images
-        _logger.LogInformation("Loading source images for timestamp {timestamp}", Timestamp);
+        _logger.LogInformation("Loading source images for timestamp {Timestamp}", Timestamp);
         Activity = _loader.RegisterImages(SourceRegistrations, Timestamp);
 
         return ExecutionResult.Next();

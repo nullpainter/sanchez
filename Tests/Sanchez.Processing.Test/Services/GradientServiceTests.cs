@@ -15,7 +15,7 @@ public class GradientServiceTests : AbstractTests
     public async Task MalformedGradientFile()
     {
         await CreateGradientFileAsync("Hi there");
-        Assert.ThrowsAsync<JsonReaderException>(() => Service.InitialiseAsync());
+        Assert.Throws<JsonReaderException>(() => Service.GetGradient());
     }
 
     [Test]
@@ -35,8 +35,8 @@ public class GradientServiceTests : AbstractTests
         };
 
         await CreateGradientFileAsync(gradient);
-            
-        var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+
+        var exception = Assert.Throws<ValidationException>(() => Service.GetGradient());
         Assert.NotNull(exception);
         exception!.Message.Should().Be("Colour must be specified");
     }
@@ -59,7 +59,7 @@ public class GradientServiceTests : AbstractTests
 
         await CreateGradientFileAsync(gradient);
             
-        var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+        var exception = Assert.Throws<ValidationException>(() => Service.GetGradient());
         Assert.NotNull(exception);
         exception!.Message.Should().Be("Position must be specified for all colour stops");
     }
@@ -83,7 +83,7 @@ public class GradientServiceTests : AbstractTests
         
         await CreateGradientFileAsync(gradient);
                     
-        var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+        var exception = Assert.Throws<ValidationException>(() => Service.GetGradient());
         Assert.NotNull(exception);
         exception!.Message.Should().Be("-0.5 is an invalid position; valid values are from 0.0 to 1.0");
     }
@@ -107,7 +107,7 @@ public class GradientServiceTests : AbstractTests
 
         await CreateGradientFileAsync(gradient);
             
-        var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+        var exception = Assert.Throws<ValidationException>(() => Service.GetGradient());
         Assert.NotNull(exception);
         exception!.Message.Should().Be("2.3 is an invalid position; valid values are from 0.0 to 1.0");
     }
@@ -131,7 +131,7 @@ public class GradientServiceTests : AbstractTests
 
         await CreateGradientFileAsync(gradient);
             
-        var exception = Assert.ThrowsAsync<ValidationException>(async () => await Service.InitialiseAsync());
+        var exception = Assert.Throws<ValidationException>(() => Service.GetGradient());
         Assert.NotNull(exception);
         exception!.Message.Should().Be("Unable to parse #sanchez as a hex triplet");
     }

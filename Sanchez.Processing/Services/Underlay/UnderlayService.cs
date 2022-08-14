@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Reflection.Metadata;
+using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
+using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
@@ -19,8 +21,9 @@ public interface IUnderlayService
     /// </summary>
     /// <param name="data">Underlay generation options</param>
     /// <param name="definition">Optional satellite definition, if projecting underlay to match a satellite IR image</param>
+    /// <param name="ct"></param>
     /// <returns>projected underlay</returns>
-    Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition = null);
+    Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition, CancellationToken ct = default);
 }
 
 public class UnderlayService : IUnderlayService
@@ -45,15 +48,16 @@ public class UnderlayService : IUnderlayService
     /// </summary>
     /// <param name="data">Underlay generation options</param>
     /// <param name="definition">Optional satellite definition, if projecting underlay to match a satellite IR image</param>
+    /// <param name="ct"></param>
     /// <returns>projected underlay</returns>
-    public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition = null)
+    public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition, CancellationToken ct = default)
     {
         // Attempt to retrieve underlay from cache
         var cached = await _cache.GetUnderlayAsync(definition, data);
         if (cached != null) return cached;
 
         // Load master equirectangular underlay image from disk
-        var underlay = await Image.LoadAsync<Rgba32>(_options.UnderlayPath);
+        var underlay = await Image.LoadAsync<Rgba32>(_options.UnderlayPath, ct);
 
         // Project to match satellite imagery
         var target = GetProjected(underlay, definition, data);
@@ -87,7 +91,15 @@ public class UnderlayService : IUnderlayService
 
                 // Project underlay to geostationary, based on the target satellite
                 _logger.LogInformation("{Definition:l0} Rendering geostationary underlay", definition.DisplayName);
-                return underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, _options);
+               
+                var geostationary = underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, _options);
+                
+                // Set black background
+                var image = new Image<Rgba32>(geostationary.Width, geostationary.Height);
+                image.Mutate(c => c.BackgroundColor(Color.Black));
+
+                image.Mutate(c => c.DrawImage(geostationary, PixelColorBlendingMode.Normal, 1.0f));
+                return image;
 
             case ProjectionType.Equirectangular:
 

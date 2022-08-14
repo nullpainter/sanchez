@@ -29,9 +29,9 @@ internal sealed class StitchImages : StepBody, IRegistrationStepBody, IActivityS
     public override ExecutionResult Run(IStepExecutionContext context)
     {
         ArgumentNullException.ThrowIfNull(Activity);
-
+        
         TargetImage = new Image<Rgba32>(_options.ImageSize * 2, Activity.Registrations[0].Height);
-        _logger.LogInformation("Output image size: {width} x {height} px", TargetImage.Width, TargetImage.Height);
+        _logger.LogInformation("Output image size: {Width} x {Height} px", TargetImage.Width, TargetImage.Height);
 
         // Composite all images
         foreach (var registration in Activity.Registrations)

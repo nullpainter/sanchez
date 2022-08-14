@@ -74,7 +74,7 @@ public sealed class RenderUnderlay : StepBodyAsync, IActivityStepBody
             _options.EquirectangularRender?.NoCrop == true || _options.EquirectangularRender?.ExplicitCrop == true);
 
         _logger.LogInformation("Retrieving underlay");
-        var underlay = await _underlayService.GetUnderlayAsync(underlayOptions);
+        var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, null, context.CancellationToken);
 
         // Render target image onto underlay
         using (TargetImage)

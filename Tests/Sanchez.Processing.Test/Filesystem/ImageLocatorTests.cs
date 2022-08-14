@@ -45,7 +45,7 @@ public class ImageLocatorTests : AbstractTests
 
         // Run method under test
         var sourceFiles = FileService.GetSourceFiles();
-        var registrations = FileService.ToRegistrations(sourceFiles, CancellationToken.None);
+        var registrations = FileService.ToRegistrations(sourceFiles);
 
         // Verify all valid files are matched
         registrations.Select(r => Path.GetFileName(r.Path)).Should().BeEquivalentTo(

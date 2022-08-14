@@ -1,6 +1,7 @@
 ﻿using Sanchez.Processing.Models.Configuration;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.Models.Projections;
 
@@ -29,7 +30,7 @@ public sealed class Registration : IDisposable
     public Image<Rgba32>? Image
     {
         get => _image;
-        set
+        private set
         {
             _image?.Dispose();
             _image = value;
@@ -75,13 +76,20 @@ public sealed class Registration : IDisposable
         Image = null;
     }
 
-    public async Task LoadAsync()
+    public async Task LoadAsync(CancellationToken ct)
     {
         if (Image != null) throw new InvalidOperationException("Image has already been loaded");
-            
+        
+        // Prefer contiguous image buffer in order to improve performance of image operations
+        SixLabors.ImageSharp.Configuration.Default.PreferContiguousImageBuffers = true;
+
         try
         {
-            Image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Path);
+            var sourceImage = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Path, ct);
+            
+            // Create separate colour image to avoid the colour space of the target image being a single channel for GOES images
+            Image = new Image<Rgba32>(sourceImage.Width, sourceImage.Height);
+            Image.Mutate(context => context.DrawImage(sourceImage, PixelColorBlendingMode.Normal, 1));
         }
         catch (Exception e)
         {

@@ -42,6 +42,7 @@ public class EquirectangularWorkflow : IWorkflow<EquirectangularWorkflowData>
                             .ColourCorrect()
                             .OffsetImage()
                             .CropImage()
+                            .ApplyNoise()
                             .SaveImage()
                         )
                     )

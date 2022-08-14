@@ -51,7 +51,7 @@ internal static class Bootstrapper
             // Build DI container
             var serviceProvider = ServiceProviderFactory.ConfigureServices(renderOptions);
 
-            Log.Information($"Sanchez starting with arguments: {string.Join(' ', args)}");
+            Log.Information("Sanchez starting with arguments: {Arguments}", string.Join(' ', args));
             LogOptions(renderOptions);
 
             // Initialise workflow host
@@ -115,14 +115,14 @@ internal static class Bootstrapper
     private static void LogOptions(RenderOptions options)
     {
         if (options.EquirectangularRender?.AutoCrop == true) Log.Information("Autocrop enabled");
-        Log.Information("Using {type} interpolation", options.InterpolationType);
-        Log.Information("Normalising images to {km} km spatial resolution", options.SpatialResolution);
-        Log.Information("Using underlay path {path}", options.UnderlayPath);
-        Log.Information("Using satellite definitions {path}", options.DefinitionsPath);
+        Log.Information("Using {Type} interpolation", options.InterpolationType);
+        Log.Information("Normalising images to {Km} km spatial resolution", options.SpatialResolution);
+        Log.Information("Using underlay path {Path}", options.UnderlayPath);
+        Log.Information("Using satellite definitions {Path}", options.DefinitionsPath);
 
         if (options.GeostationaryRender != null)
         {
-            Log.Information("Apply {haze} haze", options.GeostationaryRender.HazeAmount);
+            Log.Information("Apply {Atmosphere} atmosphere", options.GeostationaryRender.AtmosphereAmount);
         }
     }
 }

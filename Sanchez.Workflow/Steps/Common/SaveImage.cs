@@ -11,10 +11,11 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
+[UsedImplicitly(ImplicitUseTargetFlags.Members)]
 internal sealed class SaveImage : StepBodyAsync, IRegistrationStepBody, IDisposable
 {
     public Registration? Registration { get; set; }
-    public int RenderedCount { get; [UsedImplicitly] set; }
+    public int RenderedCount { get; set; }
     public Image<Rgba32>? TargetImage { get; set; }
 
     /// <summary>
@@ -31,7 +32,14 @@ internal sealed class SaveImage : StepBodyAsync, IRegistrationStepBody, IDisposa
         using (TargetImage)
         using (Registration)
         {
-            await TargetImage!.SaveWithExifAsync(Registration.OutputPath);
+            try
+            {
+                await TargetImage!.SaveWithExifAsync(Registration.OutputPath, context.CancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignored
+            }
         }
             
         RenderedCount++;

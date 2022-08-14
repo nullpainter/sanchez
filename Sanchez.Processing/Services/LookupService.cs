@@ -7,26 +7,28 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services;
 
-public interface IClutService
+public interface ILookupService
 {
-    List<Rgba32> GetClut();
+    /// <summary>
+    ///     Returns a CLUT gradient lookup.
+    /// </summary>
+    List<Rgba32> GetLookup();
 }
 
-
-public class ClutService : IClutService
+public class LookupService : ILookupService
 {
     private readonly IGradientService _gradientService;
     private readonly ColorSpaceConverter _converter;
     private readonly RenderOptions _options;
 
-    public ClutService(IGradientService gradientService, RenderOptions options)
+    public LookupService(IGradientService gradientService, RenderOptions options)
     {
         _gradientService = gradientService;
         _options = options;
         _converter = new ColorSpaceConverter();
     }
 
-    public List<Rgba32> GetClut()
+    public List<Rgba32> GetLookup()
     {
         var gradient = _gradientService.GetGradient();
 

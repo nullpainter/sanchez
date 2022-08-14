@@ -1,5 +1,4 @@
 ﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
@@ -11,9 +10,8 @@ public static class NoiseExtensions
     {
         var noiseImage = image.Clone();
 
-        var operation = new GaussianNoiseRowOperation(noiseImage);
-        ParallelRowIterator.IterateRows(Configuration.Default, noiseImage.Bounds(), in operation);
-            
-        image.Mutate(c => c.DrawImage(noiseImage, PixelColorBlendingMode.Multiply, 0.1f));
+        var operation = new GaussianNoiseRowOperation();
+        noiseImage.Mutate(c => c.ProcessPixelRowsAsVector4(row => operation.Invoke(row)));
+        image.Mutate(c => c.DrawImage(noiseImage, PixelColorBlendingMode.Multiply, 0.2f));
     }
 }
