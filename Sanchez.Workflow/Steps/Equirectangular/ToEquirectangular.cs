@@ -77,10 +77,11 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
 
         // Get size of projection in pixels
         var xRange = new PixelRange(longitudeRange, a => a.ScaleToWidth(maxWidth));
-            
+
         // Restrict height of image to the visible range if we are not performing explicit cropping or no cropping
-        var yRange = _options.EquirectangularRender?.NoCrop == true  || _options.EquirectangularRender?.ExplicitCrop == true
-            ? new PixelRange(0, maxHeight) : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
+        var yRange = _options.EquirectangularRender?.NoCrop == true || _options.EquirectangularRender?.ExplicitCrop == true
+            ? new PixelRange(0, maxHeight)
+            : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
 
         _logger.LogInformation("{definition:l0} pixel range X: {minX} - {maxX} px", definition.DisplayName, xRange.Start, xRange.End);
         _logger.LogInformation("{definition:l0} pixel range Y: {minY} - {maxY} px", definition.DisplayName, yRange.Start, yRange.End);
@@ -104,12 +105,14 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
         var definition = Registration!.Definition;
         var longitudeRange = Registration.LongitudeRange!;
 
-        _logger.LogInformation("{definition:l0} range {startRange:F2} to {endRange:F2} degrees",
+        _logger.LogInformation("{Definition:l0} source image {Path}", definition.DisplayName, Registration.Path);
+
+        _logger.LogInformation("{Definition:l0} range {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,
             Angle.FromRadians(definition.LongitudeRange.Start).Degrees,
             Angle.FromRadians(definition.LongitudeRange.End).Degrees);
 
-        _logger.LogInformation("{definition:l0} crop {startRange:F2} to {endRange:F2} degrees",
+        _logger.LogInformation("{Definition:l0} crop {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,
             Angle.FromRadians(longitudeRange!.Value.Range.Start).Degrees,
             Angle.FromRadians(longitudeRange.Value.Range.End).Degrees);
