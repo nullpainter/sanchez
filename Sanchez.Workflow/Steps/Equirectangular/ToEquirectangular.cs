@@ -79,10 +79,11 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
 
         // Get size of projection in pixels
         var xRange = new PixelRange(longitudeRange, a => a.ScaleToWidth(maxWidth));
-            
+
         // Restrict height of image to the visible range if we are not performing explicit cropping or no cropping
-        var yRange = _options.EquirectangularRender?.NoCrop == true  || _options.EquirectangularRender?.ExplicitCrop == true
-            ? new PixelRange(0, maxHeight) : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
+        var yRange = _options.EquirectangularRender?.NoCrop == true || _options.EquirectangularRender?.ExplicitCrop == true
+            ? new PixelRange(0, maxHeight)
+            : new PixelRange(latitudeRange, a => a.ScaleToHeight(maxHeight));
 
         _logger.LogInformation("{Definition:l0} pixel range X: {MinX} - {MaxX} px", definition.DisplayName, xRange.Start, xRange.End);
         _logger.LogInformation("{Definition:l0} pixel range Y: {MinY} - {MaxY} px", definition.DisplayName, yRange.Start, yRange.End);
@@ -105,6 +106,8 @@ internal sealed class ToEquirectangular : StepBody, IRegistrationStepBody
     {
         var definition = Registration!.Definition;
         var longitudeRange = Registration.LongitudeRange!;
+
+        _logger.LogInformation("{Definition:l0} source image {Path}", definition.DisplayName, Registration.Path);
 
         _logger.LogInformation("{Definition:l0} range {StartRange:F2} to {EndRange:F2} degrees",
             definition.DisplayName,

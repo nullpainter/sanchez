@@ -58,7 +58,7 @@ public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
         // Verify minimum number of satellites
         if (_options.MinSatellites != null && Activity.Registrations.Count < _options.MinSatellites)
         {
-            _logger.LogInformation("fewer than {MinSatellites} for {Timestamp}; skipping", _options.MinSatellites, Timestamp);
+            _logger.LogInformation("Fewer than {MinSatellites} for {Timestamp}; skipping", _options.MinSatellites, Timestamp);
 
             ProgressBar.Tick($"Skipping {Timestamp:s}");
             return ExecutionResult.Outcome(false);
