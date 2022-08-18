@@ -59,7 +59,6 @@ public class SatelliteImageLoaderTests : AbstractTests
         activity.Registrations.Select(i => Path.GetFileName(i.Path)).Should().BeEquivalentTo(
             "GOES16_FD_CH13_20200830T033020Z.jpg",
             "GOES17_FD_CH13_20200830T033031Z.jpg",
-            "GOES18_FD_CH13_20200830T033031Z.jpg",
             "Himawari8_FD_IR_20200830T035100Z.jpg",
             "IMG_FD_023_IR105_20200830_035006.jpg"
         );
