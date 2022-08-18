@@ -50,7 +50,6 @@ public class AtmosphereRowOperation
     /// </summary>
     private const float OuterGradientScale = 0.05f;
 
-
     /// <param name="source"></param>
     /// <param name="atmosphere">Amount of atmosphere to apply, from 0.0 - 1.0</param>
     /// <param name="opacity">Atmosphere opacity; from 0.0 - 1.0</param>
