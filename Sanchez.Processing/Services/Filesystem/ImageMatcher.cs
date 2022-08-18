@@ -29,6 +29,7 @@ public class ImageMatcher : IImageMatcher
         var matched = GetMatchedFiles(registrations, targetTimestamp);
         return matched
             .GroupBy(m => m.Registration.Definition)
+            .DistinctBy(entry => entry.Key.Longitude)
             .Select(entry => entry
                 .OrderBy(e => e.Deviation)
                 .First()
