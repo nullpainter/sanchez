@@ -48,7 +48,7 @@ public class AtmosphereRowOperation
     /// <summary>
     ///     Amount of gradient outside Earth.
     /// </summary>
-    private const float OuterGradientScale = 0.07f;
+    private const float OuterGradientScale = 0.05f;
 
 
     /// <param name="source"></param>
