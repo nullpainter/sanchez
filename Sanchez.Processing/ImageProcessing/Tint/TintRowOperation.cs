@@ -1,17 +1,16 @@
 ﻿using System.Numerics;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Tint;
 
 public class TintRowOperation
 {
-    private readonly Rgba32 _tint;
+    private readonly Vector4 _tint;
     private readonly float _tintLightness;
 
     public TintRowOperation(Rgba32 tint, float tintLightness)
     {
-        _tint = tint;
+        _tint = tint.ToVector4();
         _tintLightness = tintLightness;
     }
 
@@ -22,34 +21,36 @@ public class TintRowOperation
             var targetColour = ColorizeSinglePixel(row[x], _tint);
 
             // Apply target colour, preserving alpha
-            row[x].X = targetColour.R / 255f;
-            row[x].Y = targetColour.G / 255f;
-            row[x].Z = targetColour.B / 255f;
+            row[x].X = targetColour.X;
+            row[x].Y = targetColour.Y;
+            row[x].Z = targetColour.Z;
         }
     }
 
-    private Rgba32 ColorizeSinglePixel(Vector4 pixel, Rgba32 tint)
+    private Vector4 ColorizeSinglePixel(Vector4 pixel, Vector4 tint)
     {
         // Assume greyscale
         var value = pixel.X;
 
         // Always tint; never shade
-        return Blend3(Color.Black, tint, Color.White, _tintLightness * (value - 1) + 1);
+        return Blend3(Vector4.Zero, tint, Vector4.One, _tintLightness * (value - 1) + 1);
     }
 
-    private static Rgba32 Blend2(Rgba32 left, Rgba32 right, float pos)
+    private static Vector4 Blend2(Vector4 left, Vector4 right, float pos)
     {
-        return new(
-            left.R / 255f * (1 - pos) + right.R / 255f * pos,
-            left.G / 255f * (1 - pos) + right.G / 255f * pos,
-            left.B / 255f * (1 - pos) + right.B / 255f * pos);
+        return new Vector4(
+            left.X * (1 - pos) + right.X * pos,
+            left.Y * (1 - pos) + right.Y * pos,
+            left.Z * (1 - pos) + right.Z * pos, 1);
     }
 
-    private static Rgba32 Blend3(Rgba32 left, Rgba32 main, Rgba32 right, float pos)
+    private static Vector4 Blend3(Vector4 left, Vector4 main, Vector4 right, float pos)
     {
-        if (pos < 0) return Blend2(left, main, pos + 1);
-        if (pos > 0) return Blend2(main, right, pos);
-
-        return main;
+        return pos switch
+        {
+            < 0 => Blend2(left, main, pos + 1),
+            > 0 => Blend2(main, right, pos),
+            _ => main
+        };
     }
 }
