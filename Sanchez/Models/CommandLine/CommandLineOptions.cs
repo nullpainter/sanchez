@@ -50,8 +50,8 @@ public abstract record CommandLineOptions
     [Option('F', "format", HelpText = "Output file format; valid values are png or jpg/jpeg", Required = false)]
     public string? OutputFormat { get; set; }
 
-    [Option('n', HelpText = "Add gaussian noise to output image", Required = false)]
-    public bool Noise { get; set; }
+    [Option('n', HelpText = "Don't add gaussian noise to output image", Required = false)]
+    public bool NoNoise { get; set; }
 
     [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
     public bool Quiet { get; set; }
