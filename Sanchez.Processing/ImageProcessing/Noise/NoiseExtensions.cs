@@ -12,6 +12,6 @@ public static class NoiseExtensions
 
         var operation = new GaussianNoiseRowOperation();
         noiseImage.Mutate(c => c.ProcessPixelRowsAsVector4(row => operation.Invoke(row)));
-        image.Mutate(c => c.DrawImage(noiseImage, PixelColorBlendingMode.Multiply, 0.2f));
+        image.Mutate(c => c.DrawImage(noiseImage, PixelColorBlendingMode.Overlay, 0.1f));
     }
 }

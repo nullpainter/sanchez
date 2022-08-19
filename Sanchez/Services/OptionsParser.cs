@@ -64,7 +64,7 @@ public static class OptionsParser
             AdaptiveLevelAdjustment = options.AdaptiveLevelAdjustment,
             MinSatellites = options.MinSatellites,
             OutputFormat = ToOutputFormat(options),
-            Noise = options.Noise
+            Noise = !options.NoNoise
         };
 
         if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
