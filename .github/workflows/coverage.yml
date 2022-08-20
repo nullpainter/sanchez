@@ -16,9 +16,9 @@ jobs:
         uses: actions/setup-dotnet@v1
       - name: Generate coverage report
         run: |
-          dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+          dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:CoverageOutput=coverage.info
       - name: Publish coverage report to coveralls.io
         uses: coverallsapp/github-action@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: Sanchez.Test/TestResults/coverage.info   
+          path-to-lcov: coverage.info   
