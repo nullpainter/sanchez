@@ -2,6 +2,7 @@
 using System.Reflection;
 using ExifLibrary;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Extensions.Images;
@@ -21,13 +22,20 @@ public static class ImageExtensions
         }
 
         // Save image
-        try
+        if (String.Equals(Path.GetExtension(path), ".jpg", StringComparison.OrdinalIgnoreCase))
         {
-            await image.SaveAsync(path, cancellationToken: ct);
+            await image.SaveAsJpegAsync(path, new JpegEncoder { Quality = 95 }, ct);
         }
-        catch (NotSupportedException)
+        else
         {
-            throw new ValidationException($"Unsupported output file extension: {Path.GetExtension(path)}");
+            try
+            {
+                await image.SaveAsync(path, cancellationToken: ct);
+            }
+            catch (NotSupportedException)
+            {
+                throw new ValidationException($"Unsupported output file extension: {Path.GetExtension(path)}");
+            }
         }
 
         // Add EXIF metadata to image
