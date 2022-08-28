@@ -9,7 +9,6 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
 {
     private static readonly int ScaledLength = (int)Math.Round(Constants.Satellite.ImageSize.FourKm * AtmosphereRowOperation.ImageScaleFactor);
 
-
     [TestCase("jpg")]
     [TestCase("png")]
     public async Task SingleWithDirectoryOutput(string extension)
