@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
-using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Workflow.Extensions;
