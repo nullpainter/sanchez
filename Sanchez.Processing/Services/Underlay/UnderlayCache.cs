@@ -3,6 +3,7 @@ using Sanchez.Processing.Helpers;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services.Underlay;
@@ -101,7 +102,7 @@ public class UnderlayCache : IUnderlayCache
         // Save underlay to disk
         var filename = $"{Guid.NewGuid()}.jpg";
         var underlayPath = Path.Combine(_cachePath, filename);
-        await underlay.SaveAsync(underlayPath);
+        await underlay.SaveAsJpegAsync(underlayPath,  new JpegEncoder { Quality = 95 });
 
         // Register underlay path in the cache
         await _repository.RegisterCacheAsync(definition, data, underlayPath);
