@@ -2,6 +2,7 @@
 using System.Reflection;
 using ExifLibrary;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -21,21 +22,17 @@ public static class ImageExtensions
             Directory.CreateDirectory(targetDirectory);
         }
 
-        // Save image
-        if (String.Equals(Path.GetExtension(path), ".jpg", StringComparison.OrdinalIgnoreCase))
+        // Save image, increasing JPEG compression quality
+        var encoder = image.DetectEncoder(path);
+        if (encoder is JpegEncoder jpegEncoder) jpegEncoder.Quality = 95;
+        
+        try
         {
-            await image.SaveAsJpegAsync(path, new JpegEncoder { Quality = 95 }, ct);
+            await image.SaveAsync(path, encoder, ct);
         }
-        else
+        catch (NotSupportedException)
         {
-            try
-            {
-                await image.SaveAsync(path, cancellationToken: ct);
-            }
-            catch (NotSupportedException)
-            {
-                throw new ValidationException($"Unsupported output file extension: {Path.GetExtension(path)}");
-            }
+            throw new ValidationException($"Unsupported output file extension: {Path.GetExtension(path)}");
         }
 
         // Add EXIF metadata to image
