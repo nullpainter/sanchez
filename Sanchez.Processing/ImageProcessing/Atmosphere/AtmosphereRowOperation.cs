@@ -30,7 +30,7 @@ public class AtmosphereRowOperation
     /// </summary>
     private readonly double _semiMajor2;
 
-    private readonly float _atmosphereAmount;
+    private readonly float _atmosphere;
     private readonly ColorSpaceConverter _converter;
 
     /// <summary>
@@ -66,7 +66,7 @@ public class AtmosphereRowOperation
         _semiMinor2 = semiMinor * semiMinor;
         _semiMajor2 = semiMajor * semiMajor;
 
-        _atmosphereAmount = atmosphere * opacity;
+        _atmosphere = atmosphere;
         _converter = new ColorSpaceConverter();
         _maxDistance = Distance(_source.Width, _source.Height);
     }
@@ -77,7 +77,7 @@ public class AtmosphereRowOperation
         {
             var distance = Distance(x, value.Y);
 
-            if (distance < 1 - _atmosphereAmount) continue;
+            if (distance < 1 - _atmosphere) continue;
 
             var gradientValue = _gradient[(int)Math.Round(distance / _maxDistance * 255f)];
             var rgb = _converter.ToRgb(gradientValue);
@@ -88,7 +88,7 @@ public class AtmosphereRowOperation
 
             // Apply different alpha based on whether we're inside the Earth
             var alpha = distance <= 1
-                ? (1 - (1 - distance) / _atmosphereAmount) * _opacity * InnerOpacityScale
+                ? (1 - (1 - distance) / _atmosphere) * _opacity * InnerOpacityScale
                 : (1 - (float)(distance - 1) / OuterGradientScale) * _opacity;
             
             row[x].W = (float)alpha;
@@ -104,6 +104,6 @@ public class AtmosphereRowOperation
         var xDistance = x - _source.Width / 2d;
         var yDistance = y - _source.Height / 2d;
 
-        return xDistance * xDistance / _semiMajor2 + yDistance * yDistance / _semiMinor2 - BorderRatio;
+        return xDistance * xDistance / _semiMajor2 + yDistance * yDistance / _semiMinor2 + BorderRatio;
     }
 }
