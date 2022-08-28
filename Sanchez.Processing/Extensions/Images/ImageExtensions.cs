@@ -22,7 +22,7 @@ public static class ImageExtensions
             Directory.CreateDirectory(targetDirectory);
         }
 
-        // Save image, increasing JPEG compression quality
+        // Save image, increasing JPEG quality
         var encoder = image.DetectEncoder(path);
         if (encoder is JpegEncoder jpegEncoder) jpegEncoder.Quality = 95;
         

@@ -1,7 +1,5 @@
-﻿using System.Reflection.Metadata;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Sanchez.Processing.Extensions;
-using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.ImageProcessing.Underlay;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
