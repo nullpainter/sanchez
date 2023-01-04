@@ -36,6 +36,20 @@
     ]
   },
   {
+    "DisplayName": "Himawari-9",
+    "FilenamePrefix": "^Himawari9_FD_IR_",
+    "FilenameParser": "Goesproc",
+    "Longitude": 140.7,
+    "LongitudeAdjustment": -0.8,
+    "Brightness": 1,
+    "Crop": [
+      0.007273,
+      0.007272,
+      0.007273,
+      0.007272
+    ]
+  },
+  {
     "DisplayName": "GEO-KOMPSAT-2A",
     "FilenamePrefix": "^IMG_FD_.*",
     "FilenameParser": "Xrit",
