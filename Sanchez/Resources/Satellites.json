@@ -18,7 +18,7 @@
     "DisplayName": "GOES-18",
     "FilenamePrefix": "GOES18_FD_CH13_(?!enhanced)",
     "FilenameParser": "Goesproc",
-    "Longitude": -137.2,
+    "Longitude": -137.0,
     "Brightness": 0.95
   },
   {
