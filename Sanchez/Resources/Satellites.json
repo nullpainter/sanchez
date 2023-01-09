@@ -18,12 +18,26 @@
     "DisplayName": "GOES-18",
     "FilenamePrefix": "GOES18_FD_CH13_(?!enhanced)",
     "FilenameParser": "Goesproc",
-    "Longitude": -137.2,
+    "Longitude": -137.0,
     "Brightness": 0.95
   },
   {
     "DisplayName": "Himawari-8",
     "FilenamePrefix": "^Himawari8_FD_IR_",
+    "FilenameParser": "Goesproc",
+    "Longitude": 140.7,
+    "LongitudeAdjustment": -0.8,
+    "Brightness": 1,
+    "Crop": [
+      0.007273,
+      0.007272,
+      0.007273,
+      0.007272
+    ]
+  },
+  {
+    "DisplayName": "Himawari-9",
+    "FilenamePrefix": "^Himawari9_FD_IR_",
     "FilenameParser": "Goesproc",
     "Longitude": 140.7,
     "LongitudeAdjustment": -0.8,
