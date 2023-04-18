@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.21</Version>
-        <FileVersion>1.0.21</FileVersion>
+        <Version>1.0.22</Version>
+        <FileVersion>1.0.22</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -16,16 +16,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.2.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="Sentry" Version="3.20.1" />
-        <PackageReference Include="Sentry.Serilog" Version="3.20.1" />
-        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-        <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-        <PackageReference Include="Serilog.Exceptions" Version="8.3.0" />
-        <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Update="JetBrains.Annotations" Version="2022.1.0" />
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Sentry" />
+        <PackageReference Include="Sentry.Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.RollingFile" />
+        <PackageReference Include="Serilog.Exceptions" />
+        <PackageReference Include="CommandLineParser" />
+        
     </ItemGroup>
 
     <ItemGroup>
