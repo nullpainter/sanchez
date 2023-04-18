@@ -5,9 +5,6 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.Services.Underlay;
 
@@ -104,7 +101,7 @@ public class UnderlayService : IUnderlayService
                 // Perform latitude crop to match IR imagery if required
                 var equirectangularOptions = _options.EquirectangularRender;
 
-                if (equirectangularOptions == null || !equirectangularOptions.NoCrop && !equirectangularOptions.ExplicitCrop)
+                if (equirectangularOptions is null or { NoCrop: false, ExplicitCrop: false })
                 {
                     Crop(underlay, data.LatitudeCrop!.Value);
                 }

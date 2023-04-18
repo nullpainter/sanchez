@@ -22,7 +22,7 @@ public readonly record struct AngleRange(double Start, double End)
     ///     Unwraps a longitude range so the end angle is always greater than the start angle.
     ///     This is to simplify maths for projections which wrap around the standard -180 to 180 degrees.
     /// </summary>
-    public AngleRange UnwrapLongitude() => End < Start ? new AngleRange(Start, End + Constants.Pi2) : this;
+    public AngleRange UnwrapLongitude() => End < Start ? this with { End = End + Constants.Pi2 } : this;
 
     public AngleRange NormaliseLongitude() => new(Start.NormaliseLongitude(), End.NormaliseLongitude());
 

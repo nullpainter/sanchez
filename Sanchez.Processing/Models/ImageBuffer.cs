@@ -1,7 +1,4 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-
-namespace Sanchez.Processing.Models;
+﻿namespace Sanchez.Processing.Models;
 
 public class ImageBuffer
 {
@@ -14,7 +11,7 @@ public class ImageBuffer
         Size = size;
     }
 
-    public static ImageBuffer ToBuffer(Image<Rgba32> image) => new(GetBuffer(image), image.Size());
+    public static ImageBuffer ToBuffer(Image<Rgba32> image) => new(GetBuffer(image), image.Size);
 
     private static Rgba32[] GetBuffer(Image<Rgba32> image)
     {

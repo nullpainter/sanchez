@@ -61,9 +61,7 @@ public class CommandLineOptionsValidator<T> : AbstractValidator<T> where T : Com
                 if (minIntensity < 0) return false;
                 if (maxIntensity > 1) return false;
 
-                if (minIntensity >= maxIntensity) return false;
-
-                return true;
+                return minIntensity < maxIntensity;
             })
             .When(r => r != null)
             .WithMessage("Invalid intensity range; expected format is min-max; e.g. 0.0 to 1.0");

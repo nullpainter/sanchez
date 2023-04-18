@@ -122,7 +122,7 @@ public class GeostationaryEndToEndTests : EndToEndTestTests
         foreach (var outputFile in Directory.GetFiles(outputDirectory))
         {
             var outputImage = await Image.LoadAsync(outputFile);
-            outputImage.Width.Should().Be((int)(ScaledLength));
+            outputImage.Width.Should().Be(ScaledLength);
             outputImage.Height.Should().Be(ScaledLength);
         }
     }

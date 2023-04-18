@@ -7,8 +7,6 @@ using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
 using Sanchez.Processing.Projections;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Projection;
 

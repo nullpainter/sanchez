@@ -14,7 +14,7 @@ public class ImageLocatorTests : AbstractTests
     [Test]
     public void LocateImages()
     {
-        RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, true, null);
+        RenderOptions.EquirectangularRender = new EquirectangularRenderOptions(false, false, true);
 
         var targetTimestamp = new DateTime(2020, 08, 30, 03, 30, 00, DateTimeKind.Utc);
         RenderOptions.Tolerance = TimeSpan.FromMinutes(30);

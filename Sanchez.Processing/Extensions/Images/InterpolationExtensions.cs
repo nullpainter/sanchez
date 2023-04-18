@@ -1,6 +1,5 @@
 ﻿using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Extensions.Images;
 

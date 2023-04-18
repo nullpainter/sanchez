@@ -1,9 +1,7 @@
 ﻿using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.ColorSpaces.Conversion;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services;
 

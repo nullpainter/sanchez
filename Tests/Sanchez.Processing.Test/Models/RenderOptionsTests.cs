@@ -103,7 +103,7 @@ public class RenderOptionsTests : AbstractTests
 
     private static RenderOptions GeostationaryOptions(Angle? longitude = null, Angle? endLongitude = null)
     {
-        return new()
+        return new RenderOptions
         {
             GeostationaryRender = new GeostationaryRenderOptions(longitude, endLongitude, false, 1.0f, 0.9f)
         };
@@ -111,7 +111,7 @@ public class RenderOptionsTests : AbstractTests
 
     private static RenderOptions EquirectangularOptions()
     {
-        return new()
+        return new RenderOptions
         {
             EquirectangularRender = new EquirectangularRenderOptions(false, false, true)
         };

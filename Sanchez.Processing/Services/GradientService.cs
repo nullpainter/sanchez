@@ -6,10 +6,8 @@ using Newtonsoft.Json;
 using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Gradients;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.ColorSpaces.Conversion;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services;
 
@@ -48,11 +46,18 @@ public class GradientService : IGradientService
                 var colour = c.Colour.FromHexString();
 
                 if (colour == null) throw new ValidationException($"Unable to parse {c.Colour} as a hex triplet");
-                if (c.Position == null) throw new ValidationException("Position must be specified for all colour stops");
-                if (c.Position is < 0 or > 1) throw new ValidationException($"{c.Position} is an invalid position; valid values are from 0.0 to 1.0");
-
-                var rgb = colour.Value.ToPixel<Rgba32>();
-                return new ColourStop(_colourSpaceConverter.ToCieLch(rgb), c.Position.Value);
+                switch (c.Position)
+                {
+                    case null:
+                        throw new ValidationException("Position must be specified for all colour stops");
+                    case < 0 or > 1:
+                        throw new ValidationException($"{c.Position} is an invalid position; valid values are from 0.0 to 1.0");
+                    default:
+                    {
+                        var rgb = colour.Value.ToPixel<Rgba32>();
+                        return new ColourStop(_colourSpaceConverter.ToCieLch(rgb), c.Position.Value);
+                    }
+                }
             })
             .OrderBy(c => c.Position)
             .ToImmutableList();

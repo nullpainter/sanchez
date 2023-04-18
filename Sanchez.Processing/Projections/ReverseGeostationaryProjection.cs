@@ -59,7 +59,6 @@ public static class ReverseGeostationaryProjection
     public static void ToLatitudeLongitude(
         double scanningX, VerticalScanningCalculations verticalScanningCalculations, double satelliteLongitude,  out double latitude, out double longitude)
     {
-        var l0 = satelliteLongitude;
         var satelliteHeight = verticalScanningCalculations.SatelliteHeight;
 
         var cosX = Cos(scanningX);
@@ -80,7 +79,7 @@ public static class ReverseGeostationaryProjection
         var sz = rs * cosX * sinY;
 
         latitude = Atan(RadiusEquatorSquared / RadiusPolarSquared * (sz / Sqrt((satelliteHeight - sx) * (satelliteHeight - sx) + sy * sy)));
-        longitude = (l0 - Atan(sy / (satelliteHeight - sx))).NormaliseLongitude();
+        longitude = (satelliteLongitude - Atan(sy / (satelliteHeight - sx))).NormaliseLongitude();
     }
 }
 
@@ -90,8 +89,8 @@ public static class ReverseGeostationaryProjection
 public struct VerticalScanningCalculations
 {
     public double T { get; set; }
-    public double CosY { get; set; }
-    public double SinY { get; set; }
+    public double CosY { get; init; }
+    public double SinY { get; init; }
     public double C { get; set; }
-    public double SatelliteHeight { get; set; }
+    public double SatelliteHeight { get; init; }
 }

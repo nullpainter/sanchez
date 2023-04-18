@@ -49,7 +49,7 @@ public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
 
         if (!Activity.Registrations.Any())
         {
-            _logger.LogInformation("No images found; skipping", Activity.OutputPath);
+            _logger.LogInformation("No images found; skipping");
 
             ProgressBar.Tick($"Scanning {Timestamp:s}{Identifier}");
             return ExecutionResult.Outcome(false);

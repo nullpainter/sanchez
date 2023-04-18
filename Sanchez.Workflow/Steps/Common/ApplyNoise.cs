@@ -14,16 +14,11 @@ namespace Sanchez.Workflow.Steps.Common;
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
 public class ApplyNoise : StepBody
 {
-    private readonly ILookupService _lookupService;
     private readonly RenderOptions _options;
 
     public Image<Rgba32>? Image { get; set; }
 
-    public ApplyNoise(ILookupService lookupService, RenderOptions options)
-    {
-        _lookupService = lookupService;
-        _options = options;
-    }
+    public ApplyNoise(RenderOptions options) => _options = options;
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {

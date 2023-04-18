@@ -31,7 +31,7 @@ public class GradientServiceTests : AbstractTests
             new()
             {
                 Position = 0.1f
-            },
+            }
         };
 
         await CreateGradientFileAsync(gradient);
@@ -54,7 +54,7 @@ public class GradientServiceTests : AbstractTests
             new()
             {
                 Colour = "#aa0000"
-            },
+            }
         };
 
         await CreateGradientFileAsync(gradient);
@@ -72,13 +72,13 @@ public class GradientServiceTests : AbstractTests
             new()
             {
                 Colour = "#ff0000",
-                Position = -0.5f,
+                Position = -0.5f
             },
             new()
             {
                 Colour = "#aa0000",
                 Position = 1f
-            },
+            }
         };
         
         await CreateGradientFileAsync(gradient);
@@ -102,7 +102,7 @@ public class GradientServiceTests : AbstractTests
             {
                 Colour = "#aa0000",
                 Position = 2.3f
-            },
+            }
         };
 
         await CreateGradientFileAsync(gradient);
@@ -126,7 +126,7 @@ public class GradientServiceTests : AbstractTests
             {
                 Colour = "#sanchez",
                 Position = 1.0f
-            },
+            }
         };
 
         await CreateGradientFileAsync(gradient);

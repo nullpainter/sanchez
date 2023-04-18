@@ -66,5 +66,7 @@ public abstract record WorkflowData : IWorkflowData, IDisposable
         Activity?.Dispose();
         Registration?.Dispose();
         ProgressBar?.Dispose();
+        
+        GC.SuppressFinalize(this);
     }
 }

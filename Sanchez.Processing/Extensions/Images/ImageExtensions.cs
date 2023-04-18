@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using ExifLibrary;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Extensions.Images;
 
@@ -24,8 +22,18 @@ public static class ImageExtensions
 
         // Save image, increasing JPEG quality
         var encoder = image.DetectEncoder(path);
-        if (encoder is JpegEncoder jpegEncoder) jpegEncoder.Quality = 95;
         
+        if (encoder is JpegEncoder jpegEncoder)
+        {
+            encoder = new JpegEncoder
+            {
+                Quality = 95,
+                Interleaved = jpegEncoder.Interleaved,
+                ColorType = jpegEncoder.ColorType,
+                SkipMetadata = jpegEncoder.SkipMetadata
+            };
+        }
+
         try
         {
             await image.SaveAsync(path, encoder, ct);

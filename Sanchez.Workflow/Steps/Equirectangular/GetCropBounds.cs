@@ -50,7 +50,7 @@ internal sealed class GetCropBounds : StepBody
         // Also, refactor. It's a mess.
         if (!autoCrop && !explicitCrop)
         {
-            CropBounds = !FullEarthCoverage ? GetPartialCoverageBounds(Activity, TargetImage) : TargetImage.Bounds();
+            CropBounds = !FullEarthCoverage ? GetPartialCoverageBounds(Activity, TargetImage) : TargetImage.Bounds;
             return ExecutionResult.Next();
         }
 
@@ -61,7 +61,7 @@ internal sealed class GetCropBounds : StepBody
         return ExecutionResult.Next();
     }
 
-    private Rectangle GetExplicitCropBounds(IImageInfo targetImage)
+    private Rectangle GetExplicitCropBounds(Image targetImage)
     {
         var latitudeRange = _options.EquirectangularRender!.LatitudeRange;
         var longitudeRange = _options.EquirectangularRender!.LongitudeRange;
@@ -81,7 +81,7 @@ internal sealed class GetCropBounds : StepBody
         return new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range);
     }
 
-    private Rectangle GetAutoCropBounds(IImageInfo targetImage)
+    private Rectangle GetAutoCropBounds(Image targetImage)
     {
         if (FullEarthCoverage)
         {
@@ -97,7 +97,7 @@ internal sealed class GetCropBounds : StepBody
         }
     }
 
-    private Rectangle GetPartialCoverageBounds(Activity activity, IImageInfo targetImage)
+    private Rectangle GetPartialCoverageBounds(Activity activity, Image targetImage)
     {
         var minXLongitude = activity.Registrations
             .Where(r => r.LongitudeRange is { OverlappingLeft: false })

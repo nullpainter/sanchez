@@ -85,10 +85,10 @@ public static class GeostationaryProjection
 /// </summary>
 public struct LatitudeCalculations
 {
-    public double Rc { get; set; }
+    public double Rc { get; init; }
     public double RcCosLatitude { get; set; }
-    public double CosLatitude { get; set; }
-    public double Sz { get; set; }
-    public double Sz2 { get; set; }
+    public double CosLatitude { get; init; }
+    public double Sz { get; init; }
+    public double Sz2 { get; init; }
     public double RadiusRatioSz2 { get; set; }
 }

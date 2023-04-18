@@ -45,7 +45,7 @@ public class GetCropBoundsTests : AbstractTests
     {
         using var image = new Image<Rgba32>(100, 100);
         _step.TargetImage = image;
-        _step.Activity = new Activity(new Registration[] { });
+        _step.Activity = new Activity(Array.Empty<Registration>());
 
         var longitudeRange = new AngleRange(Angle.FromDegrees(0), Angle.FromDegrees(360));
         Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null, longitudeRange);

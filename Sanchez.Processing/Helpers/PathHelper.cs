@@ -28,7 +28,7 @@ public static class PathHelper
     /// </summary>
     private static string GetApplicationPath()
     {
-        var processFilename = Process.GetCurrentProcess().MainModule!.FileName;
+        var processFilename = Environment.ProcessPath;
 
         // Determine correct location of directories relative to application, depending on whether we are running
         // from a published executable or via dotnet.

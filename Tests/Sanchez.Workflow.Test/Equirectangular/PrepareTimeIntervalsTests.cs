@@ -62,12 +62,12 @@ public class PrepareTimeIntervalsTests : AbstractTests
 
     private List<Registration> CreateRegistrations()
     {
-        return new()
+        return new List<Registration>
         {
-            new Registration("first.jpg", null!, null),
-            new Registration("second.jpg", null!, DateTime.Today.AddHours(-1)),
-            new Registration("third.jpg", null!, DateTime.Today),
-            new Registration("fourth.jpg", null!, DateTime.Today.AddHours(-2))
+            new("first.jpg", null!, null),
+            new("second.jpg", null!, DateTime.Today.AddHours(-1)),
+            new("third.jpg", null!, DateTime.Today),
+            new("fourth.jpg", null!, DateTime.Today.AddHours(-2))
         };
     }
 }
