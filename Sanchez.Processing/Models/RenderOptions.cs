@@ -1,6 +1,5 @@
 ﻿using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
-using SixLabors.ImageSharp;
 
 namespace Sanchez.Processing.Models;
 
@@ -163,7 +162,7 @@ public sealed record RenderOptions
     /// <summary>
     ///     Whether to apply gaussian noise to target image.
     /// </summary>
-    public bool Noise { get; set; }
+    public bool Noise { get; init; }
 
     /// <summary>
     ///     Output image extension, based off <see cref="OutputFormat"/>.

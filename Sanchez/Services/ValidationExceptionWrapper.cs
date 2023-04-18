@@ -13,7 +13,7 @@ namespace Sanchez.Services;
 /// </summary>
 internal class ValidationExceptionWrapper : ILogEventSink, IDisposable
 {
-    readonly ILogEventSink _wrappedSink;
+    private readonly ILogEventSink _wrappedSink;
 
     public ValidationExceptionWrapper(ILogEventSink wrappedSink) => _wrappedSink = wrappedSink;
 
@@ -44,7 +44,7 @@ internal class ValidationExceptionWrapper : ILogEventSink, IDisposable
     }
 }
 
-static class LoggerSinkConfigurationExtensions
+internal static class LoggerSinkConfigurationExtensions
 {
     /// <summary>
     ///     Wraps log entries resulting from <see cref="ValidationException"/>, reporting

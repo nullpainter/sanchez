@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Crop;
 

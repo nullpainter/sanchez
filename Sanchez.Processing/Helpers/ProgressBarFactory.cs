@@ -25,7 +25,7 @@ public static class ProgressBarFactory
 
     public static ProgressBarOptions DefaultOptions()
     {
-        return new()
+        return new ProgressBarOptions
         {
             ProgressCharacter = '─',
             ProgressBarOnBottom = true,

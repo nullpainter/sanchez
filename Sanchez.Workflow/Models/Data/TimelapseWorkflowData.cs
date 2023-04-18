@@ -30,5 +30,6 @@ public record TimelapseWorkflowData : StitchWorkflowData
     {
         base.Dispose();
         ImageProgressBar?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

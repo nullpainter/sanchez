@@ -1,7 +1,4 @@
 ﻿using Serilog;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.Extensions.Images;
 

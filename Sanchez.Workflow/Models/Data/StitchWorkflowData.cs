@@ -15,5 +15,5 @@ public record StitchWorkflowData : WorkflowData
     /// </summary>
     public double GlobalOffset { get; init; }
 
-    public Rectangle? CropBounds { get; init; } = null!;
+    public Rectangle? CropBounds { get; init; }
 }

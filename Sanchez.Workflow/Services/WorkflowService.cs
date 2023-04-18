@@ -152,7 +152,7 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
                 => await _host.StartWorkflow(WorkflowConstants.Geostationary),
 
             // Equirectangular stitched timelapse
-            ProjectionType.Equirectangular when _options.StitchImages && _options.Interval != null
+            ProjectionType.Equirectangular when _options is { StitchImages: true, Interval: not null }
                 => await _host.StartWorkflow(WorkflowConstants.EquirectangularTimelapse),
 
             // Equirectangular stitched

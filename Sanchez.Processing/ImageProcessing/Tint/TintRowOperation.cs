@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Tint;
 

@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using Sanchez.Processing.Models;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Noise;
 

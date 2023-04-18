@@ -206,9 +206,9 @@ public class GeostationaryOptionsValidatorTests : AbstractValidatorTests<Geostat
         VerifyNoFailure(options, "Tint");
     }
 
-    private GeostationaryOptions ValidOptions()
+    private static GeostationaryOptions ValidOptions()
     {
-        return new()
+        return new GeostationaryOptions
         {
             Tint = "0000FF",
             SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm

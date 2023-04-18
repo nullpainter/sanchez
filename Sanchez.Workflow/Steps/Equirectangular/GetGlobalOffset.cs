@@ -43,7 +43,7 @@ internal sealed class GetGlobalOffset : StepBody, IActivityStepBody
 
         // Explicit longitude crop
         var equirectangularRender = _options.EquirectangularRender;
-        if (equirectangularRender is { ExplicitCrop: true, LongitudeRange: { } })
+        if (equirectangularRender is { ExplicitCrop: true, LongitudeRange: not null })
         {
             return -equirectangularRender.LongitudeRange.Value.Start;
         }

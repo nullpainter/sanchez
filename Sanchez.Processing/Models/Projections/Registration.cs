@@ -1,7 +1,4 @@
 ﻿using Sanchez.Processing.Models.Configuration;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.Models.Projections;
 

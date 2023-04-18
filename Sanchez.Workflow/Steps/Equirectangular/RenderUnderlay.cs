@@ -68,7 +68,7 @@ public sealed class RenderUnderlay : StepBodyAsync, IActivityStepBody
             _options.InterpolationType,
             _options.UnderlayPath,
             _options.ImageSize,
-            TargetImage!.Size(),
+            TargetImage!.Size,
             latitudeRange,
             longitudeRange.Start,
             _options.EquirectangularRender?.NoCrop == true || _options.EquirectangularRender?.ExplicitCrop == true);

@@ -104,7 +104,7 @@ public class UnderlayCacheRepository : IUnderlayCacheRepository
         await using var connection = new SqliteConnection(ConnectionString);
         await connection.OpenAsync();
 
-        string sql = definition == null
+        var sql = definition == null
             ? "INSERT INTO UnderlayCache(Filename, Configuration, Timestamp) VALUES(@Filename, @Configuration, @Timestamp)"
             : "INSERT INTO UnderlayCache(Filename, Configuration, Longitude, Timestamp) VALUES(@Filename, @Configuration, @Longitude, @Timestamp)";
 
@@ -113,7 +113,7 @@ public class UnderlayCacheRepository : IUnderlayCacheRepository
         {
             Filename = underlayPath,
             Configuration = JsonConvert.SerializeObject(data),
-            Longitude = definition?.Longitude,
+            definition?.Longitude,
             Timestamp = (DateTimeOffset)timestamp
         });
     }
