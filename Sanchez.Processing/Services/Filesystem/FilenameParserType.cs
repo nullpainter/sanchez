@@ -11,7 +11,12 @@ public enum FilenameParserType
     ///     Images produced by <c>xrit-rx</c> for GK-2A images.
     ///  </summary>
     Xrit,
-        
+
+    ///<summary>
+    ///     Images produced by <c>satdump gk2a plugin</c> for GK-2A images.
+    ///  </summary>
+    SatDumpGK2APlugin,
+
     /// <summary>
     ///     Images produced for Electro-L N2 images.
     /// </summary>

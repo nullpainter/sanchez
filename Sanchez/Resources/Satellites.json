@@ -63,6 +63,19 @@
     ]
   },
   {
+    "DisplayName": "GEO-KOMPSAT-2A-SatDump-Variant",
+    "FilenamePrefix": "^GK2A_IR105_",
+    "FilenameParser": "SatDumpGK2APlugin",
+    "Longitude": 128.2,
+    "Brightness": 0.97,
+    "Crop": [
+      0.006363,
+      0.006363,
+      0.006363,
+      0.006363
+    ]
+  },
+  {
     "DisplayName": "Electro-L N2",
     "FilenameSuffix": "[1-3]",
     "FilenameParser": "Electro",
