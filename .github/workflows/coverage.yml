@@ -13,7 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
       - name: Generate coverage report
         run: |
           dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:CoverageOutput=coverage.info
