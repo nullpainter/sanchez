@@ -9,22 +9,11 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular;
 
-internal sealed class RegisterImages : StepBody
+internal sealed class RegisterImages(
+    RenderOptions options,
+    ILogger<RegisterImages> logger,
+    ISatelliteImageLoader loader) : StepBody
 {
-    private readonly RenderOptions _options;
-    private readonly ILogger<RegisterImages> _logger;
-    private readonly ISatelliteImageLoader _loader;
-
-    public RegisterImages(
-        RenderOptions options,
-        ILogger<RegisterImages> logger,
-        ISatelliteImageLoader loader)
-    {
-        _options = options;
-        _logger = logger;
-        _loader = loader;
-    }
-
     public List<Registration>? SourceRegistrations { get; set; }
     internal List<Activity>? Activities { get; private set; }
 
@@ -32,9 +21,9 @@ internal sealed class RegisterImages : StepBody
     {
         ArgumentNullException.ThrowIfNull(SourceRegistrations);
 
-        _logger.LogInformation("Loading source images");
+        logger.LogInformation("Loading source images");
 
-        var masterActivity = _loader.RegisterImages(SourceRegistrations, _options.Timestamp);
+        var masterActivity = loader.RegisterImages(SourceRegistrations, options.Timestamp);
         Activities = masterActivity.Registrations.Select(registration => new Activity(new List<Registration> { registration })).ToList();
 
         return ExecutionResult.Next();

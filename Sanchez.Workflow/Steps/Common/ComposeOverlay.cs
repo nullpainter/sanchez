@@ -11,17 +11,14 @@ using WorkflowCore.Models;
 namespace Sanchez.Workflow.Steps.Common;
 
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
-public class ComposeOverlay : StepBody
+public class ComposeOverlay(RenderOptions options) : StepBody
 {
-    private readonly RenderOptions _options;
     public Image<Rgba32>? OverlayImage { get; set; }
     public Image<Rgba32>? TargetImage { get; set; }
 
-    public ComposeOverlay(RenderOptions options) => _options = options;
-
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        if (!_options.Overlay.ApplyOverlay) return ExecutionResult.Next();
+        if (!options.Overlay.ApplyOverlay) return ExecutionResult.Next();
 
         ArgumentNullException.ThrowIfNull(OverlayImage);
         ArgumentNullException.ThrowIfNull(TargetImage);

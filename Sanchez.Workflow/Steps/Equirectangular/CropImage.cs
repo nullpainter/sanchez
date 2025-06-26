@@ -12,21 +12,13 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular;
 
-internal sealed class CropImage : StepBody, IActivityStepBody
+internal sealed class CropImage(RenderOptions options, ILogger<CropImage> logger) : StepBody, IActivityStepBody
 {
-    private readonly RenderOptions _options;
-    private readonly ILogger<CropImage> _logger;
     public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
     public Rectangle? CropBounds { get; [UsedImplicitly] set; }
 
     public Activity? Activity { get; set; }
     public double GlobalOffset { get; [UsedImplicitly] set; }
-
-    public CropImage(RenderOptions options, ILogger<CropImage> logger)
-    {
-        _options = options;
-        _logger = logger;
-    }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
@@ -34,10 +26,10 @@ internal sealed class CropImage : StepBody, IActivityStepBody
         ArgumentNullException.ThrowIfNull(Activity);
          
         // Crop if required
-        var equirectangularOptions = _options.EquirectangularRender!;
+        var equirectangularOptions = options.EquirectangularRender!;
         if (!equirectangularOptions.NoCrop && CropBounds != null)
         {
-            _logger.LogDebug("Crop bounds: {Bounds}", CropBounds);
+            logger.LogDebug("Crop bounds: {Bounds}", CropBounds);
             TargetImage.Mutate(ctx => ctx.Crop(CropBounds.Value));
         }
 

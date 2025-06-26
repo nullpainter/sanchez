@@ -11,19 +11,10 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse;
 
-internal sealed class CreateActivities : StepBody, IActivityStepBody
+internal sealed class CreateActivities(
+    ILogger<CreateActivities> logger,
+    ISatelliteImageLoader loader) : StepBody, IActivityStepBody
 {
-    private readonly ILogger<CreateActivities> _logger;
-    private readonly ISatelliteImageLoader _loader;
-
-    public CreateActivities(
-        ILogger<CreateActivities> logger,
-        ISatelliteImageLoader loader)
-    {
-        _logger = logger;
-        _loader = loader;
-    }
-
     public Activity? Activity { get; set; }
     internal DateTime? Timestamp { get; [UsedImplicitly] set; }
     internal int NumTimeIntervals { get; [UsedImplicitly] set; }
@@ -35,8 +26,8 @@ internal sealed class CreateActivities : StepBody, IActivityStepBody
         ArgumentNullException.ThrowIfNull(SourceRegistrations);
 
         // Load images
-        _logger.LogInformation("Loading source images for timestamp {Timestamp}", Timestamp);
-        Activity = _loader.RegisterImages(SourceRegistrations, Timestamp);
+        logger.LogInformation("Loading source images for timestamp {Timestamp}", Timestamp);
+        Activity = loader.RegisterImages(SourceRegistrations, Timestamp);
 
         return ExecutionResult.Next();
     }

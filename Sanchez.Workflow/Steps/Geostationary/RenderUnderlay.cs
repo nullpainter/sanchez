@@ -15,31 +15,20 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Geostationary;
 
-internal sealed class RenderUnderlay : StepBodyAsync, IRegistrationStepBody
+internal sealed class RenderUnderlay(
+    ILogger<RenderUnderlay> logger,
+    IUnderlayService underlayService,
+    RenderOptions options) : StepBodyAsync, IRegistrationStepBody
 {
-    private readonly ILogger<RenderUnderlay> _logger;
-    private readonly IUnderlayService _underlayService;
-    private readonly RenderOptions _options;
-        
     public Registration? Registration { get; set; }
     internal Image<Rgba32>? TargetImage { get; private set; }
 
-    public RenderUnderlay(
-        ILogger<RenderUnderlay> logger,
-        IUnderlayService underlayService, 
-        RenderOptions options)
-    {
-        _logger = logger;
-        _underlayService = underlayService;
-        _options = options;
-    }
-
     public override async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
-        ArgumentNullException.ThrowIfNull(_options.GeostationaryRender);
+        ArgumentNullException.ThrowIfNull(options.GeostationaryRender);
         ArgumentNullException.ThrowIfNull(Registration?.Image);
             
-        if (_options.NoUnderlay)
+        if (options.NoUnderlay)
         {
             TargetImage = Registration.Image.Clone();
             return ExecutionResult.Next();
@@ -48,22 +37,22 @@ internal sealed class RenderUnderlay : StepBodyAsync, IRegistrationStepBody
         // Get or generate projected underlay
         var underlayOptions = new UnderlayProjectionData(
             ProjectionType.Geostationary,
-            _options.InterpolationType,
-            _options.UnderlayPath,
-            _options.ImageSize);
+            options.InterpolationType,
+            options.UnderlayPath,
+            options.ImageSize);
 
-        _logger.LogInformation("Retrieving underlay");
-        var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, Registration.Definition);
+        logger.LogInformation("Retrieving underlay");
+        var underlay = await underlayService.GetUnderlayAsync(underlayOptions, Registration.Definition);
 
-        _logger.LogInformation("Tinting and normalising IR imagery");
-        if (_options.AutoAdjustLevels) Registration.Image.AdjustLevels(_options.AdaptiveLevelAdjustment);
+        logger.LogInformation("Tinting and normalising IR imagery");
+        if (options.AutoAdjustLevels) Registration.Image.AdjustLevels(options.AdaptiveLevelAdjustment);
 
         TargetImage = Registration.Image.Clone();
-        TargetImage.Tint(_options.Tint);
+        TargetImage.Tint(options.Tint);
 
-        _logger.LogInformation("Blending with underlay");
+        logger.LogInformation("Blending with underlay");
         TargetImage.Mutate(c => c
-            .Resize(_options.ImageSize, _options.ImageSize)
+            .Resize(options.ImageSize, options.ImageSize)
             .DrawImage(underlay, PixelColorBlendingMode.Screen, 1.0f));
 
         return ExecutionResult.Next();

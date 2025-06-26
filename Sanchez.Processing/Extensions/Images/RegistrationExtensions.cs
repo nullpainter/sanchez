@@ -1,6 +1,7 @@
 ﻿using Sanchez.Processing.ImageProcessing.Mask;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Projections;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.Extensions.Images;
 

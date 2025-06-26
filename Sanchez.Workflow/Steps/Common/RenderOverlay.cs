@@ -14,29 +14,20 @@ using WorkflowCore.Models;
 namespace Sanchez.Workflow.Steps.Common;
 
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
-public class RenderOverlay : StepBody
+public class RenderOverlay(ILookupService lookupService, RenderOptions options) : StepBody
 {
-    private readonly ILookupService _lookupService;
-    private readonly RenderOptions _options;
-
     public Image<Rgba32>? SourceImage { get; set; }
     public Image<Rgba32>? OverlayImage { get; set; }
 
-    public RenderOverlay(ILookupService lookupService, RenderOptions options)
-    {
-        _lookupService = lookupService;
-        _options = options;
-    }
-
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        if (!_options.Overlay.ApplyOverlay) return ExecutionResult.Next();
+        if (!options.Overlay.ApplyOverlay) return ExecutionResult.Next();
         
         ArgumentNullException.ThrowIfNull(SourceImage);
-        var lookup = _lookupService.GetLookup();
+        var lookup = lookupService.GetLookup();
 
         var equalisedSource = SourceImage.Clone();
-        equalisedSource.AdjustLevels(_options.AdaptiveLevelAdjustment);
+        equalisedSource.AdjustLevels(options.AdaptiveLevelAdjustment);
 
         OverlayImage = new Image<Rgba32>(equalisedSource.Width, equalisedSource.Height);
 

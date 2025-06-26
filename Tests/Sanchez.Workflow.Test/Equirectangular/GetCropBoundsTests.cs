@@ -27,7 +27,7 @@ public class GetCropBoundsTests : AbstractTests
     {
         using var image = new Image<Rgba32>(100, 100);
         _step.TargetImage = image;
-        _step.Activity = new Activity(Array.Empty<Registration>());
+        _step.Activity = new Activity([]);
 
         var latitudeRange = new AngleRange(Angle.FromDegrees(90), Angle.FromDegrees(-90));
         var longitudeRange = new AngleRange(Angle.FromDegrees(-180), Angle.FromDegrees(180));
@@ -36,7 +36,7 @@ public class GetCropBoundsTests : AbstractTests
         // Run method under test
         await _step.RunAsync(new StepExecutionContext());
 
-        Assert.NotNull(_step.CropBounds);
+        _step.CropBounds.Should().NotBeNull();
         _step.CropBounds.Should().BeEquivalentTo(new Rectangle(-50, 0, 100, 100));
     }
 
@@ -45,7 +45,7 @@ public class GetCropBoundsTests : AbstractTests
     {
         using var image = new Image<Rgba32>(100, 100);
         _step.TargetImage = image;
-        _step.Activity = new Activity(Array.Empty<Registration>());
+        _step.Activity = new Activity([]);
 
         var longitudeRange = new AngleRange(Angle.FromDegrees(0), Angle.FromDegrees(360));
         Options.EquirectangularRender = new EquirectangularRenderOptions(false, false, false, null, longitudeRange);
@@ -53,7 +53,7 @@ public class GetCropBoundsTests : AbstractTests
         // Run method under test
         await _step.RunAsync(new StepExecutionContext());
 
-        Assert.NotNull(_step.CropBounds);
+        _step.CropBounds.Should().NotBeNull();
         _step.CropBounds.Should().BeEquivalentTo(new Rectangle(0, 0, 100, 100));
     }
 
@@ -64,7 +64,7 @@ public class GetCropBoundsTests : AbstractTests
         using var image = new Image<Rgba32>(100, 100);
 
         _step.TargetImage = image;
-        _step.Activity = new Activity(Array.Empty<Registration>());
+        _step.Activity = new Activity([]);
 
         var latitudeRange = new AngleRange(Angle.FromDegrees(0), Angle.FromDegrees(90));
         var longitudeRange = new AngleRange(Angle.FromDegrees(0), Angle.FromDegrees(180));
@@ -73,7 +73,7 @@ public class GetCropBoundsTests : AbstractTests
         // Run method under test
         await _step.RunAsync(new StepExecutionContext());
 
-        Assert.NotNull(_step.CropBounds);
+        _step.CropBounds.Should().NotBeNull();
         _step.CropBounds.Should().BeEquivalentTo(new Rectangle(0, 0, 50, 50));
     }
 }

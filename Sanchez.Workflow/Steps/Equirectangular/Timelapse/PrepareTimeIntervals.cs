@@ -7,27 +7,23 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular.Timelapse;
 
-internal class PrepareTimeIntervals : StepBody
+internal class PrepareTimeIntervals(RenderOptions options) : StepBody
 {
-    private readonly RenderOptions _options;
-
-    public PrepareTimeIntervals(RenderOptions options) => _options = options;
-
     public List<DateTime> TimeIntervals { get; } = new();
     public List<Registration>? SourceRegistrations { get; set; }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        ArgumentNullException.ThrowIfNull(_options.Interval);
+        ArgumentNullException.ThrowIfNull(options.Interval);
         ArgumentNullException.ThrowIfNull(SourceRegistrations);
 
         // Either derive the start timestamp from the command-line or from the earliest registered file timestamp
         var registrations = SourceRegistrations.Where(r => r.Timestamp != null).ToList();
 
-        var startTimestamp = _options.Timestamp ??= registrations.Min(r => r.Timestamp)!.Value;
-        var endTimestamp = _options.EndTimestamp ??= registrations.Max(r => r.Timestamp)!.Value;
+        var startTimestamp = options.Timestamp ??= registrations.Min(r => r.Timestamp)!.Value;
+        var endTimestamp = options.EndTimestamp ??= registrations.Max(r => r.Timestamp)!.Value;
 
-        for (var timestamp = startTimestamp; timestamp < endTimestamp!; timestamp += _options.Interval!.Value)
+        for (var timestamp = startTimestamp; timestamp < endTimestamp!; timestamp += options.Interval!.Value)
         {
             TimeIntervals.Add(timestamp);
         }

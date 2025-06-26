@@ -17,22 +17,11 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular;
 
-public sealed class RenderUnderlay : StepBodyAsync, IActivityStepBody
+public sealed class RenderUnderlay(
+    RenderOptions options,
+    IUnderlayService underlayService,
+    ILogger<RenderUnderlay> logger) : StepBodyAsync, IActivityStepBody
 {
-    private readonly RenderOptions _options;
-    private readonly IUnderlayService _underlayService;
-    private readonly ILogger<RenderUnderlay> _logger;
-
-    public RenderUnderlay(
-        RenderOptions options,
-        IUnderlayService underlayService,
-        ILogger<RenderUnderlay> logger)
-    {
-        _options = options;
-        _underlayService = underlayService;
-        _logger = logger;
-    }
-        
     public Activity? Activity { get; set; }
     internal Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
     public Rectangle? CropBounds { get; [UsedImplicitly] set; }
@@ -45,41 +34,41 @@ public sealed class RenderUnderlay : StepBodyAsync, IActivityStepBody
         Activity.GetCropRange(out var latitudeRange, out var longitudeRange);
             
         // Load underlay
-        if (_options.NoUnderlay)
+        if (options.NoUnderlay)
         {
             // Draw stitched image over black background for non-PNG files because otherwise alpha can look odd
-            TargetImage = !Path.GetExtension(_options.OutputPath).CompareOrdinalIgnoreCase(".png") ? TargetImage.AddBackgroundColour(Color.Black) : TargetImage;
+            TargetImage = !Path.GetExtension(options.OutputPath).CompareOrdinalIgnoreCase(".png") ? TargetImage.AddBackgroundColour(Color.Black) : TargetImage;
             return ExecutionResult.Next();
         }
 
-        _logger.LogInformation("Tinting and normalising IR imagery");
+        logger.LogInformation("Tinting and normalising IR imagery");
 
         TargetImage.Mutate(imageContext =>
         {
             using var clone = TargetImage!.Clone();
-            clone.AdjustLevels(_options.AdaptiveLevelAdjustment);
-            TargetImage.Tint(_options.Tint);
+            clone.AdjustLevels(options.AdaptiveLevelAdjustment);
+            TargetImage.Tint(options.Tint);
 
             imageContext.DrawImage(clone, PixelColorBlendingMode.HardLight, 0.5f);
         });
             
         var underlayOptions = new UnderlayProjectionData(
             ProjectionType.Equirectangular,
-            _options.InterpolationType,
-            _options.UnderlayPath,
-            _options.ImageSize,
+            options.InterpolationType,
+            options.UnderlayPath,
+            options.ImageSize,
             TargetImage!.Size,
             latitudeRange,
             longitudeRange.Start,
-            _options.EquirectangularRender?.NoCrop == true || _options.EquirectangularRender?.ExplicitCrop == true);
+            options.EquirectangularRender?.NoCrop == true || options.EquirectangularRender?.ExplicitCrop == true);
 
-        _logger.LogInformation("Retrieving underlay");
-        var underlay = await _underlayService.GetUnderlayAsync(underlayOptions, null, context.CancellationToken);
+        logger.LogInformation("Retrieving underlay");
+        var underlay = await underlayService.GetUnderlayAsync(underlayOptions, null, context.CancellationToken);
 
         // Render target image onto underlay
         using (TargetImage)
         {
-            _logger.LogInformation("Blending with underlay");
+            logger.LogInformation("Blending with underlay");
             underlay.Mutate(ctx => ctx.DrawImage(TargetImage, PixelColorBlendingMode.Screen, 1.0f));
         }
             

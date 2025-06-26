@@ -14,33 +14,24 @@ using WorkflowCore.Models;
 namespace Sanchez.Workflow.Steps.Geostationary;
 
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
-public class ApplyAtmosphere : StepBody
+public class ApplyAtmosphere(RenderOptions options, IGradientService gradientService) : StepBody
 {
-    private readonly RenderOptions _options;
-    private readonly IGradientService _gradientService;
-
-    public ApplyAtmosphere(RenderOptions options, IGradientService gradientService)
-    {
-        _options = options;
-        _gradientService = gradientService;
-    }
-
     public Image<Rgba32>? TargetImage { get; set; }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        if (!_options.HasAtmosphere) return ExecutionResult.Next();
+        if (!options.HasAtmosphere) return ExecutionResult.Next();
 
         ArgumentNullException.ThrowIfNull(TargetImage);
-        ArgumentNullException.ThrowIfNull(_options.GeostationaryRender);
+        ArgumentNullException.ThrowIfNull(options.GeostationaryRender);
 
         // Only apply atmosphere with underlay
-        if (_options.NoUnderlay) return ExecutionResult.Next();
+        if (options.NoUnderlay) return ExecutionResult.Next();
 
-        var atmosphereAmount = _options.GeostationaryRender.AtmosphereAmount;
-        var atmosphereOpacity = _options.GeostationaryRender.AtmosphereOpacity;
+        var atmosphereAmount = options.GeostationaryRender.AtmosphereAmount;
+        var atmosphereOpacity = options.GeostationaryRender.AtmosphereOpacity;
 
-        var gradient = _gradientService.GetGradient(PathHelper.ResourcePath("Gradients/Atmosphere.json"));
+        var gradient = gradientService.GetGradient(PathHelper.ResourcePath("Gradients/Atmosphere.json"));
         
         // Increase size of image to allow for atmosphere rendering
         var resizeOptions = new ResizeOptions

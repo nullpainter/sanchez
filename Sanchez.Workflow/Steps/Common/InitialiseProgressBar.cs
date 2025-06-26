@@ -9,19 +9,14 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-internal class InitialiseProgressBar : StepBody
+internal class InitialiseProgressBar(RenderOptions options) : StepBody
 {
-    private readonly RenderOptions _options;
     internal IProgressBar? ProgressBar { get; private set; }
     public int MaxTicks { get; set; }
 
-    public InitialiseProgressBar(RenderOptions options) => _options = options;
-
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        ArgumentNullException.ThrowIfNull(MaxTicks);
-
-        ProgressBar = ProgressBarFactory.NewProgressBar(_options, MaxTicks);
+        ProgressBar = ProgressBarFactory.NewProgressBar(options, MaxTicks);
         return ExecutionResult.Next();
     }
 }

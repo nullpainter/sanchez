@@ -1,4 +1,8 @@
-﻿namespace Sanchez.Processing.ImageProcessing.Mask;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+
+namespace Sanchez.Processing.ImageProcessing.Mask;
 
 public static class RemoveBackgroundExtensions
 {

@@ -6,8 +6,10 @@ using Newtonsoft.Json;
 using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Gradients;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.ColorSpaces.Conversion;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services;
 
@@ -17,24 +19,16 @@ public interface IGradientService
     Task SaveGradientAsync(string path, ReadOnlyCollection<CieLch> gradient);
 }
 
-public class GradientService : IGradientService
+public class GradientService(RenderOptions options) : IGradientService
 {
-    private readonly RenderOptions _options;
-    private readonly ColorSpaceConverter _colourSpaceConverter;
-    private readonly ConcurrentDictionary<string, ReadOnlyCollection<CieLch>> _cache;
+    private readonly ColorSpaceConverter _colourSpaceConverter = new();
+    private readonly ConcurrentDictionary<string, ReadOnlyCollection<CieLch>> _cache = new();
 
     private const int GradientSize = 256;
 
-    public GradientService(RenderOptions options)
-    {
-        _options = options;
-
-        _cache = new ConcurrentDictionary<string, ReadOnlyCollection<CieLch>>();
-        _colourSpaceConverter = new ColorSpaceConverter();
-    }
 
     public ReadOnlyCollection<CieLch> GetGradient(string? path = null)
-        => _cache.GetOrAdd(path ?? _options.Overlay.GradientPath, CreateGradient);
+        => _cache.GetOrAdd(path ?? options.Overlay.GradientPath, CreateGradient);
 
     private ReadOnlyCollection<CieLch> CreateGradient(string path)
     {

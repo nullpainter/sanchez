@@ -12,26 +12,18 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular.Stitch;
 
-internal sealed class StitchImages : StepBody, IRegistrationStepBody, IActivityStepBody
+internal sealed class StitchImages(ILogger<StitchImages> logger, RenderOptions options) : StepBody, IRegistrationStepBody, IActivityStepBody
 {
-    private readonly ILogger<StitchImages> _logger;
-    private readonly RenderOptions _options;
     public Image<Rgba32>? TargetImage { get; set; }
     public Activity? Activity { get; set; }
     public Registration? Registration { get; set; }
-
-    public StitchImages(ILogger<StitchImages> logger, RenderOptions options)
-    {
-        _logger = logger;
-        _options = options;
-    }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
         ArgumentNullException.ThrowIfNull(Activity);
         
-        TargetImage = new Image<Rgba32>(_options.ImageSize * 2, Activity.Registrations[0].Height);
-        _logger.LogInformation("Output image size: {Width} x {Height} px", TargetImage.Width, TargetImage.Height);
+        TargetImage = new Image<Rgba32>(options.ImageSize * 2, Activity.Registrations[0].Height);
+        logger.LogInformation("Output image size: {Width} x {Height} px", TargetImage.Width, TargetImage.Height);
 
         // Composite all images
         foreach (var registration in Activity.Registrations)

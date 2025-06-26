@@ -8,30 +8,22 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-public class InitialiseGradient : StepBody
+public class InitialiseGradient(ILogger<InitialiseGradient> logger, IGradientService gradientService) : StepBody
 {
-    private readonly ILogger<InitialiseGradient> _logger;
-    private readonly IGradientService _gradientService;
-
-    public InitialiseGradient(ILogger<InitialiseGradient> logger, IGradientService gradientService)
-    {
-        _logger = logger;
-        _gradientService = gradientService;
-    }
     public override ExecutionResult Run(IStepExecutionContext context)
     {
         try
         {
-            _gradientService.GetGradient();
+            gradientService.GetGradient();
         }
         catch (ValidationException e)
         {
-            _logger.LogError(e, "Unable to parse gradient file");
+            logger.LogError(e, "Unable to parse gradient file");
             throw;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Unable to parse gradient file");
+            logger.LogError(e, "Unable to parse gradient file");
             throw new ValidationException("Unable to parse gradient file; check logs for details.");
         }
 

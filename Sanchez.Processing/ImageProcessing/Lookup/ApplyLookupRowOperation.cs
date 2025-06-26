@@ -1,5 +1,7 @@
 ﻿using Sanchez.Processing.ImageProcessing.Intensity;
 using Sanchez.Processing.Models.Angles;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Lookup;
 

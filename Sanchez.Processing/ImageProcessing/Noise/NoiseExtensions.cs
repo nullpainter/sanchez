@@ -1,4 +1,8 @@
-﻿namespace Sanchez.Processing.ImageProcessing.Noise;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+
+namespace Sanchez.Processing.ImageProcessing.Noise;
 
 public static class NoiseExtensions
 {
@@ -6,8 +10,7 @@ public static class NoiseExtensions
     {
         var noiseImage = image.Clone();
 
-        var operation = new GaussianNoiseRowOperation();
-        noiseImage.Mutate(c => c.ProcessPixelRowsAsVector4(row => operation.Invoke(row)));
+        noiseImage.Mutate(c => c.ProcessPixelRowsAsVector4(GaussianNoiseRowOperation.Invoke));
         image.Mutate(c => c.DrawImage(noiseImage, PixelColorBlendingMode.Overlay, 0.1f));
     }
 }

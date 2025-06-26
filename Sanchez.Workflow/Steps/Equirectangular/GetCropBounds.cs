@@ -12,23 +12,14 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular;
 
-internal sealed class GetCropBounds : StepBody
+internal sealed class GetCropBounds(RenderOptions options, ILogger<GetCropBounds> logger) : StepBody
 {
-    private readonly ILogger<GetCropBounds> _logger;
-    private readonly RenderOptions _options;
-
     /// <summary>
     ///     Proportion of image to be cropped when performing auto crop.
     /// </summary>
     private const float AutoCropScaleFactor = 0.05f;
 
     private const float AutoCropGlobalScaleFactor = 0.02f;
-
-    public GetCropBounds(RenderOptions options, ILogger<GetCropBounds> logger)
-    {
-        _options = options;
-        _logger = logger;
-    }
 
     internal Rectangle CropBounds { get; private set; }
 
@@ -42,8 +33,8 @@ internal sealed class GetCropBounds : StepBody
         ArgumentNullException.ThrowIfNull(TargetImage);
         ArgumentNullException.ThrowIfNull(Activity);
 
-        var autoCrop = _options.EquirectangularRender?.AutoCrop ?? false;
-        var explicitCrop = _options.EquirectangularRender?.ExplicitCrop ?? false;
+        var autoCrop = options.EquirectangularRender?.AutoCrop ?? false;
+        var explicitCrop = options.EquirectangularRender?.ExplicitCrop ?? false;
 
 
         // TODO document all of this - entire class really
@@ -56,15 +47,15 @@ internal sealed class GetCropBounds : StepBody
 
         CropBounds = autoCrop ? GetAutoCropBounds(TargetImage) : GetExplicitCropBounds(TargetImage);
 
-        _logger.LogInformation("Cropped image size: {Width} x {Height} px", CropBounds.Width, CropBounds.Height);
+        logger.LogInformation("Cropped image size: {Width} x {Height} px", CropBounds.Width, CropBounds.Height);
 
         return ExecutionResult.Next();
     }
 
     private Rectangle GetExplicitCropBounds(Image targetImage)
     {
-        var latitudeRange = _options.EquirectangularRender!.LatitudeRange;
-        var longitudeRange = _options.EquirectangularRender!.LongitudeRange;
+        var latitudeRange = options.EquirectangularRender!.LatitudeRange;
+        var longitudeRange = options.EquirectangularRender!.LongitudeRange;
 
         // Underlay is being offset by the global offset, so we need to add it back to get the 
         // correct x pixel range for crop.
@@ -77,7 +68,7 @@ internal sealed class GetCropBounds : StepBody
                 .ToPixelRangeY(targetImage.Height)
             : new PixelRange(0, targetImage.Height);
 
-        _logger.LogDebug("Crop bounds: [ X={XBounds}, Y={YBounds} ]", xPixelRange, yPixelRange);
+        logger.LogDebug("Crop bounds: [ X={XBounds}, Y={YBounds} ]", xPixelRange, yPixelRange);
         return new Rectangle(xPixelRange.Start, yPixelRange.Start, xPixelRange.Range, yPixelRange.Range);
     }
 

@@ -1,4 +1,7 @@
-﻿namespace Sanchez.Processing.Models;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+
+namespace Sanchez.Processing.Models;
 
 public class ImageBuffer
 {

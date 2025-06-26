@@ -13,19 +13,15 @@ using WorkflowCore.Interface;
 namespace Sanchez.Workflow.Workflows.Geostationary;
 
 [UsedImplicitly]
-internal class GeostationaryReprojectedWorkflow : IWorkflow<StitchWorkflowData>
+internal class GeostationaryReprojectedWorkflow(RenderOptions options) : IWorkflow<StitchWorkflowData>
 {
-    private readonly RenderOptions _options;
-
-    public GeostationaryReprojectedWorkflow(RenderOptions options) => _options = options;
-
     public void Build(IWorkflowBuilder<StitchWorkflowData> builder)
     {
         builder
             .Initialise()
             .CreateActivity()
             .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 2)
-            .ShouldWrite(_options.Timestamp)
+            .ShouldWrite(options.Timestamp)
             .Branch(true, builder.CreateBranch()
                 .GetVisibleRange()
                 .GetGlobalOffset()
@@ -39,8 +35,8 @@ internal class GeostationaryReprojectedWorkflow : IWorkflow<StitchWorkflowData>
                 .StitchImages()
                 .RenderOverlay(d => d.TargetImage)
                 .RenderUnderlay()
-                .ToGeostationary(options => _options.GeostationaryRender!.Longitude)
-                .If(data => data.OverlayImage != null).Do(step => step.ToGeostationary(options => _options.GeostationaryRender!.Longitude, data => data.OverlayImage))
+                .ToGeostationary(options1 => options.GeostationaryRender!.Longitude)
+                .If(data => data.OverlayImage != null).Do(step => step.ToGeostationary(options1 => options.GeostationaryRender!.Longitude, data => data.OverlayImage))
                 .ComposeOverlay()
                 .ColourCorrect()
                 .ApplyAtmosphere()

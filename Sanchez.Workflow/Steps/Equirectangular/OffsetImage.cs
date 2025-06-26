@@ -16,14 +16,11 @@ namespace Sanchez.Workflow.Steps.Equirectangular;
 ///     Horizontally offsets and wraps an equirectangular projected image by <see cref="GlobalOffset"/> radians. This is
 ///     performed to ensure that visible satellite imagery is contiguous.
 /// </summary>
-internal sealed class OffsetImage : StepBody, IActivityStepBody
+internal sealed class OffsetImage(RenderOptions options) : StepBody, IActivityStepBody
 {
-    private readonly RenderOptions _options;
     public Activity? Activity { get; [UsedImplicitly] set; }
     public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
     public double GlobalOffset { get; [UsedImplicitly] set; }
-
-    public OffsetImage(RenderOptions options) => _options = options;
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
@@ -31,7 +28,7 @@ internal sealed class OffsetImage : StepBody, IActivityStepBody
         ArgumentNullException.ThrowIfNull(Activity);
 
         // No offset required if full earth coverage and no explicit crop is being performed
-        if (Activity.IsFullEarthCoverage() && !_options.EquirectangularRender!.ExplicitCrop) return ExecutionResult.Next();
+        if (Activity.IsFullEarthCoverage() && !options.EquirectangularRender!.ExplicitCrop) return ExecutionResult.Next();
 
         var offset = GlobalOffset
             .NormaliseLongitude()

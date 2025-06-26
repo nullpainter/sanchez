@@ -20,19 +20,10 @@ namespace Sanchez.Workflow.Steps.Geostationary.Reprojected;
 ///    This step is used when repositioning a geostationary image. To do this, the satellite
 ///    image is first projected to equirectangular projection and composited with the underlay.
 /// </remarks>
-public class ToGeostationary : StepBody, IActivityStepBody
+public class ToGeostationary(
+    ILogger<ToGeostationary> logger,
+    RenderOptions options) : StepBody, IActivityStepBody
 {
-    private readonly ILogger<ToGeostationary> _logger;
-    private readonly RenderOptions _options;
-
-    public ToGeostationary(
-        ILogger<ToGeostationary> logger,
-        RenderOptions options)
-    {
-        _logger = logger;
-        _options = options;
-    }
-
     /// <summary>
     ///     Target longitude, in radians.
     /// </summary>
@@ -45,12 +36,12 @@ public class ToGeostationary : StepBody, IActivityStepBody
         ArgumentNullException.ThrowIfNull(TargetImage);
 
         // Determine visible range of all satellite imagery
-        _logger.LogInformation("Reprojecting to geostationary with longitude {Longitude} degrees", Angle.FromRadians(Longitude!.Value).Degrees);
+        logger.LogInformation("Reprojecting to geostationary with longitude {Longitude} degrees", Angle.FromRadians(Longitude!.Value).Degrees);
 
         // Render geostationary image
         using (var sourceImage = TargetImage.Clone())
         {
-            var geostationary = sourceImage.ToGeostationaryProjection(Longitude.Value, Constants.Satellite.DefaultHeight, _options);
+            var geostationary = sourceImage.ToGeostationaryProjection(Longitude.Value, Constants.Satellite.DefaultHeight, options);
 
             // Set black background
             TargetImage = new Image<Rgba32>(geostationary.Width, geostationary.Height);

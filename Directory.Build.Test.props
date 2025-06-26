@@ -1,0 +1,29 @@
+<Project>
+    <PropertyGroup>
+        <IsTestProject>true</IsTestProject>
+        <Nullable>disable</Nullable>
+        <IsPackable>false</IsPackable>
+        <NoWarn>$(NoWarn),S6562</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="AwesomeAssertions"/>
+        <Using Include="NUnit.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="AwesomeAssertions.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="AwesomeAssertions"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="nunit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    </ItemGroup>
+</Project>

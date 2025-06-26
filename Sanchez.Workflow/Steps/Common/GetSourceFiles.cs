@@ -8,21 +8,18 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-public class GetSourceFiles : StepBody
+public class GetSourceFiles(IFileService fileService) : StepBody
 {
-    private readonly IFileService _fileService;
-
-    public GetSourceFiles(IFileService fileService) => _fileService = fileService;
     public List<Registration>? SourceRegistrations { get; private set; }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
         try
         {
-            var sourceFiles = _fileService.GetSourceFiles();
-            if (!sourceFiles.Any()) throw new ValidationException("No source files found");
+            var sourceFiles = fileService.GetSourceFiles();
+            if (sourceFiles.Count == 0) throw new ValidationException("No source files found");
                 
-            SourceRegistrations = _fileService.ToRegistrations(sourceFiles, context.CancellationToken);
+            SourceRegistrations = fileService.ToRegistrations(sourceFiles, context.CancellationToken);
         }
         catch (DirectoryNotFoundException)
         {

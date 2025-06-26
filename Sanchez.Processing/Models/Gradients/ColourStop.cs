@@ -10,11 +10,11 @@ namespace Sanchez.Processing.Models.Gradients;
 public record struct RgbColourStop
 {
     [Required]
-    [JsonProperty("Colour")]
+    [JsonProperty(nameof(Colour))]
     public string? Colour { get; init; }
 
     [Required]
-    [JsonProperty("Position")]
+    [JsonProperty(nameof(Position))]
     public float? Position { get; init; }
 }
 

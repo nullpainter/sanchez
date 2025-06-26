@@ -15,23 +15,15 @@ namespace Sanchez.Workflow.Steps.Equirectangular;
 ///     wrap around the Earth. This is applied to partial coverage and explicit longitude cropping
 ///     only.
 /// </summary>
-internal sealed class GetGlobalOffset : StepBody, IActivityStepBody
+internal sealed class GetGlobalOffset(RenderOptions options, ILogger<GetGlobalOffset> logger) : StepBody, IActivityStepBody
 {
-    private readonly RenderOptions _options;
-    private readonly ILogger<GetGlobalOffset> _logger;
     public Activity? Activity { get; set; }
     internal double GlobalOffset { get; private set; }
-
-    public GetGlobalOffset(RenderOptions options, ILogger<GetGlobalOffset> logger)
-    {
-        _options = options;
-        _logger = logger;
-    }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
         GlobalOffset = GetOffset();
-        _logger.LogDebug("Global offset: {Offset:F2} degrees", Angle.FromRadians(GlobalOffset).Degrees);
+        logger.LogDebug("Global offset: {Offset:F2} degrees", Angle.FromRadians(GlobalOffset).Degrees);
 
         return ExecutionResult.Next();
     }
@@ -42,7 +34,7 @@ internal sealed class GetGlobalOffset : StepBody, IActivityStepBody
         if (Activity.IsFullEarthCoverage()) return 0;
 
         // Explicit longitude crop
-        var equirectangularRender = _options.EquirectangularRender;
+        var equirectangularRender = options.EquirectangularRender;
         if (equirectangularRender is { ExplicitCrop: true, LongitudeRange: not null })
         {
             return -equirectangularRender.LongitudeRange.Value.Start;

@@ -1,17 +1,11 @@
 ﻿using System.Numerics;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Tint;
 
-public class TintRowOperation
+public class TintRowOperation(Rgba32 tint, float tintLightness)
 {
-    private readonly Vector4 _tint;
-    private readonly float _tintLightness;
-
-    public TintRowOperation(Rgba32 tint, float tintLightness)
-    {
-        _tint = tint.ToVector4();
-        _tintLightness = tintLightness;
-    }
+    private readonly Vector4 _tint = tint.ToVector4();
 
     public void Invoke(Span<Vector4> row)
     {
@@ -32,7 +26,7 @@ public class TintRowOperation
         var value = pixel.X;
 
         // Always tint; never shade
-        return Blend3(Vector4.Zero, tint, Vector4.One, _tintLightness * (value - 1) + 1);
+        return Blend3(Vector4.Zero, tint, Vector4.One, tintLightness * (value - 1) + 1);
     }
 
     private static Vector4 Blend2(Vector4 left, Vector4 right, float pos)

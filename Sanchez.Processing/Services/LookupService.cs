@@ -1,7 +1,9 @@
 ﻿using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Models;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.ColorSpaces.Conversion;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services;
 
@@ -13,22 +15,13 @@ public interface ILookupService
     List<Rgba32> GetLookup();
 }
 
-public class LookupService : ILookupService
+public class LookupService(IGradientService gradientService, RenderOptions options) : ILookupService
 {
-    private readonly IGradientService _gradientService;
-    private readonly ColorSpaceConverter _converter;
-    private readonly RenderOptions _options;
-
-    public LookupService(IGradientService gradientService, RenderOptions options)
-    {
-        _gradientService = gradientService;
-        _options = options;
-        _converter = new ColorSpaceConverter();
-    }
+    private readonly ColorSpaceConverter _converter = new();
 
     public List<Rgba32> GetLookup()
     {
-        var gradient = _gradientService.GetGradient();
+        var gradient = gradientService.GetGradient();
 
         var lookupTable = new List<Rgba32>();
         for (var i = 0; i < 256; i++)
@@ -42,7 +35,7 @@ public class LookupService : ILookupService
 
     private Rgba32 GetColour(IReadOnlyList<CieLch> gradient, byte index)
     {
-        var overlayOptions = _options.Overlay;
+        var overlayOptions = options.Overlay;
         var maxIntensity = overlayOptions.MaxIntensity;
         var minIntensity = overlayOptions.MinIntensity;
 

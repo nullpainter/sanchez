@@ -7,7 +7,7 @@ public static class MathExtensions
 
     public static double ClosestTo(this List<double> collection, double target)
     {
-        if (!collection.Any()) throw new InvalidOperationException("Collection is empty");
+        if (collection.Count == 0) throw new InvalidOperationException("Collection is empty");
 
         var closest = double.MaxValue;
         var minDifference = double.MaxValue;

@@ -15,7 +15,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void TextbookToScanningAngle()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
 
         GeostationaryProjection.ToScanningAngle(
             FromDegrees(33.846162).Radians,
@@ -32,7 +32,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void ProjectionFernandinaIsland()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
             
         var imageOffset = Constants.Satellite.Offset.TwoKm;
 
@@ -53,7 +53,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void ProjectionLakeTaupo()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
             
         var imageOffset = Constants.Satellite.Offset.TwoKm;
 
@@ -84,7 +84,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void ProjectionKauai()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
        
         var imageOffset = Constants.Satellite.Offset.TwoKm;
 
@@ -115,7 +115,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void ProjectionCalifornia()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
        
         var imageOffset = Constants.Satellite.Offset.TwoKm;
 
@@ -146,7 +146,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void TextbookToScanningAngleCentre()
     {
         var definition = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition);
+        definition.Should().NotBeNull();
 
         var scanningX = Constants.Satellite.Offset.TwoKm.ToHorizontalScanningAngle(2712);
         var scanningY = Constants.Satellite.Offset.TwoKm.ToVerticalScanningAngle(2711);
@@ -159,7 +159,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void ToScanningAngleTopLeft()
     {
         var definition = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition);
+        definition.Should().NotBeNull();
 
         var scanningX = Constants.Satellite.Offset.TwoKm.ToHorizontalScanningAngle(0);
         var scanningY = Constants.Satellite.Offset.TwoKm.ToVerticalScanningAngle(0);
@@ -172,7 +172,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void ToScanningAngleBottomRight()
     {
         var definition = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition);
+        definition.Should().NotBeNull();
 
         var scanningX = Constants.Satellite.Offset.TwoKm.ToHorizontalScanningAngle(5423);
         var scanningY = Constants.Satellite.Offset.TwoKm.ToVerticalScanningAngle(5423);
@@ -186,7 +186,7 @@ public class GeostationaryProjectionTests : AbstractTests
     public void TextbookToImageCoordinates()
     {
         var definition = SatelliteRegistry.Locate(Goes16Filename);
-        Assert.NotNull(definition, "Cannot find satellite definition");
+        definition.Should().NotBeNull("Cannot find satellite definition");
 
         var imageOffset = Constants.Satellite.Offset.TwoKm;
         imageOffset.ToImageCoordinates(0.000028, 0.000028, out var x, out var y);

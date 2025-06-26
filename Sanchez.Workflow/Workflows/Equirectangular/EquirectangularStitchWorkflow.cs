@@ -11,12 +11,8 @@ using WorkflowCore.Interface;
 namespace Sanchez.Workflow.Workflows.Equirectangular;
 
 [UsedImplicitly]
-public class EquirectangularStitchWorkflow : IWorkflow<StitchWorkflowData>
+public class EquirectangularStitchWorkflow(RenderOptions options) : IWorkflow<StitchWorkflowData>
 {
-    private readonly RenderOptions _options;
-
-    public EquirectangularStitchWorkflow(RenderOptions options) => _options = options;
-
     public void Build(IWorkflowBuilder<StitchWorkflowData> builder)
     {
         builder
@@ -25,7 +21,7 @@ public class EquirectangularStitchWorkflow : IWorkflow<StitchWorkflowData>
             .InitialiseProgressBar(data => data.Activity!.Registrations.Count + 1)
             .If(data => data.Activity!.Registrations.Any())
             .Do(branch => branch
-                .ShouldWrite(_options.Timestamp)
+                .ShouldWrite(options.Timestamp)
                 .Branch(true, builder
                     .CreateBranch()
                     .GetVisibleRange()

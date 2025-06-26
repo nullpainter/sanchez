@@ -1,28 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <IsPackable>false</IsPackable>
-        <Nullable>disable</Nullable>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-        <DefineConstants>OS_WINDOWS</DefineConstants>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="coverlet.msbuild">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="coverlet.collector">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>        
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="nunit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        
-    </ItemGroup>
+    <Import Project="..\..\Directory.Build.Test.props" />
 
     <ItemGroup>
       <ProjectReference Include="..\..\Sanchez\Sanchez.csproj" />

@@ -5,16 +5,16 @@ namespace Sanchez.Processing.Models.Configuration;
 
 public record SatelliteConfiguration
 {
-    [JsonProperty("DisplayName", Required = Required.Always)]
+    [JsonProperty(Required = Required.Always)]
     public string DisplayName { get; init; } = null!;
 
-    [JsonProperty("FilenamePrefix")]
+    [JsonProperty]
     public string? FilenamePrefix { get; init; } 
 
     /// <summary>
     ///     Regular expression matching filename suffixes.
     /// </summary>
-    [JsonProperty("FilenameSuffix")]
+    [JsonProperty]
     public string? FilenameSuffix { get; init; } 
         
     [JsonProperty("FilenameParser", Required = Required.Always)]
@@ -23,34 +23,34 @@ public record SatelliteConfiguration
     /// <summary>
     ///     Whether pixel intensities in IR images should be inverted to match GOES-R.
     /// </summary>
-    [JsonProperty("Invert")]
+    [JsonProperty]
     public bool Invert { get; init; }
 
-    [JsonProperty("Longitude", Required = Required.Always)]
+    [JsonProperty(Required = Required.Always)]
     public double Longitude { get; init; }
 
     /// <summary>
     ///     Offset added to the stated longitude, for visual correction to satellite imagery which hasn't originated
     ///     from GOES-R.
     /// </summary>
-    [JsonProperty("LongitudeAdjustment")]
+    [JsonProperty]
     public double? LongitudeAdjustment { get; init; }
 
-    [JsonProperty("Height")]
+    [JsonProperty]
     public double Height { get; init; } = Constants.Satellite.DefaultHeight;
 
     /// <summary>
     ///     Optional border crop ratios. Values are expected to be top, right, bottom, left.
     /// </summary>
-    [JsonProperty("Crop")]
+    [JsonProperty]
     public double[]? Crop { get; init; }
 
-    [JsonProperty("Brightness")]
+    [JsonProperty]
     public float Brightness { get; init; } = 1.0f;
 
-    [JsonProperty("Contrast")]
+    [JsonProperty]
     public float Contrast { get; init; } = 1.0f;
 
-    [JsonProperty("Saturation")]
+    [JsonProperty]
     public float Saturation { get; init; } = 1.0f;
 }

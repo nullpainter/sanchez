@@ -5,6 +5,9 @@ using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Angles;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Sanchez.Processing.Services.Underlay;
 
@@ -21,22 +24,11 @@ public interface IUnderlayService
     Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition, CancellationToken ct = default);
 }
 
-public class UnderlayService : IUnderlayService
+public class UnderlayService(
+    ILogger<UnderlayService> logger,
+    IUnderlayCache cache,
+    RenderOptions options) : IUnderlayService
 {
-    private readonly ILogger<UnderlayService> _logger;
-    private readonly IUnderlayCache _cache;
-    private readonly RenderOptions _options;
-
-    public UnderlayService(
-        ILogger<UnderlayService> logger,
-        IUnderlayCache cache,
-        RenderOptions options)
-    {
-        _logger = logger;
-        _cache = cache;
-        _options = options;
-    }
-
     /// <summary>
     ///     Retrieves a full-colour underlay image with the target projection. Underlays are cached to disk to speed up
     ///     computation.
@@ -48,18 +40,18 @@ public class UnderlayService : IUnderlayService
     public async Task<Image<Rgba32>> GetUnderlayAsync(UnderlayProjectionData data, SatelliteDefinition? definition, CancellationToken ct = default)
     {
         // Attempt to retrieve underlay from cache
-        var cached = await _cache.GetUnderlayAsync(definition, data);
+        var cached = await cache.GetUnderlayAsync(definition, data);
         if (cached != null) return cached;
 
         // Load master equirectangular underlay image from disk
-        var underlay = await Image.LoadAsync<Rgba32>(_options.UnderlayPath, ct);
+        var underlay = await Image.LoadAsync<Rgba32>(options.UnderlayPath, ct);
 
         // Project to match satellite imagery
         var target = GetProjected(underlay, definition, data);
         Resize(data, target);
 
         // Register underlay in cache
-        await _cache.SetUnderlayAsync(target, definition, data);
+        await cache.SetUnderlayAsync(target, definition, data);
         return target;
     }
 
@@ -85,9 +77,9 @@ public class UnderlayService : IUnderlayService
                 if (definition == null) throw new InvalidOperationException("Satellite definition must be provided for geostationary projection");
 
                 // Project underlay to geostationary, based on the target satellite
-                _logger.LogInformation("{Definition:l0} Rendering geostationary underlay", definition.DisplayName);
+                logger.LogInformation("{Definition:l0} Rendering geostationary underlay", definition.DisplayName);
                
-                var geostationary = underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, _options);
+                var geostationary = underlay.ToGeostationaryProjection(definition.Longitude, definition.Height, options);
                 
                 // Set black background
                 var image = new Image<Rgba32>(geostationary.Width, geostationary.Height);
@@ -99,7 +91,7 @@ public class UnderlayService : IUnderlayService
             case ProjectionType.Equirectangular:
 
                 // Perform latitude crop to match IR imagery if required
-                var equirectangularOptions = _options.EquirectangularRender;
+                var equirectangularOptions = options.EquirectangularRender;
 
                 if (equirectangularOptions is null or { NoCrop: false, ExplicitCrop: false })
                 {
@@ -120,7 +112,7 @@ public class UnderlayService : IUnderlayService
         var yPixelRange = latitudeRange.ToPixelRangeY(underlay.Height);
 
         // Crop underlay to target height
-        _logger.LogInformation("Cropping underlay to {Min} - {Max} px height", yPixelRange.Start, yPixelRange.End);
+        logger.LogInformation("Cropping underlay to {Min} - {Max} px height", yPixelRange.Start, yPixelRange.End);
         underlay.Mutate(c => c.Crop(new Rectangle(0, yPixelRange.Start, underlay.Width, yPixelRange.Range)));
     }
 }

@@ -12,12 +12,8 @@ public interface IDatabaseMigrator
     void Migrate(string connectionString);
 }
     
-public class DatabaseMigrator : IDatabaseMigrator
+public class DatabaseMigrator(ILogger<DatabaseMigrator> logger) : IDatabaseMigrator
 {
-    private readonly ILogger<DatabaseMigrator> _logger;
-
-    public DatabaseMigrator(ILogger<DatabaseMigrator> logger) => _logger = logger;
-
     public void Migrate(string connectionString)
     {
         var upgrader =
@@ -31,10 +27,10 @@ public class DatabaseMigrator : IDatabaseMigrator
             
         if (!result.Successful)
         {
-            _logger.LogError("Unable to perform data migration: {Error}", result.Error);
+            logger.LogError("Unable to perform data migration: {Error}", result.Error);
             throw new InvalidOperationException("Fatal error initialising database");
         }
             
-        _logger.LogInformation("Database migrated");
+        logger.LogInformation("Database migrated");
     }
 }

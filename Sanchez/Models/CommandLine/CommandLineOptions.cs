@@ -17,7 +17,7 @@ public abstract record CommandLineOptions
     [Option('d', "tolerance", HelpText = "Time tolerance in minutes in identifying suitable satellite images when combining", Required = false, Default = 30)]
     public int ToleranceMinutes { get; set; }
 
-    [Option('D', "definitions", HelpText = "Path to custom satellite definitions", Required = false)]
+    [Option('D', "definitions", HelpText = "Path to custom satellite definitions JSON file", Required = false)]
     public string? DefinitionsPath { get; set; }
 
     [Option('e', "endtimestamp", HelpText = "End timestamp in UTC if stitching multiple files; e.g. 2020-12-20T23:00:30", Required = false)]
@@ -52,6 +52,9 @@ public abstract record CommandLineOptions
 
     [Option('n', HelpText = "Don't add gaussian noise to output image", Required = false)]
     public bool NoNoise { get; set; }
+    
+    [Option('p', "imagepaths", HelpText = "Path to image path JSON file", Required = false)]
+    public string? ImagePaths { get; set; }
 
     [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
     public bool Quiet { get; set; }

@@ -111,7 +111,7 @@ public class SetTargetLongitudeTests : AbstractTests
         _step.TargetTimestamp = targetTimestamp;
         _step.Run(new StepExecutionContext());
 
-        Assert.NotNull(_step.Longitude);
+        _step.Longitude.Should().NotBeNull();
         Angle.FromRadians(_step.Longitude!.Value).Degrees.Should().BeApproximately(expectedLongitude, Precision);
     }
 }

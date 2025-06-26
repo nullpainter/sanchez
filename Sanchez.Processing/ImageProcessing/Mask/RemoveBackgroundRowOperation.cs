@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 using Sanchez.Processing.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Mask;
 

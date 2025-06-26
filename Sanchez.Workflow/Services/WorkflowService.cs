@@ -24,23 +24,13 @@ public interface IWorkflowService
     Task StartAsync(CancellationTokenSource cancellationToken);
 }
 
-public sealed class WorkflowService : IWorkflowService, IDisposable
+public sealed class WorkflowService(
+    RenderOptions options,
+    IWorkflowHost host) : IWorkflowService, IDisposable
 {
-    private readonly RenderOptions _options;
-    private readonly IWorkflowHost _host;
-
-    private readonly AutoResetEvent _resetEvent;
+    private readonly AutoResetEvent _resetEvent = new(false);
     private string? _workflowId;
     private bool _initialised;
-
-    public WorkflowService(
-        RenderOptions options,
-        IWorkflowHost host)
-    {
-        _options = options;
-        _host = host;
-        _resetEvent = new AutoResetEvent(false);
-    }
 
     public void Initialise(CancellationTokenSource cancellationToken)
     {
@@ -48,8 +38,8 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
 
         RegisterWorkflows();
 
-        _host.OnStepError += (workflow, _, exception) => OnStepError(exception, workflow);
-        _host.OnLifeCycleEvent += evt => OnLifeCycleEvent(cancellationToken, evt);
+        host.OnStepError += (workflow, _, exception) => OnStepError(exception, workflow);
+        host.OnLifeCycleEvent += evt => OnLifeCycleEvent(cancellationToken, evt);
         Console.CancelKeyPress += (_, e) => CancelKeyPress(cancellationToken, e);
 
         _initialised = true;
@@ -57,12 +47,12 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
 
     private void RegisterWorkflows()
     {
-        _host.RegisterWorkflow<GeostationaryWorkflow, GeostationaryWorkflowData>();
-        _host.RegisterWorkflow<GeostationaryReprojectedWorkflow, StitchWorkflowData>();
-        _host.RegisterWorkflow<EquirectangularStitchWorkflow, StitchWorkflowData>();
-        _host.RegisterWorkflow<EquirectangularTimelapseWorkflow, TimelapseWorkflowData>();
-        _host.RegisterWorkflow<EquirectangularWorkflow, EquirectangularWorkflowData>();
-        _host.RegisterWorkflow<GeostationaryReprojectedTimelapseWorkflow, GeostationaryTimelapseWorkflowData>();
+        host.RegisterWorkflow<GeostationaryWorkflow, GeostationaryWorkflowData>();
+        host.RegisterWorkflow<GeostationaryReprojectedWorkflow, StitchWorkflowData>();
+        host.RegisterWorkflow<EquirectangularStitchWorkflow, StitchWorkflowData>();
+        host.RegisterWorkflow<EquirectangularTimelapseWorkflow, TimelapseWorkflowData>();
+        host.RegisterWorkflow<EquirectangularWorkflow, EquirectangularWorkflowData>();
+        host.RegisterWorkflow<GeostationaryReprojectedTimelapseWorkflow, GeostationaryTimelapseWorkflowData>();
     }
 
     /// <summary>
@@ -72,7 +62,7 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
     {
         args.Cancel = true;
 
-        _host.StopAsync(cancellationToken.Token).Wait();
+        host.StopAsync(cancellationToken.Token).Wait();
         DisposeData();
 
         _resetEvent.Set();
@@ -101,17 +91,20 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
         var data = (WorkflowData) GetWorkflow().Data;
         if (data.ProgressBar != null) data.ProgressBar.Message = $"Cancelled after rendering {data.RenderedCount} images";
 
-        _host.TerminateWorkflow(evt.WorkflowInstanceId).GetAwaiter().GetResult();
+        host.TerminateWorkflow(evt.WorkflowInstanceId).GetAwaiter().GetResult();
         DisposeData();
 
         _resetEvent.Set();
     }
 
-    private WorkflowInstance GetWorkflow() => _host.PersistenceStore.GetWorkflowInstance(_workflowId).GetAwaiter().GetResult();
+    private WorkflowInstance GetWorkflow() => host.PersistenceStore.GetWorkflowInstance(_workflowId).GetAwaiter().GetResult();
 
     private void OnStepError(Exception exception, WorkflowInstance workflow)
     {
         DisposeData();
+        
+        // Silently ignore task cancellation exceptions as this is likely caused by user-initialised cancellation
+        if (exception.GetBaseException().GetType() == typeof(TaskCanceledException)) return;
 
         switch (exception)
         {
@@ -120,7 +113,7 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
                 Log.Warning("{ValidationMessage}", validationException.Message);
                 break;
             default:
-                if (!_options.Verbose) Console.WriteLine("Unhandled failure; check logs for details, or run again with verbose logging (-v / --verbose)");
+                if (!options.Verbose) Console.WriteLine("Unhandled failure; check logs for details, or run again with verbose logging (-v / --verbose)");
                 Log.Error(exception, "Unhandled failure in workflow");
                 break;
         }
@@ -135,33 +128,33 @@ public sealed class WorkflowService : IWorkflowService, IDisposable
         if (!_initialised) throw new InvalidOperationException($"Call {nameof(Initialise)}() before starting a workflow.");
 
         // Start workflow host
-        await _host.StartAsync(cancellationToken.Token);
+        await host.StartAsync(cancellationToken.Token);
 
-        _workflowId = _options.Projection switch
+        _workflowId = options.Projection switch
         {
             // Geostationary timelapse with target longitude
-            ProjectionType.Geostationary when _options.GeostationaryRender!.Longitude != null && _options.Interval != null
-                => await _host.StartWorkflow(WorkflowConstants.GeostationaryReprojectedTimelapse),
+            ProjectionType.Geostationary when options.GeostationaryRender!.Longitude != null && options.Interval != null
+                => await host.StartWorkflow(WorkflowConstants.GeostationaryReprojectedTimelapse),
 
             // Geostationary with target longitude
-            ProjectionType.Geostationary when _options.GeostationaryRender!.Longitude != null
-                => await _host.StartWorkflow(WorkflowConstants.GeostationaryReprojected),
+            ProjectionType.Geostationary when options.GeostationaryRender!.Longitude != null
+                => await host.StartWorkflow(WorkflowConstants.GeostationaryReprojected),
 
             // Geostationary without target longitude
             ProjectionType.Geostationary
-                => await _host.StartWorkflow(WorkflowConstants.Geostationary),
+                => await host.StartWorkflow(WorkflowConstants.Geostationary),
 
             // Equirectangular stitched timelapse
-            ProjectionType.Equirectangular when _options is { StitchImages: true, Interval: not null }
-                => await _host.StartWorkflow(WorkflowConstants.EquirectangularTimelapse),
+            ProjectionType.Equirectangular when options is { StitchImages: true, Interval: not null }
+                => await host.StartWorkflow(WorkflowConstants.EquirectangularTimelapse),
 
             // Equirectangular stitched
-            ProjectionType.Equirectangular when _options.StitchImages
-                => await _host.StartWorkflow(WorkflowConstants.EquirectangularBatch),
+            ProjectionType.Equirectangular when options.StitchImages
+                => await host.StartWorkflow(WorkflowConstants.EquirectangularBatch),
 
             // Equirectangular 
             ProjectionType.Equirectangular
-                => await _host.StartWorkflow(WorkflowConstants.Equirectangular),
+                => await host.StartWorkflow(WorkflowConstants.Equirectangular),
 
             _ => throw new InvalidOperationException("Unhandled projection scenario")
         };

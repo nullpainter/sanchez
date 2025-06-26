@@ -6,15 +6,11 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-internal class InitialiseUnderlayCache : StepBody
+internal class InitialiseUnderlayCache(IUnderlayCacheRepository cacheRepository) : StepBody
 {
-    private readonly IUnderlayCacheRepository _cacheRepository;
-
-    public InitialiseUnderlayCache(IUnderlayCacheRepository cacheRepository) => _cacheRepository = cacheRepository;
-
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        _cacheRepository.Initialise();
+        cacheRepository.Initialise();
         return ExecutionResult.Next();
     }
 }

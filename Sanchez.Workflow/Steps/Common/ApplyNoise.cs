@@ -12,19 +12,15 @@ using WorkflowCore.Models;
 namespace Sanchez.Workflow.Steps.Common;
 
 [UsedImplicitly(ImplicitUseTargetFlags.Members)]
-public class ApplyNoise : StepBody
+public class ApplyNoise(RenderOptions options) : StepBody
 {
-    private readonly RenderOptions _options;
-
     public Image<Rgba32>? Image { get; set; }
-
-    public ApplyNoise(RenderOptions options) => _options = options;
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
         ArgumentNullException.ThrowIfNull(Image);
         
-        if (_options.Noise)
+        if (options.Noise)
         {
             Image.ApplyGaussianNoise();
         }

@@ -1,9 +1,11 @@
-﻿namespace Sanchez.Processing.Extensions;
+﻿using SixLabors.ImageSharp;
+
+namespace Sanchez.Processing.Extensions;
 
 public static class ColorExtensions
 {
     /// <summary>
-    ///     Converts a HTML hex string to a <see cref="Color" />.
+    ///     Converts an HTML hex string to a <see cref="Color" />.
     ///
     /// Supported ImageSharp triplet formats are #xxx, #xxxxxx, and #xxxxxxxx hex formats with or without the leading #.
     /// </summary>

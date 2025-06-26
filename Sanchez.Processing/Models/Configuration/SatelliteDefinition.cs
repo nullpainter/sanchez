@@ -62,11 +62,16 @@ public class SatelliteDefinition
     public double Height { get; }
 
     /// <summary>
-    ///     Image crop ratio. This is expected to be a four element array of {top, right, bottom, left}.
+    ///     Image crop ratio. This is expected to be a four-element array of {top, right, bottom, left}.
     /// </summary>
     public double[]? Crop { get; }
 
     public float Brightness { get; }
 
     public IFilenameParser FilenameParser { get; }
+    
+    /// <summary>
+    ///     Optional root directory for satellite images, used for disambiguation where required.
+    /// </summary>
+    public string? RootDirectory { get; set; }
 }

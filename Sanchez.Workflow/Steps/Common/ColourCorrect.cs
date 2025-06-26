@@ -10,12 +10,9 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-public class ColourCorrect : StepBody
+public class ColourCorrect(RenderOptions options) : StepBody
 {
-    private readonly RenderOptions _options;
     public Image<Rgba32>? TargetImage { get; [UsedImplicitly] set; }
-
-    public ColourCorrect(RenderOptions options) => _options = options;
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
@@ -25,8 +22,8 @@ public class ColourCorrect : StepBody
         TargetImage.Mutate(imageContext =>
         {
             imageContext
-                .Brightness(_options.Brightness)
-                .Saturate(_options.Saturation);
+                .Brightness(options.Brightness)
+                .Saturate(options.Saturation);
         });
 
         return ExecutionResult.Next();

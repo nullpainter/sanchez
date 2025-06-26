@@ -9,22 +9,11 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-internal sealed class CreateActivity : StepBody
+internal sealed class CreateActivity(
+    RenderOptions options,
+    ILogger<CreateActivity> logger,
+    ISatelliteImageLoader loader) : StepBody
 {
-    private readonly RenderOptions _options;
-    private readonly ILogger<CreateActivity> _logger;
-    private readonly ISatelliteImageLoader _loader;
-
-    public CreateActivity(
-        RenderOptions options,
-        ILogger<CreateActivity> logger,
-        ISatelliteImageLoader loader)
-    {
-        _options = options;
-        _logger = logger;
-        _loader = loader;
-    }
-
     internal Activity? Activity { get; private set; }
     public List<Registration>? SourceRegistrations { get; set; }
 
@@ -33,8 +22,8 @@ internal sealed class CreateActivity : StepBody
         ArgumentNullException.ThrowIfNull(SourceRegistrations);
 
         // Load images
-        _logger.LogInformation("Loading source images");
-        Activity = _loader.RegisterImages(SourceRegistrations, _options.Timestamp);
+        logger.LogInformation("Loading source images");
+        Activity = loader.RegisterImages(SourceRegistrations, options.Timestamp);
 
         return ExecutionResult.Next();
     }

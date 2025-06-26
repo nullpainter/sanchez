@@ -3,6 +3,8 @@ using Sanchez.Processing.Extensions;
 using Sanchez.Processing.Extensions.Images;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Projections;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Underlay;
 

@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Numerics;
 using Sanchez.Processing.Models;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.ColorSpaces;
 using SixLabors.ImageSharp.ColorSpaces.Conversion;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Atmosphere;
 

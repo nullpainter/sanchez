@@ -13,7 +13,8 @@ public abstract class AbstractFilenameParser : IFilenameParser
     {
         var matches = Regex.Matches(filename);
 
-        if (!matches.Any()) return null;
+        if (matches.Count == 0) return null;
+        
         var match = matches[0];
         if (match.Groups.Count != 2) throw new InvalidOperationException($"Invalid regular expression for {GetType().Name}; expected one component.");
 

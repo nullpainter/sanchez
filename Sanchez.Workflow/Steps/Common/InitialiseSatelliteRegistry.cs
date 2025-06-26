@@ -11,29 +11,20 @@ namespace Sanchez.Workflow.Steps.Common;
 /// <summary>
 ///     Registers all known satellites.
 /// </summary>
-internal class InitialiseSatelliteRegistry : StepBodyAsync
+internal class InitialiseSatelliteRegistry(
+    ISatelliteRegistry satelliteRegistry,
+    ILogger<InitialiseSatelliteRegistry> logger) : StepBodyAsync
 {
-    private readonly ISatelliteRegistry _satelliteRegistry;
-    private readonly ILogger<InitialiseSatelliteRegistry> _logger;
-
-    public InitialiseSatelliteRegistry(
-        ISatelliteRegistry satelliteRegistry, 
-        ILogger<InitialiseSatelliteRegistry> logger)
-    {
-        _satelliteRegistry = satelliteRegistry;
-        _logger = logger;
-    }
-
     public override async Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
         try
         {
-            await _satelliteRegistry.InitialiseAsync();
+            await satelliteRegistry.InitialiseAsync();
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Unable to parse satellite definition file");
-            throw new ValidationException("Unable to parse satellite definition file; check logs for details.");
+            logger.LogError(e, "Unable to parse satellite or image path definition file");
+            throw new ValidationException("Unable to parse satellite or image path definition file; check logs for details.");
         }
 
         return ExecutionResult.Next();

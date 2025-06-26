@@ -20,19 +20,8 @@ public interface IFileService
     bool ShouldWrite(string path);
 }
 
-public class FileService : IFileService
+public class FileService(RenderOptions options, ISatelliteRegistry registry) : IFileService
 {
-    private readonly RenderOptions _options;
-    private readonly ISatelliteRegistry _registry;
-
-    public FileService(
-        RenderOptions options,
-        ISatelliteRegistry registry)
-    {
-        _options = options;
-        _registry = registry;
-    }
-
     public List<Registration> ToRegistrations(List<string> sourceFiles, CancellationToken ct = default)
     {
         var registrations = new List<Registration>();
@@ -41,7 +30,7 @@ public class FileService : IFileService
         {
             if (ct.IsCancellationRequested) return registrations;
                 
-            var (definition, timestamp) = _registry.Locate(file);
+            var (definition, timestamp) = registry.Locate(file);
             if (definition == null) continue;
 
             registrations.Add(new Registration(file, definition, timestamp));
@@ -56,12 +45,12 @@ public class FileService : IFileService
     /// </summary>
     public List<string> GetSourceFiles()
     {
-        var absolutePath = Path.GetFullPath(_options.SourcePath);
+        var absolutePath = Path.GetFullPath(options.SourcePath);
 
         // Source is a single file
-        if (!_options.MultipleSources)
+        if (!options.MultipleSources)
         {
-            return File.Exists(absolutePath) ? new List<string> { absolutePath } : new List<string>();
+            return File.Exists(absolutePath) ? [absolutePath] : [];
         }
 
         // If the source is a directory, enumerate all files
@@ -90,7 +79,7 @@ public class FileService : IFileService
     public bool ShouldWrite(string path)
     {
         // Verify that the output file doesn't already exist and that the target folder isn't a file if using a bulk source
-        return _options.Force || !File.Exists(path);
+        return options.Force || !File.Exists(path);
     }
 
     private static string GetGlobBase(string path)

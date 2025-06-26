@@ -1,4 +1,7 @@
-﻿using SixLabors.ImageSharp.Processing.Processors.Normalization;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Processing.Processors.Normalization;
 
 namespace Sanchez.Processing.Extensions.Images;
 

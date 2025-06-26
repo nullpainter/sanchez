@@ -60,7 +60,7 @@ public class OffsetImageTests : AbstractTests
                 LongitudeRange = new ProjectionRange(new AngleRange(0, 0))
             };
 
-        _step.Activity = new Activity(new[] { registration });
+        _step.Activity = new Activity([registration]);
 
         // Source image sanity check
         _image[0, 0].R.Should().Be(255);

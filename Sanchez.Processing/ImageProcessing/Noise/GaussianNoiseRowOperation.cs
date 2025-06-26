@@ -1,14 +1,15 @@
 ﻿using System.Numerics;
 using Sanchez.Processing.Models;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.ImageProcessing.Noise;
 
-public class GaussianNoiseRowOperation
+public static class GaussianNoiseRowOperation
 {
     private const int Mean = 0;
     private const int StdDev = 1;
 
-    public void Invoke(Span<Vector4> row)
+    public static void Invoke(Span<Vector4> row)
     {
         var random = new Random();
 

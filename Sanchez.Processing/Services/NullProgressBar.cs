@@ -5,12 +5,8 @@ namespace Sanchez.Processing.Services;
 /// <summary>
 ///     Progress bar which writes no output. This is required to be used if no console is available.
 /// </summary>
-public sealed class NullProgressBar : ProgressBarBase, IProgressBar
+public sealed class NullProgressBar() : ProgressBarBase(0, null, null), IProgressBar
 {
-    public NullProgressBar() : base(0, null, null)
-    {
-    }
-
     protected override void DisplayProgress()
     {
     }

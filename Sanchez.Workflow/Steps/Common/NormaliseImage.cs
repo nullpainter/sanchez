@@ -12,17 +12,8 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-internal sealed class NormaliseImage : StepBody, IRegistrationStepBody
+internal sealed class NormaliseImage(ILogger<NormaliseImage> logger, RenderOptions options) : StepBody, IRegistrationStepBody
 {
-    private readonly ILogger<NormaliseImage> _logger;
-    private readonly RenderOptions _options;
-
-    public NormaliseImage(ILogger<NormaliseImage> logger, RenderOptions options)
-    {
-        _logger = logger;
-        _options = options;
-    }
-
     public Registration? Registration { get; set; }
 
     public override ExecutionResult Run(IStepExecutionContext context)
@@ -31,7 +22,7 @@ internal sealed class NormaliseImage : StepBody, IRegistrationStepBody
 
         NormaliseEwsCrop();
 
-        Registration.Normalise(_options);
+        Registration.Normalise(options);
         return ExecutionResult.Next();
     }
 
@@ -50,7 +41,7 @@ internal sealed class NormaliseImage : StepBody, IRegistrationStepBody
 
         if (operation.IsRightCrop(Registration.Image)) return;
             
-        _logger.LogInformation("Swapping horizontal crop bounds for EWS-G1");
+        logger.LogInformation("Swapping horizontal crop bounds for EWS-G1");
         Registration.FlipHorizontalCrop = true;
     }
 }

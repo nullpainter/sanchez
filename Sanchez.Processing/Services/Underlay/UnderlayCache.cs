@@ -2,6 +2,8 @@
 using Sanchez.Processing.Helpers;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Sanchez.Processing.Services.Underlay;
 

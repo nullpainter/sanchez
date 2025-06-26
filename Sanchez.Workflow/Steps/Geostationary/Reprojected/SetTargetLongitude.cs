@@ -8,15 +8,12 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Geostationary.Reprojected;
 
-internal class SetTargetLongitude : StepBody
+internal class SetTargetLongitude(RenderOptions options) : StepBody
 {
-    private readonly RenderOptions _options;
-
-    public SetTargetLongitude(RenderOptions options) => _options = options;
     public double? Longitude { get; set; }
 
     /// <summary>
-    ///     Timestamp of currently-processed step.
+    ///     Timestamp of currently processed step.
     /// </summary>
     public DateTime? TargetTimestamp { get; set; }
 
@@ -26,7 +23,7 @@ internal class SetTargetLongitude : StepBody
     {
         ArgumentNullException.ThrowIfNull(TargetTimestamp);
 
-        var geostationaryOptions = _options.GeostationaryRender!;
+        var geostationaryOptions = options.GeostationaryRender!;
 
         Longitude = geostationaryOptions.EndLongitude == null
             ? geostationaryOptions.Longitude

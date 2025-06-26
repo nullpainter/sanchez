@@ -90,6 +90,33 @@
     ]
   },
   {
+    "DisplayName": "Electro-L N3",
+    "FilenameSuffix": "[1-3]",
+    "FilenameParser": "Electro",
+    "Longitude": 76,
+    "Brightness": 1.0,
+    "Crop": [
+      0.012703,
+      0.012703,
+      0.012703,
+      0.012703
+    ]
+  },
+  {
+    "DisplayName": "Electro-L N3",
+    "FilenameSuffix": "[4-9]",
+    "FilenameParser": "Electro",
+    "Invert": true,
+    "Longitude": 76,
+    "Brightness": 1.0,
+    "Crop": [
+      0.012703,
+      0.012703,
+      0.012703,
+      0.012703
+    ]
+  },
+  {
     "DisplayName": "EWS-G1-GOES13",
     "FilenamePrefix": "(?:EWS-G1|G13)_[2-5]_",
     "FilenameParser": "Goesproc",

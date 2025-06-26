@@ -3,12 +3,8 @@ using Sanchez.Processing.Extensions;
 
 namespace Sanchez.Processing.ImageProcessing.Offset;
 
-public class OffsetRowOperation 
+public class OffsetRowOperation(int amount)
 {
-    private readonly int _amount;
-
-    public OffsetRowOperation(int amount) => _amount = amount;
-
     public void Invoke(Span<Vector4> row)
     {
         var buffer = new Vector4[row.Length];
@@ -16,7 +12,7 @@ public class OffsetRowOperation
 
         for (var x = 0; x < row.Length; x++)
         {
-            var targetOffset = (x - _amount).Limit(0, buffer.Length);
+            var targetOffset = (x - amount).Limit(0, buffer.Length);
             row[x] = buffer[targetOffset];
         }
     }

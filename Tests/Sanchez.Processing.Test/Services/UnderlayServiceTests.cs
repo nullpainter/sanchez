@@ -24,7 +24,7 @@ public class UnderlayServiceTests : AbstractTests
     public async Task EquirectangularUnderlay()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
 
         var data = new UnderlayProjectionData(
             ProjectionType.Equirectangular,
@@ -45,7 +45,7 @@ public class UnderlayServiceTests : AbstractTests
     public async Task EquirectangularUnderlayNoCrop()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
 
         var data = new UnderlayProjectionData(
             ProjectionType.Equirectangular,
@@ -66,7 +66,7 @@ public class UnderlayServiceTests : AbstractTests
     public async Task EquirectangularUnderlayWithCrop()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
 
         var options = new UnderlayProjectionData(
             ProjectionType.Equirectangular,
@@ -86,7 +86,7 @@ public class UnderlayServiceTests : AbstractTests
     public async Task GeostationaryUnderlay()
     {
         var (definition, _) = SatelliteRegistry.Locate(Goes16DefinitionPrefix);
-        Assert.NotNull(definition, "Unable to find satellite definition");
+        definition.Should().NotBeNull("Unable to find satellite definition");
 
         var options = new UnderlayProjectionData(
             ProjectionType.Geostationary,

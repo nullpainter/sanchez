@@ -13,26 +13,12 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Equirectangular;
 
-public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
+public class ShouldWrite(   
+    RenderOptions options,
+    StitchedFilenameProvider filenameProvider,
+    ILogger<ShouldWrite> logger,
+    IFileService fileService) : StepBody, IActivityStepBody, IProgressBarStepBody
 {
-    private readonly RenderOptions _options;
-    private readonly StitchedFilenameProvider _filenameProvider;
-    private readonly ILogger<ShouldWrite> _logger;
-    private readonly IFileService _fileService;
-
-    public ShouldWrite(
-        RenderOptions options,
-        StitchedFilenameProvider filenameProvider,
-        ILogger<ShouldWrite> logger,
-        IFileService fileService)
-    {
-        _options = options;
-        _filenameProvider = filenameProvider;
-        _logger = logger;
-        _logger = logger;
-        _fileService = fileService;
-    }
-
     public IProgressBar? ProgressBar { get; set; }
     public Activity? Activity { get; set; }
     public DateTime? Timestamp { get; set; }
@@ -45,33 +31,33 @@ public class ShouldWrite : StepBody, IActivityStepBody, IProgressBarStepBody
         ArgumentNullException.ThrowIfNull(Timestamp);
         ArgumentNullException.ThrowIfNull(ProgressBar);
 
-        Activity.OutputPath = _filenameProvider.GetOutputFilename(Timestamp.Value);
+        Activity.OutputPath = filenameProvider.GetOutputFilename(Timestamp.Value);
 
-        if (!Activity.Registrations.Any())
+        if (Activity.Registrations.Count == 0)
         {
-            _logger.LogInformation("No images found; skipping");
+            logger.LogInformation("No images found; skipping");
 
             ProgressBar.Tick($"Scanning {Timestamp:s}{Identifier}");
             return ExecutionResult.Outcome(false);
         }
 
         // Verify minimum number of satellites
-        if (_options.MinSatellites != null && Activity.Registrations.Count < _options.MinSatellites)
+        if (options.MinSatellites != null && Activity.Registrations.Count < options.MinSatellites)
         {
-            _logger.LogInformation("Fewer than {MinSatellites} for {Timestamp}; skipping", _options.MinSatellites, Timestamp);
+            logger.LogInformation("Fewer than {MinSatellites} for {Timestamp}; skipping", options.MinSatellites, Timestamp);
 
             ProgressBar.Tick($"Skipping {Timestamp:s}");
             return ExecutionResult.Outcome(false);
         }
 
         // Verify that the output file can be written
-        if (_fileService.ShouldWrite(Activity.OutputPath))
+        if (fileService.ShouldWrite(Activity.OutputPath))
         {
             ProgressBar.Tick($"Processing {Timestamp:s}{Identifier}");
             return ExecutionResult.Outcome(true);
         }
 
-        _logger.LogInformation("Output file {OutputFilename} exists; not overwriting", Activity.OutputPath);
+        logger.LogInformation("Output file {OutputFilename} exists; not overwriting", Activity.OutputPath);
         AlreadyRenderedCount++;
 
         ProgressBar.Tick($"Skipping {Timestamp:s}{Identifier}");

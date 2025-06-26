@@ -1,5 +1,6 @@
 ﻿using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Projections;
+using SixLabors.ImageSharp;
 
 namespace Sanchez.Processing.Models;
 
@@ -64,6 +65,11 @@ public sealed record RenderOptions
     ///     Path to satellite definitions.
     /// </summary>
     public string DefinitionsPath { get; set; } = Constants.DefaultDefinitionsPath;
+    
+    /// <summary>
+    ///     Optional path to image path configuration.
+    /// </summary>
+    public string? ImagePaths { get; set; }
 
     /// <summary>
     ///     If no underlay should be rendered.

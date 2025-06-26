@@ -9,12 +9,8 @@ using WorkflowCore.Models;
 
 namespace Sanchez.Workflow.Steps.Common;
 
-internal sealed class LogCompletion : StepBody, IProgressBarStepBody
+internal sealed class LogCompletion(ILogger<LogCompletion> logger) : StepBody, IProgressBarStepBody
 {
-    private readonly ILogger<LogCompletion> _logger;
-
-    public LogCompletion(ILogger<LogCompletion> logger) => _logger = logger;
-        
     public int RenderedCount { get; [UsedImplicitly] set; }
     public int AlreadyRenderedCount { get; [UsedImplicitly] set; }
         
@@ -28,7 +24,7 @@ internal sealed class LogCompletion : StepBody, IProgressBarStepBody
         if (AlreadyRenderedCount > 0) message += $"; skipped {AlreadyRenderedCount} {(AlreadyRenderedCount == 1 ? "image" : "images")}";
 
         ProgressBar.Tick(message);
-        _logger.LogInformation(message);
+        logger.LogInformation(message);
 
         return ExecutionResult.Next();
     }

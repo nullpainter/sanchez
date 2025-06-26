@@ -5,7 +5,7 @@
 /// </summary>
 public class FileState : IDisposable
 {
-    private readonly List<string> _tempDirectories = new();
+    private readonly List<string> _tempDirectories = [];
 
     public string CreateFile(string directory, string filename)
     {

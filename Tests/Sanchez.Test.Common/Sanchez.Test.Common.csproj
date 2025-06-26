@@ -1,8 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <IsPackable>false</IsPackable>
-        <Nullable>disable</Nullable>
-    </PropertyGroup>
+   
     <ItemGroup>
       <ProjectReference Include="..\..\Sanchez.Processing\Sanchez.Processing.csproj" />
       <ProjectReference Include="..\..\Sanchez\Sanchez.csproj" />
@@ -12,6 +9,6 @@
         <PackageReference Include="nunit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        
     </ItemGroup>
+    
 </Project>

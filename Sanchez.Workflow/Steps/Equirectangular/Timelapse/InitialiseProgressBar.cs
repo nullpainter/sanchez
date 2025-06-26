@@ -18,7 +18,6 @@ internal class InitialiseImageProgressBar : StepBody, IProgressBarStepBody
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
-        ArgumentNullException.ThrowIfNull(MaxTicks);
         ArgumentNullException.ThrowIfNull(ProgressBar);
 
         var options = ProgressBarFactory.DefaultOptions();
