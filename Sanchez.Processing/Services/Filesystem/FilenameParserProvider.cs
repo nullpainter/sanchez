@@ -10,6 +10,7 @@ public static class FilenameParserProvider
         {
             FilenameParserType.Goesproc => new GoesFilenameParser(prefix, suffix),
             FilenameParserType.Xrit => new Gk2AFilenameParser(prefix, suffix),
+            FilenameParserType.SatDumpGK2APlugin => new Gk2ASatDumpVariantFilenameParser(prefix, suffix),
             FilenameParserType.Electro => new ElectroFilenameParser(prefix, suffix),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };

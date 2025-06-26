@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "DisplayName": "GOES-16",
     "FilenamePrefix": "GOES16_FD_CH13_(?!enhanced)",
@@ -19,6 +19,13 @@
     "FilenamePrefix": "GOES18_FD_CH13_(?!enhanced)",
     "FilenameParser": "Goesproc",
     "Longitude": -137.0,
+    "Brightness": 0.95
+  },
+  {
+    "DisplayName": "GOES-19",
+    "FilenamePrefix": "GOES19_FD_CH13_(?!enhanced)",
+    "FilenameParser": "Goesproc",
+    "Longitude": -75.2,
     "Brightness": 0.95
   },
   {
@@ -53,6 +60,19 @@
     "DisplayName": "GEO-KOMPSAT-2A",
     "FilenamePrefix": "^IMG_FD_.*",
     "FilenameParser": "Xrit",
+    "Longitude": 128.2,
+    "Brightness": 0.97,
+    "Crop": [
+      0.006363,
+      0.006363,
+      0.006363,
+      0.006363
+    ]
+  },
+  {
+    "DisplayName": "GEO-KOMPSAT-2A-SatDump-Variant",
+    "FilenamePrefix": "^GK2A_IR105_",
+    "FilenameParser": "SatDumpGK2APlugin",
     "Longitude": 128.2,
     "Brightness": 0.97,
     "Crop": [
