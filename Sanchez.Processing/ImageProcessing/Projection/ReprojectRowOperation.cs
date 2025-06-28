@@ -14,7 +14,6 @@ namespace Sanchez.Processing.ImageProcessing.Projection;
 
 public class ReprojectRowOperation
 {
-    
     private static readonly ConcurrentDictionary<int, LatitudeCalculations> LatitudeCalculationCache = new();
     
     private readonly Registration _registration;
@@ -100,10 +99,10 @@ public class ReprojectRowOperation
         var target = _target;
         var yOffset = _yOffset;
 
-        return LatitudeCalculationCache.GetOrAdd(y, _ =>
+        return LatitudeCalculationCache.GetOrAdd(y, yValue =>
         {
             // Convert pixel row to latitude
-            var projectionY = ProjectionAngleConverter.FromY(y, target.Height + yOffset * 2);
+            var projectionY = ProjectionAngleConverter.FromY(yValue, target.Height + yOffset * 2);
 
             // Perform and cache intermediary geostationary latitude calculations
             return GeostationaryProjection.LatitudeCalculations(projectionY);

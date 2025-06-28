@@ -12,21 +12,26 @@ public static class ReverseGeostationaryProjection
 {
     private const double RadiusPolarSquared = RadiusPolar * RadiusPolar;
     private const double RadiusEquatorSquared = RadiusEquator * RadiusEquator;
+    
+    // Pre-computed constant to avoid division in hot path
+    private const double RadiusRatio = RadiusEquatorSquared / RadiusPolarSquared;
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static VerticalScanningCalculations VerticalScanningCalculations(double scanningY, double satelliteHeight)
     {
-        var calculations = new VerticalScanningCalculations
+        var cosY = Cos(scanningY);
+        var sinY = Sin(scanningY);
+        var adjustedHeight = satelliteHeight + RadiusEquator;
+
+        // Calculate directly instead of multiple property assignments
+        return new VerticalScanningCalculations
         {
-            CosY = Cos(scanningY),
-            SinY = Sin(scanningY),
-            SatelliteHeight = satelliteHeight + RadiusEquator
+            CosY = cosY,
+            SinY = sinY,
+            SatelliteHeight = adjustedHeight,
+            C = adjustedHeight * adjustedHeight - RadiusEquatorSquared,
+            T = cosY * cosY + RadiusRatio * sinY * sinY
         };
-
-        calculations.C = calculations.SatelliteHeight * calculations.SatelliteHeight - RadiusEquatorSquared;
-        calculations.T = calculations.CosY * calculations.CosY + RadiusEquatorSquared / RadiusPolarSquared * calculations.SinY * calculations.SinY;
-
-        return calculations;
     }
 
     /// <summary>
@@ -41,7 +46,8 @@ public static class ReverseGeostationaryProjection
     /// <param name="definition">satellite definition</param>
     /// <param name="latitude">calculated latitude in radians</param>
     /// <param name="longitude">calculated longitude in radians</param>
-    public static void ToLatitudeLongitude(double scanningX, double scanningY, double satelliteLongitude, double satelliteHeight,  out double latitude, out double longitude)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ToLatitudeLongitude(double scanningX, double scanningY, double satelliteLongitude, double satelliteHeight, out double latitude, out double longitude)
     {
         var verticalCalculations = VerticalScanningCalculations(scanningY, satelliteHeight);
         ToLatitudeLongitude(scanningX, verticalCalculations, satelliteLongitude, out latitude, out longitude);
@@ -55,31 +61,42 @@ public static class ReverseGeostationaryProjection
     /// <param name="satelliteLongitude">satellite longitude</param>
     /// <param name="latitude">calculated latitude in radians</param>
     /// <param name="longitude">calculated longitude in radians</param>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static void ToLatitudeLongitude(
-        double scanningX, VerticalScanningCalculations verticalScanningCalculations, double satelliteLongitude,  out double latitude, out double longitude)
+        double scanningX, VerticalScanningCalculations verticalScanningCalculations, double satelliteLongitude, out double latitude, out double longitude)
     {
         var satelliteHeight = verticalScanningCalculations.SatelliteHeight;
 
+        // Pre-compute trigonometric values
         var cosX = Cos(scanningX);
         var sinX = Sin(scanningX);
+        var cosXSquared = cosX * cosX;
 
         var cosY = verticalScanningCalculations.CosY;
         var sinY = verticalScanningCalculations.SinY;
         var t = verticalScanningCalculations.T;
         var c = verticalScanningCalculations.C;
 
-        var a = sinX * sinX + cosX * cosX * t;
+        // Calculate quadratic formula components
+        var a = sinX * sinX + cosXSquared * t;
         var b = -2 * satelliteHeight * cosX * cosY;
+        var discr = b * b - 4 * a * c;
+        
+        // Inline sqrt calculation for better performance
+        var rs = (-b - Sqrt(discr)) / (2 * a);
 
-        var rs = (-b - Sqrt(b * b - 4 * a * c)) / (2 * a);
-
+        // Pre-compute these values once as they're used multiple times
         var sx = rs * cosX * cosY;
         var sy = -rs * sinX;
         var sz = rs * cosX * sinY;
-
-        latitude = Atan(RadiusEquatorSquared / RadiusPolarSquared * (sz / Sqrt((satelliteHeight - sx) * (satelliteHeight - sx) + sy * sy)));
-        longitude = (satelliteLongitude - Atan(sy / (satelliteHeight - sx))).NormaliseLongitude();
+        
+        // Calculate distance term once
+        var satMinusSx = satelliteHeight - sx;
+        var distSqr = satMinusSx * satMinusSx + sy * sy;
+        
+        // Calculate latitude and longitude
+        latitude = Atan(RadiusRatio * (sz / Sqrt(distSqr)));
+        longitude = (satelliteLongitude - Atan(sy / satMinusSx)).NormaliseLongitude();
     }
 }
 

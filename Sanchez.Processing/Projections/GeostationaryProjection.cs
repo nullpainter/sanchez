@@ -12,28 +12,39 @@ public static class GeostationaryProjection
 {
     private const double RadiusPolarSquared = RadiusPolar * RadiusPolar;
     private const double RadiusEquatorSquared = RadiusEquator * RadiusEquator;
+    
+    // Pre-computed constant to avoid division in hot path
+    private const double RadiusRatio = RadiusEquatorSquared / RadiusPolarSquared;
+    
+    // Pre-computed constant for latitude calculations
+    private const double EccentricitySquared = Eccentricity * Eccentricity;
+    private const double LatitudeScaleFactor = RadiusPolarSquared / RadiusEquatorSquared;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static LatitudeCalculations LatitudeCalculations(double latitude)
     {
-        var geocentricLatitude = Atan(RadiusPolarSquared / RadiusEquatorSquared * Tan(latitude));
+        // Pre-compute values that are used multiple times
+        var geocentricLatitude = Atan(LatitudeScaleFactor * Tan(latitude));
         var cosLatitude = Cos(geocentricLatitude);
         var sinLatitude = Sin(geocentricLatitude);
+        
+        // Cache the cosine squared value which is used in multiple places
+        var cosLatitudeSquared = cosLatitude * cosLatitude;
 
-        var rc = RadiusPolar / Sqrt(1 - Eccentricity * Eccentricity * cosLatitude * cosLatitude);
+        var rc = RadiusPolar / Sqrt(1 - EccentricitySquared * cosLatitudeSquared);
         var sz = rc * sinLatitude;
+        var sz2 = sz * sz;
 
-        var calculations = new LatitudeCalculations
+        // Fill out the struct all at once to avoid unnecessary assignments
+        return new LatitudeCalculations
         {
             CosLatitude = cosLatitude,
             Rc = rc,
             Sz = sz,
-            Sz2 = sz * sz
+            Sz2 = sz2,
+            RcCosLatitude = rc * cosLatitude,
+            RadiusRatioSz2 = RadiusRatio * sz2
         };
-
-        calculations.RcCosLatitude = calculations.Rc * calculations.CosLatitude;
-        calculations.RadiusRatioSz2 = RadiusEquatorSquared / RadiusPolarSquared * calculations.Sz2;
-
-        return calculations;
     }
 
     /// <summary>
@@ -48,6 +59,7 @@ public static class GeostationaryProjection
     /// <param name="definition">satellite definition</param>
     /// <param name="scanningX">calculated horizontal scanning angle in radians</param>
     /// <param name="scanningY">calculated vertical scanning angle in radians</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ToScanningAngle(double latitude, double longitude, SatelliteDefinition definition, out double scanningX, out double scanningY)
     {
         var latitudeCalculations = LatitudeCalculations(latitude);
@@ -57,14 +69,21 @@ public static class GeostationaryProjection
     /// <summary>
     ///     Converts a latitude and longitude to a geostationary image scanning angle.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static void ToScanningAngle(LatitudeCalculations latitudeCalculations, double longitude, SatelliteDefinition definition, out double scanningX, out double scanningY)
     {
         var satelliteLongitude = definition.Longitude;
         var satelliteHeight = definition.Height + RadiusEquator;
 
-        var sx = satelliteHeight - latitudeCalculations.RcCosLatitude * Cos(longitude - satelliteLongitude);
-        var sy = -latitudeCalculations.RcCosLatitude * Sin(longitude - satelliteLongitude);
+        // Calculate longitude difference just once
+        var longitudeDifference = longitude - satelliteLongitude;
+        var cosLongDiff = Cos(longitudeDifference);
+        var sinLongDiff = Sin(longitudeDifference);
+        
+        var rcCosLat = latitudeCalculations.RcCosLatitude;
+        
+        var sx = satelliteHeight - rcCosLat * cosLongDiff;
+        var sy = -rcCosLat * sinLongDiff;
         var sy2 = sy * sy;
 
         // Check if geodetic angle is visible from satellite 
@@ -75,7 +94,10 @@ public static class GeostationaryProjection
         }
 
         // Calculate (x,y) scanning angle
-        scanningX = Asin(-sy / Sqrt(sx * sx + sy2 + latitudeCalculations.Sz2));
+        // Pre-compute the denominator for scanning angle calculations
+        var sqrtTerm = Sqrt(sx * sx + sy2 + latitudeCalculations.Sz2);
+        
+        scanningX = Asin(-sy / sqrtTerm);
         scanningY = Atan(latitudeCalculations.Sz / sx);
     }
 }
