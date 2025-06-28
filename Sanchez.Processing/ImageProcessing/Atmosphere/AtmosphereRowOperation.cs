@@ -14,9 +14,9 @@ public class AtmosphereRowOperation
     ///     Size to increase image by due to atmosphere rendering.
     /// </summary>
     public const float ImageScaleFactor = 1.05f;
-    
+
     private const float InnerOpacityScale = 0.7f;
-    
+
     private readonly Image<Rgba32> _source;
     private readonly ReadOnlyCollection<CieLch> _gradient;
 
@@ -37,6 +37,7 @@ public class AtmosphereRowOperation
     ///     Maximum distance from centre of Earth.
     /// </summary>
     private readonly double _maxDistance;
+
     private readonly float _opacity;
 
     /// <summary>
@@ -68,14 +69,17 @@ public class AtmosphereRowOperation
 
         _atmosphere = atmosphere;
         _converter = new ColorSpaceConverter();
-        _maxDistance = Distance(_source.Width, _source.Height);
+        _maxDistance = Distance(_source.Width, _source.Height * _source.Height);
     }
 
     public void Invoke(Span<Vector4> row, Point value)
     {
+        var yDistance = value.Y - _source.Height / 2d;
+        var yDistanceSquared = yDistance * yDistance;
+        
         for (var x = 0; x < row.Length; x++)
         {
-            var distance = Distance(x, value.Y);
+            var distance = Distance(x, yDistanceSquared);
 
             if (distance < 1 - _atmosphere) continue;
 
@@ -99,11 +103,9 @@ public class AtmosphereRowOperation
     ///     Distance from point to Earth's circumference. A value of 1 is on the circumference, and less
     ///     than 1 is inside the Earth.
     /// </summary>
-    private double Distance(int x, int y)
+    private double Distance(int x, double yDistanceSquared)
     {
         var xDistance = x - _source.Width / 2d;
-        var yDistance = y - _source.Height / 2d;
-
-        return xDistance * xDistance / _semiMajor2 + yDistance * yDistance / _semiMinor2 + BorderRatio;
+        return xDistance * xDistance / _semiMajor2 + (yDistanceSquared) / _semiMinor2 + BorderRatio;
     }
 }
