@@ -7,7 +7,7 @@
     <PackageVersion Include="AsyncFixer" Version="1.6.0" />
     <PackageVersion Include="AwesomeAssertions.Analyzers" Version="9.0.0" />
     <PackageVersion Include="CommandLineParser" Version="2.9.1" />
-    <PackageVersion Include="coverlet.collector" Version="3.2.0">
+    <PackageVersion Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
@@ -15,29 +15,29 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="Dapper" Version="2.0.123" />
-    <PackageVersion Include="dbup-sqlite" Version="5.0.8" />
+    <PackageVersion Include="Dapper" Version="2.1.66" />
+    <PackageVersion Include="dbup-sqlite" Version="6.0.1" />
     <PackageVersion Include="DotNet.Glob" Version="3.1.3" />
     <PackageVersion Include="ExifLibNet" Version="2.1.4" />
     <PackageVersion Include="Extend" Version="1.2.1" />
     <PackageVersion Include="AwesomeAssertions" Version="9.0.0" />
-    <PackageVersion Include="FluentValidation" Version="11.5.2" />
-    <PackageVersion Include="JetBrains.Annotations" Version="2022.3.1" />
+    <PackageVersion Include="FluentValidation" Version="12.0.0" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageVersion Include="Lindhart.Analyser.MissingAwaitWarning" Version="2.0.0" />
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="7.0.5" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="nunit" Version="3.13.3" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="4.4.2" />
-    <PackageVersion Include="Sentry" Version="3.30.0" />
-    <PackageVersion Include="Sentry.Serilog" Version="3.30.0" />
-    <PackageVersion Include="Serilog" Version="2.12.0" />
+    <PackageVersion Include="nunit" Version="4.3.2" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageVersion Include="Sentry" Version="5.11.2" />
+    <PackageVersion Include="Sentry.Serilog" Version="5.11.2" />
+    <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
-    <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />
-    <PackageVersion Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <PackageVersion Include="ShellProgressBar" Version="5.2.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.10" />
@@ -45,8 +45,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="TimeZoneConverter" Version="6.1.0" />
-    <PackageVersion Include="WorkflowCore" Version="3.8.2" />
+    <PackageVersion Include="TimeZoneConverter" Version="7.0.0" />
+    <PackageVersion Include="WorkflowCore" Version="3.14.0" />
     <PackageVersion Include="WorkflowCore.Testing" Version="3.8.2" />
   </ItemGroup>
 </Project>

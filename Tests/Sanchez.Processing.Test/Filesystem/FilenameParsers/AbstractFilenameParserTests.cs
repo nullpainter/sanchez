@@ -5,6 +5,8 @@ using Sanchez.Test.Common;
 
 namespace Sanchez.Processing.Test.Filesystem.FilenameParsers;
 
+#nullable enable
+
 public abstract class AbstractFilenameParserTests : AbstractTests
 {
     protected static SatelliteDefinition NewDefinition(FilenameParserType filenameParserType, string? prefix = null, string? suffix = null) 

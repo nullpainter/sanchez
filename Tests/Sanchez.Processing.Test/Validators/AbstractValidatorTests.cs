@@ -4,6 +4,8 @@ using Sanchez.Validators;
 
 namespace Sanchez.Processing.Test.Validators;
 
+#nullable enable
+
 public abstract class AbstractValidatorTests<T, TOptions> : AbstractTests
     where T : CommandLineOptionsValidator<TOptions>, new() 
     where TOptions : CommandLineOptions

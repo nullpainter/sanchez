@@ -1,4 +1,5 @@
-﻿using Sanchez.Models.CommandLine;
+﻿using AwesomeAssertions.Execution;
+using Sanchez.Models.CommandLine;
 using Sanchez.Processing.Models;
 using Sanchez.Processing.Models.Configuration;
 using Sanchez.Processing.Models.Options;
@@ -26,16 +27,20 @@ public class OptionsParserTests
         };
 
         var renderOptions = OptionsParser.Populate(options);
-        Assert.NotNull(renderOptions.GeostationaryRender);
 
-        renderOptions.GeostationaryRender!.Longitude.Should().Be(Angle.FromDegrees(147).Radians);
-        renderOptions.GeostationaryRender.AtmosphereAmount.Should().Be(0.5f);
-        renderOptions.InterpolationType.Should().Be(InterpolationType.NearestNeighbour);
-        renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.TwoKm);
-        renderOptions.ImageOffset.Should().Be(Constants.Satellite.Offset.TwoKm);
-        renderOptions.Force.Should().BeFalse();
-        renderOptions.Verbose.Should().BeFalse();
-        renderOptions.Quiet.Should().BeTrue();
+        using (new AssertionScope())
+        {
+            renderOptions.GeostationaryRender.Should().NotBeNull();
+
+            renderOptions.GeostationaryRender!.Longitude.Should().Be(Angle.FromDegrees(147).Radians);
+            renderOptions.GeostationaryRender.AtmosphereAmount.Should().Be(0.5f);
+            renderOptions.InterpolationType.Should().Be(InterpolationType.NearestNeighbour);
+            renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.TwoKm);
+            renderOptions.ImageOffset.Should().Be(Constants.Satellite.Offset.TwoKm);
+            renderOptions.Force.Should().BeFalse();
+            renderOptions.Verbose.Should().BeFalse();
+            renderOptions.Quiet.Should().BeTrue();
+        }
     }
 
     [Test]
@@ -57,28 +62,32 @@ public class OptionsParserTests
         };
 
         var renderOptions = OptionsParser.Populate(options);
-        Assert.NotNull(renderOptions.EquirectangularRender);
 
-        renderOptions.EquirectangularRender!.AutoCrop.Should().BeTrue();
+        using (new AssertionScope())
+        {
+            renderOptions.EquirectangularRender.Should().NotBeNull();
 
-        Assert.NotNull(renderOptions.EquirectangularRender.LatitudeRange);
-        Assert.NotNull(renderOptions.EquirectangularRender.LongitudeRange);
+            renderOptions.EquirectangularRender!.AutoCrop.Should().BeTrue();
 
-        renderOptions.EquirectangularRender.LatitudeRange!.Value.Start.Should().Be(Angle.FromDegrees(-50).Radians);
-        renderOptions.EquirectangularRender.LatitudeRange!.Value.End.Should().Be(Angle.FromDegrees(50).Radians);
+            renderOptions.EquirectangularRender.LatitudeRange.Should().NotBeNull();
+            renderOptions.EquirectangularRender.LongitudeRange.Should().NotBeNull();
 
-        renderOptions.EquirectangularRender.LongitudeRange!.Value.Start.Should().Be(Angle.FromDegrees(-180).Radians);
-        renderOptions.EquirectangularRender.LongitudeRange!.Value.End.Should().Be(Angle.FromDegrees(180).Radians);
+            renderOptions.EquirectangularRender.LatitudeRange!.Value.Start.Should().Be(Angle.FromDegrees(-50).Radians);
+            renderOptions.EquirectangularRender.LatitudeRange!.Value.End.Should().Be(Angle.FromDegrees(50).Radians);
 
-        renderOptions.SpatialResolution.Should().Be(Constants.Satellite.SpatialResolution.FourKm);
-        renderOptions.Tint.Should().Be(Color.FromRgb(255, 0, 0));
-        renderOptions.InterpolationType.Should().Be(InterpolationType.Bilinear);
-        renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.FourKm);
-        renderOptions.ImageOffset.Should().Be(Constants.Satellite.Offset.FourKm);
-        renderOptions.Interval.Should().Be(TimeSpan.FromMinutes(30));
-        renderOptions.Brightness.Should().Be(1.2f);
-        renderOptions.Saturation.Should().Be(0.5f);
-        renderOptions.Force.Should().BeTrue();
-        renderOptions.Verbose.Should().BeTrue();
+            renderOptions.EquirectangularRender.LongitudeRange!.Value.Start.Should().Be(Angle.FromDegrees(-180).Radians);
+            renderOptions.EquirectangularRender.LongitudeRange!.Value.End.Should().Be(Angle.FromDegrees(180).Radians);
+
+            renderOptions.SpatialResolution.Should().Be(Constants.Satellite.SpatialResolution.FourKm);
+            renderOptions.Tint.Should().Be(Color.FromRgb(255, 0, 0));
+            renderOptions.InterpolationType.Should().Be(InterpolationType.Bilinear);
+            renderOptions.ImageSize.Should().Be(Constants.Satellite.ImageSize.FourKm);
+            renderOptions.ImageOffset.Should().Be(Constants.Satellite.Offset.FourKm);
+            renderOptions.Interval.Should().Be(TimeSpan.FromMinutes(30));
+            renderOptions.Brightness.Should().Be(1.2f);
+            renderOptions.Saturation.Should().Be(0.5f);
+            renderOptions.Force.Should().BeTrue();
+            renderOptions.Verbose.Should().BeTrue();
+        }
     }
 }

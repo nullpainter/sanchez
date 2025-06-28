@@ -18,9 +18,9 @@ public class DatabaseMigrator(ILogger<DatabaseMigrator> logger) : IDatabaseMigra
     {
         var upgrader =
             DeployChanges.To
-                .SQLiteDatabase(connectionString)
+                .SqliteDatabase(connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                .LogToAutodetectedLog()
+                .LogToConsole()
                 .Build();
 
         var result = upgrader.PerformUpgrade();

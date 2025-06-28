@@ -7,8 +7,8 @@ namespace Sanchez.Processing.Test.Services;
 public class SatelliteRegistryTests : AbstractTests
 {
     [Test]
-    [Timeout(2000)]
-    public void PerformanceTest()
+    [CancelAfter(2000)]
+    public void PerformanceTest(CancellationToken ct)
     {
         for (var i = 0; i < 10000; i++)
         {
