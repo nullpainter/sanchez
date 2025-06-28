@@ -88,7 +88,7 @@ public class SatelliteRegistry(
             if (definition.RootDirectory != null &&
                 !fullPath.StartsWith(definition.RootDirectory, StringComparison.OrdinalIgnoreCase))
             {
-                logger.LogWarning(
+                logger.LogTrace(
                     "Skipping {Definition} handler for {Filename} as it is not under the root directory {RootDirectory}",
                     definition.DisplayName, filename, definition.RootDirectory);
                 
