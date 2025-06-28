@@ -54,10 +54,10 @@ public class SatelliteRegistry(
     {
         ArgumentNullException.ThrowIfNull(_definitions);
 
-        if (options.ImagePaths == null) return;
+        if (options.ImageRootPaths == null) return;
 
-        logger.LogInformation("Initialising image paths from {ImagePaths}", options.ImagePaths);
-        var json = await File.ReadAllTextAsync(options.ImagePaths);
+        logger.LogInformation("Initialising root image paths from {ImagePaths}", options.ImageRootPaths);
+        var json = await File.ReadAllTextAsync(options.ImageRootPaths);
 
         var paths = JsonConvert.DeserializeObject<List<ImagePathConfiguration>>(json)!;
 

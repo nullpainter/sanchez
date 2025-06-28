@@ -69,7 +69,7 @@ public sealed record RenderOptions
     /// <summary>
     ///     Optional path to image path configuration.
     /// </summary>
-    public string? ImagePaths { get; set; }
+    public string? ImageRootPaths { get; set; }
 
     /// <summary>
     ///     If no underlay should be rendered.
