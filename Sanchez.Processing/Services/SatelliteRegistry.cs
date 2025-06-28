@@ -23,7 +23,7 @@ public class SatelliteRegistry(
     public async Task InitialiseAsync()
     {
         logger.LogInformation("Initialising satellite registry from {DefinitionsPath}", options.DefinitionsPath);
-        
+
         var json = await File.ReadAllTextAsync(options.DefinitionsPath);
         var definitions = JsonConvert.DeserializeObject<List<SatelliteConfiguration>>(json);
 
@@ -55,7 +55,7 @@ public class SatelliteRegistry(
         ArgumentNullException.ThrowIfNull(_definitions);
 
         if (options.ImagePaths == null) return;
-        
+
         logger.LogInformation("Initialising image paths from {ImagePaths}", options.ImagePaths);
         var json = await File.ReadAllTextAsync(options.ImagePaths);
 
@@ -64,14 +64,17 @@ public class SatelliteRegistry(
         foreach (var path in paths)
         {
             // Validate satellite definition exists
-            var definition = _definitions.Find(d => d.DisplayName == path.Satellite);
-            if (definition == null)
+            var definitions = _definitions.Where(d => d.DisplayName == path.Satellite).ToList();
+            if (definitions.Count == 0)
             {
                 logger.LogWarning("Unable to find satellite definition for {Satellite}; ignoring image path", path.Satellite);
                 continue;
             }
 
-            definition.RootDirectory = Path.GetFullPath(path.Directory);
+            foreach (var definition in definitions)
+            {
+                definition.RootDirectory = Path.GetFullPath(path.Directory);
+            }
         }
     }
 
@@ -91,7 +94,7 @@ public class SatelliteRegistry(
                 logger.LogTrace(
                     "Skipping {Definition} handler for {Filename} as it is not under the root directory {RootDirectory}",
                     definition.DisplayName, filename, definition.RootDirectory);
-                
+
                 continue;
             }
 

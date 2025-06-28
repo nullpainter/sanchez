@@ -53,8 +53,8 @@ public abstract record CommandLineOptions
     [Option('n', HelpText = "Don't add gaussian noise to output image", Required = false)]
     public bool NoNoise { get; set; }
     
-    [Option('p', "imagepaths", HelpText = "Path to image path JSON file", Required = false)]
-    public string? ImagePaths { get; set; }
+    [Option('p', "imagepaths", HelpText = "Path to image root path JSON file", Required = false)]
+    public string? ImageRootPaths { get; set; }
 
     [Option('q', "quiet", HelpText = "Don't perform console output", Required = false, Default = false)]
     public bool Quiet { get; set; }

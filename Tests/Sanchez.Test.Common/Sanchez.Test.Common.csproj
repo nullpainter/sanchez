@@ -11,4 +11,10 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
     </ItemGroup>
     
+    <ItemGroup>
+      <None Update="Resources\ImagePaths.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+    
 </Project>

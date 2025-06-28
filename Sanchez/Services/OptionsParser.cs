@@ -69,7 +69,7 @@ public static class OptionsParser
 
         if (options.UnderlayPath != null) renderOptions.UnderlayPath = options.UnderlayPath;
         if (options.DefinitionsPath != null) renderOptions.DefinitionsPath = options.DefinitionsPath;
-        if (options.ImagePaths != null) renderOptions.ImagePaths = options.ImagePaths;
+        if (options.ImageRootPaths != null) renderOptions.ImagePaths = options.ImageRootPaths;
 
         SetOverlayOptions(options, renderOptions);
 

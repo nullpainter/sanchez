@@ -75,19 +75,39 @@ public class SatelliteRegistryTests : AbstractTests
     }
 
     [Test]
-    public void ElectroMatched()
+    public void ElectroN2Matched()
     {
         // Verify 4-9 definition
-        var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/200830_0230_6.jpg");
+        var (definition, timestamp) = SatelliteRegistry.Locate("c:/satellite/electro-l-n2/200830_0230_6.jpg");
         definition.Should().NotBeNull("satellite definition should have been found");
         timestamp.Should().NotBeNull("timestamp should have been extracted");
+        definition.DisplayName.Should().Be("Electro-L N2");
 
         definition!.FilenameParserType.Should().Be(FilenameParserType.Electro);
         timestamp.Should().Be(new DateTime(2020, 08, 29, 23, 30, 0));
 
         // Verify 1-3 definition
-        (definition, _) = SatelliteRegistry.Locate("c:/images/200830_0230_1.jpg");
+        (definition, _) = SatelliteRegistry.Locate("c:/satellite/electro-l-n2/200830_0230_1.jpg");
         definition.Should().NotBeNull("satellite definition should have been found");
+        definition.DisplayName.Should().Be("Electro-L N2");
+    }
+    
+    [Test]
+    public void ElectroN3Matched_ImageRootPath()
+    {
+        // Verify 4-9 definition, with a base path matching the test image root
+        var (definition, timestamp) = SatelliteRegistry.Locate("c:/satellite/electro-l-n3/200830_0230_6.jpg");
+        definition.Should().NotBeNull("satellite definition should have been found");
+        timestamp.Should().NotBeNull("timestamp should have been extracted");
+        definition.DisplayName.Should().Be("Electro-L N3");
+
+        definition!.FilenameParserType.Should().Be(FilenameParserType.Electro);
+        timestamp.Should().Be(new DateTime(2020, 08, 29, 23, 30, 0));
+
+        // Verify 1-3 definition
+        (definition, _) = SatelliteRegistry.Locate("c:/satellite/electro-l-n3/200830_0230_1.jpg");
+        definition.Should().NotBeNull("satellite definition should have been found");
+        definition.DisplayName.Should().Be("Electro-L N3");
     }
 
     [Test]

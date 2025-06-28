@@ -10,6 +10,7 @@ using Sanchez.Processing.Services.Underlay;
 using Sanchez.Services;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using Sanchez.Processing.Helpers;
 
 namespace Sanchez.Test.Common;
 
@@ -24,13 +25,15 @@ public abstract class AbstractTests
     protected const string Goes16Filename = "GOES17_FD_CH13_20200830T033031Z.jpg";
 
     private static string DefinitionsPath => Path.Combine(TestContext.CurrentContext.TestDirectory, Constants.DefaultDefinitionsPath);
+    private static string ImageRootPath => Path.Combine(TestContext.CurrentContext.TestDirectory, PathHelper.ResourcePath("ImagePaths.json"));
+    
     protected RenderOptions RenderOptions => GetService<RenderOptions>();
         
     protected ISatelliteRegistry SatelliteRegistry => GetService<ISatelliteRegistry>();
     private IUnderlayCacheRepository UnderlayCacheRepository => GetService<IUnderlayCacheRepository>();
 
-    private ServiceProvider ServiceProvider { get; set; }
-    protected FileState State { get; set;  }
+    private ServiceProvider ServiceProvider { get; set; } = null!;
+    protected FileState State { get; private set; } = null!;
 
     [SetUp]
     public virtual void SetUp() => State = new FileState();
@@ -47,7 +50,8 @@ public abstract class AbstractTests
             InterpolationType = InterpolationOptions.B,
             SpatialResolution = Constants.Satellite.SpatialResolution.TwoKm,
             DefinitionsPath = DefinitionsPath,
-            AtmosphereAmount = 1.0f
+            AtmosphereAmount = 1.0f,
+            ImageRootPaths = ImageRootPath
         });
 
         // Build DI container
