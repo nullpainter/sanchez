@@ -11,7 +11,7 @@ public static class GaussianNoiseRowOperation
 
     public static void Invoke(Span<Vector4> row)
     {
-        var random = new Random();
+        var random = Random.Shared;
 
         for (var x = 0; x < row.Length; x++)
         {
