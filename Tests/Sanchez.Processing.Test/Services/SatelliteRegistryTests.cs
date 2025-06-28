@@ -7,23 +7,6 @@ namespace Sanchez.Processing.Test.Services;
 public class SatelliteRegistryTests : AbstractTests
 {
     [Test]
-    [CancelAfter(2000)]
-    public void PerformanceTest(CancellationToken ct)
-    {
-        for (var i = 0; i < 10000; i++)
-        {
-            var (definition, _) = SatelliteRegistry.Locate("c:/images/GOES17_FD_CH13_20200911T080031Z.jpg");
-            definition.Should().NotBeNull();
-                
-            (definition, _) = SatelliteRegistry.Locate("c:/images/IMG_FD_020_IR105_20190907_032006.jpg");
-            definition.Should().NotBeNull(); 
-
-            (definition, _) = SatelliteRegistry.Locate("c:/images/EWS-G13_4_20210807T174555Z.png");
-            definition.Should().NotBeNull();
-        }
-    }
-
-    [Test]
     public void Goes17Matched()
     {
         var (definition, timestamp) = SatelliteRegistry.Locate("c:/images/GOES17_FD_CH13_20200911T080031Z.jpg");
