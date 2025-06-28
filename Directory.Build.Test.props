@@ -3,7 +3,7 @@
         <IsTestProject>true</IsTestProject>
         <Nullable>disable</Nullable>
         <IsPackable>false</IsPackable>
-        <NoWarn>$(NoWarn),S6562</NoWarn>
+        <NoWarn>$(NoWarn);S6562</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
